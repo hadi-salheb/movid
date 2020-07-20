@@ -1,11 +1,11 @@
 package com.hadysalhab.movid
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.hadysalhab.movid.screen.common.controllers.BaseActivity
 
-class AuthActivity : AppCompatActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
-  }
+class AuthActivity : BaseActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
 }
