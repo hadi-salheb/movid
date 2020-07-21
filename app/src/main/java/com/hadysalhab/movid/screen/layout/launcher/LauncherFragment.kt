@@ -1,60 +1,66 @@
 package com.hadysalhab.movid.screen.layout.launcher
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.hadysalhab.movid.R
+import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
+import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LauncherFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class LauncherFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class LauncherFragment : BaseFragment(), LauncherView.Listener {
+    @Inject
+    lateinit var viewFactory: ViewFactory
+
+    @Inject
+    lateinit var activityContext: Context
+
+    @Inject
+    lateinit var authNavigator: AuthNavigator
+    lateinit var view: LauncherView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        activityComponent.inject(this)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.layout_auth_launcher, container, false)
+        view = viewFactory.getLauncherView(container)
+        return view.getRootView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        view.registerListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        view.unregisterListener(this)
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LauncherFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance() =
-            LauncherFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        fun newInstance() = LauncherFragment()
+    }
+
+    override fun onLoginClicked() {
+        Toast.makeText(activityContext, "Login Clicked", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onSignUpClicked() {
+        Toast.makeText(activityContext, "SignUp Clicked", Toast.LENGTH_SHORT).show()
     }
 }

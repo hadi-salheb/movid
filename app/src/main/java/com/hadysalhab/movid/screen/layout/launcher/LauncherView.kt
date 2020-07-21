@@ -5,6 +5,6 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 abstract class LauncherView : BaseObservableViewMvc<LauncherView.Listener>() {
     interface Listener {
         fun onLoginClicked()
-        fun onRegisterClicked()
+        fun onSignUpClicked()
     }
 }

@@ -7,7 +7,7 @@ import com.hadysalhab.movid.R
 import com.hadysalhab.movid.screen.common.views.BaseViewMvc
 
 class FragmentFrameView(inflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc() {
-    private lateinit var fragmentFrame: FrameLayout
+    private val fragmentFrame: FrameLayout
 
     init {
         setRootView(inflater.inflate(R.layout.layout_fragment_frame, parent, false))

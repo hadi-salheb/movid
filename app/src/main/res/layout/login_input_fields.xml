@@ -7,6 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/username_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,6 +16,7 @@
         app:startIconContentDescription="Custom search icon"
         app:startIconDrawable="@drawable/ic_account_circle">
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/username_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -22,6 +24,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,6 +33,7 @@
         app:startIconContentDescription="Custom search icon"
         app:startIconDrawable="@drawable/ic_lock">
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
