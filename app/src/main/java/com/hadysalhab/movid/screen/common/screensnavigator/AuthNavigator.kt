@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
+import com.hadysalhab.movid.screen.layout.launcher.LauncherFragment
+import com.hadysalhab.movid.screen.layout.login.LoginFragment
+import com.hadysalhab.movid.screen.layout.register.RegisterFragment
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavController.RootFragmentListener
 
@@ -19,20 +22,28 @@ class AuthNavigator(
 
         override fun getRootFragment(index: Int): Fragment {
             return when (index) {
+                FragNavController.TAB1 -> LauncherFragment.newInstance()
                 else -> throw IllegalStateException("unsupported tab index: $index")
             }
         }
     }
 
-    fun init(savedInstanceState: Bundle) {
+    fun init(savedInstanceState: Bundle?) {
         fragNavController =
             FragNavController(fragmentManager, fragmentFrameHost.getFragmentFrame().id)
         fragNavController.rootFragmentListener = rootFragmentListener
         fragNavController.initialize(FragNavController.TAB1, savedInstanceState)
     }
 
-    fun onSavedInstanceState(savedInstanceState: Bundle){
+    fun onSavedInstanceState(savedInstanceState: Bundle?) {
         fragNavController.onSaveInstanceState(savedInstanceState)
     }
 
+    fun navigateUp() {
+        fragNavController.popFragment()
+    }
+    fun toLoginFragment() = fragNavController.pushFragment(LoginFragment.newInstance())
+    fun toRegisterFragment() = fragNavController.pushFragment(RegisterFragment.newInstance())
+
+    fun isRootFragment(): Boolean = fragNavController.isRootFragment
 }

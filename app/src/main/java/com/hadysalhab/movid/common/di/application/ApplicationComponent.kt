@@ -8,5 +8,5 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [ApplicationModule::class])
 interface ApplicationComponent {
-    fun newPresentationComponent(presentationModule: ActivityModule) : ActivityComponent
+    fun newActivityComponent(activityModule: ActivityModule) : ActivityComponent
 }

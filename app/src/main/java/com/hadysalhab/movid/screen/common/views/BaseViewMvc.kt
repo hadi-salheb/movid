@@ -10,16 +10,18 @@ abstract class BaseViewMvc : ViewMvc {
     override fun getRootView(): View = mRootView!!.rootView
 
 
-    protected open fun setRootView(rootView: View?) {
+    protected fun setRootView(rootView: View?) {
         mRootView = rootView
     }
 
-    protected open fun <T : View?> findViewById(id: Int): T = getRootView().findViewById(id)
+    protected fun <T : View?> findViewById(id: Int): T {
+        return getRootView().findViewById<T>(id)
+    }
 
 
-    protected open fun getContext(): Context = getRootView().context
+    protected fun getContext(): Context = getRootView().context
 
 
-    protected open fun getString(@StringRes id: Int): String? = getContext().getString(id)
+    protected fun getString(@StringRes id: Int): String? = getContext().getString(id)
 
 }

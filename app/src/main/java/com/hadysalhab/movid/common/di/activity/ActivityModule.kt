@@ -4,6 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
+import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import dagger.Module
 import dagger.Provides
 
@@ -22,4 +25,21 @@ class ActivityModule(private val activity: FragmentActivity) {
     @Provides
     fun getFragmentManager(activity: FragmentActivity): FragmentManager =
         activity.supportFragmentManager
+
+    @Provides
+    fun getFragmentFrameHost(activity: FragmentActivity): FragmentFrameHost =
+        activity as FragmentFrameHost
+
+    @Provides
+    @ActivityScope
+    fun getAuthNavigator(
+        fragmentManager: FragmentManager,
+        fragmentFrameHost: FragmentFrameHost
+    ): AuthNavigator =
+        AuthNavigator(fragmentManager, fragmentFrameHost)
+
+    @Provides
+    fun getViewFactory(
+        layoutInflater: LayoutInflater
+    ): ViewFactory = ViewFactory(layoutInflater)
 }

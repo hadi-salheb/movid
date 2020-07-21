@@ -1,10 +1,10 @@
-package com.hadysalhab.movid.screen.layout
+package com.hadysalhab.movid.screen.layout.register
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.hadysalhab.movid.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -49,7 +49,7 @@ class RegisterFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance() =
             RegisterFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
