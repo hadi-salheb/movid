@@ -1,11 +1,11 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-  <color name="navy">#0d2349</color>
+  <color name="navy">#1D3E78</color>
   <color name="navy_light">#3c4a75</color>
   <color name="navy_dark">#000022</color>
-  <color name="teal">#78eab7</color>
-  <color name="teal_light">#acffe9</color>
-  <color name="teal_dark">#42b787</color>
+  <color name="teal">#008080</color>
+  <color name="teal_light">#16EACA</color>
+  <color name="teal_dark">	#008B8B</color>
   <color name="white">#ffffff</color>
   <color name="grey_800">#424242</color>
   <color name="black_800">#121212</color>
