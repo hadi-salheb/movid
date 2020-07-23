@@ -31,4 +31,12 @@ class AuthActivity : BaseActivity(), FragmentFrameHost {
         authNavigator.onSavedInstanceState(outState)
     }
 
+    override fun onBackPressed() {
+        if(authNavigator.isRootFragment()){
+            super.onBackPressed()
+        }else{
+            authNavigator.navigateUp()
+        }
+    }
+
 }

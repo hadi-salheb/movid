@@ -37,7 +37,6 @@ class AuthNavigator(
     fun onSavedInstanceState(savedInstanceState: Bundle?) {
         fragNavController.onSaveInstanceState(savedInstanceState)
     }
-
     fun navigateUp() {
         fragNavController.popFragment()
     }
