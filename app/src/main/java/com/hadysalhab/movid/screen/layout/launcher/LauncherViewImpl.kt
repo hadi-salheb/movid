@@ -38,6 +38,11 @@ class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherV
                 }
             }
         }
+        signUpBtn.setOnClickListener {
+            listeners.forEach { listener ->
+                listener.onSignUpClicked()
+            }
+        }
     }
 
     private fun handleValidation(username: String, password: String): Boolean {

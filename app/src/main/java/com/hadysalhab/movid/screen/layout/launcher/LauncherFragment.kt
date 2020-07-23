@@ -61,6 +61,6 @@ class LauncherFragment : BaseFragment(), LauncherView.Listener {
     }
 
     override fun onSignUpClicked() {
-        Toast.makeText(activityContext, "SignUp Clicked", Toast.LENGTH_SHORT).show()
+        authNavigator.toRegisterFragment()
     }
 }
