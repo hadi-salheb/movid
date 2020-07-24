@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.layout.register
+package com.hadysalhab.movid.screen.auth.register
 
 import android.os.Bundle
 import android.view.LayoutInflater

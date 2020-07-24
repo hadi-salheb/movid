@@ -3,6 +3,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 android {
     compileSdkVersion 29
 
@@ -17,10 +20,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "API_KEY", apikeyProperties['API_KEY'])
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "API_KEY", apikeyProperties['API_KEY'])
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -45,6 +56,17 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.14.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt 'com.google.dagger:dagger-compiler:2.14.1'
+
+    //thread poster : https://github.com/techyourchance/thread-poster
+    implementation 'com.techyourchance.threadposter:threadposter:0.8.3'
+
+    //Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.7.2"
+    implementation "com.squareup.retrofit2:converter-gson:2.6.0"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.13.1'
+
+    //SharedPreferences
+    implementation "androidx.preference:preference-ktx:1.1.1"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

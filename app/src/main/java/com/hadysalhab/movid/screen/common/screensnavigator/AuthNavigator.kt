@@ -1,17 +1,21 @@
 package com.hadysalhab.movid.screen.common.screensnavigator
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.hadysalhab.movid.screen.auth.launcher.LauncherFragment
+import com.hadysalhab.movid.screen.auth.register.RegisterFragment
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
-import com.hadysalhab.movid.screen.layout.launcher.LauncherFragment
-import com.hadysalhab.movid.screen.layout.register.RegisterFragment
+import com.hadysalhab.movid.screen.main.MainActivity
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavController.RootFragmentListener
 
 class AuthNavigator(
     private val fragmentManager: FragmentManager,
-    private val fragmentFrameHost: FragmentFrameHost
+    private val fragmentFrameHost: FragmentFrameHost,
+    private val context: Context
 ) {
     lateinit var fragNavController: FragNavController
 
@@ -37,10 +41,17 @@ class AuthNavigator(
     fun onSavedInstanceState(savedInstanceState: Bundle?) {
         fragNavController.onSaveInstanceState(savedInstanceState)
     }
+
     fun navigateUp() {
         fragNavController.popFragment()
     }
+
     fun toRegisterFragment() = fragNavController.pushFragment(RegisterFragment.newInstance())
 
     fun isRootFragment(): Boolean = fragNavController.isRootFragment
+
+    fun toMainScreen() {
+        val intent = Intent(context, MainActivity::class.java)
+        context.startActivity(intent)
+    }
 }

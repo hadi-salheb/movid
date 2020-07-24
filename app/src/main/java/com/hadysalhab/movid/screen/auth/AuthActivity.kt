@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.layout
+package com.hadysalhab.movid.screen.auth
 
 import android.os.Bundle
 import android.widget.FrameLayout

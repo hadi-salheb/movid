@@ -1,8 +1,11 @@
-package com.hadysalhab.movid.screen.layout.launcher
+package com.hadysalhab.movid.screen.auth.launcher
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ProgressBar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hadysalhab.movid.R
@@ -12,8 +15,10 @@ class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherV
     private val usernameInputLayout: TextInputLayout
     private val passwordEditText: TextInputEditText
     private val passwordInputLayout: TextInputLayout
+    private val circularProgress: ProgressBar
     private val loginBtn: Button
     private val signUpBtn: Button
+    private val welcomeScreen: FrameLayout
 
     init {
         setRootView(inflater.inflate(R.layout.layout_auth_launcher, parent, false))
@@ -21,8 +26,10 @@ class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherV
         usernameInputLayout = findViewById(R.id.username_input_layout)
         passwordEditText = findViewById(R.id.password_editText)
         passwordInputLayout = findViewById(R.id.password_input_layout)
+        circularProgress = findViewById(R.id.progress_circular)
         loginBtn = findViewById(R.id.login_btn)
         signUpBtn = findViewById(R.id.signUp_btn)
+        welcomeScreen = findViewById(R.id.welcome_screen)
         setupListeners()
     }
 
@@ -30,11 +37,11 @@ class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherV
         loginBtn.setOnClickListener {
             val username = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
-            var validationResult: Boolean
+            val validationResult: Boolean
             validationResult = handleValidation(username, password)
             if (validationResult) {
                 listeners.forEach { listener ->
-                    listener.onLoginClicked()
+                    listener.onLoginClicked(username, password)
                 }
             }
         }
@@ -60,5 +67,27 @@ class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherV
             passwordInputLayout.error = null
         }
         return result
+    }
+
+    override fun showProgressState() {
+        circularProgress.visibility = View.VISIBLE
+        loginBtn.isEnabled = false
+        signUpBtn.isEnabled = false
+        usernameInputLayout.isEnabled = false
+        passwordInputLayout.isEnabled = false
+    }
+
+    override fun hideProgressState() {
+        showIdleScreen()
+    }
+
+    override fun showIdleScreen() {
+        welcomeScreen.visibility = View.GONE
+        circularProgress.visibility = View.GONE
+        circularProgress.visibility = View.GONE
+        loginBtn.isEnabled = true
+        signUpBtn.isEnabled = true
+        usernameInputLayout.isEnabled = true
+        passwordInputLayout.isEnabled = true
     }
 }

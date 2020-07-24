@@ -2,8 +2,8 @@ package com.hadysalhab.movid.common.di.activity
 
 import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityModule
 import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
-import com.hadysalhab.movid.screen.layout.AuthActivity
-import com.hadysalhab.movid.screen.layout.launcher.LauncherFragment
+import com.hadysalhab.movid.screen.auth.AuthActivity
+import com.hadysalhab.movid.screen.auth.launcher.LauncherFragment
 import dagger.Subcomponent
 
 @ActivityScope
