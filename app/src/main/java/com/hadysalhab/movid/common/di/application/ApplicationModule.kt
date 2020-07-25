@@ -1,12 +1,15 @@
 package com.hadysalhab.movid.common.di.application
 
 import android.app.Application
-import android.content.Context
+import com.google.gson.Gson
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.persistence.SharedPreferencesManager
 import com.hadysalhab.movid.state.UserStateManager
-import com.hadysalhab.movid.usecases.*
+import com.hadysalhab.movid.usecases.CreateRequestTokenUseCase
+import com.hadysalhab.movid.usecases.CreateSessionUseCase
+import com.hadysalhab.movid.usecases.LoginUseCase
+import com.hadysalhab.movid.usecases.SignTokenUseCase
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 import dagger.Module
@@ -72,6 +75,9 @@ class ApplicationModule(private val application: Application) {
         CreateSessionUseCase(tmdbApi)
 
     @Provides
+    fun getGson(): Gson = Gson()
+
+    @Provides
     @Singleton
     fun getLoginUseCase(
         createRequestTokenUseCase: CreateRequestTokenUseCase,
@@ -79,7 +85,8 @@ class ApplicationModule(private val application: Application) {
         createSessionUseCase: CreateSessionUseCase,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
-        sharedPreferencesManager: SharedPreferencesManager
+        sharedPreferencesManager: SharedPreferencesManager,
+        gson: Gson
     ): LoginUseCase =
         LoginUseCase(
             createRequestTokenUseCase,
@@ -87,7 +94,8 @@ class ApplicationModule(private val application: Application) {
             createSessionUseCase,
             backgroundThreadPoster,
             uiThreadPoster,
-            sharedPreferencesManager
+            sharedPreferencesManager,
+            gson
         )
 
     @Provides
@@ -96,5 +104,6 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun getUserStateManager(sharedPreferencesManager: SharedPreferencesManager) = UserStateManager(sharedPreferencesManager)
+    fun getUserStateManager(sharedPreferencesManager: SharedPreferencesManager) =
+        UserStateManager(sharedPreferencesManager)
 }

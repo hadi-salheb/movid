@@ -1,9 +1,11 @@
 package com.hadysalhab.movid.usecases
 
+import com.google.gson.Gson
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiSuccessResponse
+import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
 import com.hadysalhab.movid.persistence.SharedPreferencesManager
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
@@ -19,7 +21,8 @@ class LoginUseCase(
     private val createSessionUseCase: CreateSessionUseCase,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
-    private val sharedPreferencesManager: SharedPreferencesManager
+    private val sharedPreferencesManager: SharedPreferencesManager,
+    private val gson: Gson
 ) :
     BaseBusyObservable<LoginUseCase.Listener>() {
     interface Listener {
@@ -42,14 +45,8 @@ class LoginUseCase(
     private fun createRequestToken() {
         when (val res = createRequestTokenUseCase.createRequestTokenSync()) {
             is ApiSuccessResponse -> signTokenWithLogin(res.body.requestToken)
-            is ApiEmptyResponse -> notifyFailure("Unknown Error\nCheck Network Connection")
-            is ApiErrorResponse -> {
-                if (res.errorMessage.contains("Unable to resolve host")) {
-                    notifyFailure("Please check network connection")
-                } else {
-                    notifyFailure(res.errorMessage)
-                }
-            }
+            is ApiEmptyResponse -> notifyFailure("Server Error")
+            is ApiErrorResponse -> createErrMessageAndNotify(res.errorMessage)
         }
     }
 
@@ -60,14 +57,8 @@ class LoginUseCase(
             token
         )) {
             is ApiSuccessResponse -> createSession(res.body.requestToken)
-            is ApiEmptyResponse -> notifyFailure("Unknown Error\nCheck Network Connection")
-            is ApiErrorResponse -> {
-                if (res.errorMessage.contains("Unable to resolve host")) {
-                    notifyFailure("Please check network connection")
-                } else {
-                    notifyFailure(res.errorMessage)
-                }
-            }
+            is ApiEmptyResponse -> notifyFailure("Server Error")
+            is ApiErrorResponse -> createErrMessageAndNotify(res.errorMessage)
         }
     }
 
@@ -76,14 +67,8 @@ class LoginUseCase(
             token
         )) {
             is ApiSuccessResponse -> notifySuccess(res.body.sessionId)
-            is ApiEmptyResponse -> notifyFailure("Unknown Error\nCheck Network Connection")
-            is ApiErrorResponse -> {
-                if (res.errorMessage.contains("Unable to resolve host")) {
-                    notifyFailure("Please check network connection")
-                } else {
-                    notifyFailure(res.errorMessage)
-                }
-            }
+            is ApiEmptyResponse -> notifyFailure("Server Error")
+            is ApiErrorResponse -> createErrMessageAndNotify(res.errorMessage)
         }
     }
 
@@ -102,8 +87,21 @@ class LoginUseCase(
                 it.onLoginFailed(msg)
             }
         }
-
     }
 
+    private fun createErrMessageAndNotify(errMessage: String) {
+        val msg = when {
+            errMessage.contains("status_message") -> {
+                gson.fromJson(errMessage, TmdbErrorResponse::class.java).statusMessage
+            }
+            errMessage.contains("Unable to resolve host") -> {
+                "Please check network connection"
+            }
+            else -> {
+                errMessage
+            }
+        }
+        notifyFailure(msg)
+    }
 
 }
