@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import com.hadysalhab.movid.screen.auth.AuthActivity
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
+import com.hadysalhab.movid.screen.main.MainActivity
 import com.hadysalhab.movid.state.UserStateManager
 import javax.inject.Inject
 /**
@@ -23,7 +24,7 @@ class SplashActivity : BaseActivity() {
         super.onStart()
         Handler().postDelayed({
             val intent:Intent = if (userStateManager.isAuthenticated){
-                Intent(this,AuthActivity::class.java)
+                Intent(this,MainActivity::class.java)
             }else{
                 Intent(this,AuthActivity::class.java)
             }

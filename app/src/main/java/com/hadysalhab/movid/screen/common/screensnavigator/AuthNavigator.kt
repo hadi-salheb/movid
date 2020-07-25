@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.hadysalhab.movid.screen.MainActivity
+import com.hadysalhab.movid.screen.main.MainActivity
 import com.hadysalhab.movid.screen.auth.launcher.LauncherFragment
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.ncapdevi.fragnav.FragNavController
