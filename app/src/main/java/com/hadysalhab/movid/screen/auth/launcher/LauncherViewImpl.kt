@@ -18,7 +18,6 @@ class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherV
     private val circularProgress: ProgressBar
     private val loginBtn: Button
     private val signUpBtn: Button
-    private val welcomeScreen: FrameLayout
 
     init {
         setRootView(inflater.inflate(R.layout.layout_auth_launcher, parent, false))
@@ -29,7 +28,6 @@ class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherV
         circularProgress = findViewById(R.id.progress_circular)
         loginBtn = findViewById(R.id.login_btn)
         signUpBtn = findViewById(R.id.signUp_btn)
-        welcomeScreen = findViewById(R.id.welcome_screen)
         setupListeners()
     }
 
@@ -82,7 +80,6 @@ class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherV
     }
 
     override fun showIdleScreen() {
-        welcomeScreen.visibility = View.GONE
         circularProgress.visibility = View.GONE
         circularProgress.visibility = View.GONE
         loginBtn.isEnabled = true

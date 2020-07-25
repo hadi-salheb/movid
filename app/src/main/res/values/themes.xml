@@ -16,11 +16,14 @@
         <item name="colorOnBackground">@color/black</item>
         <item name="colorOnSurface">@color/black</item>
         <item name="colorOnError">@color/white</item>
-
-
+    </style>
+    <style name="Theme.SplashScreen" parent="Base.Theme.MaterialThemeBuilder">
+        <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
+
+    
 </resources>

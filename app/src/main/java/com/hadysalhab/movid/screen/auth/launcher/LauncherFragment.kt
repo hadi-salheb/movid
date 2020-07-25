@@ -21,10 +21,10 @@ class LauncherFragment : BaseFragment(),
     LoginUseCase.Listener {
 
     private enum class ScreenState {
-        WELCOME_SCREEN, IDLE, LOGIN_IN_PROGRESS, LOGIN_ERROR, LOGIN_SUCCESS
+        IDLE, LOGIN_IN_PROGRESS, LOGIN_ERROR, LOGIN_SUCCESS
     }
 
-    private var screenState = ScreenState.WELCOME_SCREEN
+    private var screenState = ScreenState.IDLE
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -92,15 +92,6 @@ class LauncherFragment : BaseFragment(),
                     }
                 }
             }
-
-            ScreenState.WELCOME_SCREEN -> {
-                Log.d(TAG, "onStart: welcome screen")
-                if(userStateManager.isAuthenticated){
-                    setNewState(ScreenState.LOGIN_SUCCESS)
-                }else{
-                    setNewState(ScreenState.IDLE)
-                }
-            }
             else-> setNewState(ScreenState.IDLE)
         }
     }
@@ -142,9 +133,6 @@ class LauncherFragment : BaseFragment(),
         when (newState) {
             ScreenState.IDLE -> {
                 view.showIdleScreen()
-            }
-            ScreenState.WELCOME_SCREEN -> {
-                // default screen
             }
             ScreenState.LOGIN_IN_PROGRESS -> {
                 view.showProgressState()
