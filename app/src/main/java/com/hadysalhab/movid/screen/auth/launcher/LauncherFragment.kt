@@ -117,7 +117,6 @@ class LauncherFragment : BaseFragment(),
     }
 
     override fun onSignUpClicked() {
-        authNavigator.toRegisterFragment()
     }
 
     override fun onLoggedIn(sessionId: String) {

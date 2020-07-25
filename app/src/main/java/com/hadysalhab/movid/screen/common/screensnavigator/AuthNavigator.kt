@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.screen.MainActivity
 import com.hadysalhab.movid.screen.auth.launcher.LauncherFragment
-import com.hadysalhab.movid.screen.auth.register.RegisterFragment
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavController.RootFragmentListener
@@ -45,8 +44,6 @@ class AuthNavigator(
     fun navigateUp() {
         fragNavController.popFragment()
     }
-
-    fun toRegisterFragment() = fragNavController.pushFragment(RegisterFragment.newInstance())
 
     fun isRootFragment(): Boolean = fragNavController.isRootFragment
 
