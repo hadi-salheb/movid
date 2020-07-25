@@ -8,6 +8,11 @@ import com.hadysalhab.movid.persistence.SharedPreferencesManager
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
+/**
+ * UseCase that handles all the network calls required to login the user
+ * Notifies the client for success (if all calls succeeded), for failure (if only one calls fails)
+ * */
+
 class LoginUseCase(
     private val createRequestTokenUseCase: CreateRequestTokenUseCase,
     private val signTokenUseCase: SignTokenUseCase,

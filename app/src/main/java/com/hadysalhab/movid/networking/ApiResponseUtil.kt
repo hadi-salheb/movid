@@ -2,6 +2,9 @@ package com.hadysalhab.movid.networking
 
 import retrofit2.Response
 
+/**
+ * Class to interpret http response
+ * */
 sealed class ApiResponse<T> {
     companion object {
         fun <T> create(error: Throwable): ApiResponse<T> {
@@ -11,7 +14,7 @@ sealed class ApiResponse<T> {
         fun <T> create(response: Response<T>): ApiResponse<T> {
             return if (response.isSuccessful) {
                 val body = response.body()
-                if (body == null || response.code() == 204){ //204 means empty Response
+                if (body == null || response.code() == 204) { //204 means empty Response
                     ApiEmptyResponse()
                 } else {
                     ApiSuccessResponse(
@@ -25,8 +28,10 @@ sealed class ApiResponse<T> {
                 } else {
                     msg
                 }
-                ApiErrorResponse(errorMsg ?: "Unknown Error\n" +
-                "Check Network Connection")
+                ApiErrorResponse(
+                    errorMsg ?: "Unknown Error\n" +
+                    "Check Network Connection"
+                )
             }
         }
     }

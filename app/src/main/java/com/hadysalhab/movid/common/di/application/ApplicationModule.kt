@@ -18,6 +18,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+/**
+ * Application-Level module
+ */
 @Module
 class ApplicationModule(private val application: Application) {
 

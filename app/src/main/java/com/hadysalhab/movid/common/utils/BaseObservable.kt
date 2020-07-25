@@ -2,9 +2,11 @@ package com.hadysalhab.movid.common.utils
 
 import java.util.*
 
-/*
- * https://gist.github.com/techyourchance/6602815188294c1c58779d3e8d16f12b
- * */
+
+/**
+ * Base class for Java Observable
+ * @see  "https://gist.github.com/techyourchance/6602815188294c1c58779d3e8d16f12b"
+ */
 
 abstract class BaseObservable<LISTENER_CLASS> {
     private val MONITOR = Any()

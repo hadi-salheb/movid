@@ -15,7 +15,9 @@ import com.hadysalhab.movid.state.UserStateManager
 import com.hadysalhab.movid.usecases.LoginUseCase
 import javax.inject.Inject
 
-
+/**
+ * The LauncherFragment serves as the controller for the login screen. {@see [LauncherView] & [LauncherViewImpl]}
+ */
 class LauncherFragment : BaseFragment(),
     LauncherView.Listener,
     LoginUseCase.Listener {
@@ -42,7 +44,7 @@ class LauncherFragment : BaseFragment(),
     lateinit var userStateManager: UserStateManager
 
     @Inject
-    lateinit var fragActivity:FragmentActivity
+    lateinit var fragActivity: FragmentActivity
 
     lateinit var view: LauncherView
     private var errorMessage: String = ""
@@ -92,7 +94,7 @@ class LauncherFragment : BaseFragment(),
                     }
                 }
             }
-            else-> setNewState(ScreenState.IDLE)
+            else -> setNewState(ScreenState.IDLE)
         }
     }
 
@@ -143,8 +145,8 @@ class LauncherFragment : BaseFragment(),
             }
             ScreenState.LOGIN_SUCCESS -> {
                 view.hideProgressState()
-              //  authNavigator.toMainScreen()
-              //  fragActivity.finish()
+                //  authNavigator.toMainScreen()
+                //  fragActivity.finish()
             }
         }
     }

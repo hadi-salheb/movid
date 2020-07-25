@@ -3,12 +3,13 @@ package com.hadysalhab.movid.screen.splash
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import com.hadysalhab.movid.screen.MainActivity
 import com.hadysalhab.movid.screen.auth.AuthActivity
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
 import com.hadysalhab.movid.state.UserStateManager
 import javax.inject.Inject
-
+/**
+ * The SplashActivity serves as a splash screen and navigates to the appropriate screen based on the user authentication state }
+ */
 
 class SplashActivity : BaseActivity() {
     @Inject

@@ -9,6 +9,9 @@ import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import javax.inject.Inject
 
+/**
+ * The AuthActivity serves as fragments host for the authentication screens. {@see [LauncherFragment] }
+ */
 class AuthActivity : BaseActivity(), FragmentFrameHost {
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -32,9 +35,9 @@ class AuthActivity : BaseActivity(), FragmentFrameHost {
     }
 
     override fun onBackPressed() {
-        if(authNavigator.isRootFragment()){
+        if (authNavigator.isRootFragment()) {
             super.onBackPressed()
-        }else{
+        } else {
             authNavigator.navigateUp()
         }
     }

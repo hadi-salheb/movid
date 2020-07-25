@@ -10,6 +10,9 @@ import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import dagger.Module
 import dagger.Provides
 
+/**
+ * Activity-Level module
+ */
 @Module
 class ActivityModule(private val activity: FragmentActivity) {
 

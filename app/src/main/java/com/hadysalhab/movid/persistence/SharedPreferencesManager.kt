@@ -4,6 +4,9 @@ import android.content.Context
 
 private const val PREF_SESSION_ID = "SESSION_ID"
 
+/**
+ * Class that controls access to/from shared preferences
+ */
 class SharedPreferencesManager(val context: Context) {
     fun getStoredSessionId(): String {
         val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)

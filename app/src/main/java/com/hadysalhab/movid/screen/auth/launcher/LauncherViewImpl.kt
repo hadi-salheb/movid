@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.ProgressBar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hadysalhab.movid.R
 
+/**
+ * The LauncherViewImpl displays views for the launcher screen if the user is not authenticated
+ */
 class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherView() {
     private val usernameEditText: TextInputEditText
     private val usernameInputLayout: TextInputLayout

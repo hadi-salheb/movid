@@ -5,6 +5,9 @@ import com.hadysalhab.movid.common.di.activity.ActivityComponent
 import dagger.Component
 import javax.inject.Singleton
 
+/**
+ * Application-Level component
+ */
 @Singleton
 @Component(modules = [ApplicationModule::class])
 interface ApplicationComponent {

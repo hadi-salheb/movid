@@ -2,6 +2,11 @@ package com.hadysalhab.movid.common.utils
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * Base class for Java Observable which needs to be aware of whether it's "busy" and expose this information to its clients
+ * @see  "https://gist.github.com/techyourchance/44670734917d4ce085224a62cb9edf81"
+ */
+
 abstract class BaseBusyObservable<LISTENER_CLASS> :
     BaseObservable<LISTENER_CLASS>() {
     private val mIsBusy: AtomicBoolean = AtomicBoolean(false)

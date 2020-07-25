@@ -7,6 +7,9 @@ import com.hadysalhab.movid.screen.auth.launcher.LauncherFragment
 import com.hadysalhab.movid.screen.splash.SplashActivity
 import dagger.Subcomponent
 
+/**
+ * Activity-Level component
+ */
 @ActivityScope
 @Subcomponent(modules = [ActivityModule::class])
 interface ActivityComponent {
