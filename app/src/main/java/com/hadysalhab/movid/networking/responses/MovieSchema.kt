@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.networking.movies
+package com.hadysalhab.movid.networking.responses
 
 import com.google.gson.annotations.SerializedName
 

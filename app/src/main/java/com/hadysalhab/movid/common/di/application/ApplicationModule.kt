@@ -2,14 +2,16 @@ package com.hadysalhab.movid.common.di.application
 
 import android.app.Application
 import com.google.gson.Gson
-import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
-import com.hadysalhab.movid.networking.TmdbApi
-import com.hadysalhab.movid.common.SharedPreferencesManager
-import com.hadysalhab.movid.user.UserStateManager
 import com.hadysalhab.movid.authentication.CreateRequestTokenUseCase
 import com.hadysalhab.movid.authentication.CreateSessionUseCase
 import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.authentication.SignTokenUseCase
+import com.hadysalhab.movid.common.SharedPreferencesManager
+import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
+import com.hadysalhab.movid.movies.FetchMovieGroupsUseCase
+import com.hadysalhab.movid.movies.FetchPopularMoviesUseCase
+import com.hadysalhab.movid.networking.TmdbApi
+import com.hadysalhab.movid.user.UserStateManager
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 import dagger.Module
@@ -107,4 +109,21 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun getUserStateManager(sharedPreferencesManager: SharedPreferencesManager) =
         UserStateManager(sharedPreferencesManager)
+
+    @Singleton
+    @Provides
+    fun getFetchPopularMoviesUseCase(tmdbApi: TmdbApi) = FetchPopularMoviesUseCase(tmdbApi)
+
+    @Provides
+    @Singleton
+    fun getFetchMovieGroupsUseCase(
+        fetchPopularMoviesUseCase: FetchPopularMoviesUseCase,
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster
+    ): FetchMovieGroupsUseCase =
+        FetchMovieGroupsUseCase(
+            fetchPopularMoviesUseCase,
+            backgroundThreadPoster,
+            uiThreadPoster
+        )
 }
