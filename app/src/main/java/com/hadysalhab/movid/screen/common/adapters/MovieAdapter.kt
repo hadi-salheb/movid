@@ -38,7 +38,7 @@ class MovieAdapter(
     //template method
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder =
         when (viewType) {
-            ViewType.SEE_ALL.ordinal -> {
+            ViewType.SEE_ALL.viewType -> {
                 val seeAll = viewFactory.getSeeAll(parent)
                 seeAll.registerListener(this)
                 MovieViewHolder.createSeeAll(seeAll)
@@ -61,8 +61,8 @@ class MovieAdapter(
 
     //template method
     override fun getItemViewType(position: Int): Int = when (position) {
-        in (0 until ITEM_COUNT) -> ViewType.CARD_MOVIE.ordinal
-        else -> ViewType.SEE_ALL.ordinal
+        in (0 until ITEM_COUNT) -> ViewType.CARD_MOVIE.viewType
+        else -> ViewType.SEE_ALL.viewType
     }
 
     //template method
