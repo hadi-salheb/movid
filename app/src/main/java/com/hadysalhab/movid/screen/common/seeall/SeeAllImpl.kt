@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.common.components.seeall
+package com.hadysalhab.movid.screen.common.seeall
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

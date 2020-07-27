@@ -1,8 +1,8 @@
-package com.hadysalhab.movid.screen.auth.launcher
+package com.hadysalhab.movid.screen.authentication.onboarding
 
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
-abstract class LauncherView : BaseObservableViewMvc<LauncherView.Listener>() {
+abstract class OnBoardingView : BaseObservableViewMvc<OnBoardingView.Listener>() {
     interface Listener {
         fun onLoginClicked(username: String, password: String)
         fun onSignUpClicked()

@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.screen.main.MainActivity
-import com.hadysalhab.movid.screen.auth.launcher.LauncherFragment
+import com.hadysalhab.movid.screen.authentication.onboarding.OnBoardingFragment
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavController.RootFragmentListener
@@ -24,7 +24,7 @@ class AuthNavigator(
 
         override fun getRootFragment(index: Int): Fragment {
             return when (index) {
-                FragNavController.TAB1 -> LauncherFragment.newInstance()
+                FragNavController.TAB1 -> OnBoardingFragment.newInstance()
                 else -> throw IllegalStateException("unsupported tab index: $index")
             }
         }

@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.screen.main.featured
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -9,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.screen.common.ViewFactory
-import com.hadysalhab.movid.screen.common.adapters.MovieAdapter
+import com.hadysalhab.movid.screen.common.movies.MovieAdapter
 
 class MovieGroupItemViewImpl(
     layoutInflater: LayoutInflater,
@@ -25,7 +24,10 @@ class MovieGroupItemViewImpl(
         setRootView(layoutInflater.inflate(R.layout.component_movie_group, parent, false))
         groupTitle = findViewById(R.id.tv_group_type)
         recyclerView = findViewById(R.id.rv_movies)
-        adapter = MovieAdapter(this, viewFactory)
+        adapter = MovieAdapter(
+            this,
+            viewFactory
+        )
         setupRecyclerView()
     }
 

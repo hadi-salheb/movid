@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.auth.launcher
+package com.hadysalhab.movid.screen.authentication.onboarding
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +12,7 @@ import com.hadysalhab.movid.R
 /**
  * The LauncherViewImpl displays views for the launcher screen if the user is not authenticated
  */
-class LauncherViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LauncherView() {
+class OnBoardingViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : OnBoardingView() {
     private val usernameEditText: TextInputEditText
     private val usernameInputLayout: TextInputLayout
     private val passwordEditText: TextInputEditText

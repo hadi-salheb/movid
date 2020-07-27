@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.usecases
+package com.hadysalhab.movid.authentication
 
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
@@ -6,7 +6,7 @@ import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiSuccessResponse
 import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
-import com.hadysalhab.movid.persistence.SharedPreferencesManager
+import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 

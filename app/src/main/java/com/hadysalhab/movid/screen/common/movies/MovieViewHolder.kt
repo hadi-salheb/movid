@@ -1,10 +1,9 @@
-package com.hadysalhab.movid.screen.common.adapters
+package com.hadysalhab.movid.screen.common.movies
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.movies.Movie
-import com.hadysalhab.movid.screen.common.components.moviecard.MovieCard
-import com.hadysalhab.movid.screen.common.components.seeall.SeeAll
+import com.hadysalhab.movid.screen.common.seeall.SeeAll
 
 sealed class MovieViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     open fun bind(movie: Movie) {
@@ -29,9 +28,14 @@ sealed class MovieViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     companion object {
         fun createMovieCard(
             movieCard: MovieCard
-        ) = MovieCardViewHolder(movieCard)
+        ) =
+            MovieCardViewHolder(
+                movieCard
+            )
 
         fun createSeeAll(seeAll: SeeAll) =
-            SeeAllViewHolder(seeAll)
+            SeeAllViewHolder(
+                seeAll
+            )
     }
 }

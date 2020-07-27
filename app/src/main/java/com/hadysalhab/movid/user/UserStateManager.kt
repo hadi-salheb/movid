@@ -1,6 +1,6 @@
-package com.hadysalhab.movid.state
+package com.hadysalhab.movid.user
 
-import com.hadysalhab.movid.persistence.SharedPreferencesManager
+import com.hadysalhab.movid.common.SharedPreferencesManager
 
 /**
  * Class that holds information on the user state

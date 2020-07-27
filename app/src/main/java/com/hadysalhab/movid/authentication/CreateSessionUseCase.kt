@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.usecases
+package com.hadysalhab.movid.authentication
 
 import com.hadysalhab.movid.networking.ApiResponse
 import com.hadysalhab.movid.networking.TmdbApi

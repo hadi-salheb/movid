@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.persistence
+package com.hadysalhab.movid.common
 
 import android.content.Context
 

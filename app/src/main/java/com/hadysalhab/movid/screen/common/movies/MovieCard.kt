@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.common.components.moviecard
+package com.hadysalhab.movid.screen.common.movies
 
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc

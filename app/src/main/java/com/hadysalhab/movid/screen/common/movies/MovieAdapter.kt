@@ -1,12 +1,11 @@
-package com.hadysalhab.movid.screen.common.adapters
+package com.hadysalhab.movid.screen.common.movies
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
-import com.hadysalhab.movid.screen.common.components.moviecard.MovieCard
-import com.hadysalhab.movid.screen.common.components.seeall.SeeAll
+import com.hadysalhab.movid.screen.common.seeall.SeeAll
 
 class MovieAdapter(
     private val listener: Listener,

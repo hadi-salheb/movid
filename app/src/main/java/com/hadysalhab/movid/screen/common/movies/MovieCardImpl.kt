@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.common.components.moviecard
+package com.hadysalhab.movid.screen.common.movies
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

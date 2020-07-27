@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.auth.launcher
+package com.hadysalhab.movid.screen.authentication.onboarding
 
 import android.content.Context
 import android.os.Bundle
@@ -11,15 +11,15 @@ import androidx.fragment.app.FragmentActivity
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
-import com.hadysalhab.movid.state.UserStateManager
-import com.hadysalhab.movid.usecases.LoginUseCase
+import com.hadysalhab.movid.user.UserStateManager
+import com.hadysalhab.movid.authentication.LoginUseCase
 import javax.inject.Inject
 
 /**
- * The LauncherFragment serves as the controller for the login screen. {@see [LauncherView] & [LauncherViewImpl]}
+ * The LauncherFragment serves as the controller for the login screen. {@see [OnBoardingView] & [OnBoardingViewImpl]}
  */
-class LauncherFragment : BaseFragment(),
-    LauncherView.Listener,
+class OnBoardingFragment : BaseFragment(),
+    OnBoardingView.Listener,
     LoginUseCase.Listener {
 
     private enum class ScreenState {
@@ -46,7 +46,7 @@ class LauncherFragment : BaseFragment(),
     @Inject
     lateinit var fragActivity: FragmentActivity
 
-    lateinit var view: LauncherView
+    lateinit var view: OnBoardingView
     private var errorMessage: String = ""
 
 
@@ -55,7 +55,7 @@ class LauncherFragment : BaseFragment(),
         private const val TAG = "LauncherFragment"
 
         @JvmStatic
-        fun newInstance() = LauncherFragment()
+        fun newInstance() = OnBoardingFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -4,12 +4,12 @@ import android.app.Application
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.networking.TmdbApi
-import com.hadysalhab.movid.persistence.SharedPreferencesManager
-import com.hadysalhab.movid.state.UserStateManager
-import com.hadysalhab.movid.usecases.CreateRequestTokenUseCase
-import com.hadysalhab.movid.usecases.CreateSessionUseCase
-import com.hadysalhab.movid.usecases.LoginUseCase
-import com.hadysalhab.movid.usecases.SignTokenUseCase
+import com.hadysalhab.movid.common.SharedPreferencesManager
+import com.hadysalhab.movid.user.UserStateManager
+import com.hadysalhab.movid.authentication.CreateRequestTokenUseCase
+import com.hadysalhab.movid.authentication.CreateSessionUseCase
+import com.hadysalhab.movid.authentication.LoginUseCase
+import com.hadysalhab.movid.authentication.SignTokenUseCase
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 import dagger.Module
@@ -100,7 +100,8 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun getSharedPrefManager() = SharedPreferencesManager(application)
+    fun getSharedPrefManager() =
+        SharedPreferencesManager(application)
 
     @Provides
     @Singleton
