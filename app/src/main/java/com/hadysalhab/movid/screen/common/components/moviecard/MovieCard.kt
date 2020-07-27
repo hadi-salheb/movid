@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.screen.common.components.moviecard
 
+import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
 abstract class MovieCard : BaseObservableViewMvc<MovieCard.Listener>() {
@@ -7,6 +8,5 @@ abstract class MovieCard : BaseObservableViewMvc<MovieCard.Listener>() {
         fun onMovieCardClicked(movieID: Int)
     }
 
-    abstract fun setMovieImage(image: String)
-    abstract fun setMovieTitle(title: String)
+    abstract fun displayMovie(movie: Movie)
 }

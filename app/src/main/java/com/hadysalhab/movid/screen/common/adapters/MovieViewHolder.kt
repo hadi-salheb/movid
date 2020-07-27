@@ -18,8 +18,7 @@ sealed class MovieViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //template method
         override fun bind(movie: Movie) {
             super.bind(movie)
-            movieCard.setMovieImage(movie.posterPath)
-            movieCard.setMovieTitle(movie.title)
+            movieCard.displayMovie(movie)
         }
     }
 
