@@ -31,7 +31,6 @@ class MovieAdapter(
             }
 
         }
-        private const val ITEM_COUNT = 6
     }
 
 
@@ -52,16 +51,19 @@ class MovieAdapter(
 
 
     //template method
-    override fun getItemCount(): Int = ITEM_COUNT
+    override fun getItemCount(): Int = (currentList.size + 1)
 
     //template method
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        if (position >= currentList.size) {
+            return
+        }
         holder.bind(getItem(position))
     }
 
     //template method
     override fun getItemViewType(position: Int): Int = when (position) {
-        in (0 until ITEM_COUNT) -> ViewType.CARD_MOVIE.viewType
+        in (0..itemCount - 2) -> ViewType.CARD_MOVIE.viewType
         else -> ViewType.SEE_ALL.viewType
     }
 
