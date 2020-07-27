@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
+import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import dagger.Module
 import dagger.Provides
 
@@ -41,6 +42,14 @@ class ActivityModule(private val activity: FragmentActivity) {
         activityContext:Context
     ): AuthNavigator =
         AuthNavigator(fragmentManager, fragmentFrameHost,activityContext)
+    @Provides
+    @ActivityScope
+    fun getMainNavigator(
+        fragmentManager: FragmentManager,
+        fragmentFrameHost: FragmentFrameHost,
+        activityContext:Context
+    ): MainNavigator =
+        MainNavigator(fragmentManager, fragmentFrameHost,activityContext)
 
     @Provides
     fun getViewFactory(
