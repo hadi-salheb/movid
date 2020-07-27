@@ -4,5 +4,5 @@ import com.hadysalhab.movid.networking.movies.MovieSchema
 
 data class MovieGroup (
     val movieGroupType:MovieGroupType,
-    val movies:List<MovieSchema>
+    val movies:List<Movie>
 )
