@@ -16,7 +16,7 @@ class AuthNavigator(
     private val fragmentFrameHost: FragmentFrameHost,
     private val context: Context
 ) {
-    lateinit var fragNavController: FragNavController
+   private lateinit var fragNavController: FragNavController
 
     private val rootFragmentListener: RootFragmentListener = object : RootFragmentListener {
         override val numberOfRootFragments: Int
