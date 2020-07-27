@@ -144,8 +144,8 @@ class LauncherFragment : BaseFragment(),
             }
             ScreenState.LOGIN_SUCCESS -> {
                 view.hideProgressState()
-                //  authNavigator.toMainScreen()
-                //  fragActivity.finish()
+                  authNavigator.toMainScreen()
+                  fragActivity.finish()
             }
         }
     }
