@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.screen.main.featured
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,7 +15,7 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         fun onSeeMoreClicked(movieGroupType: MovieGroupType)
     }
 
-    lateinit var movieGroupType: MovieGroupType
+    private lateinit var movieGroupType: MovieGroupType
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieGroup>() {

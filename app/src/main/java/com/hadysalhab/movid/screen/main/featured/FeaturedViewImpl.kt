@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.screen.main.featured
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,6 +44,7 @@ class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory
     }
 
     override fun displayMovieGroups(movieGroups: List<MovieGroup>) {
+        Log.d("Movies", "displayMovieGroups: $movieGroups")
         adapter.submitList(movieGroups)
     }
 
