@@ -5,6 +5,7 @@ import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScop
 import com.hadysalhab.movid.screen.auth.AuthActivity
 import com.hadysalhab.movid.screen.auth.launcher.LauncherFragment
 import com.hadysalhab.movid.screen.main.MainActivity
+import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.screen.splash.SplashActivity
 import dagger.Subcomponent
 
@@ -16,6 +17,7 @@ import dagger.Subcomponent
 interface ActivityComponent {
     fun inject(authActivity: AuthActivity)
     fun inject(launcherFragment: LauncherFragment)
+    fun inject(featuredFragment: FeaturedFragment)
     fun inject(mainActivity: MainActivity)
     fun inject(splashActivity: SplashActivity)
 }
