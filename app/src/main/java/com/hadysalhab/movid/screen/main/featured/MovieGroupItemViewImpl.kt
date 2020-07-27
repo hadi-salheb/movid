@@ -50,7 +50,7 @@ class MovieGroupItemViewImpl(
     }
 
     override fun displayMovieGroup(movieGroup: MovieGroup) {
-        groupTitle.text = movieGroup.movieGroupType.value.toUpperCase()
+        groupTitle.text = movieGroup.movieGroupType.value.toUpperCase().split("_").joinToString(" ")
         adapter.submitList(movieGroup.movies)
     }
 }
