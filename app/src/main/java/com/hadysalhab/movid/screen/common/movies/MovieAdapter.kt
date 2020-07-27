@@ -50,7 +50,7 @@ class MovieAdapter(
 
 
     //template method
-    override fun getItemCount(): Int = (currentList.size + 1)
+    override fun getItemCount(): Int = minOf(currentList.size + 1, 6)
 
     //template method
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
