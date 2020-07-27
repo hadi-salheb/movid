@@ -19,7 +19,7 @@ interface TmdbApi {
         @Field("request_token") requestToken: String
     ):  Call<CreateAndSignTokenResponse>
 
-    @GET("movie/popular")
+    @GET("/3/movie/popular")
     fun fetchPopularMovies(
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
