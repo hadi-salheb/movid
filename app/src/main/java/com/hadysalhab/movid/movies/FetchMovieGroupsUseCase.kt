@@ -55,7 +55,7 @@ class FetchMovieGroupsUseCase(
 
     private fun waitForAllUseCasesToFinish() {
         synchronized(LOCK) {
-            while (mNumbOfFinishedUseCase < 3 && !isAnyUseCaseFailed) {
+            while (mNumbOfFinishedUseCase < 1 && !isAnyUseCaseFailed) {
                 try {
                     LOCK.wait()
                 } catch (e: InterruptedException) {
