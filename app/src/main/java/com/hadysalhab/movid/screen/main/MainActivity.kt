@@ -8,7 +8,7 @@ import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), MainView.Listener,FragmentFrameHost {
+class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost {
     @Inject
     lateinit var viewFactory: ViewFactory
 
@@ -39,6 +39,10 @@ class MainActivity : BaseActivity(), MainView.Listener,FragmentFrameHost {
     }
 
     override fun getFragmentFrame(): FrameLayout = view.getFragmentFrame()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        mainNavigator.onSavedInstanceState(outState)
+    }
 
     override fun onBackPressed() {
         if (mainNavigator.isRootFragment()) {
