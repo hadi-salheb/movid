@@ -6,7 +6,7 @@ data class MovieSchema (
     val id: Long,
     val title:String,
     @SerializedName("poster_path")
-    val posterPath:String,
+    val posterPath:String?=null,
     @SerializedName("vote_average")
     val voteAverage: Double,
     @SerializedName("vote_count")
