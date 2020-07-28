@@ -17,6 +17,7 @@ import com.techyourchance.threadposter.UiThreadPoster
 
 class FetchMovieGroupsUseCase(
     private val fetchPopularMoviesUseCase: FetchPopularMoviesUseCase,
+    private val fetchTopRatedMoviesUseCase: FetchTopRatedMoviesUseCase,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster
 ) :
@@ -37,6 +38,9 @@ class FetchMovieGroupsUseCase(
             backgroundThreadPoster.post {
                 fetchPopularMovies()
             }
+            backgroundThreadPoster.post {
+                fetchTopRatedMovies()
+            }
             waitForAllUseCasesToFinish()
             synchronized(LOCK) {
                 if (isAnyUseCaseFailed) {
@@ -51,6 +55,11 @@ class FetchMovieGroupsUseCase(
     private fun fetchPopularMovies() {
         val res = fetchPopularMoviesUseCase.fetchPopularMoviesSync()
         handleResponse(res, MovieGroupType.POPULAR)
+    }
+
+    private fun fetchTopRatedMovies() {
+        val res = fetchTopRatedMoviesUseCase.fetchTopRatedMoviesSync()
+        handleResponse(res, MovieGroupType.TOP_RATED)
     }
 
     private fun waitForAllUseCasesToFinish() {

@@ -25,6 +25,12 @@ interface TmdbApi {
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
     ): Call<MoviesResponse>
 
+    @GET("/3/movie/top_rated")
+    fun fetchTopRatedMovies(
+        @Query("page") page: Int = 1,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<MoviesResponse>
+
     @POST("/3/authentication/session/new?api_key=${BuildConfig.API_KEY}")
     @FormUrlEncoded
     fun createSession(

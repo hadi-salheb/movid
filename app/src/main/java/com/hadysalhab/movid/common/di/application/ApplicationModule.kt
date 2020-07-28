@@ -10,6 +10,7 @@ import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.movies.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.FetchPopularMoviesUseCase
+import com.hadysalhab.movid.movies.FetchTopRatedMoviesUseCase
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.user.UserStateManager
 import com.techyourchance.threadposter.BackgroundThreadPoster
@@ -114,15 +115,21 @@ class ApplicationModule(private val application: Application) {
     @Provides
     fun getFetchPopularMoviesUseCase(tmdbApi: TmdbApi) = FetchPopularMoviesUseCase(tmdbApi)
 
+    @Singleton
+    @Provides
+    fun getFetchTopRatedMoviesUseCase(tmdbApi: TmdbApi) = FetchTopRatedMoviesUseCase(tmdbApi)
+
     @Provides
     @Singleton
     fun getFetchMovieGroupsUseCase(
         fetchPopularMoviesUseCase: FetchPopularMoviesUseCase,
+        fetchTopRatedMoviesUseCase: FetchTopRatedMoviesUseCase,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster
     ): FetchMovieGroupsUseCase =
         FetchMovieGroupsUseCase(
             fetchPopularMoviesUseCase,
+            fetchTopRatedMoviesUseCase,
             backgroundThreadPoster,
             uiThreadPoster
         )
