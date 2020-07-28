@@ -1,12 +1,12 @@
 package com.hadysalhab.movid.authentication
 
 import com.google.gson.Gson
+import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiSuccessResponse
 import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
-import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
@@ -35,6 +35,8 @@ class LoginUseCase(
 
 
     fun loginAndNotify(username: String, password: String) {
+        //throw exception if clients tries to trigger this flow while it is busy
+        assertNotBusyAndBecomeBusy()
         this.userName = username
         this.password = password
         backgroundThreadPoster.post {
@@ -79,6 +81,7 @@ class LoginUseCase(
                 it.onLoggedIn(sessionId)
             }
         }
+        becomeNotBusy()
     }
 
     private fun notifyFailure(msg: String) {
@@ -87,6 +90,7 @@ class LoginUseCase(
                 it.onLoginFailed(msg)
             }
         }
+        becomeNotBusy()
     }
 
     private fun createErrMessageAndNotify(errMessage: String) {
