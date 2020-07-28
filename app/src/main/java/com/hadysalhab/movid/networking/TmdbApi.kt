@@ -19,6 +19,14 @@ interface TmdbApi {
         @Field("request_token") requestToken: String
     ):  Call<CreateAndSignTokenResponse>
 
+
+    @POST("/3/authentication/session/new?api_key=${BuildConfig.API_KEY}")
+    @FormUrlEncoded
+    fun createSession(
+        @Field("request_token") requestToken: String
+    ):  Call<CreateSessionResponse>
+
+
     @GET("/3/movie/popular")
     fun fetchPopularMovies(
         @Query("page") page: Int = 1,
@@ -31,10 +39,25 @@ interface TmdbApi {
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
     ): Call<MoviesResponse>
 
-    @POST("/3/authentication/session/new?api_key=${BuildConfig.API_KEY}")
-    @FormUrlEncoded
-    fun createSession(
-        @Field("request_token") requestToken: String
-    ):  Call<CreateSessionResponse>
+    @GET("/3/movie/upcoming")
+    fun fetchUpcomingMovies(
+        @Query("page") page: Int = 1,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<MoviesResponse>
+
+    @GET("/3/movie/now_playing")
+    fun fetchNowPlayingMovies(
+        @Query("page") page: Int = 1,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<MoviesResponse>
+
+    @GET("/3/movie/latest")
+    fun fetchLatestMovies(
+        @Query("page") page: Int = 1,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<MoviesResponse>
+
+
+
 
 }
