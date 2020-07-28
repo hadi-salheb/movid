@@ -8,9 +8,7 @@ import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.authentication.SignTokenUseCase
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
-import com.hadysalhab.movid.movies.FetchMovieGroupsUseCase
-import com.hadysalhab.movid.movies.FetchPopularMoviesUseCase
-import com.hadysalhab.movid.movies.FetchTopRatedMoviesUseCase
+import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.user.UserStateManager
 import com.techyourchance.threadposter.BackgroundThreadPoster
@@ -119,17 +117,37 @@ class ApplicationModule(private val application: Application) {
     @Provides
     fun getFetchTopRatedMoviesUseCase(tmdbApi: TmdbApi) = FetchTopRatedMoviesUseCase(tmdbApi)
 
+    @Singleton
+    @Provides
+    fun getFetchUpcomingMoviesUseCase(tmdbApi: TmdbApi) = FetchUpcomingMoviesUseCase(tmdbApi)
+
+    @Singleton
+    @Provides
+    fun getFetchLatestMoviesUseCase(tmdbApi: TmdbApi) = FetchLatestMoviesUseCase(tmdbApi)
+
+    @Singleton
+    @Provides
+    fun getFetchNowPlayingMoviesUseCase(tmdbApi: TmdbApi) = FetchNowPlayingMoviesUseCase(tmdbApi)
+
     @Provides
     @Singleton
     fun getFetchMovieGroupsUseCase(
         fetchPopularMoviesUseCase: FetchPopularMoviesUseCase,
         fetchTopRatedMoviesUseCase: FetchTopRatedMoviesUseCase,
+        fetchUpcomingMoviesUseCase: FetchUpcomingMoviesUseCase,
+        fetchNowPlayingMoviesUseCase: FetchNowPlayingMoviesUseCase,
+        fetchLatestMoviesUseCase: FetchLatestMoviesUseCase,
+        gson: Gson,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster
     ): FetchMovieGroupsUseCase =
         FetchMovieGroupsUseCase(
             fetchPopularMoviesUseCase,
             fetchTopRatedMoviesUseCase,
+            fetchUpcomingMoviesUseCase,
+            fetchNowPlayingMoviesUseCase,
+            fetchLatestMoviesUseCase,
+            gson,
             backgroundThreadPoster,
             uiThreadPoster
         )
