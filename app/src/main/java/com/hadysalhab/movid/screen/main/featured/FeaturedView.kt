@@ -11,4 +11,5 @@ abstract class FeaturedView : BaseObservableViewMvc<FeaturedView.Listener>() {
     }
 
     abstract fun displayMovieGroups(movieGroups: List<MovieGroup>)
+    abstract fun displayLoadingScreen()
 }

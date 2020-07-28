@@ -10,16 +10,24 @@ import android.widget.Toast
 import com.hadysalhab.movid.movies.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.movies.MovieGroupType
+import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import javax.inject.Inject
 
 
 class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroupsUseCase.Listener {
+    private enum class ScreenState {
+        LOADING_SCREEN, ERROR_SCREEN, DATA_SCREEN
+    }
+
+    //on first time created -> loading screen is the default screen
+    private var screenState = ScreenState.LOADING_SCREEN
 
     companion object {
         @JvmStatic
         fun newInstance() = FeaturedFragment()
+        const val SCREEN_STATE = "FEATURED_SCREEN_STATE"
     }
 
     @Inject
@@ -28,6 +36,9 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     @Inject
     lateinit var activityContext: Context
 
+    @Inject
+    lateinit var moviesStateManager: MoviesStateManager
+
     private lateinit var view: FeaturedView
 
     @Inject
@@ -35,7 +46,9 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityComponent.inject(this)
-        arguments?.let {
+        Log.d("moviegroup", "onCreate")
+        if (savedInstanceState != null) {
+            screenState = savedInstanceState.getSerializable(SCREEN_STATE) as ScreenState
         }
     }
 
@@ -51,8 +64,43 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         super.onStart()
         view.registerListener(this)
         fetchMovieGroupsUseCase.registerListener(this)
-        if (!fetchMovieGroupsUseCase.isBusy) {
-            fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify()
+        //screenState represents the last screen was displayed to the user
+        //maybe the user navigated away (can trigger process death) or configuration change
+        Log.d("moviegroup", "onStart:  $screenState ")
+        when (screenState) {
+            //1) configuration change: isBusy can be false or true (UseCase is not destroyed)
+            //2) if process death happens: isBusy = false, re-fetching is triggered
+            //3) if none of the above: isBusy can be false or true (UseCase is not destroyed)
+            ScreenState.LOADING_SCREEN -> {
+                if (fetchMovieGroupsUseCase.isBusy) {
+                    // fetching movies hasn't finished yet. Wait for it
+                    // keep the loading screen showing
+                } else {
+                    // we missed it. re-fetch
+                    fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify()
+                }
+            }
+            //1) configuration change: MovieStore is not destroyed (AppScope) data should be available
+            //2) process death: MovieStore data might not be available
+            //3) none of the above: MovieStore should contain the data
+            ScreenState.DATA_SCREEN -> {
+                Log.d("moviegroup", "DATA_SCREEN: ")
+                if (moviesStateManager.areMoviesAvailabe()) {
+                    view.displayMovieGroups(moviesStateManager.moviesGroup)
+                    Log.d("moviegroup", "DATA_SCREEN: getting data from moviesStateManager ")
+                } else {
+                    screenState = ScreenState.LOADING_SCREEN
+                    view.displayLoadingScreen()
+                    fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify()
+                    Log.d("moviegroup", "DATA_SCREEN: fetching again")
+                }
+            }
+            //1) configuration change: Dialog is recreated by the system
+            //2) process death: Dialog is recreated by the system
+            //3) none of the above: Dialog is visible
+            ScreenState.ERROR_SCREEN -> {
+                //wait for the user response
+            }
         }
     }
 
@@ -62,6 +110,11 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         fetchMovieGroupsUseCase.unregisterListener(this)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("moviegroup", "onSaveInstanceState:$screenState ")
+        outState.putSerializable(SCREEN_STATE, screenState)
+    }
 
     override fun onMovieCardClicked(movieID: Int) {
         Toast.makeText(activityContext, "Movie with $movieID clicked", Toast.LENGTH_LONG).show()
@@ -73,12 +126,14 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     }
 
     override fun onFetchMovieGroupsSucceeded(movieGroups: List<MovieGroup>) {
-        Log.d("Movies", "onFetchMovieGroupsSucceeded: $movieGroups ")
+        screenState = ScreenState.DATA_SCREEN
         view.displayMovieGroups(movieGroups)
     }
 
     override fun onFetchMovieGroupsFailed(msg: String) {
+        screenState = ScreenState.ERROR_SCREEN
         Toast.makeText(activityContext, msg, Toast.LENGTH_LONG)
             .show()
     }
+
 }

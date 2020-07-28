@@ -1,8 +1,9 @@
 package com.hadysalhab.movid.screen.main.featured
 
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
@@ -14,11 +15,13 @@ class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory
     FeaturedView(), MovieGroupAdapter.Listener {
     private val recyclerView: RecyclerView
     private val adapter: MovieGroupAdapter
+    private val circularProgress: ProgressBar
 
     init {
         setRootView(inflater.inflate(R.layout.layout_featured, parent, false))
         recyclerView = findViewById(R.id.rv_movies)
         adapter = MovieGroupAdapter(this, viewFactory)
+        circularProgress = findViewById(R.id.progress_circular)
         setupRecyclerView()
     }
 
@@ -44,8 +47,14 @@ class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory
     }
 
     override fun displayMovieGroups(movieGroups: List<MovieGroup>) {
-        Log.d("Movies", "displayMovieGroups: $movieGroups")
+        circularProgress.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
         adapter.submitList(movieGroups)
+    }
+
+    override fun displayLoadingScreen() {
+        circularProgress.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
     }
 
 }
