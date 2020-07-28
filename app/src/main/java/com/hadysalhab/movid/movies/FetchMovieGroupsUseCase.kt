@@ -24,6 +24,7 @@ class FetchMovieGroupsUseCase(
     private val fetchNowPlayingMoviesUseCase: FetchNowPlayingMoviesUseCase,
     private val fetchLatestMoviesUseCase: FetchLatestMoviesUseCase,
     private val gson: Gson,
+    private val moviesStateManager: MoviesStateManager,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster
 ) :
@@ -40,10 +41,12 @@ class FetchMovieGroupsUseCase(
     private lateinit var errorMessage: String
     private val computations: Array<() -> Unit> = arrayOf(
         ::fetchPopularMovies, ::fetchTopRatedMovies,
-        ::fetchUpcomingMovies,  ::fetchNowPlayingMovies
+        ::fetchUpcomingMovies, ::fetchNowPlayingMovies
     )
 
     fun fetchMovieGroupsAndNotify() {
+        // will throw an exception if a client triggered this flow while it is busy
+        assertNotBusyAndBecomeBusy()
         backgroundThreadPoster.post {
             computations.forEach {
                 backgroundThreadPoster.post {
@@ -148,13 +151,16 @@ class FetchMovieGroupsUseCase(
                 it.onFetchMovieGroupsFailed(errorMessage)
             }
         }
+        becomeNotBusy()
     }
 
     private fun notifySuccess() {
+        moviesStateManager.moviesGroup = this.movieGroups
         uiThreadPoster.post {
             listeners.forEach {
                 it.onFetchMovieGroupsSucceeded(movieGroups)
             }
         }
+        becomeNotBusy()
     }
 }

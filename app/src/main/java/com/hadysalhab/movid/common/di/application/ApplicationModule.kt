@@ -129,6 +129,10 @@ class ApplicationModule(private val application: Application) {
     @Provides
     fun getFetchNowPlayingMoviesUseCase(tmdbApi: TmdbApi) = FetchNowPlayingMoviesUseCase(tmdbApi)
 
+    @Singleton
+    @Provides
+    fun getMoviesStateManager() = MoviesStateManager()
+
     @Provides
     @Singleton
     fun getFetchMovieGroupsUseCase(
@@ -138,6 +142,7 @@ class ApplicationModule(private val application: Application) {
         fetchNowPlayingMoviesUseCase: FetchNowPlayingMoviesUseCase,
         fetchLatestMoviesUseCase: FetchLatestMoviesUseCase,
         gson: Gson,
+        moviesStateManager: MoviesStateManager,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster
     ): FetchMovieGroupsUseCase =
@@ -148,6 +153,7 @@ class ApplicationModule(private val application: Application) {
             fetchNowPlayingMoviesUseCase,
             fetchLatestMoviesUseCase,
             gson,
+            moviesStateManager,
             backgroundThreadPoster,
             uiThreadPoster
         )
