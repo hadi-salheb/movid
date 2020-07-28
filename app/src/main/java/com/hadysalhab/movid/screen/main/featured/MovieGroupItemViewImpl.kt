@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.MovieGroup
+import com.hadysalhab.movid.movies.MovieGroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.movies.MovieAdapter
 
@@ -19,6 +20,7 @@ class MovieGroupItemViewImpl(
     private val recyclerView: RecyclerView
     private val groupTitle: TextView
     private val adapter: MovieAdapter
+    private lateinit var movieGroupType: MovieGroupType
 
     init {
         setRootView(layoutInflater.inflate(R.layout.component_movie_group, parent, false))
@@ -47,12 +49,14 @@ class MovieGroupItemViewImpl(
 
     override fun onSeeAllClicked() {
         listeners.forEach {
-            it.onSeeAllClicked()
+            it.onSeeAllClicked(this.movieGroupType)
         }
     }
 
+
     override fun displayMovieGroup(movieGroup: MovieGroup) {
-        groupTitle.text = movieGroup.movieGroupType.value.toUpperCase().split("_").joinToString(" ")
+        movieGroupType = movieGroup.movieGroupType
+        groupTitle.text = movieGroupType.value.toUpperCase().split("_").joinToString(" ")
         adapter.submitList(movieGroup.movies)
     }
 }

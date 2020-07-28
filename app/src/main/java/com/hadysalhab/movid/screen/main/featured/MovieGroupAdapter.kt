@@ -14,9 +14,6 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         fun onMovieCardClicked(movieID: Int)
         fun onSeeMoreClicked(movieGroupType: MovieGroupType)
     }
-
-    private lateinit var movieGroupType: MovieGroupType
-
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieGroup>() {
             override fun areItemsTheSame(oldItem: MovieGroup, newItem: MovieGroup): Boolean {
@@ -37,7 +34,6 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
 
     override fun onBindViewHolder(holder: MovieGroupViewHolder, position: Int) {
         val movieGroup = getItem(position)
-        this.movieGroupType = movieGroup.movieGroupType
         holder.bind(movieGroup)
     }
 
@@ -45,7 +41,9 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         listener.onMovieCardClicked(movieID)
     }
 
-    override fun onSeeAllClicked() {
-        listener.onSeeMoreClicked(this.movieGroupType)
+    override fun onSeeAllClicked(movieGroupType: MovieGroupType) {
+        listener.onSeeMoreClicked(movieGroupType)
     }
+
+
 }
