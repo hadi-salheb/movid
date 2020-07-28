@@ -24,8 +24,8 @@ class AuthActivity : BaseActivity(), FragmentFrameHost {
         super.onCreate(savedInstanceState)
         activityComponent.inject(this)
         view = viewFactory.getFragmentFrameView(null)
-        setContentView(view.getRootView())
         authNavigator.init(savedInstanceState)
+        setContentView(view.getRootView())
     }
 
     override fun getFragmentFrame(): FrameLayout = view.getFragmentFrame()

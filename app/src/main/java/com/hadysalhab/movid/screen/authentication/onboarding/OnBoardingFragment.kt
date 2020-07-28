@@ -61,10 +61,9 @@ class OnBoardingFragment : BaseFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityComponent.inject(this)
+        Log.d(TAG, "onCreate")
         if (savedInstanceState != null) {
-
             screenState = savedInstanceState.getSerializable(SCREEN_STATE) as ScreenState
-            Log.d(TAG, "onCreate: $screenState ")
         }
     }
 
@@ -106,7 +105,6 @@ class OnBoardingFragment : BaseFragment(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.d(TAG, "onSaveInstanceState: $screenState")
         outState.putSerializable(SCREEN_STATE, screenState)
     }
 
