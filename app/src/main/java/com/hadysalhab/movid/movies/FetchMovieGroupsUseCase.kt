@@ -1,6 +1,8 @@
 package com.hadysalhab.movid.movies
 
 import com.google.gson.Gson
+import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
+import com.hadysalhab.movid.common.constants.POSTER_SIZE_500
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
@@ -37,7 +39,7 @@ class FetchMovieGroupsUseCase(
     private var mNumbOfFinishedUseCase = 0
     private var isAnyUseCaseFailed = false
     private val LOCK = Object()
-    private val movieGroups = mutableListOf<MovieGroup>()
+    private lateinit var movieGroups: MutableList<MovieGroup>
     private lateinit var errorMessage: String
     private val computations: Array<() -> Unit> = arrayOf(
         ::fetchPopularMovies, ::fetchTopRatedMovies,
@@ -47,19 +49,17 @@ class FetchMovieGroupsUseCase(
     fun fetchMovieGroupsAndNotify() {
         // will throw an exception if a client triggered this flow while it is busy
         assertNotBusyAndBecomeBusy()
+        synchronized(LOCK) {
+            movieGroups = mutableListOf()
+            mNumbOfFinishedUseCase = 0
+            isAnyUseCaseFailed = false
+        }
         backgroundThreadPoster.post {
-            computations.forEach {
-                backgroundThreadPoster.post {
-                    it.invoke()
-                }
-            }
             waitForAllUseCasesToFinish()
-            synchronized(LOCK) {
-                if (isAnyUseCaseFailed) {
-                    notifyFailure()
-                } else {
-                    notifySuccess()
-                }
+        }
+        computations.forEach {
+            backgroundThreadPoster.post {
+                it.invoke()
             }
         }
     }
@@ -98,6 +98,11 @@ class FetchMovieGroupsUseCase(
                     return
                 }
             }
+            if (isAnyUseCaseFailed) {
+                notifyFailure()
+            } else {
+                notifySuccess()
+            }
         }
     }
 
@@ -127,7 +132,11 @@ class FetchMovieGroupsUseCase(
 
     private fun getMovies(moviesSchema: List<MovieSchema>) = moviesSchema.map { movieSchema ->
         with(movieSchema) {
-            Movie(id, title, posterPath, voteAverage, voteCount, releaseDate)
+            var poster: String? = null //LATER SET DEFAULT IMAGE
+            posterPath?.let {
+                poster = IMAGES_BASE_URL + POSTER_SIZE_500 + posterPath
+            }
+            Movie(id, title, poster, voteAverage, voteCount, releaseDate)
         }
     }
 
