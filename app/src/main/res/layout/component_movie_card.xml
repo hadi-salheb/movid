@@ -1,83 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="8dp"
     android:clickable="true"
     android:focusable="true">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_movie"
-        android:layout_width="match_parent"
-        android:scaleType="fitXY"
-        android:layout_height="180dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Last of us"
-        app:backgroundTint="@color/material_on_surface_emphasis_medium"
-        app:backgroundTintMode="add"
-        />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:paddingBottom="8dp"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_movie_title"
-            style="?attr/textAppearanceHeadline5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            tools:text="Batman"/>
-
         <LinearLayout
+            android:paddingTop="16dp"
+            android:paddingStart="16dp"
+            android:paddingBottom="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <RatingBar
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_movie"
+                android:layout_width="80dp"
+                android:layout_height="120dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Last of us"
+                android:scaleType="fitXY"
+                app:backgroundTint="@color/material_on_surface_emphasis_medium"
+                app:backgroundTintMode="add"
+                />
+
+            <LinearLayout
+                android:paddingStart="8dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:contentDescription="rating"
-                android:isIndicator="true"
-                android:numStars="5"
-                android:rating="4.5"
-                android:stepSize="0.5"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="4.5 (413)"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_movie_title"
+                    style="?attr/textAppearanceHeadline6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical"
+                    tools:text="Batman" />
+
+                <LinearLayout
+                    android:id="@+id/rating_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RatingBar
+                        android:id="@+id/rating_movie"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:contentDescription="rating"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.5"
+                        tools:rating="4" />
+
+                    <TextView
+                        android:id="@+id/tv_rating_movie"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4.5 (413)" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            style="?attr/textAppearanceSubtitle1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:singleLine="true"
-            android:text="Overview"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="0dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingBottom="16dp">
+            <TextView
+                style="?attr/textAppearanceSubtitle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="Overview" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="Successful author Veronica finds herself trapped in a horrifying reality and must uncover the mind-bending mystery before it's too late."/>
+            <TextView
+                android:id="@+id/tv_overview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:minLines="3"
+                tools:text="Successful author Veronica finds herself trapped in a horrifying reality and must uncover the mind-bending mystery before it's too late." />
 
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

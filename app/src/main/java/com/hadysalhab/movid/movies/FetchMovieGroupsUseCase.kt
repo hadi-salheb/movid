@@ -138,7 +138,7 @@ class FetchMovieGroupsUseCase(
             posterPath?.let {
                 poster = IMAGES_BASE_URL + POSTER_SIZE_500 + posterPath
             }
-            Movie(id, title, poster, voteAverage, voteCount, releaseDate)
+            Movie(id, title, poster, voteAverage, voteCount, releaseDate, overview)
         }
     }
 
