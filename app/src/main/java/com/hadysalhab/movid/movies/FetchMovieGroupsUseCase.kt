@@ -41,15 +41,17 @@ class FetchMovieGroupsUseCase(
     private val LOCK = Object()
     private lateinit var movieGroups: MutableList<MovieGroup>
     private lateinit var errorMessage: String
+    private lateinit var region: String
     private val computations: Array<() -> Unit> = arrayOf(
         ::fetchPopularMovies, ::fetchTopRatedMovies,
         ::fetchUpcomingMovies, ::fetchNowPlayingMovies
     )
 
-    fun fetchMovieGroupsAndNotify() {
+    fun fetchMovieGroupsAndNotify(region: String) {
         // will throw an exception if a client triggered this flow while it is busy
         assertNotBusyAndBecomeBusy()
         synchronized(LOCK) {
+            this.region = region
             movieGroups = mutableListOf()
             mNumbOfFinishedUseCase = 0
             isAnyUseCaseFailed = false
@@ -65,17 +67,17 @@ class FetchMovieGroupsUseCase(
     }
 
     private fun fetchPopularMovies() {
-        val res = fetchPopularMoviesUseCase.fetchPopularMoviesSync()
+        val res = fetchPopularMoviesUseCase.fetchPopularMoviesSync(region)
         handleResponse(res, MovieGroupType.POPULAR)
     }
 
     private fun fetchTopRatedMovies() {
-        val res = fetchTopRatedMoviesUseCase.fetchTopRatedMoviesSync()
+        val res = fetchTopRatedMoviesUseCase.fetchTopRatedMoviesSync(region)
         handleResponse(res, MovieGroupType.TOP_RATED)
     }
 
     private fun fetchUpcomingMovies() {
-        val res = fetchUpcomingMoviesUseCase.fetchUpcomingMoviesSync()
+        val res = fetchUpcomingMoviesUseCase.fetchUpcomingMoviesSync(region)
         handleResponse(res, MovieGroupType.UPCOMING)
     }
 
@@ -85,7 +87,7 @@ class FetchMovieGroupsUseCase(
     }
 
     private fun fetchNowPlayingMovies() {
-        val res = fetchNowPlayingMoviesUseCase.fetchNowPlayingMoviesSync()
+        val res = fetchNowPlayingMoviesUseCase.fetchNowPlayingMoviesSync(region)
         handleResponse(res, MovieGroupType.NOW_PLAYING)
     }
 

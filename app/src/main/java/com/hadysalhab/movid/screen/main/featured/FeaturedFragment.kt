@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.movies.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.movies.MovieGroupType
@@ -38,6 +39,9 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
 
     @Inject
     lateinit var moviesStateManager: MoviesStateManager
+
+    @Inject
+    lateinit var deviceConfigManager: DeviceConfigManager
 
     private lateinit var view: FeaturedView
 
@@ -77,7 +81,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
                     // keep the loading screen showing
                 } else {
                     // we missed it. re-fetch
-                    fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify()
+                    fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS())
                 }
             }
             //1) configuration change: MovieStore is not destroyed (AppScope) data should be available
@@ -86,12 +90,12 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
             ScreenState.DATA_SCREEN -> {
                 Log.d("moviegroup", "DATA_SCREEN: ")
                 if (moviesStateManager.areMoviesAvailabe()) {
-                    view.displayMovieGroups(moviesStateManager.moviesGroup)
+                    view.displayMovieGroups(moviesStateManager.moviesGroup.filter { it.movies.isNotEmpty() })
                     Log.d("moviegroup", "DATA_SCREEN: getting data from moviesStateManager ")
                 } else {
                     screenState = ScreenState.LOADING_SCREEN
                     view.displayLoadingScreen()
-                    fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify()
+                    fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS())
                     Log.d("moviegroup", "DATA_SCREEN: fetching again")
                 }
             }
@@ -127,7 +131,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
 
     override fun onFetchMovieGroupsSucceeded(movieGroups: List<MovieGroup>) {
         screenState = ScreenState.DATA_SCREEN
-        view.displayMovieGroups(movieGroups)
+        view.displayMovieGroups(moviesStateManager.moviesGroup.filter { it.movies.isNotEmpty() })
     }
 
     override fun onFetchMovieGroupsFailed(msg: String) {

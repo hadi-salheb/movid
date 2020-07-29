@@ -6,6 +6,7 @@ import com.hadysalhab.movid.authentication.CreateRequestTokenUseCase
 import com.hadysalhab.movid.authentication.CreateSessionUseCase
 import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.authentication.SignTokenUseCase
+import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.movies.*
@@ -30,6 +31,9 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     fun getApplication(): Application = application
+
+    @Provides
+    fun getDeviceConfigManager(application: Application) = DeviceConfigManager(application)
 
     @Provides
     @Singleton

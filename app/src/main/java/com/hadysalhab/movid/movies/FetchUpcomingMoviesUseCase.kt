@@ -6,8 +6,8 @@ import com.hadysalhab.movid.networking.responses.CreateSessionResponse
 import com.hadysalhab.movid.networking.responses.MoviesResponse
 
 class FetchUpcomingMoviesUseCase(private val tmdbApi: TmdbApi) {
-    fun fetchUpcomingMoviesSync(): ApiResponse<MoviesResponse> = try {
-        val res = tmdbApi.fetchUpcomingMovies().execute()
+    fun fetchUpcomingMoviesSync(region:String): ApiResponse<MoviesResponse> = try {
+        val res = tmdbApi.fetchUpcomingMovies(region = region).execute()
         ApiResponse.create<MoviesResponse>(res)
     } catch (err: Throwable) {
         ApiResponse.create(err)
