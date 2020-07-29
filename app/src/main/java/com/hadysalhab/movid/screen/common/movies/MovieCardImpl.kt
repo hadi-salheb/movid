@@ -1,9 +1,11 @@
 package com.hadysalhab.movid.screen.common.movies
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.Movie
 
@@ -18,7 +20,7 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
         movieTitle = findViewById(R.id.tv_movie_title)
         getRootView().setOnClickListener {
             listeners.forEach {
-                it.onMovieCardClicked (movie.id.toInt())
+                it.onMovieCardClicked(movie.id.toInt())
             }
         }
     }
@@ -27,6 +29,12 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
     override fun displayMovie(movie: Movie) {
         this.movie = movie
         movieTitle.text = movie.title
-        //TODO:DISPLAY MOVIE IMAGE
+
+        movie.posterPath?.let {
+            Log.d("poster", "displayMovie: ${it} ")
+            Glide.with(getContext())
+                .load(it)
+                .into(movieImage)
+        }
     }
 }
