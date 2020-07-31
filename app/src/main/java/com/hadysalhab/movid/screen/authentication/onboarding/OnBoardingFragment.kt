@@ -61,7 +61,6 @@ class OnBoardingFragment : BaseFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityComponent.inject(this)
-        Log.d(TAG, "onCreate")
         if (savedInstanceState != null) {
             screenState = savedInstanceState.getSerializable(SCREEN_STATE) as ScreenState
         }
@@ -128,7 +127,6 @@ class OnBoardingFragment : BaseFragment(),
 
     private fun setNewState(newState: ScreenState) {
         screenState = newState
-        Log.d(TAG, "setNewState: $screenState")
         when (newState) {
             ScreenState.IDLE -> {
                 view.showIdleScreen()

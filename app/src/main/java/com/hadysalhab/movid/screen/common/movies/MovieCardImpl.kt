@@ -44,7 +44,6 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
         movieTitle.text = movie.title
         movieOverview.text = movie.overview
         movie.posterPath?.let {
-            Log.d("poster", "displayMovie: ${it} ")
             Glide.with(getContext())
                 .load(it)
                 .into(movieImage)

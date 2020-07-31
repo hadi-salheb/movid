@@ -50,7 +50,6 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityComponent.inject(this)
-        Log.d("moviegroup", "onCreate")
         if (savedInstanceState != null) {
             screenState = savedInstanceState.getSerializable(SCREEN_STATE) as ScreenState
         }
@@ -70,7 +69,6 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         fetchMovieGroupsUseCase.registerListener(this)
         //screenState represents the last screen was displayed to the user
         //maybe the user navigated away (can trigger process death) or configuration change
-        Log.d("moviegroup", "onStart:  $screenState ")
         when (screenState) {
             //1) configuration change: isBusy can be false or true (UseCase is not destroyed)
             //2) if process death happens: isBusy = false, re-fetching is triggered
@@ -88,15 +86,12 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
             //2) process death: MovieStore data might not be available
             //3) none of the above: MovieStore should contain the data
             ScreenState.DATA_SCREEN -> {
-                Log.d("moviegroup", "DATA_SCREEN: ")
                 if (moviesStateManager.areMoviesAvailabe()) {
                     view.displayMovieGroups(moviesStateManager.moviesGroup.filter { it.movies.isNotEmpty() })
-                    Log.d("moviegroup", "DATA_SCREEN: getting data from moviesStateManager ")
                 } else {
                     screenState = ScreenState.LOADING_SCREEN
                     view.displayLoadingScreen()
                     fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS())
-                    Log.d("moviegroup", "DATA_SCREEN: fetching again")
                 }
             }
             //1) configuration change: Dialog is recreated by the system
@@ -116,7 +111,6 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.d("moviegroup", "onSaveInstanceState:$screenState ")
         outState.putSerializable(SCREEN_STATE, screenState)
     }
 
