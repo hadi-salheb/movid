@@ -13,6 +13,7 @@ import com.hadysalhab.movid.movies.MovieGroupType
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import javax.inject.Inject
 
 
@@ -38,6 +39,9 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
 
     @Inject
     lateinit var moviesStateManager: MoviesStateManager
+
+    @Inject
+    lateinit var mainNavigator: MainNavigator
 
     @Inject
     lateinit var deviceConfigManager: DeviceConfigManager
@@ -113,8 +117,8 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         outState.putSerializable(SCREEN_STATE, screenState)
     }
 
-    override fun onMovieCardClicked(movieID: Int) {
-        Toast.makeText(activityContext, "Movie with $movieID clicked", Toast.LENGTH_LONG).show()
+    override fun onMovieCardClicked(movieID: Long) {
+        mainNavigator.toDetailFragment(movieID)
     }
 
     override fun onSeeAllClicked(movieGroupType: MovieGroupType) {

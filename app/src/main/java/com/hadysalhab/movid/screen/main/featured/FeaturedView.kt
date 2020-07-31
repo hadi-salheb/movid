@@ -6,7 +6,7 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
 abstract class FeaturedView : BaseObservableViewMvc<FeaturedView.Listener>() {
     interface Listener {
-        fun onMovieCardClicked(movieID: Int)
+        fun onMovieCardClicked(movieID: Long)
         fun onSeeAllClicked(movieGroupType: MovieGroupType)
     }
 

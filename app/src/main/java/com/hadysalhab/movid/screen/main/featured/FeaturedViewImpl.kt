@@ -34,7 +34,7 @@ class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory
         }
     }
 
-    override fun onMovieCardClicked(movieID: Int) {
+    override fun onMovieCardClicked(movieID: Long) {
         listeners.forEach {
             it.onMovieCardClicked(movieID)
         }

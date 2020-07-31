@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
+import com.hadysalhab.movid.screen.main.moviedetail.MovieDetail
 import com.ncapdevi.fragnav.FragNavController
 
 class MainNavigator(
@@ -13,9 +14,10 @@ class MainNavigator(
     private val fragmentFrameHost: FragmentFrameHost,
     private val context: Context
 ) {
-    companion object{
+    companion object {
         private const val TAB_COUNT = 5
     }
+
     private lateinit var fragNavController: FragNavController
 
     private val rootFragmentListener: FragNavController.RootFragmentListener = object :
@@ -47,5 +49,7 @@ class MainNavigator(
     }
 
     fun isRootFragment(): Boolean = fragNavController.isRootFragment
+    fun toDetailFragment(movieID: Long) =
+        fragNavController.pushFragment(MovieDetail.newInstance(movieID))
 
 }

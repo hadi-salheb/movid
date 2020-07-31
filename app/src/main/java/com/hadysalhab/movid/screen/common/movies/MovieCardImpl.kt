@@ -31,7 +31,7 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
         movieReleaseDate = findViewById(R.id.tv_released_movie)
         getRootView().setOnClickListener {
             listeners.forEach {
-                it.onMovieCardClicked(movie.id.toInt())
+                it.onMovieCardClicked(movie.id)
             }
         }
     }
