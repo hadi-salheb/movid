@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="280dp"
@@ -11,102 +11,88 @@
     android:elevation="1.5dp"
     android:clickable="true"
     android:focusable="true">
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <LinearLayout
-            android:paddingTop="16dp"
-            android:paddingStart="16dp"
-            android:paddingBottom="8dp"
-            android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        >
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+
+            android:id="@+id/iv_movie"
+            android:layout_width="80dp"
+            android:layout_height="120dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Last of us"
+            android:scaleType="fitXY"
+            app:backgroundTint="@color/material_on_surface_emphasis_medium"
+            app:backgroundTintMode="add"
+            android:layout_marginBottom="8dp"
+            />
+        <TextView
+            android:id="@+id/tv_movie_title"
+            style="?attr/textAppearanceHeadline6"
+            android:layout_marginStart="8dp"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_movie"
-                android:layout_width="80dp"
-                android:layout_height="120dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="Last of us"
-                android:scaleType="fitXY"
-                app:backgroundTint="@color/material_on_surface_emphasis_medium"
-                app:backgroundTintMode="add"
-                />
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            android:layout_toEndOf="@id/iv_movie"
+            tools:text="Batman" />
 
-            <LinearLayout
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <RatingBar
+            android:id="@+id/rating_movie"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/iv_movie"
+            android:layout_marginStart="8dp"
+            android:contentDescription="rating"
+            android:layout_alignTop="@id/tv_rating_movie"
+            android:layout_alignBottom="@id/tv_rating_movie"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.5"
+            tools:rating="4" />
 
-                <TextView
-                    android:id="@+id/tv_movie_title"
-                    style="?attr/textAppearanceHeadline6"
-                    android:textSize="16sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    tools:text="Batman" />
+        <TextView
+            android:id="@+id/tv_rating_movie"
+            android:layout_toEndOf="@id/rating_movie"
+            android:layout_below="@id/tv_movie_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="4.5 (413)" />
 
-                <LinearLayout
-                    android:id="@+id/rating_wrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_released_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_rating_movie"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/iv_movie"
+            tools:text="Feb 29,2020" />
 
-                    <RatingBar
-                        android:id="@+id/rating_movie"
-                        style="?android:attr/ratingBarStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:contentDescription="rating"
-                        android:isIndicator="true"
-                        android:numStars="5"
-                        android:stepSize="0.5"
-                        tools:rating="4" />
+        <TextView
+            android:id="@+id/tv_movie_overview"
+            style="?attr/textAppearanceSubtitle1"
+            android:layout_below="@id/iv_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="Overview" />
 
-                    <TextView
-                        android:id="@+id/tv_rating_movie"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="4.5 (413)" />
-                </LinearLayout>
-                <TextView
-                    android:id="@+id/tv_released_movie"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Feb 29,2020" />
-            </LinearLayout>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_overview"
+            android:layout_below="@id/tv_movie_overview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:minLines="3"
+            tools:text="Successful author Veronica finds herself trapped in a horrifying reality and must uncover the mind-bending mystery before it's too late." />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="0dp"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
-                android:paddingBottom="16dp">
-            <TextView
-                style="?attr/textAppearanceSubtitle1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="Overview" />
-
-            <TextView
-                android:id="@+id/tv_overview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ellipsize="end"
-                android:maxLines="3"
-                android:minLines="3"
-                tools:text="Successful author Veronica finds herself trapped in a horrifying reality and must uncover the mind-bending mystery before it's too late." />
-
-        </LinearLayout>
-    </LinearLayout>
-
+    </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -18,7 +18,6 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
     private val movieOverview: TextView
     private val movieRating: RatingBar
     private val movieRatingText: TextView
-    private val ratingWrapper: LinearLayout
     private val movieReleaseDate: TextView
     private lateinit var movie: Movie
 
@@ -30,7 +29,6 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
         movieRating = findViewById(R.id.rating_movie)
         movieRatingText = findViewById(R.id.tv_rating_movie)
         movieReleaseDate = findViewById(R.id.tv_released_movie)
-        ratingWrapper = findViewById(R.id.rating_wrapper)
         getRootView().setOnClickListener {
             listeners.forEach {
                 it.onMovieCardClicked(movie.id.toInt())
