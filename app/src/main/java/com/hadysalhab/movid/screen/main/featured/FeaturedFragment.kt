@@ -2,7 +2,6 @@ package com.hadysalhab.movid.screen.main.featured
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,7 +86,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
             //3) none of the above: MovieStore should contain the data
             ScreenState.DATA_SCREEN -> {
                 if (moviesStateManager.areMoviesAvailabe()) {
-                    view.displayMovieGroups(moviesStateManager.moviesGroup.filter { it.movies.isNotEmpty() })
+                    displayMovies()
                 } else {
                     screenState = ScreenState.LOADING_SCREEN
                     view.displayLoadingScreen()
@@ -125,7 +124,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
 
     override fun onFetchMovieGroupsSucceeded(movieGroups: List<MovieGroup>) {
         screenState = ScreenState.DATA_SCREEN
-        view.displayMovieGroups(moviesStateManager.moviesGroup.filter { it.movies.isNotEmpty() })
+        displayMovies()
     }
 
     override fun onFetchMovieGroupsFailed(msg: String) {
@@ -134,4 +133,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
             .show()
     }
 
+    private fun displayMovies() {
+        view.displayMovieGroups(moviesStateManager.moviesGroup.filter { it.movies.isNotEmpty() })
+    }
 }
