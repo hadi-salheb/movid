@@ -19,6 +19,7 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
     private val movieRating: RatingBar
     private val movieRatingText: TextView
     private val ratingWrapper: LinearLayout
+    private val movieReleaseDate: TextView
     private lateinit var movie: Movie
 
     init {
@@ -28,6 +29,7 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
         movieOverview = findViewById(R.id.tv_overview)
         movieRating = findViewById(R.id.rating_movie)
         movieRatingText = findViewById(R.id.tv_rating_movie)
+        movieReleaseDate = findViewById(R.id.tv_released_movie)
         ratingWrapper = findViewById(R.id.rating_wrapper)
         getRootView().setOnClickListener {
             listeners.forEach {
@@ -47,6 +49,7 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
                 .load(it)
                 .into(movieImage)
         }
+        movieReleaseDate.text = movie.releaseDate
 
         if (movie.voteCount == 0) {
             movieRating.visibility = View.GONE

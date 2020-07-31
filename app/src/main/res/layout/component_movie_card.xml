@@ -3,9 +3,12 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
+    android:layout_width="280dp"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginBottom="8dp"
+    android:elevation="1.5dp"
     android:clickable="true"
     android:focusable="true">
 
@@ -33,6 +36,7 @@
 
             <LinearLayout
                 android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -40,9 +44,10 @@
                 <TextView
                     android:id="@+id/tv_movie_title"
                     style="?attr/textAppearanceHeadline6"
+                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
                     tools:text="Batman" />
 
@@ -66,8 +71,13 @@
                         android:id="@+id/tv_rating_movie"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4.5 (413)" />
+                        tools:text="4.5 (413)" />
                 </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_released_movie"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Feb 29,2020" />
             </LinearLayout>
         </LinearLayout>
 
