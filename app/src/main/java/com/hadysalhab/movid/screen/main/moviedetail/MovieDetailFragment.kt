@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.hadysalhab.movid.movies.FetchMovieDetailUseCase
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import javax.inject.Inject
@@ -16,6 +17,10 @@ class MovieDetailFragment : BaseFragment() {
 
     @Inject
     lateinit var viewFactory: ViewFactory
+
+    @Inject
+    lateinit var fetchMovieDetailUseCase: FetchMovieDetailUseCase
+
     private lateinit var viewMvc: MovieDetailView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +36,11 @@ class MovieDetailFragment : BaseFragment() {
     ): View? {
         viewMvc = viewFactory.getMovieDetailView(container)
         return viewMvc.getRootView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        fetchMovieDetailUseCase.fetchMovieDetailAndNotify()
     }
 
     companion object {

@@ -64,7 +64,7 @@ interface TmdbApi {
 
 
     @GET("/3/movie/{id}")
-    fun getMovieDetail(
+    fun fetchMovieDetail(
         @Path("id") id: Long,
         @Query("append_to_response") details: String = "videos,credits,reviews,images,release_dates,account_states,similar",
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
