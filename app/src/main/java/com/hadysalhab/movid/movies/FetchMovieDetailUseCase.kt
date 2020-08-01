@@ -18,9 +18,7 @@ import retrofit2.Response
 class FetchMovieDetailUseCase(
     private val tmdbApi: TmdbApi,
     private val gson: Gson,
-    private val moviesStateManager: MoviesStateManager,
-    private val backgroundThreadPoster: BackgroundThreadPoster,
-    private val uiThreadPoster: UiThreadPoster
+    private val moviesStateManager: MoviesStateManager
 ) :
     BaseBusyObservable<FetchMovieDetailUseCase.Listener>() {
     interface Listener {
@@ -33,7 +31,6 @@ class FetchMovieDetailUseCase(
     fun fetchMovieDetailAndNotify() {
         // will throw an exception if a client triggered this flow while it is busy
         assertNotBusyAndBecomeBusy()
-        backgroundThreadPoster.post {
             tmdbApi.fetchMovieDetail(
                 id = 475557,
                 sessionID = "2877a3e3269c78640398b0b47db8c82a93a3774d"
@@ -50,7 +47,6 @@ class FetchMovieDetailUseCase(
                 }
 
             })
-        }
     }
 
 
@@ -69,17 +65,13 @@ class FetchMovieDetailUseCase(
     }
 
     private fun notifyFailure() {
-        uiThreadPoster.post {
             listeners.forEach {
-            }
         }
         becomeNotBusy()
     }
 
     private fun notifySuccess() {
-        uiThreadPoster.post {
             listeners.forEach {
-            }
         }
         becomeNotBusy()
     }

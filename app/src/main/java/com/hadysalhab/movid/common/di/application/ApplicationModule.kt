@@ -167,15 +167,11 @@ class ApplicationModule(private val application: Application) {
     fun getFetchMovieDetailUseCase(
         tmdbApi: TmdbApi,
         gson: Gson,
-        moviesStateManager: MoviesStateManager,
-        backgroundThreadPoster: BackgroundThreadPoster,
-        uiThreadPoster: UiThreadPoster
+        moviesStateManager: MoviesStateManager
     ): FetchMovieDetailUseCase =
         FetchMovieDetailUseCase(
             tmdbApi,
             gson,
-            moviesStateManager,
-            backgroundThreadPoster,
-            uiThreadPoster
+            moviesStateManager
         )
 }
