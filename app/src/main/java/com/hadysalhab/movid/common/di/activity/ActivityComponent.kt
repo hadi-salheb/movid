@@ -6,6 +6,7 @@ import com.hadysalhab.movid.screen.authentication.AuthActivity
 import com.hadysalhab.movid.screen.authentication.onboarding.OnBoardingFragment
 import com.hadysalhab.movid.screen.main.MainActivity
 import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
+import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
 import com.hadysalhab.movid.screen.splash.SplashActivity
 import dagger.Subcomponent
 
@@ -20,4 +21,5 @@ interface ActivityComponent {
     fun inject(featuredFragment: FeaturedFragment)
     fun inject(mainActivity: MainActivity)
     fun inject(splashActivity: SplashActivity)
+    fun inject(movieDetailFragment: MovieDetailFragment)
 }

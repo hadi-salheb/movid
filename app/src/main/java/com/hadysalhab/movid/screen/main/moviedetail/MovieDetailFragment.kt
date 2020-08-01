@@ -4,18 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import com.hadysalhab.movid.R
+import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import javax.inject.Inject
 
 private const val MOVIE_ID = "MOVIE_ID"
 
 
-class MovieDetail : Fragment() {
+class MovieDetailFragment : BaseFragment() {
     private var movieID: Long? = null
 
+    @Inject
+    lateinit var viewFactory: ViewFactory
+    private lateinit var viewMvc: MovieDetailView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activityComponent.inject(this)
         arguments?.let {
             movieID = it.getLong(MOVIE_ID)
         }
@@ -25,16 +29,14 @@ class MovieDetail : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val v =inflater.inflate(R.layout.fragment_movie_detail, container, false)
-        val textview = v.findViewById<TextView>(R.id.movie_id)
-        textview.text = movieID.toString()
-        return v
+        viewMvc = viewFactory.getMovieDetailView(container)
+        return viewMvc.getRootView()
     }
 
     companion object {
         @JvmStatic
         fun newInstance(movieID: Long) =
-            MovieDetail().apply {
+            MovieDetailFragment().apply {
                 arguments = Bundle().apply {
                     putLong(MOVIE_ID, movieID)
                 }

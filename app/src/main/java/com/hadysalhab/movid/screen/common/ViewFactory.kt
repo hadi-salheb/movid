@@ -9,6 +9,8 @@ import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
 import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
 import com.hadysalhab.movid.screen.main.featured.MovieGroupItemViewImpl
+import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailView
+import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewImpl
 
 class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getFragmentFrameView(parent: ViewGroup?) = FragmentFrameView(layoutInflater, parent)
@@ -29,5 +31,7 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
         )
     fun getMovieGroupView(parent: ViewGroup?) =
         MovieGroupItemViewImpl(layoutInflater, parent, this)
+
+    fun getMovieDetailView(container: ViewGroup?): MovieDetailView  = MovieDetailViewImpl(layoutInflater,container)
 
 }
