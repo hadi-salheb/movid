@@ -41,7 +41,7 @@ class MovieGroupItemViewImpl(
         }
     }
 
-    override fun onMovieCardClicked(movieID: Long) {
+    override fun onMovieCardClicked(movieID: Int) {
         listeners.forEach {
             it.onMovieCardClicked(movieID)
         }

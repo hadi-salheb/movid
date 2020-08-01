@@ -3,6 +3,7 @@ package com.hadysalhab.movid.networking
 import com.hadysalhab.movid.BuildConfig
 import com.hadysalhab.movid.networking.responses.CreateAndSignTokenResponse
 import com.hadysalhab.movid.networking.responses.CreateSessionResponse
+import com.hadysalhab.movid.networking.responses.MovieDetailResponse
 import com.hadysalhab.movid.networking.responses.MoviesResponse
 import retrofit2.Call
 import retrofit2.http.*
@@ -62,6 +63,12 @@ interface TmdbApi {
     ): Call<MoviesResponse>
 
 
-
+    @GET("/3/movie/{id}")
+    fun getMovieDetail(
+        @Path("id") id: Long,
+        @Query("append_to_response") details: String = "videos,credits,reviews,images,release_dates,account_states,similar",
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
+        @Query("session_id") sessionID: String
+    ): Call<MovieDetailResponse>
 
 }

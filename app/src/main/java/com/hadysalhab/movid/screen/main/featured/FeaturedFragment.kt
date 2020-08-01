@@ -117,7 +117,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         outState.putSerializable(SCREEN_STATE, screenState)
     }
 
-    override fun onMovieCardClicked(movieID: Long) {
+    override fun onMovieCardClicked(movieID: Int) {
         mainNavigator.toDetailFragment(movieID)
     }
 

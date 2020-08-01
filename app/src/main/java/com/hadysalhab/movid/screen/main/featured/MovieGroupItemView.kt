@@ -6,7 +6,7 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
 abstract class MovieGroupItemView : BaseObservableViewMvc<MovieGroupItemView.Listener>(){
     interface Listener{
-       fun onMovieCardClicked(movieID: Long)
+       fun onMovieCardClicked(movieID: Int)
        fun onSeeAllClicked(movieGroupType: MovieGroupType)
     }
     abstract fun displayMovieGroup(movieGroup:MovieGroup)

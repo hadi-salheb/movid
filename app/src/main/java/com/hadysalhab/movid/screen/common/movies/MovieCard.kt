@@ -5,7 +5,7 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
 abstract class MovieCard : BaseObservableViewMvc<MovieCard.Listener>() {
     interface Listener {
-        fun onMovieCardClicked(movieID: Long)
+        fun onMovieCardClicked(movieID: Int)
     }
 
     abstract fun displayMovie(movie: Movie)

@@ -49,7 +49,7 @@ class MainNavigator(
     }
 
     fun isRootFragment(): Boolean = fragNavController.isRootFragment
-    fun toDetailFragment(movieID: Long) =
+    fun toDetailFragment(movieID: Int) =
         fragNavController.pushFragment(MovieDetailFragment.newInstance(movieID))
 
 }

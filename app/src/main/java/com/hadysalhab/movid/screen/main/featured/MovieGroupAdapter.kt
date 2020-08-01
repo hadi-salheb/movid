@@ -11,7 +11,7 @@ import com.hadysalhab.movid.screen.common.ViewFactory
 class MovieGroupAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
     ListAdapter<MovieGroup, MovieGroupViewHolder>(DIFF_CALLBACK), MovieGroupItemView.Listener {
     interface Listener {
-        fun onMovieCardClicked(movieID: Long)
+        fun onMovieCardClicked(movieID: Int)
         fun onSeeMoreClicked(movieGroupType: MovieGroupType)
     }
     companion object {
@@ -37,7 +37,7 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         holder.bind(movieGroup)
     }
 
-    override fun onMovieCardClicked(movieID: Long) {
+    override fun onMovieCardClicked(movieID: Int) {
         listener.onMovieCardClicked(movieID)
     }
 

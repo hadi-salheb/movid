@@ -14,7 +14,7 @@ class MovieAdapter(
     ListAdapter<Movie, MovieViewHolder>(DIFF_CALLBACK), MovieCard.Listener, SeeAll.Listener {
 
     interface Listener {
-        fun onMovieCardClicked(movieID: Long)
+        fun onMovieCardClicked(movieID: Int)
         fun onSeeAllClicked()
     }
 
@@ -67,7 +67,7 @@ class MovieAdapter(
     }
 
     //template method
-    override fun onMovieCardClicked(movieID: Long) {
+    override fun onMovieCardClicked(movieID: Int) {
         listener.onMovieCardClicked(movieID)
     }
 

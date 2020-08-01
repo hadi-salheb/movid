@@ -12,7 +12,7 @@ private const val MOVIE_ID = "MOVIE_ID"
 
 
 class MovieDetailFragment : BaseFragment() {
-    private var movieID: Long? = null
+    private var movieID: Int? = null
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -21,7 +21,7 @@ class MovieDetailFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         activityComponent.inject(this)
         arguments?.let {
-            movieID = it.getLong(MOVIE_ID)
+            movieID = it.getInt(MOVIE_ID)
         }
     }
 
@@ -35,10 +35,10 @@ class MovieDetailFragment : BaseFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(movieID: Long) =
+        fun newInstance(movieID :Int) =
             MovieDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(MOVIE_ID, movieID)
+                    putInt(MOVIE_ID, movieID)
                 }
             }
     }
