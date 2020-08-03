@@ -138,6 +138,6 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     }
 
     private fun displayMovies() {
-        view.displayMovieGroups(moviesStateManager.moviesGroup.filter { it.movies.isNotEmpty() })
+        view.displayMovieGroups(moviesStateManager.moviesGroup.sortedBy { item->item.movieGroupType.ordinal }.filter { it.movies.isNotEmpty() })
     }
 }
