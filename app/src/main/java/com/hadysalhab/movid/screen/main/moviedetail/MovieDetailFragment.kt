@@ -1,12 +1,15 @@
 package com.hadysalhab.movid.screen.main.moviedetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hadysalhab.movid.movies.FetchMovieDetailUseCase
+import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.user.UserStateManager
 import javax.inject.Inject
 
 private const val MOVIE_ID = "MOVIE_ID"
@@ -21,6 +24,9 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
 
     @Inject
     lateinit var fetchMovieDetailUseCase: FetchMovieDetailUseCase
+
+    @Inject
+    lateinit var userStateManager:UserStateManager
 
     private lateinit var viewMvc: MovieDetailView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +49,7 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
         super.onStart()
         viewMvc.registerListener(this)
         fetchMovieDetailUseCase.unregisterListener(this)
-        fetchMovieDetailUseCase.fetchMovieDetailAndNotify()
+        fetchMovieDetailUseCase.fetchMovieDetailAndNotify(movieID!!,userStateManager.sessionId)
     }
 
     override fun onStop() {
@@ -62,11 +68,13 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
             }
     }
 
-    override fun onFetchMovieDetailSuccess() {
-        TODO("Not yet implemented")
+    override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
+        Log.d("MovieDetailFragment", "onFetchMovieDetailSuccess: $movieDetail ")
     }
 
     override fun onFetchMovieDetailFailed(msg: String) {
         TODO("Not yet implemented")
     }
+
+
 }

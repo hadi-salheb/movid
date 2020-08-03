@@ -8,6 +8,7 @@ import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiResponse
 import com.hadysalhab.movid.networking.ApiSuccessResponse
+import com.hadysalhab.movid.networking.responses.GenresSchema
 import com.hadysalhab.movid.networking.responses.MovieSchema
 import com.hadysalhab.movid.networking.responses.MoviesResponse
 import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
@@ -109,13 +110,13 @@ class FetchMovieGroupsUseCase(
     }
 
     private fun handleResponse(
-        response: ApiResponse<MoviesResponse>,
+        responseSchema: ApiResponse<MoviesResponse>,
         movieGroupType: MovieGroupType
     ) {
         synchronized(LOCK) {
-            when (response) {
+            when (responseSchema) {
                 is ApiSuccessResponse -> {
-                    val movieGroup = MovieGroup(movieGroupType, getMovies(response.body.movies))
+                    val movieGroup = MovieGroup(movieGroupType, getMovies(responseSchema.body.movies))
                     movieGroups.add(movieGroup)
                 }
                 is ApiEmptyResponse -> {
@@ -124,7 +125,7 @@ class FetchMovieGroupsUseCase(
                 }
                 is ApiErrorResponse -> {
                     isAnyUseCaseFailed = true
-                    createErrorMessage(response.errorMessage)
+                    createErrorMessage(responseSchema.errorMessage)
                 }
             }
             mNumbOfFinishedUseCase++

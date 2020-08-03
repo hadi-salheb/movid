@@ -10,4 +10,6 @@ class UserStateManager(
 ) {
     val isAuthenticated
         get() = sharedPreferencesManager.getStoredSessionId().isNotEmpty()
+    val sessionId
+        get() = sharedPreferencesManager.getStoredSessionId()
 }
