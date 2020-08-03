@@ -12,7 +12,8 @@ import javax.inject.Inject
 private const val MOVIE_ID = "MOVIE_ID"
 
 
-class MovieDetailFragment : BaseFragment() {
+class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
+    MovieDetailView.Listener {
     private var movieID: Int? = null
 
     @Inject
@@ -40,16 +41,32 @@ class MovieDetailFragment : BaseFragment() {
 
     override fun onStart() {
         super.onStart()
+        viewMvc.registerListener(this)
+        fetchMovieDetailUseCase.unregisterListener(this)
         fetchMovieDetailUseCase.fetchMovieDetailAndNotify()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewMvc.unregisterListener(this)
+        fetchMovieDetailUseCase.unregisterListener(this)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(movieID :Int) =
+        fun newInstance(movieID: Int) =
             MovieDetailFragment().apply {
                 arguments = Bundle().apply {
                     putInt(MOVIE_ID, movieID)
                 }
             }
+    }
+
+    override fun onFetchMovieDetailSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFetchMovieDetailFailed(msg: String) {
+        TODO("Not yet implemented")
     }
 }
