@@ -70,7 +70,11 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
 
     override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
         Log.d("MovieDetailFragment", "onFetchMovieDetailSuccess: $movieDetail ")
-        viewMvc.displayCarouselImages(movieDetail.images.backdrops)
+        viewMvc.apply {
+            displayCarouselImages(movieDetail.images.backdrops)
+            displayPosterImage(movieDetail.details.posterPath)
+        }
+
     }
 
     override fun onFetchMovieDetailFailed(msg: String) {

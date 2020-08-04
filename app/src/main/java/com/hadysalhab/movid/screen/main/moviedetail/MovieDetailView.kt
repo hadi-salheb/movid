@@ -8,4 +8,5 @@ abstract class MovieDetailView : BaseObservableViewMvc<MovieDetailView.Listener>
 
     }
     abstract fun displayCarouselImages ( backdrops:List<Backdrops>)
+    abstract fun displayPosterImage(posterPath:String?)
 }

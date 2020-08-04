@@ -3,7 +3,7 @@ package com.hadysalhab.movid.movies
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
-import com.hadysalhab.movid.common.constants.POSTER_SIZE_500
+import com.hadysalhab.movid.common.constants.POSTER_SIZE_300
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.networking.responses.*
@@ -78,7 +78,7 @@ class FetchMovieDetailUseCase(
             originalLanguage,
             overview,
             popularity,
-            posterPath,
+            IMAGES_BASE_URL+ POSTER_SIZE_300+posterPath,
             releaseDate,
             revenue,
             runtime,
@@ -138,7 +138,7 @@ class FetchMovieDetailUseCase(
     private fun getMovie(movieSchema: MovieSchema) = with(movieSchema) {
         var poster: String? = null //LATER SET DEFAULT IMAGE
         posterPath?.let {
-            poster = IMAGES_BASE_URL + POSTER_SIZE_500 + posterPath
+            poster = IMAGES_BASE_URL + POSTER_SIZE_300 + posterPath
         }
         Movie(id, title, poster, voteAvg, voteCount, releaseDate, overview)
     }

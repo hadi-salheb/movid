@@ -2,13 +2,12 @@ package com.hadysalhab.movid.movies
 
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
-import com.hadysalhab.movid.common.constants.POSTER_SIZE_500
+import com.hadysalhab.movid.common.constants.POSTER_SIZE_300
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiResponse
 import com.hadysalhab.movid.networking.ApiSuccessResponse
-import com.hadysalhab.movid.networking.responses.GenresSchema
 import com.hadysalhab.movid.networking.responses.MovieSchema
 import com.hadysalhab.movid.networking.responses.MoviesResponse
 import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
@@ -137,7 +136,7 @@ class FetchMovieGroupsUseCase(
         with(movieSchema) {
             var poster: String? = null //LATER SET DEFAULT IMAGE
             posterPath?.let {
-                poster = IMAGES_BASE_URL + POSTER_SIZE_500 + posterPath
+                poster = IMAGES_BASE_URL + POSTER_SIZE_300 + posterPath
             }
             Movie(id, title, poster, voteAvg, voteCount, releaseDate, overview)
         }
