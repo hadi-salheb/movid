@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
-        android:textAppearance="?attr/textAppearanceSubtitle1"
-        android:textColor="@color/gray_700"
+        android:textAppearance="?attr/textAppearanceSubtitle2"
+        android:textColor="@color/gray_600"
         android:layout_alignParentStart="true"
         tools:text="POPULAR"/>
 
