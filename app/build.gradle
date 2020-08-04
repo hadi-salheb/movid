@@ -62,7 +62,7 @@ dependencies {
     implementation 'com.techyourchance.threadposter:threadposter:0.8.3'
 
 
-    // Carousel
+    // Carousel https://github.com/sayyam/carouselview
     implementation 'com.synnapps:carouselview:0.1.5'
 
 
