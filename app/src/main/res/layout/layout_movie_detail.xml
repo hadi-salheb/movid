@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".screen.main.moviedetail.MovieDetailFragment">
 
-    <ImageView
-        android:id="@+id/imageView"
+    <com.synnapps.carouselview.CarouselView
+        android:id="@+id/carouselView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:slideInterval="3000"
+        app:indicatorVisibility="gone"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,8 +33,9 @@
         android:scaleType="fitXY"
         app:backgroundTint="@color/material_on_surface_emphasis_medium"
         app:backgroundTintMode="add"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/carouselView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/carouselView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

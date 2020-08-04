@@ -61,6 +61,11 @@ dependencies {
     //thread poster : https://github.com/techyourchance/thread-poster
     implementation 'com.techyourchance.threadposter:threadposter:0.8.3'
 
+
+    // Carousel
+    implementation 'com.synnapps:carouselview:0.1.5'
+
+
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.7.2"
     implementation "com.squareup.retrofit2:converter-gson:2.6.0"

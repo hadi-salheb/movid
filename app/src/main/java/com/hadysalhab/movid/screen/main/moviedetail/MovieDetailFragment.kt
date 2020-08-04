@@ -26,7 +26,7 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
     lateinit var fetchMovieDetailUseCase: FetchMovieDetailUseCase
 
     @Inject
-    lateinit var userStateManager:UserStateManager
+    lateinit var userStateManager: UserStateManager
 
     private lateinit var viewMvc: MovieDetailView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,8 +48,8 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
     override fun onStart() {
         super.onStart()
         viewMvc.registerListener(this)
-        fetchMovieDetailUseCase.unregisterListener(this)
-        fetchMovieDetailUseCase.fetchMovieDetailAndNotify(movieID!!,userStateManager.sessionId)
+        fetchMovieDetailUseCase.registerListener(this)
+        fetchMovieDetailUseCase.fetchMovieDetailAndNotify(movieID!!, userStateManager.sessionId)
     }
 
     override fun onStop() {
@@ -70,6 +70,7 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
 
     override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
         Log.d("MovieDetailFragment", "onFetchMovieDetailSuccess: $movieDetail ")
+        viewMvc.displayCarouselImages(movieDetail.images.backdrops)
     }
 
     override fun onFetchMovieDetailFailed(msg: String) {
