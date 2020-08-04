@@ -19,7 +19,7 @@ data class MovieDetailResponse(
     @SerializedName("poster_path")
     val posterPath: String?,
     @SerializedName("release_date")
-    val releaseDate: String,
+    val releaseDate: String?="",
     val revenue: Int,
     val runtime: Int?,
     val status: String,

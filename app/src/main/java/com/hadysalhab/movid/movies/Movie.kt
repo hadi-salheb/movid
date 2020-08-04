@@ -7,7 +7,7 @@ data class Movie (
     val posterPath:String?,
     val voteAverage: Double,
     val voteCount:Int,
-    val releaseDate:String,
+    val releaseDate:String?="",
     val overview:String?
     )
 
@@ -23,7 +23,7 @@ data class MovieInfo (
     val overview: String?,
     val popularity: Double,
     val posterPath: String?,
-    val releaseDate: String,
+    val releaseDate: String?="",
     val revenue: Int,
     val runtime: Int?,
     val status: String,
