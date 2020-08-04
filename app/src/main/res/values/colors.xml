@@ -3,9 +3,9 @@
   <color name="navy">#1D3E78</color>
   <color name="navy_light">#3c4a75</color>
   <color name="navy_dark">#000022</color>
-  <color name="teal">#008080</color>
-  <color name="teal_light">#16EACA</color>
-  <color name="teal_dark">	#008B8B</color>
+  <color name="teal_600">#319795</color>
+  <color name="teal_300">#81e6d9</color>
+  <color name="teal_900">#234e52</color>
   <color name="white">#ffffff</color>
   <color name="grey_800">#424242</color>
   <color name="black_800">#121212</color>
