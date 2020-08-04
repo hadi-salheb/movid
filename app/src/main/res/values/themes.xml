@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/navy_dark</item>
         <item name="colorSecondary">@color/teal</item>
         <item name="colorSecondaryVariant">@color/teal_dark</item>
-        <item name="android:colorBackground">@color/white</item>
+        <item name="android:colorBackground">@color/gray_100</item>
         <item name="colorSurface">@color/white</item>
         <item name="colorError">@color/red_600</item>
 
