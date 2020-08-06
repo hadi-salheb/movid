@@ -28,6 +28,8 @@
             android:id="@+id/movie_linear_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:orientation="horizontal">
 
 
