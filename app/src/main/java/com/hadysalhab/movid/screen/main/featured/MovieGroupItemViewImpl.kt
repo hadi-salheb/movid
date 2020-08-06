@@ -23,7 +23,7 @@ class MovieGroupItemViewImpl(
     private val groupTitle: TextView
 
     init {
-        setRootView(layoutInflater.inflate(R.layout.horizontal, parent, false))
+        setRootView(layoutInflater.inflate(R.layout.component_movie_group, parent, false))
         linearLayout = findViewById(R.id.movie_linear_layout)
         groupTitle = findViewById(R.id.group_title)
     }
@@ -43,11 +43,13 @@ class MovieGroupItemViewImpl(
 
 
     override fun displayMovieGroup(movieGroup: MovieGroup) {
+        this.movieGroupType = movieGroup.movieGroupType
         groupTitle.text = movieGroup.movieGroupType.value.toUpperCase().split("_").joinToString(" ")
         createMovieCardAndAppend(movieGroup.movies)
     }
-    private fun createMovieCardAndAppend(movies:List<Movie>){
-        movies.take(5).forEach { movie->
+
+    private fun createMovieCardAndAppend(movies: List<Movie>) {
+        movies.take(5).forEach { movie ->
             val movieCard = viewFactory.getMovieCard(linearLayout)
             movieCard.registerListener(this)
             movieCard.displayMovie(movie)

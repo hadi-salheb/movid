@@ -1,29 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/movie_group"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginBottom="16dp"
     android:orientation="vertical">
 
+
     <TextView
-        android:id="@+id/tv_group_type"
+        android:id="@+id/group_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:textAppearance="?attr/textAppearanceSubtitle2"
-        android:textColor="@color/gray_600"
-        android:layout_alignParentStart="true"
-        tools:text="POPULAR"/>
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:textSize="16sp"
+        android:textColor="@color/gray_900"
+        tools:text="POPULAR" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_movies"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/tv_group_type"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp" />
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/movie_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:orientation="horizontal">
 
+
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+</LinearLayout>
