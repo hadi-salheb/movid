@@ -10,13 +10,14 @@ import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.movies.MovieGroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.movies.MovieCard
+import com.hadysalhab.movid.screen.common.seeall.SeeAll
 
 class MovieGroupItemViewImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
 ) :
-    MovieGroupItemView(), MovieCard.Listener {
+    MovieGroupItemView(), MovieCard.Listener, SeeAll.Listener {
     private val linearLayout: LinearLayout
     private lateinit var movieGroupType: MovieGroupType
     private val groupTitle: TextView
@@ -34,11 +35,11 @@ class MovieGroupItemViewImpl(
         }
     }
 
-//    override fun onSeeAllClicked() {
-//        listeners.forEach {
-//            it.onSeeAllClicked(this.movieGroupType)
-//        }
-//    }
+    override fun onSeeAllClicked() {
+        listeners.forEach {
+            it.onSeeAllClicked(this.movieGroupType)
+        }
+    }
 
 
     override fun displayMovieGroup(movieGroup: MovieGroup) {
@@ -52,6 +53,9 @@ class MovieGroupItemViewImpl(
             movieCard.displayMovie(movie)
             linearLayout.addView(movieCard.getRootView())
         }
+        val seeAll = viewFactory.getSeeAll(linearLayout)
+        seeAll.registerListener(this)
+        linearLayout.addView(seeAll.getRootView())
 
 
     }
