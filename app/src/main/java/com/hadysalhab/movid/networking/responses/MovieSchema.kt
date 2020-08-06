@@ -7,6 +7,8 @@ data class MovieSchema(
     val overview: String?,
     @SerializedName("poster_path")
     val posterPath: String?,
+    @SerializedName("backdrop_path")
+    val backdropPath: String?,
     @SerializedName("release_date")
     val releaseDate: String?="",
     val title: String,

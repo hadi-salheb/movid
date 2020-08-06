@@ -78,7 +78,7 @@ class FetchMovieDetailUseCase(
             originalLanguage,
             overview,
             popularity,
-            IMAGES_BASE_URL+ POSTER_SIZE_300+posterPath,
+            IMAGES_BASE_URL + POSTER_SIZE_300 + posterPath,
             releaseDate,
             revenue,
             runtime,
@@ -119,7 +119,7 @@ class FetchMovieDetailUseCase(
     }
 
     private fun getBackdrops(backdrops: List<BackdropsSchema>) = backdrops.map { el ->
-        Backdrops(IMAGES_BASE_URL+ BACKDROP_SIZE_780+el.filePath)
+        Backdrops(IMAGES_BASE_URL + BACKDROP_SIZE_780 + el.filePath)
     }
 
     private fun getAccountState(accountStatesSchema: AccountStatesSchema) =
@@ -140,7 +140,7 @@ class FetchMovieDetailUseCase(
         posterPath?.let {
             poster = IMAGES_BASE_URL + POSTER_SIZE_300 + posterPath
         }
-        Movie(id, title, poster, voteAvg, voteCount, releaseDate, overview)
+        Movie(id, title, poster, backdropPath, voteAvg, voteCount, releaseDate, overview)
     }
 
     private fun createErrorMessage(errMessage: String) {
