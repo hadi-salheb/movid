@@ -14,7 +14,6 @@ import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MovieInfo
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.synnapps.carouselview.CarouselView
-import java.util.concurrent.TimeUnit
 
 class MovieDetailViewImpl(
     layoutInflater: LayoutInflater,
@@ -28,6 +27,7 @@ class MovieDetailViewImpl(
     private val movieOverviewLL: LinearLayout
     private val movieTagLineTextView: TextView
     private val factsLL: LinearLayout
+    private lateinit var movieDetail: MovieDetail
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -41,12 +41,16 @@ class MovieDetailViewImpl(
     }
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
-        displayCarouselImages(movieDetail.images.backdrops)
-        displayPosterImage(movieDetail.details.posterPath)
-        displayOverview(movieDetail.details.overview)
-        displayTitle(movieDetail.details.title)
-        displayTagLine(movieDetail.details.tagLine ?: "")
-        displayFacts(movieDetail.details)
+        // avoid re-rendering the view if it is already rendered
+        if (!this::movieDetail.isInitialized) {
+            this.movieDetail = movieDetail
+            displayCarouselImages(movieDetail.images.backdrops)
+            displayPosterImage(movieDetail.details.posterPath)
+            displayOverview(movieDetail.details.overview)
+            displayTitle(movieDetail.details.title)
+            displayTagLine(movieDetail.details.tagLine ?: "")
+            displayFacts(movieDetail.details)
+        }
     }
 
     private fun displayFacts(movieInfo: MovieInfo) {
@@ -57,38 +61,41 @@ class MovieDetailViewImpl(
         }
         movieInfo.homepage?.let {
             val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_web)!!,it)
+            factView.displayFact(getContext().getDrawable(R.drawable.ic_web)!!, it)
             factsLL.addView(factView.getRootView())
         }
         movieInfo.popularity.let {
             val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_popularity)!!,it.toString())
+            factView.displayFact(
+                getContext().getDrawable(R.drawable.ic_popularity)!!,
+                it.toString()
+            )
             factsLL.addView(factView.getRootView())
         }
         movieInfo.genres.let {
             val factView = viewFactory.getFactView(factsLL)
             val genres = it.joinToString { genre -> genre.name }
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_genre)!!,genres)
+            factView.displayFact(getContext().getDrawable(R.drawable.ic_genre)!!, genres)
             factsLL.addView(factView.getRootView())
         }
         movieInfo.status.let {
             val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_status)!!,it)
+            factView.displayFact(getContext().getDrawable(R.drawable.ic_status)!!, it)
             factsLL.addView(factView.getRootView())
         }
         movieInfo.originalLanguage.let {
             val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_language)!!,it)
+            factView.displayFact(getContext().getDrawable(R.drawable.ic_language)!!, it)
             factsLL.addView(factView.getRootView())
         }
         movieInfo.runtime.let {
             val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_video)!!,"$it ")
+            factView.displayFact(getContext().getDrawable(R.drawable.ic_video)!!, "$it ")
             factsLL.addView(factView.getRootView())
         }
         movieInfo.releaseDate?.let {
             val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_date)!!,it)
+            factView.displayFact(getContext().getDrawable(R.drawable.ic_date)!!, it)
             factsLL.addView(factView.getRootView())
         }
 

@@ -49,6 +49,8 @@ class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory
     override fun displayMovieGroups(movieGroups: List<MovieGroup>) {
         circularProgress.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
+        // if adapter already contains a list
+        // diffUtil will render only items that are different
         adapter.submitList(movieGroups)
     }
 
