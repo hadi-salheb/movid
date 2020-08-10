@@ -4,19 +4,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.hadysalhab.movid.movies.MovieGroup
-import com.hadysalhab.movid.movies.MovieGroupType
+import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 
 class MovieGroupAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
     ListAdapter<MovieGroup, MovieGroupViewHolder>(DIFF_CALLBACK), CardGroupView.Listener {
     interface Listener {
         fun onMovieCardClicked(movieID: Int)
-        fun onSeeMoreClicked(movieGroupType: MovieGroupType)
+        fun onSeeMoreClicked(groupType: GroupType)
     }
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieGroup>() {
             override fun areItemsTheSame(oldItem: MovieGroup, newItem: MovieGroup): Boolean {
-                return oldItem.movieGroupType == newItem.movieGroupType
+                return oldItem.groupType == newItem.groupType
             }
 
             override fun areContentsTheSame(oldItem: MovieGroup, newItem: MovieGroup): Boolean {
@@ -36,12 +36,12 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         holder.bind(movieGroup)
     }
 
-    override fun onMovieCardClicked(movieID: Int) {
-        listener.onMovieCardClicked(movieID)
+    override fun onCardClicked(cardID: Int) {
+        listener.onMovieCardClicked(cardID)
     }
 
-    override fun onSeeAllClicked(movieGroupType: MovieGroupType) {
-        listener.onSeeMoreClicked(movieGroupType)
+    override fun onSeeAllClicked(cardGroupType: GroupType) {
+        listener.onSeeMoreClicked(cardGroupType)
     }
 
 

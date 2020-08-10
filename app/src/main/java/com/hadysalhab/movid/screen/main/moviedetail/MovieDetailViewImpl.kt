@@ -59,7 +59,7 @@ class MovieDetailViewImpl(
     }
 
     private fun displayFacts(movieInfo: MovieInfo) {
-        movieInfo.revenue?.let {
+        movieInfo.revenue.let {
             val factView = viewFactory.getFactView(factsLL)
             factView.displayFact(getContext().getDrawable(R.drawable.ic_money)!!, it.toString())
             factsLL.addView(factView.getRootView())
@@ -108,9 +108,9 @@ class MovieDetailViewImpl(
 
     private fun displaySimilarMovies(movies: List<Movie>) {
         if (movies.isNotEmpty()) {
-            val movieGroup = MovieGroup(MovieGroupType.SIMILAR_MOVIES, movies)
+            val movieGroup = MovieGroup(GroupType.SIMILAR_MOVIES, movies)
             val movieGroupView = viewFactory.getMovieGroupView(similarFL)
-            movieGroupView.displayMovieGroup(movieGroup)
+            movieGroupView.displayCardGroup(movieGroup)
             similarFL.addView(movieGroupView.getRootView())
         }else{
             similarFL.visibility = View.GONE
@@ -118,9 +118,9 @@ class MovieDetailViewImpl(
     }
     private fun displayRecommendedMovies(movies: List<Movie>) {
         if (movies.isNotEmpty()) {
-            val movieGroup = MovieGroup(MovieGroupType.RECOMMENDED_MOVIES, movies)
+            val movieGroup = MovieGroup(GroupType.RECOMMENDED_MOVIES, movies)
             val movieGroupView = viewFactory.getMovieGroupView(recommendedFL)
-            movieGroupView.displayMovieGroup(movieGroup)
+            movieGroupView.displayCardGroup(movieGroup)
             recommendedFL.addView(movieGroupView.getRootView())
         }else{
             recommendedFL.visibility = View.GONE

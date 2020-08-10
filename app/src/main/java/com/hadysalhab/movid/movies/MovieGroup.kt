@@ -1,6 +1,6 @@
 package com.hadysalhab.movid.movies
 
 data class MovieGroup (
-    val movieGroupType:MovieGroupType,
+    val groupType:GroupType,
     val movies:List<Movie>
 )

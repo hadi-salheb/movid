@@ -26,7 +26,7 @@ abstract class BaseBusyObservable<LISTENER_CLASS> :
      * @return true if was "free" when this method was called; false if was busy
      */
     protected val isFreeAndBecomeBusy: Boolean
-        protected get() = mIsBusy.compareAndSet(false, true)
+        get() = mIsBusy.compareAndSet(false, true)
 
     /**
      * Unconditionally become not busy

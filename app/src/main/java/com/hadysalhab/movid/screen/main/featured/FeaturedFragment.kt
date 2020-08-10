@@ -9,7 +9,7 @@ import android.widget.Toast
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.movies.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.MovieGroup
-import com.hadysalhab.movid.movies.MovieGroupType
+import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
@@ -121,8 +121,8 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         mainNavigator.toDetailFragment(movieID)
     }
 
-    override fun onSeeAllClicked(movieGroupType: MovieGroupType) {
-        Toast.makeText(activityContext, "See All for $movieGroupType is clicked", Toast.LENGTH_LONG)
+    override fun onSeeAllClicked(groupType: GroupType) {
+        Toast.makeText(activityContext, "See All for $groupType is clicked", Toast.LENGTH_LONG)
             .show()
     }
 
@@ -138,6 +138,6 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     }
 
     private fun displayMovies() {
-        view.displayMovieGroups(moviesStateManager.moviesGroup.sortedBy { item->item.movieGroupType.ordinal }.filter { it.movies.isNotEmpty() })
+        view.displayMovieGroups(moviesStateManager.moviesGroup.sortedBy { item->item.groupType.ordinal }.filter { it.movies.isNotEmpty() })
     }
 }

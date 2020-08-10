@@ -1,13 +1,11 @@
 package com.hadysalhab.movid.screen.main.featured
 
-import com.hadysalhab.movid.movies.MovieGroup
-import com.hadysalhab.movid.movies.MovieGroupType
+import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
-abstract class CardGroupView : BaseObservableViewMvc<CardGroupView.Listener>(){
-    interface Listener{
-       fun onMovieCardClicked(movieID: Int)
-       fun onSeeAllClicked(movieGroupType: MovieGroupType)
+abstract class CardGroupView : BaseObservableViewMvc<CardGroupView.Listener>() {
+    interface Listener {
+        fun onCardClicked(cardID: Int)
+        fun onSeeAllClicked(cardGroupType: GroupType)
     }
-    abstract fun displayMovieGroup(movieGroup:MovieGroup)
 }
