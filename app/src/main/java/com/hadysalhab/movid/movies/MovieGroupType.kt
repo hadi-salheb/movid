@@ -6,4 +6,6 @@ enum class MovieGroupType(val value: String) {
     UPCOMING("upcoming"),
     LATEST("latest"),
     NOW_PLAYING("now_playing"),
+    SIMILAR_MOVIES("similar_movies"),
+    RECOMMENDED_MOVIES("recommended_movies")
 }

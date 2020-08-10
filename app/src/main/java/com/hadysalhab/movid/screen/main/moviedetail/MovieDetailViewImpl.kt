@@ -4,14 +4,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.movies.Backdrops
-import com.hadysalhab.movid.movies.MovieDetail
-import com.hadysalhab.movid.movies.MovieInfo
+import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.synnapps.carouselview.CarouselView
 
@@ -27,6 +26,8 @@ class MovieDetailViewImpl(
     private val movieOverviewLL: LinearLayout
     private val movieTagLineTextView: TextView
     private val factsLL: LinearLayout
+    private val similarFL: FrameLayout
+    private val recommendedFL:FrameLayout
     private lateinit var movieDetail: MovieDetail
 
     init {
@@ -37,7 +38,9 @@ class MovieDetailViewImpl(
         movieOverviewLL = findViewById(R.id.ll_movie_overview)
         movieTitleTextView = findViewById(R.id.tv_movie_title)
         movieTagLineTextView = findViewById(R.id.tv_movie_tagLine)
+        similarFL = findViewById(R.id.fl_similar)
         factsLL = findViewById(R.id.ll_facts)
+        recommendedFL =  findViewById(R.id.fl_recommended)
     }
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
@@ -50,6 +53,8 @@ class MovieDetailViewImpl(
             displayTitle(movieDetail.details.title)
             displayTagLine(movieDetail.details.tagLine ?: "")
             displayFacts(movieDetail.details)
+            displaySimilarMovies(movieDetail.similar.movies)
+            displayRecommendedMovies(movieDetail.recommendations.movies)
         }
     }
 
@@ -99,6 +104,29 @@ class MovieDetailViewImpl(
             factsLL.addView(factView.getRootView())
         }
 
+    }
+
+    private fun displaySimilarMovies(movies: List<Movie>) {
+        if (movies.isNotEmpty()) {
+            val moviesList = movies.take(5)
+            val movieGroup = MovieGroup(MovieGroupType.SIMILAR_MOVIES, moviesList)
+            val movieGroupView = viewFactory.getMovieGroupView(similarFL)
+            movieGroupView.displayMovieGroup(movieGroup)
+            similarFL.addView(movieGroupView.getRootView())
+        }else{
+            similarFL.visibility = View.GONE
+        }
+    }
+    private fun displayRecommendedMovies(movies: List<Movie>) {
+        if (movies.isNotEmpty()) {
+            val moviesList = movies.take(5)
+            val movieGroup = MovieGroup(MovieGroupType.RECOMMENDED_MOVIES, moviesList)
+            val movieGroupView = viewFactory.getMovieGroupView(recommendedFL)
+            movieGroupView.displayMovieGroup(movieGroup)
+            recommendedFL.addView(movieGroupView.getRootView())
+        }else{
+            recommendedFL.visibility = View.GONE
+        }
     }
 
     private fun displayOverview(overview: String?) {
