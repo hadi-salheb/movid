@@ -108,8 +108,7 @@ class MovieDetailViewImpl(
 
     private fun displaySimilarMovies(movies: List<Movie>) {
         if (movies.isNotEmpty()) {
-            val moviesList = movies.take(5)
-            val movieGroup = MovieGroup(MovieGroupType.SIMILAR_MOVIES, moviesList)
+            val movieGroup = MovieGroup(MovieGroupType.SIMILAR_MOVIES, movies)
             val movieGroupView = viewFactory.getMovieGroupView(similarFL)
             movieGroupView.displayMovieGroup(movieGroup)
             similarFL.addView(movieGroupView.getRootView())
@@ -119,8 +118,7 @@ class MovieDetailViewImpl(
     }
     private fun displayRecommendedMovies(movies: List<Movie>) {
         if (movies.isNotEmpty()) {
-            val moviesList = movies.take(5)
-            val movieGroup = MovieGroup(MovieGroupType.RECOMMENDED_MOVIES, moviesList)
+            val movieGroup = MovieGroup(MovieGroupType.RECOMMENDED_MOVIES, movies)
             val movieGroupView = viewFactory.getMovieGroupView(recommendedFL)
             movieGroupView.displayMovieGroup(movieGroup)
             recommendedFL.addView(movieGroupView.getRootView())
