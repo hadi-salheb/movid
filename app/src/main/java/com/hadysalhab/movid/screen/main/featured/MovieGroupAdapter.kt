@@ -27,7 +27,7 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieGroupViewHolder {
-        val view = viewFactory.getMovieGroupView(parent)
+        val view = viewFactory.getMoviesView(parent)
         view.registerListener(this)
         return MovieGroupViewHolder(view)
     }

@@ -60,8 +60,16 @@ class MovieDetailViewImpl(
             displayRecommendedMovies(movieDetail.recommendations.movies)
         }
     }
-    private fun displayCasts(casts:List<Cast>){
 
+    private fun displayCasts(casts: List<Cast>) {
+        if (casts.isNotEmpty()) {
+            val castGroup = CastGroup(GroupType.CAST, casts)
+            val castsViews = viewFactory.getCastsView(castsFL)
+            castsViews.displayCardGroup(castGroup)
+            castsFL.addView(castsViews.getRootView())
+        } else {
+            castsFL.visibility = View.GONE
+        }
     }
 
     private fun displayFacts(movieInfo: MovieInfo) {
@@ -115,7 +123,7 @@ class MovieDetailViewImpl(
     private fun displaySimilarMovies(movies: List<Movie>) {
         if (movies.isNotEmpty()) {
             val movieGroup = MovieGroup(GroupType.SIMILAR_MOVIES, movies)
-            val movieGroupView = viewFactory.getMovieGroupView(similarFL)
+            val movieGroupView = viewFactory.getMoviesView(similarFL)
             movieGroupView.displayCardGroup(movieGroup)
             similarFL.addView(movieGroupView.getRootView())
         } else {
@@ -126,7 +134,7 @@ class MovieDetailViewImpl(
     private fun displayRecommendedMovies(movies: List<Movie>) {
         if (movies.isNotEmpty()) {
             val movieGroup = MovieGroup(GroupType.RECOMMENDED_MOVIES, movies)
-            val movieGroupView = viewFactory.getMovieGroupView(recommendedFL)
+            val movieGroupView = viewFactory.getMoviesView(recommendedFL)
             movieGroupView.displayCardGroup(movieGroup)
             recommendedFL.addView(movieGroupView.getRootView())
         } else {
@@ -151,8 +159,6 @@ class MovieDetailViewImpl(
     }
 
     private fun displayCarouselImages(backdrops: List<Backdrops>) {
-        Log.d("TAG", "displayCarouselImages: $backdrops")
-
         carouselView.setImageListener { position, imageView ->
             Glide.with(getContext())
                 .load(backdrops[position].filePath)
@@ -162,7 +168,6 @@ class MovieDetailViewImpl(
     }
 
     private fun displayPosterImage(posterPath: String?) {
-        Log.d("TAG", "displayPosterImage: $posterPath")
         posterPath?.let {
             Glide.with(getContext())
                 .load(it)

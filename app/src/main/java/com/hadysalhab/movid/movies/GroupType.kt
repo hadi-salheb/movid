@@ -7,5 +7,6 @@ enum class GroupType(val value: String) {
     LATEST("latest"),
     NOW_PLAYING("now_playing"),
     SIMILAR_MOVIES("similar_movies"),
-    RECOMMENDED_MOVIES("recommended_movies")
+    RECOMMENDED_MOVIES("recommended_movies"),
+    CAST("cast")
 }

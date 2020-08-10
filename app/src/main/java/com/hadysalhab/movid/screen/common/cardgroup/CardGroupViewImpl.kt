@@ -5,18 +5,18 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.movies.GroupType
-import com.hadysalhab.movid.movies.Movie
-import com.hadysalhab.movid.movies.MovieGroup
+import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.cast.CastCard
 import com.hadysalhab.movid.screen.common.movies.MovieCard
 import com.hadysalhab.movid.screen.common.seeall.SeeAll
 
 abstract class CardGroupViewImpl<T>(
     layoutInflater: LayoutInflater,
-    parent: ViewGroup?
+    parent: ViewGroup?,
+    private val viewFactory: ViewFactory
 ) :
-    CardGroupView(), MovieCard.Listener, SeeAll.Listener {
+    CardGroupView(), SeeAll.Listener {
     protected val linearLayout: LinearLayout
     protected lateinit var groupType: GroupType
     protected val groupTitle: TextView
@@ -27,13 +27,6 @@ abstract class CardGroupViewImpl<T>(
         groupTitle = findViewById(R.id.group_title)
     }
 
-
-    override fun onMovieCardClicked(movieID: Int) {
-        listeners.forEach {
-            it.onCardClicked(movieID)
-        }
-    }
-
     override fun onSeeAllClicked() {
         listeners.forEach {
             it.onSeeAllClicked(this.groupType)
@@ -41,14 +34,21 @@ abstract class CardGroupViewImpl<T>(
     }
 
     abstract fun displayCardGroup(data: T)
+
+    protected fun displaySeeAll() {
+        val seeAll = viewFactory.getSeeAll(linearLayout)
+        seeAll.registerListener(this)
+        linearLayout.addView(seeAll.getRootView())
+    }
 }
 
+// Template Method Design Pattern
 
 class MoviesView(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
-) : CardGroupViewImpl<MovieGroup>(layoutInflater, parent) {
+) : CardGroupViewImpl<MovieGroup>(layoutInflater, parent, viewFactory), MovieCard.Listener {
 
     override fun displayCardGroup(data: MovieGroup) {
         this.groupType = data.groupType
@@ -63,10 +63,43 @@ class MoviesView(
             movieCard.displayMovie(movie)
             linearLayout.addView(movieCard.getRootView())
         }
-        val seeAll = viewFactory.getSeeAll(linearLayout)
-        seeAll.registerListener(this)
-        linearLayout.addView(seeAll.getRootView())
-
+        displaySeeAll()
     }
+
+    override fun onMovieCardClicked(movieID: Int) {
+        listeners.forEach {
+            it.onCardClicked(movieID)
+        }
+    }
+}
+
+class CastsView(
+    layoutInflater: LayoutInflater,
+    parent: ViewGroup?,
+    private val viewFactory: ViewFactory
+) : CardGroupViewImpl<CastGroup>(layoutInflater, parent, viewFactory), CastCard.Listener {
+
+    override fun onCastCardClicked(castID: Int) {
+        listeners.forEach {
+            it.onCardClicked(castID)
+        }
+    }
+
+    override fun displayCardGroup(data: CastGroup) {
+        this.groupType = data.groupType
+        groupTitle.text = data.groupType.value.toUpperCase().split("_").joinToString(" ")
+        createCastCardAndAppend(data.casts)
+    }
+
+    private fun createCastCardAndAppend(casts: List<Cast>) {
+        casts.take(5).forEach { cast ->
+            val castCard = viewFactory.getCastCard(linearLayout)
+            castCard.registerListener(this)
+            castCard.displayCast(cast)
+            linearLayout.addView(castCard.getRootView())
+        }
+        displaySeeAll()
+    }
+
 }
 

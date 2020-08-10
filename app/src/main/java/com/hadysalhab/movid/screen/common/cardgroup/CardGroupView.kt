@@ -6,6 +6,6 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 abstract class CardGroupView : BaseObservableViewMvc<CardGroupView.Listener>() {
     interface Listener {
         fun onCardClicked(cardID: Int)
-        fun onSeeAllClicked(cardGroupType: GroupType)
+        fun onSeeAllClicked(groupType: GroupType)
     }
 }

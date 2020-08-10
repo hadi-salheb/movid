@@ -99,7 +99,7 @@ class FetchMovieDetailUseCase(
     private fun getCasts(castSchemas: List<CastSchema>): List<Cast> = castSchemas.map { el ->
         var poster: String? = null //LATER SET DEFAULT IMAGE
         el.profilePath?.let {
-            poster = IMAGES_BASE_URL + POSTER_SIZE_185 + it
+            poster = IMAGES_BASE_URL + PROFILE_SIZE_h632 + it
         }
         Cast(el.castID, el.character, el.creditID, el.id, el.name, poster)
     }
@@ -107,7 +107,7 @@ class FetchMovieDetailUseCase(
     private fun getCrews(crewSchemas: List<CrewSchema>): List<Crew> = crewSchemas.map { el ->
         var poster: String? = null //LATER SET DEFAULT IMAGE
         el.profilePath?.let {
-            poster = IMAGES_BASE_URL + POSTER_SIZE_185 + it
+            poster = IMAGES_BASE_URL + PROFILE_SIZE_h632 + it
         }
         Crew(el.creditID, el.department, el.id, el.job, el.name, poster)
     }
