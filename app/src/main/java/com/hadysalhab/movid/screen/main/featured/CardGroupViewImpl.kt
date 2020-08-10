@@ -12,12 +12,12 @@ import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.movies.MovieCard
 import com.hadysalhab.movid.screen.common.seeall.SeeAll
 
-class MovieGroupItemViewImpl(
+class CardGroupViewImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
 ) :
-    MovieGroupItemView(), MovieCard.Listener, SeeAll.Listener {
+    CardGroupView(), MovieCard.Listener, SeeAll.Listener {
     private val linearLayout: LinearLayout
     private lateinit var movieGroupType: MovieGroupType
     private val groupTitle: TextView

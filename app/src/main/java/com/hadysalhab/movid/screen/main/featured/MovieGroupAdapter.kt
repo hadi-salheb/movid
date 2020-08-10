@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.screen.main.featured
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,7 +8,7 @@ import com.hadysalhab.movid.movies.MovieGroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 
 class MovieGroupAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
-    ListAdapter<MovieGroup, MovieGroupViewHolder>(DIFF_CALLBACK), MovieGroupItemView.Listener {
+    ListAdapter<MovieGroup, MovieGroupViewHolder>(DIFF_CALLBACK), CardGroupView.Listener {
     interface Listener {
         fun onMovieCardClicked(movieID: Int)
         fun onSeeMoreClicked(movieGroupType: MovieGroupType)
