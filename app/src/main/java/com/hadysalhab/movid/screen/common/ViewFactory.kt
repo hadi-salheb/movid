@@ -8,7 +8,7 @@ import com.hadysalhab.movid.screen.common.movies.MovieCardImpl
 import com.hadysalhab.movid.screen.common.seeall.SeeAllImpl
 import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
-import com.hadysalhab.movid.screen.main.featured.MoviesView
+import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewImpl
@@ -32,7 +32,11 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
         )
 
     fun getMovieGroupView(parent: ViewGroup?) =
-        MoviesView(layoutInflater, parent, this)
+        MoviesView(
+            layoutInflater,
+            parent,
+            this
+        )
 
     fun getMovieDetailView(container: ViewGroup?): MovieDetailView =
         MovieDetailViewImpl(layoutInflater, container, this)

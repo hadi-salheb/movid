@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.cardgroup.CardGroupView
 
 class MovieGroupAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
     ListAdapter<MovieGroup, MovieGroupViewHolder>(DIFF_CALLBACK), CardGroupView.Listener {

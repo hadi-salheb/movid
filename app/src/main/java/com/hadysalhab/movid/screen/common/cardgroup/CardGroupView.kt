@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.featured
+package com.hadysalhab.movid.screen.common.cardgroup
 
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc

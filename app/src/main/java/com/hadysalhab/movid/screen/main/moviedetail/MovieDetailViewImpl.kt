@@ -26,8 +26,9 @@ class MovieDetailViewImpl(
     private val movieOverviewLL: LinearLayout
     private val movieTagLineTextView: TextView
     private val factsLL: LinearLayout
+    private val castsFL: FrameLayout
     private val similarFL: FrameLayout
-    private val recommendedFL:FrameLayout
+    private val recommendedFL: FrameLayout
     private lateinit var movieDetail: MovieDetail
 
     init {
@@ -40,7 +41,8 @@ class MovieDetailViewImpl(
         movieTagLineTextView = findViewById(R.id.tv_movie_tagLine)
         similarFL = findViewById(R.id.fl_similar)
         factsLL = findViewById(R.id.ll_facts)
-        recommendedFL =  findViewById(R.id.fl_recommended)
+        recommendedFL = findViewById(R.id.fl_recommended)
+        castsFL = findViewById(R.id.fl_casts)
     }
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
@@ -53,9 +55,13 @@ class MovieDetailViewImpl(
             displayTitle(movieDetail.details.title)
             displayTagLine(movieDetail.details.tagLine ?: "")
             displayFacts(movieDetail.details)
+            displayCasts(movieDetail.credits.cast)
             displaySimilarMovies(movieDetail.similar.movies)
             displayRecommendedMovies(movieDetail.recommendations.movies)
         }
+    }
+    private fun displayCasts(casts:List<Cast>){
+
     }
 
     private fun displayFacts(movieInfo: MovieInfo) {
@@ -112,17 +118,18 @@ class MovieDetailViewImpl(
             val movieGroupView = viewFactory.getMovieGroupView(similarFL)
             movieGroupView.displayCardGroup(movieGroup)
             similarFL.addView(movieGroupView.getRootView())
-        }else{
+        } else {
             similarFL.visibility = View.GONE
         }
     }
+
     private fun displayRecommendedMovies(movies: List<Movie>) {
         if (movies.isNotEmpty()) {
             val movieGroup = MovieGroup(GroupType.RECOMMENDED_MOVIES, movies)
             val movieGroupView = viewFactory.getMovieGroupView(recommendedFL)
             movieGroupView.displayCardGroup(movieGroup)
             recommendedFL.addView(movieGroupView.getRootView())
-        }else{
+        } else {
             recommendedFL.visibility = View.GONE
         }
     }

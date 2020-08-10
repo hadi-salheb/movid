@@ -145,6 +145,16 @@
         </androidx.cardview.widget.CardView>
 
         <FrameLayout
+            android:id="@+id/fl_casts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_poster"
+            app:layout_constraintTop_toBottomOf="@id/fact_overview" />
+
+        <FrameLayout
             android:id="@+id/fl_similar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -152,7 +162,7 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/iv_poster"
-            app:layout_constraintTop_toBottomOf="@id/fact_overview"/>
+            app:layout_constraintTop_toBottomOf="@id/fl_casts" />
 
 
         <FrameLayout
@@ -163,7 +173,7 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/iv_poster"
-            app:layout_constraintTop_toBottomOf="@id/fl_similar"/>
+            app:layout_constraintTop_toBottomOf="@id/fl_similar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
