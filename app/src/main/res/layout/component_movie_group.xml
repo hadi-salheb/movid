@@ -17,7 +17,7 @@
         android:layout_marginBottom="8dp"
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:textSize="16sp"
-        android:textColor="@color/gray_900"
+        android:textColor="@color/gray_700"
         tools:text="POPULAR" />
 
     <HorizontalScrollView

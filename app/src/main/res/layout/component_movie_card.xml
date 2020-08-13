@@ -20,16 +20,15 @@
         android:layout_marginBottom="8dp">
 
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/iv_movie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:background="@android:color/transparent"
-        android:contentDescription="Last of us"
         android:scaleType="fitXY"
         app:backgroundTint="@color/material_on_surface_emphasis_medium"
         app:backgroundTintMode="add" />
+
     </androidx.cardview.widget.CardView>
     <TextView
         android:id="@+id/tv_movie_title"
@@ -37,6 +36,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:gravity="center_vertical"
         android:textColor="@color/gray_900"
         tools:text="Batman" />
