@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.*
@@ -31,7 +32,7 @@ class MovieDetailViewImpl(
     private val similarFL: FrameLayout
     private val recommendedFL: FrameLayout
     private lateinit var movieDetail: MovieDetail
-    private val reviewLL : LinearLayout
+    private val reviewCV : CardView
     private val movieReviewReviewTV : TextView
     private val movieReviewAuthorTV : TextView
 
@@ -47,7 +48,7 @@ class MovieDetailViewImpl(
         factsLL = findViewById(R.id.ll_facts)
         recommendedFL = findViewById(R.id.fl_recommended)
         castsFL = findViewById(R.id.fl_casts)
-        reviewLL = findViewById(R.id.ll_reviews)
+        reviewCV = findViewById(R.id.fact_review)
         movieReviewAuthorTV = findViewById(R.id.movie_review_author)
         movieReviewReviewTV = findViewById(R.id.movie_review_review)
     }
@@ -74,7 +75,7 @@ class MovieDetailViewImpl(
             movieReviewReviewTV.text = review.content
             movieReviewAuthorTV.text = review.author
         }else{
-            reviewLL.visibility = View.GONE
+            reviewCV.visibility = View.GONE
         }
     }
 
