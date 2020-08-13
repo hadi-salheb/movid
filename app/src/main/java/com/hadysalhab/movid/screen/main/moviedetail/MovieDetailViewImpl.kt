@@ -13,6 +13,7 @@ import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.synnapps.carouselview.CarouselView
+import org.w3c.dom.Text
 
 class MovieDetailViewImpl(
     layoutInflater: LayoutInflater,
@@ -30,6 +31,9 @@ class MovieDetailViewImpl(
     private val similarFL: FrameLayout
     private val recommendedFL: FrameLayout
     private lateinit var movieDetail: MovieDetail
+    private val reviewLL : LinearLayout
+    private val movieReviewReviewTV : TextView
+    private val movieReviewAuthorTV : TextView
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -43,6 +47,9 @@ class MovieDetailViewImpl(
         factsLL = findViewById(R.id.ll_facts)
         recommendedFL = findViewById(R.id.fl_recommended)
         castsFL = findViewById(R.id.fl_casts)
+        reviewLL = findViewById(R.id.ll_reviews)
+        movieReviewAuthorTV = findViewById(R.id.movie_review_author)
+        movieReviewReviewTV = findViewById(R.id.movie_review_review)
     }
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
@@ -58,6 +65,16 @@ class MovieDetailViewImpl(
             displayCasts(movieDetail.credits.cast)
             displaySimilarMovies(movieDetail.similar.movies)
             displayRecommendedMovies(movieDetail.recommendations.movies)
+            displayReviews(movieDetail.reviews)
+        }
+    }
+    private fun displayReviews(reviews: Reviews){
+        if(reviews.review.size > 1){
+            val review = reviews.review[0]
+            movieReviewReviewTV.text = review.content
+            movieReviewAuthorTV.text = review.author
+        }else{
+            reviewLL.visibility = View.GONE
         }
     }
 

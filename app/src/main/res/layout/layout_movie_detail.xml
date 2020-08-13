@@ -154,6 +154,71 @@
             app:layout_constraintStart_toStartOf="@+id/iv_poster"
             app:layout_constraintTop_toBottomOf="@id/fact_overview" />
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/fact_review"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardBackgroundColor="@color/gray_100"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_poster"
+            app:layout_constraintTop_toBottomOf="@id/fl_casts">
+
+            <LinearLayout
+                android:id="@+id/ll_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Reviews"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:textColor="@color/gray_700"
+                    android:textSize="18sp" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/movie_review_review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="5"
+                        android:ellipsize="end"/>
+                    <TextView
+                        android:id="@+id/movie_review_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/gray_900"
+                        android:layout_gravity="end"
+                        android:textStyle="italic"
+                        android:layout_marginTop="8dp"
+                       />
+
+
+                </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Check Reviews"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/teal_600"
+                    android:layout_gravity="center_horizontal"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
         <FrameLayout
             android:id="@+id/fl_similar"
             android:layout_width="0dp"
@@ -162,7 +227,7 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/iv_poster"
-            app:layout_constraintTop_toBottomOf="@id/fl_casts" />
+            app:layout_constraintTop_toBottomOf="@id/fact_review" />
 
 
         <FrameLayout
@@ -174,6 +239,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/iv_poster"
             app:layout_constraintTop_toBottomOf="@id/fl_similar" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
