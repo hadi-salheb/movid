@@ -3,8 +3,8 @@ package com.hadysalhab.movid.screen.main.featured
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.cardgroup.CardGroupView
 
@@ -14,6 +14,7 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         fun onMovieCardClicked(movieID: Int)
         fun onSeeMoreClicked(groupType: GroupType)
     }
+
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieGroup>() {
             override fun areItemsTheSame(oldItem: MovieGroup, newItem: MovieGroup): Boolean {

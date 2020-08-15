@@ -33,8 +33,8 @@ class MovieDetailViewImpl(
     private val movieReviewAuthorTV: TextView
     private val ratingFL: FrameLayout
     private val rating: Rating
-    private val progressBar:ProgressBar
-    private val detailSV : ScrollView
+    private val progressBar: ProgressBar
+    private val detailSV: ScrollView
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -79,7 +79,7 @@ class MovieDetailViewImpl(
     }
 
     override fun displayLoadingScreen() {
-       progressBar.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
         detailSV.visibility = View.GONE
     }
 

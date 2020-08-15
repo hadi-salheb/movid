@@ -1,13 +1,11 @@
 package com.hadysalhab.movid.screen.common.cast
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.common.constants.TAG
 import com.hadysalhab.movid.movies.Cast
 
 class CastCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : CastCard() {

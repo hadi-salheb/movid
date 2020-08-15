@@ -19,7 +19,7 @@ data class MovieDetailResponse(
     @SerializedName("poster_path")
     val posterPath: String?,
     @SerializedName("release_date")
-    val releaseDate: String?="",
+    val releaseDate: String? = "",
     val revenue: Int,
     val runtime: Int?,
     val status: String,
@@ -36,8 +36,9 @@ data class MovieDetailResponse(
     @SerializedName("account_states")
     val accountStates: AccountStatesSchema,
     val similar: MoviesResponse,
-    val recommendations:MoviesResponse
+    val recommendations: MoviesResponse
 )
+
 data class GenresSchema(
     val id: Int,
     val name: String

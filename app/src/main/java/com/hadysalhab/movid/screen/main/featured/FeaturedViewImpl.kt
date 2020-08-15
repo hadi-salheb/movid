@@ -7,8 +7,8 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.screen.common.ViewFactory
 
 class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory: ViewFactory) :

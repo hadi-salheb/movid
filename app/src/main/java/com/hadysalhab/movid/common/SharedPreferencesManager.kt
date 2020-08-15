@@ -13,7 +13,7 @@ class SharedPreferencesManager(val context: Context) {
         return prefs.getString(PREF_SESSION_ID, "")!!
     }
 
-    fun setStoredSessionId(sessionId: String){
+    fun setStoredSessionId(sessionId: String) {
         androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
             .edit()
             .putString(PREF_SESSION_ID, sessionId)

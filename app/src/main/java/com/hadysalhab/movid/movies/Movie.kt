@@ -1,18 +1,18 @@
 package com.hadysalhab.movid.movies
 
 
-data class Movie (
+data class Movie(
     val id: Int,
-    val title:String,
-    val posterPath:String?,
+    val title: String,
+    val posterPath: String?,
     val backdropPath: String?,
     val voteAverage: Double,
-    val voteCount:Int,
-    val releaseDate:String?="",
-    val overview:String?
-    )
+    val voteCount: Int,
+    val releaseDate: String? = "",
+    val overview: String?
+)
 
-data class MovieInfo (
+data class MovieInfo(
     val adult: Boolean,
     val backdropPath: String?,
     val budget: Int,
@@ -24,7 +24,7 @@ data class MovieInfo (
     val overview: String?,
     val popularity: Double,
     val posterPath: String?,
-    val releaseDate: String?="",
+    val releaseDate: String? = "",
     val revenue: Int,
     val runtime: Int?,
     val status: String,

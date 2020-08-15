@@ -14,8 +14,8 @@ class FactView(layoutInflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc
 
     init {
         setRootView(layoutInflater.inflate(R.layout.component_movie_fact, parent, false))
-        factIV  = findViewById(R.id.fact_logo)
-        factTV  = findViewById(R.id.fact_text)
+        factIV = findViewById(R.id.fact_logo)
+        factTV = findViewById(R.id.fact_text)
     }
 
     fun displayFact(drawable: Drawable, fact: String) {

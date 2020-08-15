@@ -39,17 +39,18 @@ class ActivityModule(private val activity: FragmentActivity) {
     fun getAuthNavigator(
         fragmentManager: FragmentManager,
         fragmentFrameHost: FragmentFrameHost,
-        activityContext:Context
+        activityContext: Context
     ): AuthNavigator =
-        AuthNavigator(fragmentManager, fragmentFrameHost,activityContext)
+        AuthNavigator(fragmentManager, fragmentFrameHost, activityContext)
+
     @Provides
     @ActivityScope
     fun getMainNavigator(
         fragmentManager: FragmentManager,
         fragmentFrameHost: FragmentFrameHost,
-        activityContext:Context
+        activityContext: Context
     ): MainNavigator =
-        MainNavigator(fragmentManager, fragmentFrameHost,activityContext)
+        MainNavigator(fragmentManager, fragmentFrameHost, activityContext)
 
     @Provides
     fun getViewFactory(

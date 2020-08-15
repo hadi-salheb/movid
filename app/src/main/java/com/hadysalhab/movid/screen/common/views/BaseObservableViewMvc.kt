@@ -15,5 +15,5 @@ abstract class BaseObservableViewMvc<ListenerType> : BaseViewMvc(),
     }
 
     protected val listeners: Set<ListenerType>
-         get() = Collections.unmodifiableSet(mListeners)
+        get() = Collections.unmodifiableSet(mListeners)
 }

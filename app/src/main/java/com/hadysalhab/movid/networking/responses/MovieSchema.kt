@@ -10,7 +10,7 @@ data class MovieSchema(
     @SerializedName("backdrop_path")
     val backdropPath: String?,
     @SerializedName("release_date")
-    val releaseDate: String?="",
+    val releaseDate: String? = "",
     val title: String,
     @SerializedName("vote_average")
     val voteAvg: Double,

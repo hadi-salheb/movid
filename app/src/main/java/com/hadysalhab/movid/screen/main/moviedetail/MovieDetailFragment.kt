@@ -1,7 +1,6 @@
 package com.hadysalhab.movid.screen.main.moviedetail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
-import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.user.UserStateManager
 import javax.inject.Inject
 
@@ -125,7 +123,7 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
     }
 
     override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
-       screenState = ScreenState.DATA_SCREEN
+        screenState = ScreenState.DATA_SCREEN
         viewMvc.apply {
             displayMovieDetail(movieDetail)
         }
@@ -133,7 +131,7 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
     }
 
     override fun onFetchMovieDetailFailed(msg: String) {
-        screenState =ScreenState.ERROR_SCREEN
+        screenState = ScreenState.ERROR_SCREEN
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

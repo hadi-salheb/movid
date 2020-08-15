@@ -2,17 +2,16 @@ package com.hadysalhab.movid.screen.authentication.onboarding
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.user.UserStateManager
-import com.hadysalhab.movid.authentication.LoginUseCase
 import javax.inject.Inject
 
 /**
@@ -140,8 +139,8 @@ class OnBoardingFragment : BaseFragment(),
             }
             ScreenState.LOGIN_SUCCESS -> {
                 view.hideProgressState()
-                  authNavigator.toMainScreen()
-                  fragActivity.finish()
+                authNavigator.toMainScreen()
+                fragActivity.finish()
             }
         }
     }

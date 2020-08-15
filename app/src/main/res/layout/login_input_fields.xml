@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,12 +14,12 @@
         app:errorEnabled="true"
         app:startIconContentDescription="Custom search icon"
         app:startIconDrawable="@drawable/ic_account_circle">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username_editText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
-
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -32,10 +31,11 @@
         app:errorEnabled="true"
         app:startIconContentDescription="Custom search icon"
         app:startIconDrawable="@drawable/ic_lock">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password_editText"
             android:inputType="textPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
