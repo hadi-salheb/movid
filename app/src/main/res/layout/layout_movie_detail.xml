@@ -9,6 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
         tools:context=".screen.main.moviedetail.MovieDetailFragment">
 
         <com.synnapps.carouselview.CarouselView
