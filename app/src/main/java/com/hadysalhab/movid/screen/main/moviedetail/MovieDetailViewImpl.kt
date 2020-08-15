@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.screen.main.moviedetail
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +12,8 @@ import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.rating.Rating
 import com.synnapps.carouselview.CarouselView
-import org.w3c.dom.Text
 
 class MovieDetailViewImpl(
     layoutInflater: LayoutInflater,
@@ -32,9 +31,11 @@ class MovieDetailViewImpl(
     private val similarFL: FrameLayout
     private val recommendedFL: FrameLayout
     private lateinit var movieDetail: MovieDetail
-    private val reviewCV : CardView
-    private val movieReviewReviewTV : TextView
-    private val movieReviewAuthorTV : TextView
+    private val reviewCV: CardView
+    private val movieReviewReviewTV: TextView
+    private val movieReviewAuthorTV: TextView
+    private val ratingFL: FrameLayout
+    private val rating: Rating
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -51,6 +52,9 @@ class MovieDetailViewImpl(
         reviewCV = findViewById(R.id.fact_review)
         movieReviewAuthorTV = findViewById(R.id.movie_review_author)
         movieReviewReviewTV = findViewById(R.id.movie_review_review)
+        ratingFL = findViewById(R.id.rating_wrapper)
+        rating = viewFactory.getRatingView(ratingFL)
+        ratingFL.addView(rating.getRootView())
     }
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
@@ -67,14 +71,20 @@ class MovieDetailViewImpl(
             displaySimilarMovies(movieDetail.similar.movies)
             displayRecommendedMovies(movieDetail.recommendations.movies)
             displayReviews(movieDetail.reviews)
+            displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
         }
     }
-    private fun displayReviews(reviews: Reviews){
-        if(reviews.review.size > 1){
+
+    private fun displayRating(avg: Double, count: Int) {
+        rating.displayRating(avg, count)
+    }
+
+    private fun displayReviews(reviews: Reviews) {
+        if (reviews.review.size > 1) {
             val review = reviews.review[0]
             movieReviewReviewTV.text = review.content
             movieReviewAuthorTV.text = review.author
-        }else{
+        } else {
             reviewCV.visibility = View.GONE
         }
     }

@@ -21,7 +21,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:slideInterval="5000" />
+            app:slideInterval="5000">
+
+
+        </com.synnapps.carouselview.CarouselView>
 
         <ImageView
             android:id="@+id/iv_poster"
@@ -63,13 +66,68 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_movie_title"
             tools:text="An entire universe.Once and for allAn entire universe.Once and for all" />
 
+        <FrameLayout
+            android:id="@+id/rating_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/tv_movie_tagLine"
+            app:layout_constraintTop_toBottomOf="@+id/tv_movie_tagLine" />
+
+
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="tv_movie_tagLine,tv_movie_title,iv_poster"
+            app:constraint_referenced_ids="tv_movie_tagLine,tv_movie_title,iv_poster,rating_wrapper"
             tools:layout_editor_absoluteY="387dp" />
+
+        <Button
+            android:id="@+id/button_trailer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/red_600"
+            android:text="Play Trailer"
+            app:icon="@drawable/ic_play_2"
+            app:iconGravity="textStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_poster"
+            app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+        <LinearLayout
+            android:id="@+id/button_wrapper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_poster"
+            app:layout_constraintTop_toBottomOf="@id/button_trailer">
+
+
+            <Button
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:id="@+id/button_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                style="?attr/materialButtonOutlinedStyle"
+                android:text="Add to Favorites" />
+
+            <Button
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:id="@+id/button_wishlist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="?attr/materialButtonOutlinedStyle"
+                android:text="Add to Wishlist" />
+        </LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/overview_card"
@@ -81,7 +139,8 @@
             app:cardUseCompatPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/iv_poster"
-            app:layout_constraintTop_toTopOf="@id/barrier">
+            app:layout_constraintTop_toBottomOf="@id/button_wrapper"
+            tools:layout_editor_absoluteY="337dp">
 
 
             <LinearLayout
@@ -170,8 +229,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="16dp"
                 android:paddingStart="16dp"
+                android:paddingTop="16dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="0dp">
 
@@ -183,6 +242,7 @@
                     android:textAppearance="?attr/textAppearanceHeadline6"
                     android:textColor="@color/gray_700"
                     android:textSize="18sp" />
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -192,27 +252,28 @@
                         android:id="@+id/movie_review_review"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:maxLines="5"
-                        android:ellipsize="end"/>
+                        android:ellipsize="end"
+                        android:maxLines="5" />
+
                     <TextView
                         android:id="@+id/movie_review_author"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/gray_900"
                         android:layout_gravity="end"
-                        android:textStyle="italic"
                         android:layout_marginTop="8dp"
-                       />
+                        android:textColor="@color/gray_900"
+                        android:textStyle="italic" />
 
 
                 </LinearLayout>
+
                 <com.google.android.material.button.MaterialButton
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:text="Check Reviews"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/teal_600"
-                    android:layout_gravity="center_horizontal"/>
+                    android:textColor="@color/teal_600" />
 
             </LinearLayout>
 

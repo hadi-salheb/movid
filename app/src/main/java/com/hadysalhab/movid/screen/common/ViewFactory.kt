@@ -8,6 +8,7 @@ import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.hadysalhab.movid.screen.common.cast.CastCardImpl
 import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
 import com.hadysalhab.movid.screen.common.movies.MovieCardImpl
+import com.hadysalhab.movid.screen.common.rating.Rating
 import com.hadysalhab.movid.screen.common.seeall.SeeAllImpl
 import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
@@ -24,7 +25,8 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getMovieCard(parent: ViewGroup?) =
         MovieCardImpl(
             layoutInflater,
-            parent
+            parent,
+            this
         )
 
     fun getSeeAll(parent: ViewGroup?) =
@@ -39,6 +41,7 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
             parent,
             this
         )
+
     fun getCastsView(parent: ViewGroup?) =
         CastsView(
             layoutInflater,
@@ -51,4 +54,5 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
 
     fun getFactView(parent: ViewGroup?) = FactView(layoutInflater, parent)
     fun getCastCard(parent: ViewGroup?) = CastCardImpl(layoutInflater, parent)
+    fun getRatingView(parent: ViewGroup?): Rating = Rating(layoutInflater, parent)
 }
