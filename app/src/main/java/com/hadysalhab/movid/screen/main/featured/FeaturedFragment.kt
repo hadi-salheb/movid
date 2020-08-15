@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.movies.FetchMovieGroupsUseCase
-import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
@@ -28,7 +28,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     companion object {
         @JvmStatic
         fun newInstance() = FeaturedFragment()
-        const val SCREEN_STATE = "FEATURED_SCREEN_STATE"
+        private const val SCREEN_STATE = "FEATURED_SCREEN_STATE"
     }
 
     @Inject
@@ -138,6 +138,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     }
 
     private fun displayMovies() {
-        view.displayMovieGroups(moviesStateManager.moviesGroup.sortedBy { item->item.groupType.ordinal }.filter { it.movies.isNotEmpty() })
+        view.displayMovieGroups(moviesStateManager.moviesGroup.sortedBy { item -> item.groupType.ordinal }
+            .filter { it.movies.isNotEmpty() })
     }
 }

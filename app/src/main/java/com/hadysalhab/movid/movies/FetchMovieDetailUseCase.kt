@@ -1,7 +1,10 @@
 package com.hadysalhab.movid.movies
 
 import com.google.gson.Gson
-import com.hadysalhab.movid.common.constants.*
+import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
+import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
+import com.hadysalhab.movid.common.constants.POSTER_SIZE_300
+import com.hadysalhab.movid.common.constants.PROFILE_SIZE_h632
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.networking.responses.*
@@ -175,7 +178,7 @@ class FetchMovieDetailUseCase(
     }
 
     private fun notifySuccess(movieDetail: MovieDetail) {
-
+        moviesStateManager.movies.add(movieDetail)
         listeners.forEach {
             it.onFetchMovieDetailSuccess(movieDetail)
         }

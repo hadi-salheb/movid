@@ -3,10 +3,7 @@ package com.hadysalhab.movid.screen.main.moviedetail
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
@@ -36,9 +33,13 @@ class MovieDetailViewImpl(
     private val movieReviewAuthorTV: TextView
     private val ratingFL: FrameLayout
     private val rating: Rating
+    private val progressBar:ProgressBar
+    private val detailSV : ScrollView
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
+        progressBar = findViewById(R.id.detail_progress)
+        detailSV = findViewById(R.id.movie_detail)
         carouselView = findViewById(R.id.carouselView)
         posterImageView = findViewById(R.id.iv_poster)
         movieOverviewTextView = findViewById(R.id.movie_overview)
@@ -72,7 +73,14 @@ class MovieDetailViewImpl(
             displayRecommendedMovies(movieDetail.recommendations.movies)
             displayReviews(movieDetail.reviews)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
+            progressBar.visibility = View.GONE
+            detailSV.visibility = View.VISIBLE
         }
+    }
+
+    override fun displayLoadingScreen() {
+       progressBar.visibility = View.VISIBLE
+        detailSV.visibility = View.GONE
     }
 
     private fun displayRating(avg: Double, count: Int) {
