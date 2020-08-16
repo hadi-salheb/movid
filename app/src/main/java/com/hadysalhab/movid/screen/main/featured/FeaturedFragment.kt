@@ -124,6 +124,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     override fun onSeeAllClicked(groupType: GroupType) {
         Toast.makeText(activityContext, "See All for $groupType is clicked", Toast.LENGTH_LONG)
             .show()
+        mainNavigator.toMovieListFragment(groupType.value)
     }
 
     override fun onFetchMovieGroupsSucceeded(movieGroups: List<MovieGroup>) {

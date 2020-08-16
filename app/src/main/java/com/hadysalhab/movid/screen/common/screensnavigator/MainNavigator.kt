@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
+import com.hadysalhab.movid.screen.main.movielist.MovieListFragment
 import com.ncapdevi.fragnav.FragNavController
 
 class MainNavigator(
@@ -51,5 +52,8 @@ class MainNavigator(
     fun isRootFragment(): Boolean = fragNavController.isRootFragment
     fun toDetailFragment(movieID: Int) =
         fragNavController.pushFragment(MovieDetailFragment.newInstance(movieID))
+
+    fun toMovieListFragment(groupType: String) =
+        fragNavController.pushFragment(MovieListFragment.newInstance(groupType))
 
 }

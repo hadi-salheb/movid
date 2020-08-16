@@ -46,6 +46,9 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
         activityComponent.inject(this)
         arguments?.let {
             movieID = it.getInt(MOVIE_ID)
+            if (movieID == null) {
+                throw RuntimeException("Cannot Start MovieDetailFragment without movie id")
+            }
         }
         if (savedInstanceState != null) {
             screenState = savedInstanceState.getSerializable(SCREEN_STATE) as ScreenState
