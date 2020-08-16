@@ -4,12 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.google.gson.Gson
+import com.hadysalhab.movid.movies.FetchMovieDetailUseCase
+import com.hadysalhab.movid.movies.MoviesStateManager
+import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 /**
  * Activity-Level module
@@ -56,4 +61,16 @@ class ActivityModule(private val activity: FragmentActivity) {
     fun getViewFactory(
         layoutInflater: LayoutInflater
     ): ViewFactory = ViewFactory(layoutInflater)
+
+    @Provides
+    fun getFetchMovieDetailUseCase(
+        tmdbApi: TmdbApi,
+        gson: Gson,
+        moviesStateManager: MoviesStateManager
+    ): FetchMovieDetailUseCase =
+        FetchMovieDetailUseCase(
+            tmdbApi,
+            gson,
+            moviesStateManager
+        )
 }

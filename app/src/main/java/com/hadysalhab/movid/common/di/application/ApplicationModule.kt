@@ -161,17 +161,4 @@ class ApplicationModule(private val application: Application) {
             backgroundThreadPoster,
             uiThreadPoster
         )
-
-    @Provides
-    @Singleton
-    fun getFetchMovieDetailUseCase(
-        tmdbApi: TmdbApi,
-        gson: Gson,
-        moviesStateManager: MoviesStateManager
-    ): FetchMovieDetailUseCase =
-        FetchMovieDetailUseCase(
-            tmdbApi,
-            gson,
-            moviesStateManager
-        )
 }
