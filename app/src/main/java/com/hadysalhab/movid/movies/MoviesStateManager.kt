@@ -17,7 +17,7 @@ class MoviesStateManager {
     val moviesGroup: MutableList<MovieGroup> = mutableListOf()
     fun areMoviesAvailabe() = moviesGroup.isNotEmpty()
     private fun clearData() {
-        moviesGroup = emptyList()
+        moviesGroup.clear()
         movies.clear()
     }
 }
