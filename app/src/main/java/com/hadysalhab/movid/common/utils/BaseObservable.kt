@@ -34,7 +34,7 @@ abstract class BaseObservable<LISTENER_CLASS> {
     }
 
     protected val listeners: Set<LISTENER_CLASS>
-         get() {
+        get() {
             synchronized(
                 MONITOR
             ) {

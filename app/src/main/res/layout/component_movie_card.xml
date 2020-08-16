@@ -20,49 +20,33 @@
         android:layout_marginBottom="8dp">
 
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_movie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/iv_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            app:backgroundTint="@color/material_on_surface_emphasis_medium"
+            app:backgroundTintMode="add" />
 
-        android:background="@android:color/transparent"
-        android:contentDescription="Last of us"
-        android:scaleType="fitXY"
-        app:backgroundTint="@color/material_on_surface_emphasis_medium"
-        app:backgroundTintMode="add" />
     </androidx.cardview.widget.CardView>
+
     <TextView
         android:id="@+id/tv_movie_title"
         style="?attr/textAppearanceHeadline6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:gravity="center_vertical"
         android:textColor="@color/gray_900"
         tools:text="Batman" />
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/rating_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-
-        <RatingBar
-            android:id="@+id/rating_movie"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:stepSize="0.5"
-            tools:rating="4" />
-
-        <TextView
-            android:id="@+id/tv_rating_movie"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="4.5 (413)" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_released_movie"

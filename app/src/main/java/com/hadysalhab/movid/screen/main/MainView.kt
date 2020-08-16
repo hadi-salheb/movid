@@ -5,7 +5,8 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
 abstract class MainView : BaseObservableViewMvc<MainView.Listener>() {
     interface Listener {
-        fun onBottomNavigationItemClicked(item:BottomNavigationItems)
+        fun onBottomNavigationItemClicked(item: BottomNavigationItems)
     }
-    abstract fun getFragmentFrame():FrameLayout
+
+    abstract fun getFragmentFrame(): FrameLayout
 }

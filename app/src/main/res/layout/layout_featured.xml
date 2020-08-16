@@ -10,8 +10,7 @@
         android:id="@+id/rv_movies"
         layout="@layout/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 
     <ProgressBar
         android:id="@+id/progress_circular"
@@ -19,7 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:visibility="visible"
-      />
+        android:visibility="visible" />
 
 </FrameLayout>

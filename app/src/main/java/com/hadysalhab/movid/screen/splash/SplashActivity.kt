@@ -8,6 +8,7 @@ import com.hadysalhab.movid.screen.common.controllers.BaseActivity
 import com.hadysalhab.movid.screen.main.MainActivity
 import com.hadysalhab.movid.user.UserStateManager
 import javax.inject.Inject
+
 /**
  * The SplashActivity serves as a splash screen and navigates to the appropriate screen based on the user authentication state }
  */
@@ -23,14 +24,14 @@ class SplashActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         Handler().postDelayed({
-            val intent:Intent = if (userStateManager.isAuthenticated){
-                Intent(this,MainActivity::class.java)
-            }else{
-                Intent(this,AuthActivity::class.java)
+            val intent: Intent = if (userStateManager.isAuthenticated) {
+                Intent(this, MainActivity::class.java)
+            } else {
+                Intent(this, AuthActivity::class.java)
             }
             startActivity(intent)
             finish()
-        },500)
+        }, 500)
 
     }
 

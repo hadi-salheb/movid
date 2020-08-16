@@ -6,7 +6,7 @@ import com.hadysalhab.movid.networking.responses.CreateAndSignTokenResponse
 
 class SignTokenUseCase(
     private val tmdbApi: TmdbApi
-    ) {
+) {
     fun signTokenSync(
         username: String,
         password: String,

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
+
+
+    <RatingBar
+        android:id="@+id/rating_movie"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:stepSize="0.5"
+        tools:rating="4" />
+
+    <TextView
+        android:id="@+id/tv_rating_movie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="4.5 (413)" />
+</LinearLayout>

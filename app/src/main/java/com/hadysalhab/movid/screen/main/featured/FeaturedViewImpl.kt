@@ -7,8 +7,8 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MovieGroup
-import com.hadysalhab.movid.movies.MovieGroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 
 class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory: ViewFactory) :
@@ -40,15 +40,17 @@ class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory
         }
     }
 
-    override fun onSeeMoreClicked(movieGroupType: MovieGroupType) {
+    override fun onSeeMoreClicked(groupType: GroupType) {
         listeners.forEach {
-            it.onSeeAllClicked(movieGroupType)
+            it.onSeeAllClicked(groupType)
         }
     }
 
     override fun displayMovieGroups(movieGroups: List<MovieGroup>) {
         circularProgress.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
+        // if adapter already contains a list
+        // diffUtil will render only items that are different
         adapter.submitList(movieGroups)
     }
 

@@ -2,32 +2,34 @@ package com.hadysalhab.movid.screen.common.movies
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RatingBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.TAG
 import com.hadysalhab.movid.movies.Movie
+import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.rating.Rating
 
-class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieCard() {
+class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFactory: ViewFactory) :
+    MovieCard() {
     private val movieImage: ImageView
     private val movieTitle: TextView
-    private val movieRating: RatingBar
-    private val movieRatingText: TextView
     private val movieReleaseDate: TextView
+    private val ratingFL: FrameLayout
+    private val rating: Rating
     private lateinit var movie: Movie
 
     init {
         setRootView(layoutInflater.inflate(R.layout.component_movie_card, parent, false))
         movieImage = findViewById(R.id.iv_movie)
         movieTitle = findViewById(R.id.tv_movie_title)
-        movieRating = findViewById(R.id.rating_movie)
-        movieRatingText = findViewById(R.id.tv_rating_movie)
         movieReleaseDate = findViewById(R.id.tv_released_movie)
+        ratingFL = findViewById(R.id.rating_wrapper)
+        rating = viewFactory.getRatingView(ratingFL)
+        ratingFL.addView(rating.getRootView())
         getRootView().setOnClickListener {
             listeners.forEach {
                 it.onMovieCardClicked(movie.id)
@@ -46,17 +48,6 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : MovieC
                 .into(movieImage)
         }
         movieReleaseDate.text = movie.releaseDate
-
-        if (movie.voteCount == 0) {
-            movieRating.visibility = View.GONE
-            movieRatingText.text = "(Rating Not Available)"
-        } else {
-            val number3digits: Double = String.format("%.3f", movie.voteAverage / 2).toDouble()
-            val number2digits: Double = String.format("%.2f", number3digits).toDouble()
-            val result: Double = String.format("%.1f", number2digits).toDouble()
-            movieRating.rating = result.toFloat()
-            movieRatingText.text = "$result (${movie.voteCount})"
-        }
-
+        rating.displayRating(movie.voteAverage, movie.voteCount)
     }
 }

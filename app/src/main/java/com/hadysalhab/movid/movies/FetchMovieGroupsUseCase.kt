@@ -1,7 +1,6 @@
 package com.hadysalhab.movid.movies
 
 import com.google.gson.Gson
-import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_300
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_300
@@ -70,27 +69,27 @@ class FetchMovieGroupsUseCase(
 
     private fun fetchPopularMovies() {
         val res = fetchPopularMoviesUseCase.fetchPopularMoviesSync(region)
-        handleResponse(res, MovieGroupType.POPULAR)
+        handleResponse(res, GroupType.POPULAR)
     }
 
     private fun fetchTopRatedMovies() {
         val res = fetchTopRatedMoviesUseCase.fetchTopRatedMoviesSync(region)
-        handleResponse(res, MovieGroupType.TOP_RATED)
+        handleResponse(res, GroupType.TOP_RATED)
     }
 
     private fun fetchUpcomingMovies() {
         val res = fetchUpcomingMoviesUseCase.fetchUpcomingMoviesSync(region)
-        handleResponse(res, MovieGroupType.UPCOMING)
+        handleResponse(res, GroupType.UPCOMING)
     }
 
     private fun fetchLatestMovies() {
         val res = fetchLatestMoviesUseCase.fetchLatestMoviesSync()
-        handleResponse(res, MovieGroupType.LATEST)
+        handleResponse(res, GroupType.LATEST)
     }
 
     private fun fetchNowPlayingMovies() {
         val res = fetchNowPlayingMoviesUseCase.fetchNowPlayingMoviesSync(region)
-        handleResponse(res, MovieGroupType.NOW_PLAYING)
+        handleResponse(res, GroupType.NOW_PLAYING)
     }
 
     private fun waitForAllUseCasesToFinish() {
@@ -112,17 +111,17 @@ class FetchMovieGroupsUseCase(
 
     private fun handleResponse(
         responseSchema: ApiResponse<MoviesResponse>,
-        movieGroupType: MovieGroupType
+        groupType: GroupType
     ) {
         synchronized(LOCK) {
             when (responseSchema) {
                 is ApiSuccessResponse -> {
                     val movieGroup =
-                        MovieGroup(movieGroupType, getMovies(responseSchema.body.movies))
+                        MovieGroup(groupType, getMovies(responseSchema.body.movies))
                     movieGroups.add(movieGroup)
                 }
                 is ApiEmptyResponse -> {
-                    val movieGroup = MovieGroup(movieGroupType, emptyList())
+                    val movieGroup = MovieGroup(groupType, emptyList())
                     movieGroups.add(movieGroup)
                 }
                 is ApiErrorResponse -> {

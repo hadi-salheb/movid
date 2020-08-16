@@ -1,10 +1,10 @@
 package com.hadysalhab.movid.movies
 
 import com.google.gson.Gson
-import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_300
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_300
+import com.hadysalhab.movid.common.constants.PROFILE_SIZE_h632
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.networking.responses.*
@@ -100,11 +100,19 @@ class FetchMovieDetailUseCase(
     }
 
     private fun getCasts(castSchemas: List<CastSchema>): List<Cast> = castSchemas.map { el ->
-        Cast(el.castID, el.character, el.creditID, el.id, el.name, el.profilePath)
+        var poster: String? = null //LATER SET DEFAULT IMAGE
+        el.profilePath?.let {
+            poster = IMAGES_BASE_URL + PROFILE_SIZE_h632 + it
+        }
+        Cast(el.castID, el.character, el.creditID, el.id, el.name, poster)
     }
 
     private fun getCrews(crewSchemas: List<CrewSchema>): List<Crew> = crewSchemas.map { el ->
-        Crew(el.creditID, el.department, el.id, el.job, el.name, el.profilePath)
+        var poster: String? = null //LATER SET DEFAULT IMAGE
+        el.profilePath?.let {
+            poster = IMAGES_BASE_URL + PROFILE_SIZE_h632 + it
+        }
+        Crew(el.creditID, el.department, el.id, el.job, el.name, poster)
     }
 
     private fun getReviews(reviewsSchema: ReviewsSchema) = with(reviewsSchema) {
@@ -170,7 +178,7 @@ class FetchMovieDetailUseCase(
     }
 
     private fun notifySuccess(movieDetail: MovieDetail) {
-
+        moviesStateManager.movies.add(movieDetail)
         listeners.forEach {
             it.onFetchMovieDetailSuccess(movieDetail)
         }

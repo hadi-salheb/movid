@@ -18,42 +18,42 @@ interface TmdbApi {
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("request_token") requestToken: String
-    ):  Call<CreateAndSignTokenResponse>
+    ): Call<CreateAndSignTokenResponse>
 
 
     @POST("/3/authentication/session/new?api_key=${BuildConfig.API_KEY}")
     @FormUrlEncoded
     fun createSession(
         @Field("request_token") requestToken: String
-    ):  Call<CreateSessionResponse>
+    ): Call<CreateSessionResponse>
 
 
     @GET("/3/movie/popular")
     fun fetchPopularMovies(
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
-        @Query("region") region:String
+        @Query("region") region: String
     ): Call<MoviesResponse>
 
     @GET("/3/movie/top_rated")
     fun fetchTopRatedMovies(
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
-        @Query("region") region:String
+        @Query("region") region: String
     ): Call<MoviesResponse>
 
     @GET("/3/movie/upcoming")
     fun fetchUpcomingMovies(
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
-        @Query("region") region:String
+        @Query("region") region: String
     ): Call<MoviesResponse>
 
     @GET("/3/movie/now_playing")
     fun fetchNowPlayingMovies(
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
-        @Query("region") region:String
+        @Query("region") region: String
     ): Call<MoviesResponse>
 
     @GET("/3/movie/latest")
