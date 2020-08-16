@@ -27,12 +27,11 @@ class MovieDetailViewImpl(
     private val castsFL: FrameLayout
     private val similarFL: FrameLayout
     private val recommendedFL: FrameLayout
-    private lateinit var movieDetail: MovieDetail
+    private var movieDetail: MovieDetail? = null
     private val reviewCV: CardView
     private val movieReviewReviewTV: TextView
     private val movieReviewAuthorTV: TextView
     private val ratingFL: FrameLayout
-    private val rating: Rating
     private val progressBar: ProgressBar
     private val detailSV: ScrollView
 
@@ -54,13 +53,12 @@ class MovieDetailViewImpl(
         movieReviewAuthorTV = findViewById(R.id.movie_review_author)
         movieReviewReviewTV = findViewById(R.id.movie_review_review)
         ratingFL = findViewById(R.id.rating_wrapper)
-        rating = viewFactory.getRatingView(ratingFL)
-        ratingFL.addView(rating.getRootView())
+
     }
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
         // avoid re-rendering the view if it is already rendered
-        if (!this::movieDetail.isInitialized) {
+        if (this.movieDetail == null) {
             this.movieDetail = movieDetail
             displayCarouselImages(movieDetail.images.backdrops)
             displayPosterImage(movieDetail.details.posterPath)
@@ -81,10 +79,14 @@ class MovieDetailViewImpl(
     override fun displayLoadingScreen() {
         progressBar.visibility = View.VISIBLE
         detailSV.visibility = View.GONE
+        this.movieDetail = null
     }
 
     private fun displayRating(avg: Double, count: Int) {
+        val rating = viewFactory.getRatingView(ratingFL)
         rating.displayRating(avg, count)
+        ratingFL.removeAllViews()
+        ratingFL.addView(rating.getRootView())
     }
 
     private fun displayReviews(reviews: Reviews) {
@@ -102,6 +104,7 @@ class MovieDetailViewImpl(
             val castGroup = CastGroup(GroupType.CAST, casts)
             val castsViews = viewFactory.getCastsView(castsFL)
             castsViews.displayCardGroup(castGroup)
+            castsFL.removeAllViews()
             castsFL.addView(castsViews.getRootView())
         } else {
             castsFL.visibility = View.GONE
@@ -109,6 +112,7 @@ class MovieDetailViewImpl(
     }
 
     private fun displayFacts(movieInfo: MovieInfo) {
+        factsLL.removeAllViews()
         movieInfo.revenue.let {
             val factView = viewFactory.getFactView(factsLL)
             factView.displayFact(getContext().getDrawable(R.drawable.ic_money)!!, it.toString())
@@ -161,6 +165,7 @@ class MovieDetailViewImpl(
             val movieGroup = MovieGroup(GroupType.SIMILAR_MOVIES, movies)
             val movieGroupView = viewFactory.getMoviesView(similarFL)
             movieGroupView.displayCardGroup(movieGroup)
+            similarFL.removeAllViews()
             similarFL.addView(movieGroupView.getRootView())
         } else {
             similarFL.visibility = View.GONE
@@ -172,6 +177,7 @@ class MovieDetailViewImpl(
             val movieGroup = MovieGroup(GroupType.RECOMMENDED_MOVIES, movies)
             val movieGroupView = viewFactory.getMoviesView(recommendedFL)
             movieGroupView.displayCardGroup(movieGroup)
+            recommendedFL.removeAllViews()
             recommendedFL.addView(movieGroupView.getRootView())
         } else {
             recommendedFL.visibility = View.GONE
