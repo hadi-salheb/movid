@@ -62,7 +62,9 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        view = viewFactory.getFeaturedView(container)
+        if (!this::view.isInitialized) {
+            view = viewFactory.getFeaturedView(container)
+        }
         return view.getRootView()
     }
 
