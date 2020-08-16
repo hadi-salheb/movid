@@ -6,7 +6,6 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:visibility="gone"
         android:id="@+id/movie_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -15,7 +14,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
             tools:context=".screen.main.moviedetail.MovieDetailFragment">
 
             <com.synnapps.carouselview.CarouselView
@@ -215,16 +213,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fact_overview" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/fact_review"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 app:cardBackgroundColor="@color/gray_100"
                 app:cardUseCompatPadding="true"
@@ -251,7 +247,7 @@
                         android:textSize="18sp" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -291,9 +287,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fact_review" />
 
 
@@ -301,10 +296,8 @@
                 android:id="@+id/fl_recommended"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fl_similar" />
 
 
