@@ -2,6 +2,6 @@ package com.hadysalhab.movid.movies
 
 class MoviesStateManager {
     val movies = mutableListOf<MovieDetail>()
-    var moviesGroup: List<MovieGroup> = emptyList()
+    val moviesGroup: MutableList<MovieGroup> = mutableListOf()
     fun areMoviesAvailabe() = moviesGroup.isNotEmpty()
 }

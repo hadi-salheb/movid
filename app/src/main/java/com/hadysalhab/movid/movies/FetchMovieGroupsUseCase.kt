@@ -172,7 +172,8 @@ class FetchMovieGroupsUseCase(
     }
 
     private fun notifySuccess() {
-        moviesStateManager.moviesGroup = this.movieGroups
+        moviesStateManager.moviesGroup.clear()
+        moviesStateManager.moviesGroup.addAll(this.movieGroups)
         uiThreadPoster.post {
             listeners.forEach {
                 it.onFetchMovieGroupsSucceeded(movieGroups)
