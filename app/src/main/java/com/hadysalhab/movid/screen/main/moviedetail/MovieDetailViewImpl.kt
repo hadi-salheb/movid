@@ -58,7 +58,7 @@ class MovieDetailViewImpl(
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
         // avoid re-rendering the view if it is already rendered
-        if (this.movieDetail == null) {
+        if (this.movieDetail == null || this.movieDetail!= movieDetail) {
             this.movieDetail = movieDetail
             displayCarouselImages(movieDetail.images.backdrops)
             displayPosterImage(movieDetail.details.posterPath)
@@ -79,7 +79,6 @@ class MovieDetailViewImpl(
     override fun displayLoadingScreen() {
         progressBar.visibility = View.VISIBLE
         detailSV.visibility = View.GONE
-        this.movieDetail = null
     }
 
     private fun displayRating(avg: Double, count: Int) {

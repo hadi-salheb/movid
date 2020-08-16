@@ -73,33 +73,17 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         //screenState represents the last screen was displayed to the user
         //maybe the user navigated away (can trigger process death) or configuration change
         when (screenState) {
-            //1) configuration change: isBusy can be false or true (UseCase is not destroyed)
-            //2) if process death happens: isBusy = false, re-fetching is triggered
-            //3) if none of the above: isBusy can be false or true (UseCase is not destroyed)
             ScreenState.LOADING_SCREEN -> {
                 if (fetchMovieGroupsUseCase.isBusy) {
                     // fetching movies hasn't finished yet. Wait for it
                     // keep the loading screen showing
                 } else {
-                    // we missed it. re-fetch
                     fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS())
                 }
             }
-            //1) configuration change: MovieStore is not destroyed (AppScope) data should be available
-            //2) process death: MovieStore data might not be available
-            //3) none of the above: MovieStore should contain the data
             ScreenState.DATA_SCREEN -> {
-                if (moviesStateManager.areMoviesAvailabe()) {
-                    displayMovies()
-                } else {
-                    screenState = ScreenState.LOADING_SCREEN
-                    view.displayLoadingScreen()
                     fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS())
-                }
             }
-            //1) configuration change: Dialog is recreated by the system
-            //2) process death: Dialog is recreated by the system
-            //3) none of the above: Dialog is visible
             ScreenState.ERROR_SCREEN -> {
                 //wait for the user response
             }
@@ -136,6 +120,11 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         screenState = ScreenState.ERROR_SCREEN
         Toast.makeText(activityContext, msg, Toast.LENGTH_LONG)
             .show()
+    }
+
+    override fun onFetching() {
+        screenState = ScreenState.LOADING_SCREEN
+        view.displayLoadingScreen()
     }
 
     private fun displayMovies() {

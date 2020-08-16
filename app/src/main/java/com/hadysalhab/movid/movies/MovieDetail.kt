@@ -8,7 +8,9 @@ data class MovieDetail(
     val accountStates: AccountStates,
     val similar: Movies,
     val recommendations: Movies
-)
+) {
+    var timeStamp: Long? = null
+}
 
 data class Movies(
     var page: Int,

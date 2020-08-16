@@ -73,32 +73,17 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
                     // fetching movies hasn't finished yet. Wait for it
                     // keep the loading screen showing
                 } else {
-                    // we missed it. re-fetch
-                    if (moviesStateManager.movies.any { movie -> movie.details.id == movieID }) {
-                        screenState = ScreenState.DATA_SCREEN
-                        val movie = moviesStateManager.movies.find { it.details.id == movieID }
-                        viewMvc.displayMovieDetail(movie!!)
-                    } else {
-                        fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
-                            movieID!!,
-                            userStateManager.sessionId
-                        )
-                    }
-                }
-            }
-            ScreenState.DATA_SCREEN -> {
-                if (moviesStateManager.movies.any { movie -> movie.details.id == movieID }) {
-                    screenState = ScreenState.DATA_SCREEN
-                    val movie = moviesStateManager.movies.find { it.details.id == movieID }
-                    viewMvc.displayMovieDetail(movie!!)
-                } else {
-                    screenState = ScreenState.LOADING_SCREEN
-                    viewMvc.displayLoadingScreen()
                     fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
                         movieID!!,
                         userStateManager.sessionId
                     )
                 }
+            }
+            ScreenState.DATA_SCREEN -> {
+                fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
+                    movieID!!,
+                    userStateManager.sessionId
+                )
             }
             ScreenState.ERROR_SCREEN -> {
                 //wait for the user response
@@ -135,6 +120,11 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
 
     override fun onFetchMovieDetailFailed(msg: String) {
         screenState = ScreenState.ERROR_SCREEN
+    }
+
+    override fun onFetchingMovieDetail() {
+        screenState = ScreenState.LOADING_SCREEN
+        viewMvc.displayLoadingScreen()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

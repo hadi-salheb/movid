@@ -41,7 +41,6 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFact
     override fun displayMovie(movie: Movie) {
         this.movie = movie
         movieTitle.text = movie.title
-        Log.d(TAG, "displayMovie: $movie ")
         movie.backdropPath?.let {
             Glide.with(getContext())
                 .load(it)

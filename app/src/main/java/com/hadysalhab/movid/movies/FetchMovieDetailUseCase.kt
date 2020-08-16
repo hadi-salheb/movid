@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.movies
 
+import android.util.Log
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
@@ -25,33 +26,43 @@ class FetchMovieDetailUseCase(
     interface Listener {
         fun onFetchMovieDetailSuccess(movieDetail: MovieDetail)
         fun onFetchMovieDetailFailed(msg: String)
+        fun onFetchingMovieDetail()
     }
 
     private lateinit var errorMessage: String
 
     fun fetchMovieDetailAndNotify(movieId: Int, sessionId: String) {
-        // will throw an exception if a client triggered this flow while it is busy
-        assertNotBusyAndBecomeBusy()
-        tmdbApi.fetchMovieDetail(
-            id = movieId,
-            sessionID = sessionId
-        ).enqueue(object : retrofit2.Callback<MovieDetailResponse> {
-            override fun onFailure(call: Call<MovieDetailResponse>, t: Throwable) {
-                createErrorMessage(t.message ?: "Unable to resolve host")
-                notifyFailure(errorMessage)
+        Log.d("MoviesStateManager", "fetchMovieDetailAndNotify: ${moviesStateManager.isMovieDetailAvailable(movieId)}")
+        if (moviesStateManager.isMovieDetailAvailable(movieId)) {
+            notifySuccess(moviesStateManager.movieDetailList.find { it.details.id == movieId }!!)
+        } else {
+            listeners.forEach {
+                it.onFetchingMovieDetail()
             }
-
-            override fun onResponse(
-                call: Call<MovieDetailResponse>,
-                response: Response<MovieDetailResponse>
-            ) {
-                if (response.body() == null || response.code() == 204) {
-                    createErrorMessage("")
+            // will throw an exception if a client triggered this flow while it is busy
+            assertNotBusyAndBecomeBusy()
+            tmdbApi.fetchMovieDetail(
+                id = movieId,
+                sessionID = sessionId
+            ).enqueue(object : retrofit2.Callback<MovieDetailResponse> {
+                override fun onFailure(call: Call<MovieDetailResponse>, t: Throwable) {
+                    createErrorMessage(t.message ?: "Unable to resolve host")
+                    notifyFailure(errorMessage)
                 }
-                val movieDetail = getMovieDetails(response)
-                notifySuccess(movieDetail)
-            }
-        })
+
+                override fun onResponse(
+                    call: Call<MovieDetailResponse>,
+                    response: Response<MovieDetailResponse>
+                ) {
+                    if (response.body() == null || response.code() == 204) {
+                        createErrorMessage("")
+                    }
+                    val movieDetail = getMovieDetails(response)
+                    moviesStateManager.addMovieDetailToList(movieDetail)
+                    notifySuccess(movieDetail)
+                }
+            })
+        }
     }
 
     private fun getMovieDetails(response: Response<MovieDetailResponse>) = with(response.body()!!) {
@@ -171,6 +182,7 @@ class FetchMovieDetailUseCase(
     }
 
     private fun notifyFailure(msg: String) {
+        // notify controller
         listeners.forEach {
             it.onFetchMovieDetailFailed(msg)
         }
@@ -178,7 +190,7 @@ class FetchMovieDetailUseCase(
     }
 
     private fun notifySuccess(movieDetail: MovieDetail) {
-        moviesStateManager.movies.add(movieDetail)
+        // notify controller
         listeners.forEach {
             it.onFetchMovieDetailSuccess(movieDetail)
         }

@@ -9,6 +9,7 @@ import com.hadysalhab.movid.authentication.SignTokenUseCase
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
+import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.user.UserStateManager
@@ -133,9 +134,12 @@ class ApplicationModule(private val application: Application) {
     @Provides
     fun getFetchNowPlayingMoviesUseCase(tmdbApi: TmdbApi) = FetchNowPlayingMoviesUseCase(tmdbApi)
 
+    @Provides
+    fun getTimeProvider() = TimeProvider()
+
     @Singleton
     @Provides
-    fun getMoviesStateManager() = MoviesStateManager()
+    fun getMoviesStateManager(timeProvider: TimeProvider) = MoviesStateManager(timeProvider)
 
     @Provides
     @Singleton

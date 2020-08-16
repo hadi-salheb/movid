@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".screen.main.movielist.MovieListFragment">
 
-    <TextView
+    <include
+        android:id="@+id/rv_movies"
+        layout="@layout/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="See All List" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>

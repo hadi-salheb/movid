@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.movies
 
+import android.util.Log
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
@@ -35,6 +36,7 @@ class FetchMovieGroupsUseCase(
     interface Listener {
         fun onFetchMovieGroupsSucceeded(movieGroups: List<MovieGroup>)
         fun onFetchMovieGroupsFailed(msg: String)
+        fun onFetching()
     }
 
     private var mNumbOfFinishedUseCase = 0
@@ -49,20 +51,31 @@ class FetchMovieGroupsUseCase(
     )
 
     fun fetchMovieGroupsAndNotify(region: String) {
-        // will throw an exception if a client triggered this flow while it is busy
-        assertNotBusyAndBecomeBusy()
-        synchronized(LOCK) {
-            this.region = region
-            movieGroups = mutableListOf()
-            mNumbOfFinishedUseCase = 0
-            isAnyUseCaseFailed = false
-        }
-        backgroundThreadPoster.post {
-            waitForAllUseCasesToFinish()
-        }
-        computations.forEach {
+        Log.d("FetchMovieGroupsUseCase", "${moviesStateManager.areMoviesGroupAvailable} ")
+        if (moviesStateManager.areMoviesGroupAvailable) {
+            this.movieGroups.clear()
+            this.movieGroups.addAll(moviesStateManager.moviesGroup)
+            notifySuccess()
+        } else {
+            // will throw an exception if a client triggered this flow while it is busy
+            assertNotBusyAndBecomeBusy()
+            // notify controller
+            listeners.forEach {
+                it.onFetching()
+            }
+            synchronized(LOCK) {
+                this.region = region
+                movieGroups = mutableListOf()
+                mNumbOfFinishedUseCase = 0
+                isAnyUseCaseFailed = false
+            }
             backgroundThreadPoster.post {
-                it.invoke()
+                waitForAllUseCasesToFinish()
+            }
+            computations.forEach {
+                backgroundThreadPoster.post {
+                    it.invoke()
+                }
             }
         }
     }
@@ -104,6 +117,7 @@ class FetchMovieGroupsUseCase(
             if (isAnyUseCaseFailed) {
                 notifyFailure()
             } else {
+                moviesStateManager.updateMoviesGroup(movieGroups) //update global state
                 notifySuccess()
             }
         }
@@ -161,7 +175,7 @@ class FetchMovieGroupsUseCase(
             }
         }
     }
-
+    // notify controller
     private fun notifyFailure() {
         uiThreadPoster.post {
             listeners.forEach {
@@ -170,10 +184,8 @@ class FetchMovieGroupsUseCase(
         }
         becomeNotBusy()
     }
-
+    // notify controller
     private fun notifySuccess() {
-        moviesStateManager.moviesGroup.clear()
-        moviesStateManager.moviesGroup.addAll(this.movieGroups)
         uiThreadPoster.post {
             listeners.forEach {
                 it.onFetchMovieGroupsSucceeded(movieGroups)
