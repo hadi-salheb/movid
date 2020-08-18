@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.hadysalhab.movid.common.DeviceConfigManager
-import com.hadysalhab.movid.movies.FetchMovieGroupsUseCase
+import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MovieGroup
 import com.hadysalhab.movid.screen.common.ViewFactory

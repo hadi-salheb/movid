@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.movies
+package com.hadysalhab.movid.movies.usecases.groups
 
 import android.util.Log
 import com.google.gson.Gson
@@ -6,6 +6,15 @@ import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_300
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
+import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.movies.Movie
+import com.hadysalhab.movid.movies.MovieGroup
+import com.hadysalhab.movid.movies.MoviesStateManager
+import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiResponse
@@ -22,11 +31,11 @@ import com.techyourchance.threadposter.UiThreadPoster
  * */
 
 class FetchMovieGroupsUseCase(
-    private val fetchPopularMoviesUseCase: FetchPopularMoviesUseCase,
-    private val fetchTopRatedMoviesUseCase: FetchTopRatedMoviesUseCase,
-    private val fetchUpcomingMoviesUseCase: FetchUpcomingMoviesUseCase,
-    private val fetchNowPlayingMoviesUseCase: FetchNowPlayingMoviesUseCase,
-    private val fetchLatestMoviesUseCase: FetchLatestMoviesUseCase,
+    private val fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
+    private val fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
+    private val fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
+    private val fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
+    private val fetchLatestMoviesUseCaseSync: FetchLatestMoviesUseCaseSync,
     private val gson: Gson,
     private val moviesStateManager: MoviesStateManager,
     private val backgroundThreadPoster: BackgroundThreadPoster,
@@ -81,27 +90,27 @@ class FetchMovieGroupsUseCase(
     }
 
     private fun fetchPopularMovies() {
-        val res = fetchPopularMoviesUseCase.fetchPopularMoviesSync(region)
+        val res = fetchPopularMoviesUseCaseSync.fetchPopularMoviesSync(region)
         handleResponse(res, GroupType.POPULAR)
     }
 
     private fun fetchTopRatedMovies() {
-        val res = fetchTopRatedMoviesUseCase.fetchTopRatedMoviesSync(region)
+        val res = fetchTopRatedMoviesUseCaseSync.fetchTopRatedMoviesSync(region)
         handleResponse(res, GroupType.TOP_RATED)
     }
 
     private fun fetchUpcomingMovies() {
-        val res = fetchUpcomingMoviesUseCase.fetchUpcomingMoviesSync(region)
+        val res = fetchUpcomingMoviesUseCaseSync.fetchUpcomingMoviesSync(region)
         handleResponse(res, GroupType.UPCOMING)
     }
 
     private fun fetchLatestMovies() {
-        val res = fetchLatestMoviesUseCase.fetchLatestMoviesSync()
+        val res = fetchLatestMoviesUseCaseSync.fetchLatestMoviesSync()
         handleResponse(res, GroupType.LATEST)
     }
 
     private fun fetchNowPlayingMovies() {
-        val res = fetchNowPlayingMoviesUseCase.fetchNowPlayingMoviesSync(region)
+        val res = fetchNowPlayingMoviesUseCaseSync.fetchNowPlayingMoviesSync(region)
         handleResponse(res, GroupType.NOW_PLAYING)
     }
 
@@ -131,11 +140,17 @@ class FetchMovieGroupsUseCase(
             when (responseSchema) {
                 is ApiSuccessResponse -> {
                     val movieGroup =
-                        MovieGroup(groupType, getMovies(responseSchema.body.movies))
+                        MovieGroup(
+                            groupType,
+                            getMovies(responseSchema.body.movies)
+                        )
                     movieGroups.add(movieGroup)
                 }
                 is ApiEmptyResponse -> {
-                    val movieGroup = MovieGroup(groupType, emptyList())
+                    val movieGroup = MovieGroup(
+                        groupType,
+                        emptyList()
+                    )
                     movieGroups.add(movieGroup)
                 }
                 is ApiErrorResponse -> {
@@ -158,7 +173,16 @@ class FetchMovieGroupsUseCase(
             backdropPath?.let {
                 backdrop = IMAGES_BASE_URL + BACKDROP_SIZE_780 + backdropPath
             }
-            Movie(id, title, poster, backdrop, voteAvg, voteCount, releaseDate, overview)
+            Movie(
+                id,
+                title,
+                poster,
+                backdrop,
+                voteAvg,
+                voteCount,
+                releaseDate,
+                overview
+            )
         }
     }
 

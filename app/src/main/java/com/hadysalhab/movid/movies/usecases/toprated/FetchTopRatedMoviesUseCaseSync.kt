@@ -1,10 +1,10 @@
-package com.hadysalhab.movid.movies
+package com.hadysalhab.movid.movies.usecases.toprated
 
 import com.hadysalhab.movid.networking.ApiResponse
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.networking.responses.MoviesResponse
 
-class FetchTopRatedMoviesUseCase(private val tmdbApi: TmdbApi) {
+class FetchTopRatedMoviesUseCaseSync(private val tmdbApi: TmdbApi) {
     fun fetchTopRatedMoviesSync(region: String): ApiResponse<MoviesResponse> = try {
         val res = tmdbApi.fetchTopRatedMovies(region = region).execute()
         ApiResponse.create<MoviesResponse>(res)

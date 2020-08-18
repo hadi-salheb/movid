@@ -11,6 +11,12 @@ import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.*
+import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
+import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.user.UserStateManager
 import com.techyourchance.threadposter.BackgroundThreadPoster
@@ -116,23 +122,38 @@ class ApplicationModule(private val application: Application) {
 
     @Singleton
     @Provides
-    fun getFetchPopularMoviesUseCase(tmdbApi: TmdbApi) = FetchPopularMoviesUseCase(tmdbApi)
+    fun getFetchPopularMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchPopularMoviesUseCaseSync(
+            tmdbApi
+        )
 
     @Singleton
     @Provides
-    fun getFetchTopRatedMoviesUseCase(tmdbApi: TmdbApi) = FetchTopRatedMoviesUseCase(tmdbApi)
+    fun getFetchTopRatedMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchTopRatedMoviesUseCaseSync(
+            tmdbApi
+        )
 
     @Singleton
     @Provides
-    fun getFetchUpcomingMoviesUseCase(tmdbApi: TmdbApi) = FetchUpcomingMoviesUseCase(tmdbApi)
+    fun getFetchUpcomingMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchUpcomingMoviesUseCaseSync(
+            tmdbApi
+        )
 
     @Singleton
     @Provides
-    fun getFetchLatestMoviesUseCase(tmdbApi: TmdbApi) = FetchLatestMoviesUseCase(tmdbApi)
+    fun getFetchLatestMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchLatestMoviesUseCaseSync(
+            tmdbApi
+        )
 
     @Singleton
     @Provides
-    fun getFetchNowPlayingMoviesUseCase(tmdbApi: TmdbApi) = FetchNowPlayingMoviesUseCase(tmdbApi)
+    fun getFetchNowPlayingMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchNowPlayingMoviesUseCaseSync(
+            tmdbApi
+        )
 
     @Provides
     fun getTimeProvider() = TimeProvider()
@@ -144,22 +165,22 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun getFetchMovieGroupsUseCase(
-        fetchPopularMoviesUseCase: FetchPopularMoviesUseCase,
-        fetchTopRatedMoviesUseCase: FetchTopRatedMoviesUseCase,
-        fetchUpcomingMoviesUseCase: FetchUpcomingMoviesUseCase,
-        fetchNowPlayingMoviesUseCase: FetchNowPlayingMoviesUseCase,
-        fetchLatestMoviesUseCase: FetchLatestMoviesUseCase,
+        fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
+        fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
+        fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
+        fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
+        fetchLatestMoviesUseCaseSync: FetchLatestMoviesUseCaseSync,
         gson: Gson,
         moviesStateManager: MoviesStateManager,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster
     ): FetchMovieGroupsUseCase =
         FetchMovieGroupsUseCase(
-            fetchPopularMoviesUseCase,
-            fetchTopRatedMoviesUseCase,
-            fetchUpcomingMoviesUseCase,
-            fetchNowPlayingMoviesUseCase,
-            fetchLatestMoviesUseCase,
+            fetchPopularMoviesUseCaseSync,
+            fetchTopRatedMoviesUseCaseSync,
+            fetchUpcomingMoviesUseCaseSync,
+            fetchNowPlayingMoviesUseCaseSync,
+            fetchLatestMoviesUseCaseSync,
             gson,
             moviesStateManager,
             backgroundThreadPoster,

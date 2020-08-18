@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.movies
+package com.hadysalhab.movid.movies.usecases.detail
 
 import android.util.Log
 import com.google.gson.Gson
@@ -7,6 +7,7 @@ import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_300
 import com.hadysalhab.movid.common.constants.PROFILE_SIZE_h632
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
+import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.networking.responses.*
 import retrofit2.Call
@@ -115,7 +116,14 @@ class FetchMovieDetailUseCase(
         el.profilePath?.let {
             poster = IMAGES_BASE_URL + PROFILE_SIZE_h632 + it
         }
-        Cast(el.castID, el.character, el.creditID, el.id, el.name, poster)
+        Cast(
+            el.castID,
+            el.character,
+            el.creditID,
+            el.id,
+            el.name,
+            poster
+        )
     }
 
     private fun getCrews(crewSchemas: List<CrewSchema>): List<Crew> = crewSchemas.map { el ->
@@ -123,11 +131,24 @@ class FetchMovieDetailUseCase(
         el.profilePath?.let {
             poster = IMAGES_BASE_URL + PROFILE_SIZE_h632 + it
         }
-        Crew(el.creditID, el.department, el.id, el.job, el.name, poster)
+        Crew(
+            el.creditID,
+            el.department,
+            el.id,
+            el.job,
+            el.name,
+            poster
+        )
     }
 
     private fun getReviews(reviewsSchema: ReviewsSchema) = with(reviewsSchema) {
-        Reviews(id, page, getReview(review), totalPages, totalResults)
+        Reviews(
+            id,
+            page,
+            getReview(review),
+            totalPages,
+            totalResults
+        )
     }
 
     private fun getReview(reviewSchema: List<ReviewSchema>) = reviewSchema.map { el ->
@@ -148,7 +169,12 @@ class FetchMovieDetailUseCase(
         }
 
     private fun getMoviesFromResponse(moviesResponse: MoviesResponse) = with(moviesResponse) {
-        Movies(page, totalResults, total_pages, getMovies(movies))
+        Movies(
+            page,
+            totalResults,
+            total_pages,
+            getMovies(movies)
+        )
     }
 
     private fun getMovies(movies: List<MovieSchema>) = movies.map { el ->
@@ -164,7 +190,16 @@ class FetchMovieDetailUseCase(
         posterPath?.let {
             backdrop = IMAGES_BASE_URL + BACKDROP_SIZE_780 + backdropPath
         }
-        Movie(id, title, poster, backdrop, voteAvg, voteCount, releaseDate, overview)
+        Movie(
+            id,
+            title,
+            poster,
+            backdrop,
+            voteAvg,
+            voteCount,
+            releaseDate,
+            overview
+        )
     }
 
     private fun createErrorMessage(errMessage: String) {
