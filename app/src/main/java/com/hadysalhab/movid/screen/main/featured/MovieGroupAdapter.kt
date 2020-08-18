@@ -4,25 +4,31 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.hadysalhab.movid.movies.GroupType
-import com.hadysalhab.movid.movies.MovieGroup
+import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.cardgroup.CardGroupView
 
 class MovieGroupAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
-    ListAdapter<MovieGroup, MovieGroupViewHolder>(DIFF_CALLBACK), CardGroupView.Listener {
+    ListAdapter<MoviesResponse, MovieGroupViewHolder>(DIFF_CALLBACK), CardGroupView.Listener {
     interface Listener {
         fun onMovieCardClicked(movieID: Int)
         fun onSeeMoreClicked(groupType: GroupType)
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MovieGroup>() {
-            override fun areItemsTheSame(oldItem: MovieGroup, newItem: MovieGroup): Boolean {
-                return oldItem.groupType == newItem.groupType
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MoviesResponse>() {
+            override fun areItemsTheSame(
+                oldItem: MoviesResponse,
+                newItem: MoviesResponse
+            ): Boolean {
+                return oldItem.tag == newItem.tag
             }
 
-            override fun areContentsTheSame(oldItem: MovieGroup, newItem: MovieGroup): Boolean {
-                return oldItem == newItem
+            override fun areContentsTheSame(
+                oldItem: MoviesResponse,
+                newItem: MoviesResponse
+            ): Boolean {
+                return oldItem.movies == newItem.movies
             }
         }
     }
@@ -42,8 +48,8 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         listener.onMovieCardClicked(cardID)
     }
 
-    override fun onSeeAllClicked(cardGroupType: GroupType) {
-        listener.onSeeMoreClicked(cardGroupType)
+    override fun onSeeAllClicked(groupType: GroupType) {
+        listener.onSeeMoreClicked(groupType)
     }
 
 

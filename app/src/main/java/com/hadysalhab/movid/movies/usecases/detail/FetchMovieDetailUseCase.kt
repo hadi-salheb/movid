@@ -4,8 +4,6 @@ import android.util.Log
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
-import com.hadysalhab.movid.common.constants.POSTER_SIZE_300
-import com.hadysalhab.movid.common.constants.PROFILE_SIZE_h632
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.networking.TmdbApi
@@ -73,8 +71,8 @@ class FetchMovieDetailUseCase(
             getReviews(reviews),
             getImages(images),
             getAccountState(accountStates),
-            getMoviesFromResponse(similar),
-            getMoviesFromResponse(recommendations)
+            getMoviesResponse(similar,GroupType.SIMILAR_MOVIES),
+            getMoviesResponse(recommendations,GroupType.RECOMMENDED_MOVIES)
         )
     }
 
@@ -91,7 +89,7 @@ class FetchMovieDetailUseCase(
             originalLanguage,
             overview,
             popularity,
-            IMAGES_BASE_URL + POSTER_SIZE_300 + posterPath,
+            posterPath,
             releaseDate,
             revenue,
             runtime,
@@ -112,32 +110,24 @@ class FetchMovieDetailUseCase(
     }
 
     private fun getCasts(castSchemas: List<CastSchema>): List<Cast> = castSchemas.map { el ->
-        var poster: String? = null //LATER SET DEFAULT IMAGE
-        el.profilePath?.let {
-            poster = IMAGES_BASE_URL + PROFILE_SIZE_h632 + it
-        }
         Cast(
             el.castID,
             el.character,
             el.creditID,
             el.id,
             el.name,
-            poster
+            el.profilePath
         )
     }
 
     private fun getCrews(crewSchemas: List<CrewSchema>): List<Crew> = crewSchemas.map { el ->
-        var poster: String? = null //LATER SET DEFAULT IMAGE
-        el.profilePath?.let {
-            poster = IMAGES_BASE_URL + PROFILE_SIZE_h632 + it
-        }
         Crew(
             el.creditID,
             el.department,
             el.id,
             el.job,
             el.name,
-            poster
+            el.profilePath
         )
     }
 
@@ -168,38 +158,33 @@ class FetchMovieDetailUseCase(
             AccountStates(id, favorite, watchlist)
         }
 
-    private fun getMoviesFromResponse(moviesResponse: MoviesResponse) = with(moviesResponse) {
-        Movies(
+    private fun getMoviesResponse(moviesResponseSchema: MoviesResponseSchema,tag:GroupType) = with(moviesResponseSchema) {
+        MoviesResponse(
             page,
             totalResults,
             total_pages,
-            getMovies(movies)
+            getMovies(movies),
+            tag
         )
     }
 
-    private fun getMovies(movies: List<MovieSchema>) = movies.map { el ->
-        getMovie(el)
-    }
-
-    private fun getMovie(movieSchema: MovieSchema) = with(movieSchema) {
-        var poster: String? = null //LATER SET DEFAULT IMAGE
-        posterPath?.let {
-            poster = IMAGES_BASE_URL + POSTER_SIZE_300 + posterPath
-        }
-        var backdrop: String? = null //LATER SET DEFAULT IMAGE
-        posterPath?.let {
-            backdrop = IMAGES_BASE_URL + BACKDROP_SIZE_780 + backdropPath
-        }
-        Movie(
-            id,
-            title,
-            poster,
-            backdrop,
-            voteAvg,
-            voteCount,
-            releaseDate,
-            overview
-        )
+    private fun getMovies(moviesSchema: List<MovieSchema>): MutableList<Movie> {
+        val movies = mutableListOf<Movie>()
+        movies.addAll(moviesSchema.map { movieSchema ->
+            with(movieSchema) {
+                Movie(
+                    id,
+                    title,
+                    posterPath,
+                    backdropPath,
+                    voteAvg,
+                    voteCount,
+                    releaseDate,
+                    overview
+                )
+            }
+        })
+        return movies
     }
 
     private fun createErrorMessage(errMessage: String) {

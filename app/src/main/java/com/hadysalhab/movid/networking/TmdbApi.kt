@@ -4,7 +4,7 @@ import com.hadysalhab.movid.BuildConfig
 import com.hadysalhab.movid.networking.responses.CreateAndSignTokenResponse
 import com.hadysalhab.movid.networking.responses.CreateSessionResponse
 import com.hadysalhab.movid.networking.responses.MovieDetailResponse
-import com.hadysalhab.movid.networking.responses.MoviesResponse
+import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -33,34 +33,34 @@ interface TmdbApi {
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("region") region: String
-    ): Call<MoviesResponse>
+    ): Call<MoviesResponseSchema>
 
     @GET("/3/movie/top_rated")
     fun fetchTopRatedMovies(
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("region") region: String
-    ): Call<MoviesResponse>
+    ): Call<MoviesResponseSchema>
 
     @GET("/3/movie/upcoming")
     fun fetchUpcomingMovies(
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("region") region: String
-    ): Call<MoviesResponse>
+    ): Call<MoviesResponseSchema>
 
     @GET("/3/movie/now_playing")
     fun fetchNowPlayingMovies(
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("region") region: String
-    ): Call<MoviesResponse>
+    ): Call<MoviesResponseSchema>
 
     @GET("/3/movie/latest")
     fun fetchLatestMovies(
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
-    ): Call<MoviesResponse>
+    ): Call<MoviesResponseSchema>
 
 
     @GET("/3/movie/{id}")

@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
+import com.hadysalhab.movid.common.constants.POSTER_SIZE_92
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
 
@@ -32,9 +34,8 @@ class MovieListItemViewImpl(
 
     override fun displayMovie(movie: Movie) {
         movie.posterPath?.let {
-            Log.d("image", "displayMovie:${movie.posterPath.replace("w300","w92")} ")
             Glide.with(getContext())
-                .load(it.replace("w300","w92"))
+                .load(IMAGES_BASE_URL + POSTER_SIZE_92 + it)
                 .into(movieImageIV)
         }
         movieTitleTV.text = movie.title

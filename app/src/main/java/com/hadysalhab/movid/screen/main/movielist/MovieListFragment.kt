@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hadysalhab.movid.common.DeviceConfigManager
-import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
@@ -29,9 +28,6 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
 
     @Inject
     lateinit var deviceConfigManager: DeviceConfigManager
-
-    @Inject
-    lateinit var moviesStateManager: MoviesStateManager
 
     private lateinit var view: MovieListView
 
@@ -58,12 +54,6 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
-        val movieGroup = moviesStateManager.moviesGroup.find { group ->
-            group.groupType.value == groupType
-        }
-        movieGroup?.let {
-            view.displayMovies(movieGroup.movies)
-        }
     }
 
     override fun onStop() {

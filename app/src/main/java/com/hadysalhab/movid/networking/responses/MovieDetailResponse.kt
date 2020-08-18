@@ -35,8 +35,8 @@ data class MovieDetailResponse(
     val images: ImagesSchema,
     @SerializedName("account_states")
     val accountStates: AccountStatesSchema,
-    val similar: MoviesResponse,
-    val recommendations: MoviesResponse
+    val similar: MoviesResponseSchema,
+    val recommendations: MoviesResponseSchema
 )
 
 data class GenresSchema(

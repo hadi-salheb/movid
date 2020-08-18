@@ -6,6 +6,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
+import com.hadysalhab.movid.common.constants.PROFILE_SIZE_h632
 import com.hadysalhab.movid.movies.Cast
 
 class CastCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : CastCard() {
@@ -32,7 +34,7 @@ class CastCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : CastCar
         castAsTV.text = cast.character
         cast.profilePath?.let {
             Glide.with(getContext())
-                .load(it)
+                .load(IMAGES_BASE_URL+ PROFILE_SIZE_h632+it)
                 .into(castIV)
         }
     }

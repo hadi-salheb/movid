@@ -2,7 +2,7 @@ package com.hadysalhab.movid.networking.responses
 
 import com.google.gson.annotations.SerializedName
 
-data class MoviesResponse(
+data class MoviesResponseSchema(
     var page: Int,
     @SerializedName("total_results")
     val totalResults: Int,

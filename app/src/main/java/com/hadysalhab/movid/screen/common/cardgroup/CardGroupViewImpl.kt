@@ -48,15 +48,16 @@ class MoviesView(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
-) : CardGroupViewImpl<MovieGroup>(layoutInflater, parent, viewFactory), MovieCard.Listener {
+) : CardGroupViewImpl<MoviesResponse>(layoutInflater, parent, viewFactory), MovieCard.Listener {
 
-    override fun displayCardGroup(data: MovieGroup) {
-        this.groupType = data.groupType
-        groupTitle.text = data.groupType.value.toUpperCase().split("_").joinToString(" ")
-        createMovieCardAndAppend(data.movies)
+    override fun displayCardGroup(data: MoviesResponse) {
+        this.groupType = data.tag
+        groupTitle.text = data.tag.value.toUpperCase().split("_").joinToString(" ")
+        createMovieCardAndAppend(data.movies!!)
     }
 
     private fun createMovieCardAndAppend(movies: List<Movie>) {
+        linearLayout.removeAllViews()
         movies.take(5).forEach { movie ->
             val movieCard = viewFactory.getMovieCard(linearLayout)
             movieCard.registerListener(this)
@@ -92,6 +93,7 @@ class CastsView(
     }
 
     private fun createCastCardAndAppend(casts: List<Cast>) {
+        linearLayout.removeAllViews()
         casts.take(5).forEach { cast ->
             val castCard = viewFactory.getCastCard(linearLayout)
             castCard.registerListener(this)

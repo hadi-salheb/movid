@@ -1,14 +1,11 @@
 package com.hadysalhab.movid.movies.usecases.groups
 
-import android.util.Log
+
 import com.google.gson.Gson
-import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
-import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
-import com.hadysalhab.movid.common.constants.POSTER_SIZE_300
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.Movie
-import com.hadysalhab.movid.movies.MovieGroup
+import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
@@ -20,7 +17,7 @@ import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiResponse
 import com.hadysalhab.movid.networking.ApiSuccessResponse
 import com.hadysalhab.movid.networking.responses.MovieSchema
-import com.hadysalhab.movid.networking.responses.MoviesResponse
+import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
 import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
@@ -43,7 +40,7 @@ class FetchMovieGroupsUseCase(
 ) :
     BaseBusyObservable<FetchMovieGroupsUseCase.Listener>() {
     interface Listener {
-        fun onFetchMovieGroupsSucceeded(movieGroups: List<MovieGroup>)
+        fun onFetchMovieGroupsSucceeded(movieGroups: List<MoviesResponse>)
         fun onFetchMovieGroupsFailed(msg: String)
         fun onFetching()
     }
@@ -51,42 +48,53 @@ class FetchMovieGroupsUseCase(
     private var mNumbOfFinishedUseCase = 0
     private var isAnyUseCaseFailed = false
     private val LOCK = Object()
-    private lateinit var movieGroups: MutableList<MovieGroup>
+    private lateinit var movieGroups: MutableList<MoviesResponse>
     private lateinit var errorMessage: String
     private lateinit var region: String
-    private val computations: Array<() -> Unit> = arrayOf(
-        ::fetchPopularMovies, ::fetchTopRatedMovies,
-        ::fetchUpcomingMovies, ::fetchNowPlayingMovies
-    )
+    private lateinit var computations: MutableList<() -> Unit>
 
     fun fetchMovieGroupsAndNotify(region: String) {
-        Log.d("FetchMovieGroupsUseCase", "${moviesStateManager.areMoviesGroupAvailable} ")
-        if (moviesStateManager.areMoviesGroupAvailable) {
-            this.movieGroups.clear()
-            this.movieGroups.addAll(moviesStateManager.moviesGroup)
-            notifySuccess()
-        } else {
-            // will throw an exception if a client triggered this flow while it is busy
-            assertNotBusyAndBecomeBusy()
-            // notify controller
-            listeners.forEach {
-                it.onFetching()
-            }
-            synchronized(LOCK) {
-                this.region = region
-                movieGroups = mutableListOf()
-                mNumbOfFinishedUseCase = 0
-                isAnyUseCaseFailed = false
-            }
-            backgroundThreadPoster.post {
-                waitForAllUseCasesToFinish()
-            }
-            computations.forEach {
-                backgroundThreadPoster.post {
-                    it.invoke()
+        // will throw an exception if a client triggered this flow while it is busy
+        assertNotBusyAndBecomeBusy()
+
+        synchronized(LOCK) {
+            movieGroups = mutableListOf()
+            this.region = region
+            mNumbOfFinishedUseCase = 0
+            isAnyUseCaseFailed = false
+            computations = mutableListOf()
+            validateComputations()
+            if(computations.size>0){
+                // notify controller
+                listeners.forEach {
+                    it.onFetching()
                 }
             }
         }
+        backgroundThreadPoster.post {
+            waitForAllUseCasesToFinish()
+        }
+        computations.forEach {
+            backgroundThreadPoster.post {
+                it.invoke()
+            }
+        }
+    }
+
+    private fun validateComputations() {
+        if (moviesStateManager.arePopularMoviesAvailable) this.movieGroups.add(moviesStateManager.popularMovies) else computations.add(
+            this::fetchPopularMovies
+        )
+        if (moviesStateManager.areUpcomingMoviesAvailable) this.movieGroups.add(moviesStateManager.upcomingMovies) else computations.add(
+            this::fetchUpcomingMovies
+        )
+        if (moviesStateManager.areTopRatedMoviesAvailable) this.movieGroups.add(moviesStateManager.topRatedMovies) else computations.add(
+            this::fetchTopRatedMovies
+        )
+        if (moviesStateManager.areNowPlayingMoviesAvailable) this.movieGroups.add(moviesStateManager.nowPlayingMovies) else computations.add(
+            this::fetchNowPlayingMovies
+        )
+
     }
 
     private fun fetchPopularMovies() {
@@ -126,36 +134,33 @@ class FetchMovieGroupsUseCase(
             if (isAnyUseCaseFailed) {
                 notifyFailure()
             } else {
-                moviesStateManager.updateMoviesGroup(movieGroups) //update global state
                 notifySuccess()
             }
         }
     }
 
     private fun handleResponse(
-        responseSchema: ApiResponse<MoviesResponse>,
+        responseSchemaSchema: ApiResponse<MoviesResponseSchema>,
         groupType: GroupType
     ) {
         synchronized(LOCK) {
-            when (responseSchema) {
+            when (responseSchemaSchema) {
                 is ApiSuccessResponse -> {
-                    val movieGroup =
-                        MovieGroup(
-                            groupType,
-                            getMovies(responseSchema.body.movies)
-                        )
+                    val movieGroup = getMovieResponse(groupType, responseSchemaSchema.body)
                     movieGroups.add(movieGroup)
                 }
                 is ApiEmptyResponse -> {
-                    val movieGroup = MovieGroup(
-                        groupType,
-                        emptyList()
+                    val movieGroup = getMovieResponse(
+                        groupType, MoviesResponseSchema(
+                            1, 0, 1,
+                            emptyList()
+                        )
                     )
                     movieGroups.add(movieGroup)
                 }
                 is ApiErrorResponse -> {
                     isAnyUseCaseFailed = true
-                    createErrorMessage(responseSchema.errorMessage)
+                    createErrorMessage(responseSchemaSchema.errorMessage)
                 }
             }
             mNumbOfFinishedUseCase++
@@ -163,27 +168,57 @@ class FetchMovieGroupsUseCase(
         }
     }
 
-    private fun getMovies(moviesSchema: List<MovieSchema>) = moviesSchema.map { movieSchema ->
-        with(movieSchema) {
-            var poster: String? = null //LATER SET DEFAULT IMAGE
-            posterPath?.let {
-                poster = IMAGES_BASE_URL + POSTER_SIZE_300 + posterPath
+    private fun getMovieResponse(groupType: GroupType, moviesResponseSchema: MoviesResponseSchema) =
+        when (groupType) {
+            GroupType.POPULAR -> {
+                val popular = createMoviesResponse(moviesResponseSchema,GroupType.POPULAR)
+                moviesStateManager.setPopularMovies(popular)
+                popular
             }
-            var backdrop: String? = null //LATER SET DEFAULT IMAGE
-            backdropPath?.let {
-                backdrop = IMAGES_BASE_URL + BACKDROP_SIZE_780 + backdropPath
+            GroupType.UPCOMING -> {
+                val upcoming = createMoviesResponse(moviesResponseSchema,GroupType.UPCOMING)
+                moviesStateManager.setUpcomingMovies(upcoming)
+                upcoming
             }
-            Movie(
-                id,
-                title,
-                poster,
-                backdrop,
-                voteAvg,
-                voteCount,
-                releaseDate,
-                overview
-            )
+            GroupType.TOP_RATED -> {
+                val topRated = createMoviesResponse(moviesResponseSchema,GroupType.TOP_RATED)
+                moviesStateManager.setTopRatedMovies(topRated)
+                topRated
+            }
+            GroupType.NOW_PLAYING -> {
+                val nowPlaying = createMoviesResponse(moviesResponseSchema,GroupType.NOW_PLAYING)
+                moviesStateManager.setNowPlayingMovies(nowPlaying)
+                nowPlaying
+            }
+            else -> throw RuntimeException("GroupType $groupType not supported in this UseCase")
         }
+
+    private fun createMoviesResponse(moviesResponse: MoviesResponseSchema,groupType: GroupType) =MoviesResponse(
+        moviesResponse.page,
+        moviesResponse.totalResults,
+        moviesResponse.total_pages,
+        getMovies(moviesResponse.movies),
+        groupType
+    )
+
+    private fun getMovies(moviesSchema: List<MovieSchema>): MutableList<Movie> {
+        val movies = mutableListOf<Movie>()
+        movies.addAll(moviesSchema.map { movieSchema ->
+            with(movieSchema) {
+
+                Movie(
+                    id,
+                    title,
+                    posterPath,
+                    backdropPath,
+                    voteAvg,
+                    voteCount,
+                    releaseDate,
+                    overview
+                )
+            }
+        })
+        return movies
     }
 
     private fun createErrorMessage(errMessage: String) {
@@ -199,6 +234,7 @@ class FetchMovieGroupsUseCase(
             }
         }
     }
+
     // notify controller
     private fun notifyFailure() {
         uiThreadPoster.post {
@@ -208,6 +244,7 @@ class FetchMovieGroupsUseCase(
         }
         becomeNotBusy()
     }
+
     // notify controller
     private fun notifySuccess() {
         uiThreadPoster.post {

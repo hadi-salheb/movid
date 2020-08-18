@@ -7,9 +7,10 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
+import com.hadysalhab.movid.common.constants.POSTER_SIZE_185
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.screen.common.ViewFactory
-import com.hadysalhab.movid.screen.common.rating.Rating
 import com.synnapps.carouselview.CarouselView
 
 class MovieDetailViewImpl(
@@ -67,8 +68,8 @@ class MovieDetailViewImpl(
             displayTagLine(movieDetail.details.tagLine ?: "")
             displayFacts(movieDetail.details)
             displayCasts(movieDetail.credits.cast)
-            displaySimilarMovies(movieDetail.similar.movies)
-            displayRecommendedMovies(movieDetail.recommendations.movies)
+            displaySimilarMovies(movieDetail.similar)
+            displayRecommendedMovies(movieDetail.recommendations)
             displayReviews(movieDetail.reviews)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
             progressBar.visibility = View.GONE
@@ -159,11 +160,10 @@ class MovieDetailViewImpl(
 
     }
 
-    private fun displaySimilarMovies(movies: List<Movie>) {
-        if (movies.isNotEmpty()) {
-            val movieGroup = MovieGroup(GroupType.SIMILAR_MOVIES, movies)
+    private fun displaySimilarMovies(moviesResponse: MoviesResponse) {
+        if (!moviesResponse.movies.isNullOrEmpty()) {
             val movieGroupView = viewFactory.getMoviesView(similarFL)
-            movieGroupView.displayCardGroup(movieGroup)
+            movieGroupView.displayCardGroup(moviesResponse)
             similarFL.removeAllViews()
             similarFL.addView(movieGroupView.getRootView())
         } else {
@@ -171,11 +171,10 @@ class MovieDetailViewImpl(
         }
     }
 
-    private fun displayRecommendedMovies(movies: List<Movie>) {
-        if (movies.isNotEmpty()) {
-            val movieGroup = MovieGroup(GroupType.RECOMMENDED_MOVIES, movies)
+    private fun displayRecommendedMovies(moviesResponse: MoviesResponse) {
+        if (!moviesResponse.movies.isNullOrEmpty()) {
             val movieGroupView = viewFactory.getMoviesView(recommendedFL)
-            movieGroupView.displayCardGroup(movieGroup)
+            movieGroupView.displayCardGroup(moviesResponse)
             recommendedFL.removeAllViews()
             recommendedFL.addView(movieGroupView.getRootView())
         } else {
@@ -211,7 +210,7 @@ class MovieDetailViewImpl(
     private fun displayPosterImage(posterPath: String?) {
         posterPath?.let {
             Glide.with(getContext())
-                .load(it)
+                .load(IMAGES_BASE_URL+ POSTER_SIZE_185+it)
                 .into(posterImageView)
         }
 

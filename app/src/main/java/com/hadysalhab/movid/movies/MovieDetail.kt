@@ -6,18 +6,12 @@ data class MovieDetail(
     val reviews: Reviews,
     val images: Images,
     val accountStates: AccountStates,
-    val similar: Movies,
-    val recommendations: Movies
+    val similar: MoviesResponse,
+    val recommendations: MoviesResponse
 ) {
     var timeStamp: Long? = null
 }
 
-data class Movies(
-    var page: Int,
-    val totalResults: Int,
-    val totalPages: Int,
-    val movies: List<Movie>
-)
 
 data class Credits(
     val id: Int,

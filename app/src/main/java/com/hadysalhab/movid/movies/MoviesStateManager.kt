@@ -2,24 +2,23 @@ package com.hadysalhab.movid.movies
 
 import com.hadysalhab.movid.common.time.TimeProvider
 
+private const val MOVIE_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
+private const val MOVIE_DETAIL_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
+
 class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
     private var movieGroupListTimeStamp: Long? = null
-    private val MOVIE_GROUPS_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
-    private val MOVIE_DETAIL_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
+
     private val _movieDetailList = mutableListOf<MovieDetail>()
     val movieDetailList: List<MovieDetail>
         get() = _movieDetailList
 
-    private val _moviesGroup: MutableList<MovieGroup> = mutableListOf()
-    val moviesGroup: List<MovieGroup>
-        get() = _moviesGroup
-
-
-    fun updateMoviesGroup(moviesGroup: List<MovieGroup>) {
-        _moviesGroup.clear()
-        _moviesGroup.addAll(moviesGroup)
-        movieGroupListTimeStamp = timeProvider.currentTimestamp
-
+    fun isMovieDetailAvailable(movieId: Int): Boolean {
+        return if (_movieDetailList.any { it.details.id == movieId }) {
+            val currentMovieDetail = _movieDetailList.find { it.details.id == movieId }
+            timeProvider.currentTimestamp - MOVIE_DETAIL_CACHE_TIMEOUT_MS < currentMovieDetail!!.timeStamp!!
+        } else {
+            false
+        }
     }
 
     fun addMovieDetailToList(movieDetail: MovieDetail) {
@@ -32,19 +31,64 @@ class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
         }
 
     }
+    val popularMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.POPULAR)
+    val topRatedMovies: MoviesResponse =
+        MoviesResponse(0, 0, 0, null, GroupType.TOP_RATED)
+    val upcomingMovies: MoviesResponse =
+        MoviesResponse(0, 0, 0, null, GroupType.UPCOMING)
+    val nowPlayingMovies: MoviesResponse =
+        MoviesResponse(0, 0, 0, null, GroupType.NOW_PLAYING)
 
-    fun isMovieDetailAvailable(movieId: Int): Boolean {
-        return if (_movieDetailList.any { it.details.id == movieId }) {
-            val currentMovieDetail = _movieDetailList.find { it.details.id == movieId }
-            timeProvider.currentTimestamp - MOVIE_DETAIL_CACHE_TIMEOUT_MS < currentMovieDetail!!.timeStamp!!
-        } else {
-            false
+    val arePopularMoviesAvailable: Boolean
+        get() = validateMovies(popularMovies)
+    val areTopRatedMoviesAvailable: Boolean
+        get() = validateMovies(topRatedMovies)
+    val areUpcomingMoviesAvailable: Boolean
+        get() = validateMovies(upcomingMovies)
+    val areNowPlayingMoviesAvailable: Boolean
+        get() = validateMovies(nowPlayingMovies)
+
+    private fun validateMovies(moviesResponse: MoviesResponse): Boolean {
+        return moviesResponse.movies != null && moviesResponse.timeStamp != null && (timeProvider.currentTimestamp - MOVIE_CACHE_TIMEOUT_MS) < moviesResponse.timeStamp!!
+    }
+
+    fun setPopularMovies(popular: MoviesResponse) {
+        popularMovies.apply {
+            timeStamp = timeProvider.currentTimestamp
+            page = popular.page
+            total_pages = popular.total_pages
+            movies = mutableListOf()
+            movies!!.addAll(popular.movies!!.toList())
         }
     }
 
-    val areMoviesGroupAvailable: Boolean
-        get() {
-            return _moviesGroup.isNotEmpty() && movieGroupListTimeStamp != null && (timeProvider.currentTimestamp - MOVIE_GROUPS_CACHE_TIMEOUT_MS) < movieGroupListTimeStamp!!
+    fun setTopRatedMovies(topRated: MoviesResponse) {
+        topRatedMovies.apply {
+            timeStamp = timeProvider.currentTimestamp
+            page = topRated.page
+            total_pages = topRated.total_pages
+            movies = mutableListOf()
+            movies!!.addAll(topRated.movies!!.toList())
         }
+    }
 
+    fun setUpcomingMovies(upcoming: MoviesResponse) {
+        upcomingMovies.apply {
+            timeStamp = timeProvider.currentTimestamp
+            page = upcoming.page
+            total_pages = upcoming.total_pages
+            movies = mutableListOf()
+            movies!!.addAll(upcoming.movies!!.toList())
+        }
+    }
+
+    fun setNowPlayingMovies(nowPlaying: MoviesResponse) {
+        nowPlayingMovies.apply {
+            timeStamp = timeProvider.currentTimestamp
+            page = nowPlaying.page
+            total_pages = nowPlaying.total_pages
+            movies = mutableListOf()
+            movies!!.addAll(nowPlaying.movies!!.toList())
+        }
+    }
 }

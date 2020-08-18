@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.hadysalhab.movid.common.DeviceConfigManager
-import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.GroupType
-import com.hadysalhab.movid.movies.MovieGroup
+import com.hadysalhab.movid.movies.MoviesResponse
+import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
@@ -110,7 +110,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         mainNavigator.toMovieListFragment(groupType.value)
     }
 
-    override fun onFetchMovieGroupsSucceeded(movieGroups: List<MovieGroup>) {
+    override fun onFetchMovieGroupsSucceeded(movieGroups: List<MoviesResponse>) {
         screenState = ScreenState.DATA_SCREEN
         displayMovies(movieGroups)
     }
@@ -126,8 +126,8 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         view.displayLoadingScreen()
     }
 
-    private fun displayMovies(movieGroups:List<MovieGroup>) {
-        view.displayMovieGroups(movieGroups.sortedBy { item -> item.groupType.ordinal }
-            .filter { it.movies.isNotEmpty() })
+    private fun displayMovies(movieGroups:List<MoviesResponse>) {
+        view.displayMovieGroups(  movieGroups.sortedBy { item -> item.tag.ordinal }
+            .filter { !it.movies.isNullOrEmpty() })
     }
 }

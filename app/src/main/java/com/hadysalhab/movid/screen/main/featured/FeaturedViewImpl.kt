@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.GroupType
-import com.hadysalhab.movid.movies.MovieGroup
+import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 
 class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory: ViewFactory) :
@@ -46,13 +46,14 @@ class FeaturedViewImpl(inflater: LayoutInflater, parent: ViewGroup?, viewFactory
         }
     }
 
-    override fun displayMovieGroups(movieGroups: List<MovieGroup>) {
+    override fun displayMovieGroups(movieGroups: List<MoviesResponse>) {
         circularProgress.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
         // if adapter already contains a list
         // diffUtil will render only items that are different
         adapter.submitList(movieGroups)
     }
+
 
     override fun displayLoadingScreen() {
         circularProgress.visibility = View.VISIBLE

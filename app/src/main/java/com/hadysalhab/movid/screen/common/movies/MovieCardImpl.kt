@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.screen.common.movies
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -8,7 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.common.constants.TAG
+import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_300
+import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
+import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.rating.Rating
@@ -43,7 +44,7 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFact
         movieTitle.text = movie.title
         movie.backdropPath?.let {
             Glide.with(getContext())
-                .load(it)
+                .load(IMAGES_BASE_URL+ BACKDROP_SIZE_780+it)
                 .into(movieImage)
         }
         movieReleaseDate.text = movie.releaseDate
