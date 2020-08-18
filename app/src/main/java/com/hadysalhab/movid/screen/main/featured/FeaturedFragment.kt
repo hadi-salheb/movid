@@ -6,28 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.hadysalhab.movid.common.DeviceConfigManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
-import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import javax.inject.Inject
 
 
-class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroupsUseCase.Listener {
-    private enum class ScreenState {
-        LOADING_SCREEN, ERROR_SCREEN, DATA_SCREEN
-    }
-
-    //on first time created -> loading screen is the default screen
-    private var screenState = ScreenState.LOADING_SCREEN
-
+class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
     companion object {
         @JvmStatic
         fun newInstance() = FeaturedFragment()
-        private const val SCREEN_STATE = "FEATURED_SCREEN_STATE"
     }
 
     @Inject
@@ -36,23 +28,19 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     @Inject
     lateinit var activityContext: Context
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var mainNavigator: MainNavigator
 
-    @Inject
-    lateinit var deviceConfigManager: DeviceConfigManager
-
     private lateinit var view: FeaturedView
+    private lateinit var featuredViewModel: FeaturedViewModel
 
-    @Inject
-    lateinit var fetchMovieGroupsUseCase: FetchMovieGroupsUseCase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityComponent.inject(this)
-        if (savedInstanceState != null) {
-            screenState = savedInstanceState.getSerializable(SCREEN_STATE) as ScreenState
-        }
+        featuredViewModel = ViewModelProvider(this, viewModelFactory)[FeaturedViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -68,37 +56,16 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
-        fetchMovieGroupsUseCase.registerListener(this)
-        //screenState represents the last screen was displayed to the user
-        //maybe the user navigated away (can trigger process death) or configuration change
-        when (screenState) {
-            ScreenState.LOADING_SCREEN -> {
-                if (fetchMovieGroupsUseCase.isBusy) {
-                    // fetching movies hasn't finished yet. Wait for it
-                    // keep the loading screen showing
-                } else {
-                    fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS())
-                }
-            }
-            ScreenState.DATA_SCREEN -> {
-                    fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS())
-            }
-            ScreenState.ERROR_SCREEN -> {
-                //wait for the user response
-            }
-        }
+        featuredViewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
+            render(viewState)
+        })
     }
 
     override fun onStop() {
         super.onStop()
         view.unregisterListener(this)
-        fetchMovieGroupsUseCase.unregisterListener(this)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable(SCREEN_STATE, screenState)
-    }
 
     override fun onMovieCardClicked(movieID: Int) {
         mainNavigator.toDetailFragment(movieID)
@@ -110,24 +77,21 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         mainNavigator.toMovieListFragment(groupType.value)
     }
 
-    override fun onFetchMovieGroupsSucceeded(movieGroups: List<MoviesResponse>) {
-        screenState = ScreenState.DATA_SCREEN
-        displayMovies(movieGroups)
-    }
 
-    override fun onFetchMovieGroupsFailed(msg: String) {
-        screenState = ScreenState.ERROR_SCREEN
-        Toast.makeText(activityContext, msg, Toast.LENGTH_LONG)
-            .show()
-    }
-
-    override fun onFetching() {
-        screenState = ScreenState.LOADING_SCREEN
-        view.displayLoadingScreen()
-    }
-
-    private fun displayMovies(movieGroups:List<MoviesResponse>) {
-        view.displayMovieGroups(  movieGroups.sortedBy { item -> item.tag.ordinal }
+    private fun displayMovies(movieGroups: List<MoviesResponse>) {
+        view.displayMovieGroups(movieGroups.sortedBy { item -> item.tag.ordinal }
             .filter { !it.movies.isNullOrEmpty() })
+    }
+
+    private fun render(viewState: FeaturedViewState) {
+        when (viewState) {
+            Loading -> view.displayLoadingScreen()
+            is Error -> Toast.makeText(
+                activityContext,
+                "error: ${viewState.errorMessage}",
+                Toast.LENGTH_LONG
+            ).show()
+            is FeaturedLoaded -> displayMovies(viewState.moviesResponseList)
+        }
     }
 }
