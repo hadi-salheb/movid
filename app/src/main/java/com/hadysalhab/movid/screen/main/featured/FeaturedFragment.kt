@@ -10,7 +10,6 @@ import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.movies.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MovieGroup
-import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
@@ -37,8 +36,6 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
     @Inject
     lateinit var activityContext: Context
 
-    @Inject
-    lateinit var moviesStateManager: MoviesStateManager
 
     @Inject
     lateinit var mainNavigator: MainNavigator
@@ -115,7 +112,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
 
     override fun onFetchMovieGroupsSucceeded(movieGroups: List<MovieGroup>) {
         screenState = ScreenState.DATA_SCREEN
-        displayMovies()
+        displayMovies(movieGroups)
     }
 
     override fun onFetchMovieGroupsFailed(msg: String) {
@@ -129,8 +126,8 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener, FetchMovieGroups
         view.displayLoadingScreen()
     }
 
-    private fun displayMovies() {
-        view.displayMovieGroups(moviesStateManager.moviesGroup.sortedBy { item -> item.groupType.ordinal }
+    private fun displayMovies(movieGroups:List<MovieGroup>) {
+        view.displayMovieGroups(movieGroups.sortedBy { item -> item.groupType.ordinal }
             .filter { it.movies.isNotEmpty() })
     }
 }

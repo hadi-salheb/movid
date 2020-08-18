@@ -1,33 +1,74 @@
 package com.hadysalhab.movid.screen.main.movielist
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.hadysalhab.movid.R
+import com.hadysalhab.movid.common.DeviceConfigManager
+import com.hadysalhab.movid.movies.MoviesStateManager
+import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
+import javax.inject.Inject
 
 private const val ARG_GROUP_KEY = "arg_group_key"
 
-class MovieListFragment : Fragment() {
+class MovieListFragment : BaseFragment(), MovieListView.Listener {
     lateinit var groupType: String
+
+    @Inject
+    lateinit var viewFactory: ViewFactory
+
+    @Inject
+    lateinit var activityContext: Context
+
+    @Inject
+    lateinit var mainNavigator: MainNavigator
+
+    @Inject
+    lateinit var deviceConfigManager: DeviceConfigManager
+
+    @Inject
+    lateinit var moviesStateManager: MoviesStateManager
+
+    private lateinit var view: MovieListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activityComponent.inject(this)
         arguments?.let {
             groupType = it.getString(ARG_GROUP_KEY)
                 ?: throw RuntimeException("Cannot Start MovieListFragment without group type key")
         }
-        Log.d("MovieListFragment", "onCreate: $groupType ")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        if (!this::view.isInitialized) {
+            view = viewFactory.getMovieListView(container)
+        }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.layout_movie_list, container, false)
+        return view.getRootView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        view.registerListener(this)
+        val movieGroup = moviesStateManager.moviesGroup.find { group ->
+            group.groupType.value == groupType
+        }
+        movieGroup?.let {
+            view.displayMovies(movieGroup.movies)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        view.unregisterListener(this)
     }
 
     companion object {
@@ -39,4 +80,9 @@ class MovieListFragment : Fragment() {
                 }
             }
     }
+
+    override fun onMovieItemClicked(movieID: Int) {
+        Log.d("MovieListFragment", "onMovieItemClicked: $movieID ")
+    }
+
 }

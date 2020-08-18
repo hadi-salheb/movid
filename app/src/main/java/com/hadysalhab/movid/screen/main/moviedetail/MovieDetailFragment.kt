@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.hadysalhab.movid.movies.FetchMovieDetailUseCase
 import com.hadysalhab.movid.movies.MovieDetail
-import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.user.UserStateManager
@@ -32,9 +31,6 @@ class MovieDetailFragment : BaseFragment(), FetchMovieDetailUseCase.Listener,
 
     @Inject
     lateinit var userStateManager: UserStateManager
-
-    @Inject
-    lateinit var moviesStateManager: MoviesStateManager
 
     private lateinit var viewMvc: MovieDetailView
 

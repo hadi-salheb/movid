@@ -15,6 +15,8 @@ import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewImpl
+import com.hadysalhab.movid.screen.main.movielist.MovieListItemViewImpl
+import com.hadysalhab.movid.screen.main.movielist.MovieListViewImpl
 
 class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getFragmentFrameView(parent: ViewGroup?) = FragmentFrameView(layoutInflater, parent)
@@ -41,6 +43,11 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
             parent,
             this
         )
+
+    fun getMovieListItemView(parent: ViewGroup?) =
+        MovieListItemViewImpl(layoutInflater, parent, this)
+
+    fun getMovieListView(parent: ViewGroup?) = MovieListViewImpl(layoutInflater, parent, this)
 
     fun getCastsView(parent: ViewGroup?) =
         CastsView(

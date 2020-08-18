@@ -155,7 +155,7 @@ class FetchMovieGroupsUseCase(
                 poster = IMAGES_BASE_URL + POSTER_SIZE_300 + posterPath
             }
             var backdrop: String? = null //LATER SET DEFAULT IMAGE
-            posterPath?.let {
+            backdropPath?.let {
                 backdrop = IMAGES_BASE_URL + BACKDROP_SIZE_780 + backdropPath
             }
             Movie(id, title, poster, backdrop, voteAvg, voteCount, releaseDate, overview)
