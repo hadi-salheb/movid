@@ -2,7 +2,7 @@ package com.hadysalhab.movid.movies
 
 import com.hadysalhab.movid.common.time.TimeProvider
 
-private const val MOVIE_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
+private const val MOVIE_CACHE_TIMEOUT_MS = 20 * 1000
 private const val MOVIE_DETAIL_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
 
 class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
@@ -31,6 +31,7 @@ class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
         }
 
     }
+
     val popularMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.POPULAR)
     val topRatedMovies: MoviesResponse =
         MoviesResponse(0, 0, 0, null, GroupType.TOP_RATED)
@@ -39,13 +40,13 @@ class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
     val nowPlayingMovies: MoviesResponse =
         MoviesResponse(0, 0, 0, null, GroupType.NOW_PLAYING)
 
-    val arePopularMoviesAvailable: Boolean
+    val arePopularMoviesValid: Boolean
         get() = validateMovies(popularMovies)
-    val areTopRatedMoviesAvailable: Boolean
+    val areTopRatedMoviesValid: Boolean
         get() = validateMovies(topRatedMovies)
-    val areUpcomingMoviesAvailable: Boolean
+    val areUpcomingMoviesValid: Boolean
         get() = validateMovies(upcomingMovies)
-    val areNowPlayingMoviesAvailable: Boolean
+    val areNowPlayingMoviesValid: Boolean
         get() = validateMovies(nowPlayingMovies)
 
     private fun validateMovies(moviesResponse: MoviesResponse): Boolean {
@@ -53,12 +54,19 @@ class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
     }
 
     fun setPopularMovies(popular: MoviesResponse) {
-        popularMovies.apply {
-            timeStamp = timeProvider.currentTimestamp
-            page = popular.page
-            total_pages = popular.total_pages
-            movies = mutableListOf()
-            movies!!.addAll(popular.movies!!.toList())
+        if (popular.page == 1) {
+            popularMovies.apply {
+                timeStamp = timeProvider.currentTimestamp
+                page = popular.page
+                total_pages = popular.total_pages
+                movies = mutableListOf()
+                movies!!.addAll(popular.movies!!.toList())
+            }
+        } else {
+            popularMovies.apply {
+                page = popular.page
+                movies!!.addAll(popular.movies!!.toList())
+            }
         }
     }
 

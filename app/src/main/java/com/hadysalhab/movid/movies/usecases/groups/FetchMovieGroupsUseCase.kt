@@ -82,16 +82,16 @@ class FetchMovieGroupsUseCase(
     }
 
     private fun validateComputations() {
-        if (moviesStateManager.arePopularMoviesAvailable) this.movieGroups.add(moviesStateManager.popularMovies) else computations.add(
+        if (moviesStateManager.arePopularMoviesValid) this.movieGroups.add(moviesStateManager.popularMovies) else computations.add(
             this::fetchPopularMovies
         )
-        if (moviesStateManager.areUpcomingMoviesAvailable) this.movieGroups.add(moviesStateManager.upcomingMovies) else computations.add(
+        if (moviesStateManager.areUpcomingMoviesValid) this.movieGroups.add(moviesStateManager.upcomingMovies) else computations.add(
             this::fetchUpcomingMovies
         )
-        if (moviesStateManager.areTopRatedMoviesAvailable) this.movieGroups.add(moviesStateManager.topRatedMovies) else computations.add(
+        if (moviesStateManager.areTopRatedMoviesValid) this.movieGroups.add(moviesStateManager.topRatedMovies) else computations.add(
             this::fetchTopRatedMovies
         )
-        if (moviesStateManager.areNowPlayingMoviesAvailable) this.movieGroups.add(moviesStateManager.nowPlayingMovies) else computations.add(
+        if (moviesStateManager.areNowPlayingMoviesValid) this.movieGroups.add(moviesStateManager.nowPlayingMovies) else computations.add(
             this::fetchNowPlayingMovies
         )
 
@@ -173,22 +173,22 @@ class FetchMovieGroupsUseCase(
             GroupType.POPULAR -> {
                 val popular = createMoviesResponse(moviesResponseSchema,GroupType.POPULAR)
                 moviesStateManager.setPopularMovies(popular)
-                popular
+                moviesStateManager.popularMovies
             }
             GroupType.UPCOMING -> {
                 val upcoming = createMoviesResponse(moviesResponseSchema,GroupType.UPCOMING)
                 moviesStateManager.setUpcomingMovies(upcoming)
-                upcoming
+                moviesStateManager.upcomingMovies
             }
             GroupType.TOP_RATED -> {
                 val topRated = createMoviesResponse(moviesResponseSchema,GroupType.TOP_RATED)
                 moviesStateManager.setTopRatedMovies(topRated)
-                topRated
+                moviesStateManager.topRatedMovies
             }
             GroupType.NOW_PLAYING -> {
                 val nowPlaying = createMoviesResponse(moviesResponseSchema,GroupType.NOW_PLAYING)
                 moviesStateManager.setNowPlayingMovies(nowPlaying)
-                nowPlaying
+                moviesStateManager.nowPlayingMovies
             }
             else -> throw RuntimeException("GroupType $groupType not supported in this UseCase")
         }
