@@ -18,7 +18,7 @@ class SplashActivity : BaseActivity() {
     lateinit var userStateManager: UserStateManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityComponent.inject(this)
+        injector.inject(this)
     }
 
     override fun onStart() {

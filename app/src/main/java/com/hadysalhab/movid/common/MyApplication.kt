@@ -9,12 +9,9 @@ import com.hadysalhab.movid.common.di.application.DaggerApplicationComponent
  * Custom application class
  * */
 class MyApplication : Application() {
-    lateinit var applicationComponent: ApplicationComponent
-
-    override fun onCreate() {
-        super.onCreate()
-        applicationComponent = DaggerApplicationComponent.builder().applicationModule(
-            ApplicationModule((this))
-        ).build()
-    }
+     val appComponent:ApplicationComponent by lazy{
+         DaggerApplicationComponent.builder().applicationModule(
+             ApplicationModule((this))
+         ).build()
+     }
 }

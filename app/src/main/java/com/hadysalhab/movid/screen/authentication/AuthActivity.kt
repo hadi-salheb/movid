@@ -22,7 +22,7 @@ class AuthActivity : BaseActivity(), FragmentFrameHost {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityComponent.inject(this)
+        injector.inject(this)
         view = viewFactory.getFragmentFrameView(null)
         authNavigator.init(savedInstanceState)
         setContentView(view.getRootView())

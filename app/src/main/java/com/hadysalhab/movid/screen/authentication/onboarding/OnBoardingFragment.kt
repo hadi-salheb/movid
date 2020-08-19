@@ -59,7 +59,7 @@ class OnBoardingFragment : BaseFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityComponent.inject(this)
+        injector.inject(this)
         if (savedInstanceState != null) {
             screenState = savedInstanceState.getSerializable(SCREEN_STATE) as ScreenState
         }

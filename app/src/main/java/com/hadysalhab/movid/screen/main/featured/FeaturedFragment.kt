@@ -13,6 +13,7 @@ import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
+import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
 
@@ -29,18 +30,18 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
     lateinit var activityContext: Context
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
     lateinit var mainNavigator: MainNavigator
-
+    @Inject
+    lateinit var myViewModelFactory: ViewModelFactory
     private lateinit var view: FeaturedView
     private lateinit var featuredViewModel: FeaturedViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityComponent.inject(this)
-        featuredViewModel = ViewModelProvider(this, viewModelFactory)[FeaturedViewModel::class.java]
+        injector.inject(this)
+        featuredViewModel =
+            ViewModelProvider(this, myViewModelFactory).get(FeaturedViewModel::class.java)
     }
 
     override fun onCreateView(

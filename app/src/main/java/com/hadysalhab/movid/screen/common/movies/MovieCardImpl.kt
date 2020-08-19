@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_300
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.movies.Movie

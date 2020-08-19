@@ -18,7 +18,7 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost {
     private lateinit var view: MainView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityComponent.inject(this)
+        injector.inject(this)
         view = viewFactory.getMainView(null)
         mainNavigator.init(savedInstanceState)
         setContentView(view.getRootView())

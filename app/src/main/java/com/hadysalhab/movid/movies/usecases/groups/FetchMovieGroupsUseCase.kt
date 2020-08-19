@@ -172,22 +172,22 @@ class FetchMovieGroupsUseCase(
         when (groupType) {
             GroupType.POPULAR -> {
                 val popular = createMoviesResponse(moviesResponseSchema,GroupType.POPULAR)
-                moviesStateManager.setPopularMovies(popular)
+                moviesStateManager.updatePopularMovies(popular)
                 moviesStateManager.popularMovies
             }
             GroupType.UPCOMING -> {
                 val upcoming = createMoviesResponse(moviesResponseSchema,GroupType.UPCOMING)
-                moviesStateManager.setUpcomingMovies(upcoming)
+                moviesStateManager.updateUpcomingMovies(upcoming)
                 moviesStateManager.upcomingMovies
             }
             GroupType.TOP_RATED -> {
                 val topRated = createMoviesResponse(moviesResponseSchema,GroupType.TOP_RATED)
-                moviesStateManager.setTopRatedMovies(topRated)
+                moviesStateManager.updateTopRatedMovies(topRated)
                 moviesStateManager.topRatedMovies
             }
             GroupType.NOW_PLAYING -> {
                 val nowPlaying = createMoviesResponse(moviesResponseSchema,GroupType.NOW_PLAYING)
-                moviesStateManager.setNowPlayingMovies(nowPlaying)
+                moviesStateManager.updateNowPlayingMovies(nowPlaying)
                 moviesStateManager.nowPlayingMovies
             }
             else -> throw RuntimeException("GroupType $groupType not supported in this UseCase")

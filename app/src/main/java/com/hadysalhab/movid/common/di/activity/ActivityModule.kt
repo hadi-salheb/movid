@@ -1,9 +1,10 @@
-package com.android.roam.wheelycool.dependencyinjection.presentation
+package com.hadysalhab.movid.common.di.activity
 
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.google.gson.Gson
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
@@ -19,9 +20,6 @@ import com.techyourchance.threadposter.UiThreadPoster
 import dagger.Module
 import dagger.Provides
 
-/**
- * Activity-Level module
- */
 @Module
 class ActivityModule(private val activity: FragmentActivity) {
 

@@ -47,7 +47,7 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener, FetchMovieList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityComponent.inject(this)
+        injector.inject(this)
         arguments?.let {
             groupType = it.getString(ARG_GROUP_KEY)
                 ?: throw RuntimeException("Cannot Start MovieListFragment without group type key")
@@ -69,7 +69,11 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener, FetchMovieList
         super.onStart()
         view.registerListener(this)
         fetchMovieListUseCase.registerListener(this)
-        fetchMovieListUseCase.fetchMovieListAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS(),GroupType.POPULAR,currentPage)
+        fetchMovieListUseCase.fetchMovieListAndNotify(
+            deviceConfigManager.getISO3166CountryCodeOrUS(),
+            GroupType.POPULAR,
+            currentPage
+        )
     }
 
     override fun onStop() {
@@ -93,7 +97,11 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener, FetchMovieList
     }
 
     override fun loadMoreItems() {
-        fetchMovieListUseCase.fetchMovieListAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS(),GroupType.POPULAR,currentPage+10)
+        fetchMovieListUseCase.fetchMovieListAndNotify(
+            deviceConfigManager.getISO3166CountryCodeOrUS(),
+            GroupType.POPULAR,
+            currentPage + 10
+        )
     }
 
     override fun onFetchingMovieList(page: Int) {
