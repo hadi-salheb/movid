@@ -6,10 +6,17 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.google.gson.Gson
+import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
+import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
+import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCase
+import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
@@ -63,16 +70,20 @@ class ActivityModule(private val activity: FragmentActivity) {
         layoutInflater: LayoutInflater
     ): ViewFactory = ViewFactory(layoutInflater)
 
+
+
     @Provides
     fun getFetchMovieDetailUseCase(
         tmdbApi: TmdbApi,
         gson: Gson,
-        moviesStateManager: MoviesStateManager
+        moviesStateManager: MoviesStateManager,
+        dataValidator: DataValidator
     ): FetchMovieDetailUseCase =
         FetchMovieDetailUseCase(
             tmdbApi,
             gson,
-            moviesStateManager
+            moviesStateManager,
+            dataValidator
         )
 
     @Provides
@@ -81,12 +92,40 @@ class ActivityModule(private val activity: FragmentActivity) {
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
         moviesStateManager: MoviesStateManager,
+        dataValidator: DataValidator,
         gson: Gson
     ) = FetchMovieListUseCase(
         fetchPopularMoviesUseCaseSync,
         backgroundThreadPoster,
         uiThreadPoster,
         moviesStateManager,
-        gson
+        gson,
+        dataValidator
     )
+
+    @Provides
+    fun getFetchMovieGroupsUseCase(
+        fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
+        fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
+        fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
+        fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
+        fetchLatestMoviesUseCaseSync: FetchLatestMoviesUseCaseSync,
+        gson: Gson,
+        moviesStateManager: MoviesStateManager,
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        dataValidator: DataValidator
+    ): FetchMovieGroupsUseCase =
+        FetchMovieGroupsUseCase(
+            fetchPopularMoviesUseCaseSync,
+            fetchTopRatedMoviesUseCaseSync,
+            fetchUpcomingMoviesUseCaseSync,
+            fetchNowPlayingMoviesUseCaseSync,
+            fetchLatestMoviesUseCaseSync,
+            dataValidator,
+            gson,
+            moviesStateManager,
+            backgroundThreadPoster,
+            uiThreadPoster
+        )
 }

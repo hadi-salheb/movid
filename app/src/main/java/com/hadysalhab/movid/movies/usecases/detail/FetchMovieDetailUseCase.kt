@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
+import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.networking.TmdbApi
@@ -19,7 +20,8 @@ import retrofit2.Response
 class FetchMovieDetailUseCase(
     private val tmdbApi: TmdbApi,
     private val gson: Gson,
-    private val moviesStateManager: MoviesStateManager
+    private val moviesStateManager: MoviesStateManager,
+    private val dataValidator: DataValidator
 ) :
     BaseBusyObservable<FetchMovieDetailUseCase.Listener>() {
     interface Listener {
@@ -31,8 +33,7 @@ class FetchMovieDetailUseCase(
     private lateinit var errorMessage: String
 
     fun fetchMovieDetailAndNotify(movieId: Int, sessionId: String) {
-        Log.d("MoviesStateManager", "fetchMovieDetailAndNotify: ${moviesStateManager.isMovieDetailAvailable(movieId)}")
-        if (moviesStateManager.isMovieDetailAvailable(movieId)) {
+        if (dataValidator.isMovieDetailAvailable(movieId,moviesStateManager.movieDetailList)) {
             notifySuccess(moviesStateManager.movieDetailList.find { it.details.id == movieId }!!)
         } else {
             listeners.forEach {

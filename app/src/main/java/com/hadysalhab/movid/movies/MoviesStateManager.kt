@@ -2,22 +2,11 @@ package com.hadysalhab.movid.movies
 
 import com.hadysalhab.movid.common.time.TimeProvider
 
-private const val MOVIE_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
-private const val MOVIE_DETAIL_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
 
 class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
     private val _movieDetailList = mutableListOf<MovieDetail>()
     val movieDetailList: List<MovieDetail>
         get() = _movieDetailList
-
-    fun isMovieDetailAvailable(movieId: Int): Boolean {
-        return if (_movieDetailList.any { it.details.id == movieId }) {
-            val currentMovieDetail = _movieDetailList.find { it.details.id == movieId }
-            timeProvider.currentTimestamp - MOVIE_DETAIL_CACHE_TIMEOUT_MS < currentMovieDetail!!.timeStamp!!
-        } else {
-            false
-        }
-    }
 
     fun addMovieDetailToList(movieDetail: MovieDetail) {
         // only add movie that does not exist or if movie exist but its detail are not updated!!
@@ -27,69 +16,43 @@ class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
             movieDetail.timeStamp = timeProvider.currentTimestamp
             _movieDetailList.add(movieDetail)
         }
-
     }
 
-    lateinit var popularMovies: MoviesResponse
-    lateinit var topRatedMovies: MoviesResponse
-    lateinit var upcomingMovies: MoviesResponse
-    lateinit var nowPlayingMovies: MoviesResponse
-
-    val arePopularMoviesValid: Boolean
-        get() = this::popularMovies.isInitialized && (timeProvider.currentTimestamp - MOVIE_CACHE_TIMEOUT_MS) < popularMovies.timeStamp!!
-    val areTopRatedMoviesValid: Boolean
-        get() = this::topRatedMovies.isInitialized && (timeProvider.currentTimestamp - MOVIE_CACHE_TIMEOUT_MS) < topRatedMovies.timeStamp!!
-    val areUpcomingMoviesValid: Boolean
-        get() = this::upcomingMovies.isInitialized && (timeProvider.currentTimestamp - MOVIE_CACHE_TIMEOUT_MS) < upcomingMovies.timeStamp!!
-    val areNowPlayingMoviesValid: Boolean
-        get() = this::nowPlayingMovies.isInitialized && (timeProvider.currentTimestamp - MOVIE_CACHE_TIMEOUT_MS) < nowPlayingMovies.timeStamp!!
-
+    val popularMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.POPULAR)
+    val topRatedMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.TOP_RATED)
+    val upcomingMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.UPCOMING)
+    val nowPlayingMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.NOW_PLAYING)
 
     fun updatePopularMovies(popular: MoviesResponse) {
-        popularMovies = MoviesResponse(
-            popular.page,
-            popular.totalResults,
-            popular.total_pages,
-            popular.movies,
-            popular.tag
-        ).apply {
-            timeStamp = timeProvider.currentTimestamp
-        }
+        updateMoviesResponse(popular, popularMovies)
     }
 
     fun updateTopRatedMovies(topRated: MoviesResponse) {
-        topRatedMovies = MoviesResponse(
-            topRated.page,
-            topRated.totalResults,
-            topRated.total_pages,
-            topRated.movies,
-            topRated.tag
-        ).apply {
-            timeStamp = timeProvider.currentTimestamp
-        }
+        updateMoviesResponse(topRated, topRatedMovies)
     }
 
     fun updateUpcomingMovies(upcoming: MoviesResponse) {
-        upcomingMovies = MoviesResponse(
-            upcoming.page,
-            upcoming.totalResults,
-            upcoming.total_pages,
-            upcoming.movies,
-            upcoming.tag
-        ).apply {
-            timeStamp = timeProvider.currentTimestamp
-        }
+        updateMoviesResponse(upcoming, upcomingMovies)
     }
 
     fun updateNowPlayingMovies(nowPlaying: MoviesResponse) {
-        nowPlayingMovies = MoviesResponse(
-            nowPlaying.page,
-            nowPlaying.totalResults,
-            nowPlaying.total_pages,
-            nowPlaying.movies,
-            nowPlaying.tag
-        ).apply {
+        updateMoviesResponse(nowPlaying, nowPlayingMovies)
+    }
+
+    private fun updateMoviesResponse(
+        newMoviesResponse: MoviesResponse,
+        oldMoviesResponse: MoviesResponse
+    ) {
+        oldMoviesResponse.apply {
+            page = newMoviesResponse.page
+            total_pages = newMoviesResponse.total_pages
+            totalResults = newMoviesResponse.totalResults
+            movies = mutableListOf()
+            movies!!.addAll(newMoviesResponse.movies ?: emptyList())
             timeStamp = timeProvider.currentTimestamp
         }
     }
 }
+
+
+

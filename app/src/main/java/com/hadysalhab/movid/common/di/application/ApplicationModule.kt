@@ -9,6 +9,7 @@ import com.hadysalhab.movid.authentication.SignTokenUseCase
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
+import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
@@ -163,27 +164,5 @@ class ApplicationModule(private val application: Application) {
     fun getMoviesStateManager(timeProvider: TimeProvider) = MoviesStateManager(timeProvider)
 
     @Provides
-    @Singleton
-    fun getFetchMovieGroupsUseCase(
-        fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
-        fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
-        fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
-        fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
-        fetchLatestMoviesUseCaseSync: FetchLatestMoviesUseCaseSync,
-        gson: Gson,
-        moviesStateManager: MoviesStateManager,
-        backgroundThreadPoster: BackgroundThreadPoster,
-        uiThreadPoster: UiThreadPoster
-    ): FetchMovieGroupsUseCase =
-        FetchMovieGroupsUseCase(
-            fetchPopularMoviesUseCaseSync,
-            fetchTopRatedMoviesUseCaseSync,
-            fetchUpcomingMoviesUseCaseSync,
-            fetchNowPlayingMoviesUseCaseSync,
-            fetchLatestMoviesUseCaseSync,
-            gson,
-            moviesStateManager,
-            backgroundThreadPoster,
-            uiThreadPoster
-        )
+    fun dataValidator(timeProvider: TimeProvider): DataValidator = DataValidator(timeProvider)
 }

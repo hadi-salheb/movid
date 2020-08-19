@@ -1,6 +1,7 @@
 package com.hadysalhab.movid.movies.usecases.list
 
 import com.google.gson.Gson
+import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.Movie
@@ -22,10 +23,11 @@ class FetchMovieListUseCase(
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
     private val moviesStateManager: MoviesStateManager,
-    private val gson: Gson
+    private val gson: Gson,
+    private val dataValidator: DataValidator
 ) : BaseBusyObservable<FetchMovieListUseCase.Listener>() {
     interface Listener {
-        fun onFetchingMovieList(page:Int)
+        fun onFetchingMovieList(page: Int)
         fun onFetchMovieListSuccess(moviesResponse: MoviesResponse)
         fun onFetchMovieListFailed(msg: String)
     }
@@ -46,7 +48,7 @@ class FetchMovieListUseCase(
     private fun getPopularMovies(region: String, pageInRequest: Int) {
         //check if 24hrs passed when requesting the first page
         if (pageInRequest == 1) {
-            if (moviesStateManager.arePopularMoviesValid) {
+            if (dataValidator.isMoviesResponseValid(moviesStateManager.popularMovies)) {
                 this.moviesResponse = moviesStateManager.popularMovies
                 notifySuccess()
             } else {
