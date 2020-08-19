@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager
 import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.datavalidator.DataValidator
-import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
@@ -22,6 +21,7 @@ import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
+import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 import dagger.Module
@@ -71,7 +71,6 @@ class ActivityModule(private val activity: FragmentActivity) {
     ): ViewFactory = ViewFactory(layoutInflater)
 
 
-
     @Provides
     fun getFetchMovieDetailUseCase(
         tmdbApi: TmdbApi,
@@ -85,6 +84,9 @@ class ActivityModule(private val activity: FragmentActivity) {
             moviesStateManager,
             dataValidator
         )
+
+    @Provides
+    fun toastHelper(activityContext: Context) = ToastHelper(activityContext)
 
     @Provides
     fun getFetchMovieListUseCase(
