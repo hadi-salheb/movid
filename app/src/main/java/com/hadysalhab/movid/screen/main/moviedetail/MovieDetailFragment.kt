@@ -39,9 +39,6 @@ class MovieDetailFragment : BaseFragment(),
         }
         movieDetailViewModel =
             ViewModelProvider(this, myViewModelFactory).get(MovieDetailViewModel::class.java)
-        if(savedInstanceState == null){
-            movieDetailViewModel.getMovieDetail(movieID!!)
-        }
     }
 
     override fun onCreateView(
@@ -57,6 +54,7 @@ class MovieDetailFragment : BaseFragment(),
     override fun onStart() {
         super.onStart()
         viewMvc.registerListener(this)
+        movieDetailViewModel.onStart(movieID!!)
         movieDetailViewModel.viewState.observe(viewLifecycleOwner, Observer {
             render(it)
         })

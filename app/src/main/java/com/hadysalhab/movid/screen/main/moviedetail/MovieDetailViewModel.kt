@@ -17,14 +17,27 @@ class MovieDetailViewModel @Inject constructor(
     val viewState: LiveData<MovieDetailViewState>
         get() = _viewState
 
-    init {
-        _viewState.value = Loading
+    fun onStart(movieID: Int) {
+        when (_viewState.value) {
+            null -> {
+                fetchMovieDetailUseCase.registerListener(this)
+                fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
+                    movieID,
+                    userStateManager.sessionId
+                )
+            }
+            Loading, is Error -> {
+                return
+            }
+            is DetailLoaded -> {
+                //check if movie is still valid
+                fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
+                    movieID,
+                    userStateManager.sessionId
+                )
+            }
+        }
 
-    }
-
-    fun getMovieDetail(movieID: Int) {
-        fetchMovieDetailUseCase.registerListener(this)
-        fetchMovieDetailUseCase.fetchMovieDetailAndNotify(movieID, userStateManager.sessionId)
     }
 
 
