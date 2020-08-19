@@ -65,6 +65,8 @@ dependencies {
     // Carousel https://github.com/sayyam/carouselview
     implementation 'com.synnapps:carouselview:0.1.5'
 
+    // https://github.com/Zhuinden/event-emitter
+    implementation 'com.github.Zhuinden:event-emitter:1.1.0'
 
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.7.2"
