@@ -27,17 +27,19 @@ class FetchMovieListUseCase(
     private val dataValidator: DataValidator
 ) : BaseBusyObservable<FetchMovieListUseCase.Listener>() {
     interface Listener {
-        fun onFetchingMovieList(page: Int)
+        fun onFetchingMovieList()
         fun onFetchMovieListSuccess(moviesResponse: MoviesResponse)
         fun onFetchMovieListFailed(msg: String)
     }
 
-    private lateinit var moviesResponse: MoviesResponse
     private lateinit var errorMessage: String
+    private var page = 1
 
-    fun fetchMovieListAndNotify(region: String, groupType: GroupType, page: Int) {
+    fun fetchMovieListAndNotify(region: String, groupType: String, page: Int) {
+        assertNotBusyAndBecomeBusy()
+        this.page = page
         when (groupType) {
-            GroupType.POPULAR -> {
+            GroupType.POPULAR.value -> {
                 getPopularMovies(region, page)
             }
             else -> throw RuntimeException("GroupType not supported")
@@ -49,37 +51,16 @@ class FetchMovieListUseCase(
         //check if 24hrs passed when requesting the first page
         if (pageInRequest == 1) {
             if (dataValidator.isMoviesResponseValid(moviesStateManager.popularMovies)) {
-                this.moviesResponse = moviesStateManager.popularMovies
-                notifySuccess()
-            } else {
-                fetchPopularMovies(region, 1)
-            }
-            // avoid checking expiration during pagination
-        } else {
-            val currentAvailablePage = moviesStateManager.popularMovies.page
-            //process death happened
-            if (currentAvailablePage == 0) {
-                fetchPopularMovies(region, 1)
-            } else {
-                when (pageInRequest) {
-                    in 1..currentAvailablePage -> {
-                        this.moviesResponse = moviesStateManager.popularMovies
-                        notifySuccess()
-                    }
-                    else -> {
-                        if (currentAvailablePage == moviesStateManager.popularMovies.total_pages) {
-                            return
-                        }
-                        fetchPopularMovies(region, currentAvailablePage + 1)
-                    }
-                }
+                notifySuccess(moviesStateManager.popularMovies)
+                return
             }
         }
+        fetchPopularMovies(region, pageInRequest)
     }
 
     private fun fetchPopularMovies(region: String, page: Int) {
         listeners.forEach {
-            it.onFetchingMovieList(page)
+            it.onFetchingMovieList()
         }
         backgroundThreadPoster.post {
             val res = fetchPopularMoviesUseCaseSync.fetchPopularMoviesSync(region, page)
@@ -92,8 +73,7 @@ class FetchMovieListUseCase(
         when (response) {
             is ApiSuccessResponse -> {
                 val movieGroup = getMovieResponse(tag, response.body)
-                this.moviesResponse = movieGroup
-                notifySuccess()
+                notifySuccess(movieGroup)
             }
             is ApiEmptyResponse -> {
                 val movieGroup = getMovieResponse(
@@ -102,8 +82,7 @@ class FetchMovieListUseCase(
                         emptyList()
                     )
                 )
-                this.moviesResponse = movieGroup
-                notifySuccess()
+                notifySuccess(movieGroup)
             }
             is ApiErrorResponse -> {
                 createErrorMessage(response.errorMessage)
@@ -115,24 +94,37 @@ class FetchMovieListUseCase(
     private fun getMovieResponse(groupType: GroupType, moviesResponseSchema: MoviesResponseSchema) =
         when (groupType) {
             GroupType.POPULAR -> {
-                val popular = createMoviesResponse(moviesResponseSchema, GroupType.POPULAR)
-                moviesStateManager.updatePopularMovies(popular)
-                moviesStateManager.popularMovies
+                var popular = createMoviesResponse(moviesResponseSchema, GroupType.POPULAR)
+                if (page == 1) {
+                    moviesStateManager.updatePopularMovies(popular)
+                    popular = moviesStateManager.popularMovies
+                }
+                popular
             }
             GroupType.UPCOMING -> {
-                val upcoming = createMoviesResponse(moviesResponseSchema, GroupType.UPCOMING)
-                moviesStateManager.updateUpcomingMovies(upcoming)
-                moviesStateManager.upcomingMovies
+                var upcoming = createMoviesResponse(moviesResponseSchema, GroupType.UPCOMING)
+                if (page == 1) {
+                    moviesStateManager.updateUpcomingMovies(upcoming)
+                    upcoming = moviesStateManager.upcomingMovies
+                }
+                upcoming
+
             }
             GroupType.TOP_RATED -> {
-                val topRated = createMoviesResponse(moviesResponseSchema, GroupType.TOP_RATED)
-                moviesStateManager.updateTopRatedMovies(topRated)
-                moviesStateManager.topRatedMovies
+                var topRated = createMoviesResponse(moviesResponseSchema, GroupType.TOP_RATED)
+                if (page == 1) {
+                    moviesStateManager.updateTopRatedMovies(topRated)
+                    topRated = moviesStateManager.topRatedMovies
+                }
+                topRated
             }
             GroupType.NOW_PLAYING -> {
-                val nowPlaying = createMoviesResponse(moviesResponseSchema, GroupType.NOW_PLAYING)
-                moviesStateManager.updateNowPlayingMovies(nowPlaying)
-                moviesStateManager.nowPlayingMovies
+                var nowPlaying = createMoviesResponse(moviesResponseSchema, GroupType.NOW_PLAYING)
+                if (page == 1) {
+                    moviesStateManager.updateNowPlayingMovies(nowPlaying)
+                    nowPlaying = moviesStateManager.nowPlayingMovies
+                }
+                nowPlaying
             }
             else -> throw RuntimeException("GroupType $groupType not supported in this UseCase")
         }
@@ -190,10 +182,10 @@ class FetchMovieListUseCase(
     }
 
     // notify controller
-    private fun notifySuccess() {
+    private fun notifySuccess(moviesResponse: MoviesResponse) {
         uiThreadPoster.post {
             listeners.forEach {
-                it.onFetchMovieListSuccess(this.moviesResponse)
+                it.onFetchMovieListSuccess(moviesResponse)
             }
         }
         becomeNotBusy()
