@@ -17,8 +17,8 @@ class MovieListViewImpl(
 ) : MovieListView(), MovieListAdapter.Listener {
     private val recyclerView: RecyclerView
     private val adapter: MovieListAdapter
-    private val progressBar:ProgressBar
-    private val paginationProgressBar:ProgressBar
+    private val progressBar: ProgressBar
+    private val paginationProgressBar: ProgressBar
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_list, parent, false))
@@ -31,16 +31,25 @@ class MovieListViewImpl(
             setHasFixedSize(true)
             adapter = this@MovieListViewImpl.adapter
         }
-        recyclerView.addOnScrollListener(object:RecyclerView.OnScrollListener(){
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (! recyclerView.canScrollVertically(1)){
-                    listeners.forEach {
-                        it.loadMoreItems()
-                    }
+        recyclerView.addOnScrollListener(object :OnVerticalScrollListener(){
+            override fun onScrolledUp() {
+
+            }
+
+            override fun onScrolledDown() {
+            }
+
+            override fun onScrolledToTop() {
+            }
+
+            override fun onScrolledToBottom() {
+                listeners.forEach {
+                    it.loadMoreItems()
                 }
             }
-        })
+
+        }
+        )
     }
 
     override fun displayMovies(movies: List<Movie>) {
@@ -65,5 +74,24 @@ class MovieListViewImpl(
         listeners.forEach {
             it.onMovieItemClicked(movieID)
         }
+    }
+
+    abstract class OnVerticalScrollListener : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            if (!recyclerView.canScrollVertically(-1)) {
+                onScrolledToTop()
+            } else if (!recyclerView.canScrollVertically(1)) {
+                onScrolledToBottom()
+            } else if (dy < 0) {
+                onScrolledUp()
+            } else if (dy > 0) {
+                onScrolledDown()
+            }
+        }
+
+        abstract fun onScrolledUp()
+        abstract fun onScrolledDown()
+        abstract fun onScrolledToTop()
+        abstract fun onScrolledToBottom()
     }
 }
