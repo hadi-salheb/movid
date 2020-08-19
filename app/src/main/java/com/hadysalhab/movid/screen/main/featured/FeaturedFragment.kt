@@ -31,11 +31,11 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
 
     @Inject
     lateinit var mainNavigator: MainNavigator
+
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
     private lateinit var view: FeaturedView
     private lateinit var featuredViewModel: FeaturedViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +57,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
+        featuredViewModel.onStart()
         featuredViewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             render(viewState)
         })
@@ -67,17 +68,13 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         view.unregisterListener(this)
     }
 
-
     override fun onMovieCardClicked(movieID: Int) {
         mainNavigator.toDetailFragment(movieID)
     }
 
     override fun onSeeAllClicked(groupType: GroupType) {
-        Toast.makeText(activityContext, "See All for $groupType is clicked", Toast.LENGTH_LONG)
-            .show()
         mainNavigator.toMovieListFragment(groupType.value)
     }
-
 
     private fun displayMovies(movieGroups: List<MoviesResponse>) {
         view.displayMovieGroups(movieGroups.sortedBy { item -> item.tag.ordinal }
