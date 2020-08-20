@@ -7,7 +7,10 @@ import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.MoviesStateManager
+import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiResponse
@@ -20,6 +23,9 @@ import com.techyourchance.threadposter.UiThreadPoster
 
 class FetchMovieListUseCase(
     private val fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
+    private val fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
+    private val fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
+    private val fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
     private val moviesStateManager: MoviesStateManager,
@@ -41,6 +47,15 @@ class FetchMovieListUseCase(
         when (groupType) {
             GroupType.POPULAR.value -> {
                 getPopularMovies(region, page)
+            }
+            GroupType.NOW_PLAYING.value->{
+                getNowPlayingMovies(region,page)
+            }
+            GroupType.UPCOMING.value->{
+                getUpcomingMovies(region,page)
+            }
+            GroupType.TOP_RATED.value->{
+                getTopRatedMovies(region,page)
             }
             else -> throw RuntimeException("GroupType not supported")
         }
@@ -64,6 +79,69 @@ class FetchMovieListUseCase(
         }
         backgroundThreadPoster.post {
             val res = fetchPopularMoviesUseCaseSync.fetchPopularMoviesSync(region, page)
+            handleResponse(res, GroupType.POPULAR)
+        }
+
+    }
+    private fun getNowPlayingMovies(region: String, pageInRequest: Int) {
+        //check if 24hrs passed when requesting the first page
+        if (pageInRequest == 1) {
+            if (dataValidator.isMoviesResponseValid(moviesStateManager.nowPlayingMovies)) {
+                notifySuccess(moviesStateManager.nowPlayingMovies)
+                return
+            }
+        }
+        fetNowPlayingMovies(region, pageInRequest)
+    }
+
+    private fun fetNowPlayingMovies(region: String, page: Int) {
+        listeners.forEach {
+            it.onFetchingMovieList()
+        }
+        backgroundThreadPoster.post {
+            val res = fetchNowPlayingMoviesUseCaseSync.fetchNowPlayingMoviesSync(region, page)
+            handleResponse(res, GroupType.POPULAR)
+        }
+
+    }
+    private fun getTopRatedMovies(region: String, pageInRequest: Int) {
+        //check if 24hrs passed when requesting the first page
+        if (pageInRequest == 1) {
+            if (dataValidator.isMoviesResponseValid(moviesStateManager.topRatedMovies)) {
+                notifySuccess(moviesStateManager.topRatedMovies)
+                return
+            }
+        }
+        fetchTopRatedMovies(region, pageInRequest)
+    }
+
+    private fun fetchTopRatedMovies(region: String, page: Int) {
+        listeners.forEach {
+            it.onFetchingMovieList()
+        }
+        backgroundThreadPoster.post {
+            val res = fetchTopRatedMoviesUseCaseSync.fetchTopRatedMoviesSync(region, page)
+            handleResponse(res, GroupType.POPULAR)
+        }
+
+    }
+    private fun getUpcomingMovies(region: String, pageInRequest: Int) {
+        //check if 24hrs passed when requesting the first page
+        if (pageInRequest == 1) {
+            if (dataValidator.isMoviesResponseValid(moviesStateManager.upcomingMovies)) {
+                notifySuccess(moviesStateManager.upcomingMovies)
+                return
+            }
+        }
+        fetchUpcomingMovies(region, pageInRequest)
+    }
+
+    private fun fetchUpcomingMovies(region: String, page: Int) {
+        listeners.forEach {
+            it.onFetchingMovieList()
+        }
+        backgroundThreadPoster.post {
+            val res = fetchUpcomingMoviesUseCaseSync.fetchUpcomingMoviesSync(region, page)
             handleResponse(res, GroupType.POPULAR)
         }
 

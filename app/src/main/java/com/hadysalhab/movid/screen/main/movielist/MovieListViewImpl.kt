@@ -76,6 +76,7 @@ class MovieListViewImpl(
         }
     }
 
+  //  https://stackoverflow.com/questions/26543131/how-to-implement-endless-list-with-recyclerview
     abstract class OnVerticalScrollListener : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             if (!recyclerView.canScrollVertically(-1)) {

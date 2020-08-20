@@ -91,6 +91,9 @@ class ActivityModule(private val activity: FragmentActivity) {
     @Provides
     fun getFetchMovieListUseCase(
         fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
+        fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
+        fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
+        fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
         moviesStateManager: MoviesStateManager,
@@ -98,6 +101,9 @@ class ActivityModule(private val activity: FragmentActivity) {
         gson: Gson
     ) = FetchMovieListUseCase(
         fetchPopularMoviesUseCaseSync,
+        fetchUpcomingMoviesUseCaseSync,
+        fetchTopRatedMoviesUseCaseSync,
+        fetchNowPlayingMoviesUseCaseSync,
         backgroundThreadPoster,
         uiThreadPoster,
         moviesStateManager,
