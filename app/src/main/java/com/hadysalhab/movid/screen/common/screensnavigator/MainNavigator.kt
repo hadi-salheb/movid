@@ -54,8 +54,8 @@ class MainNavigator(
     fun toDetailFragment(movieID: Int) =
         fragNavController.pushFragment(MovieDetailFragment.newInstance(movieID))
 
-    fun toMovieListFragment(groupType: String) =
-        fragNavController.pushFragment(MovieListFragment.newInstance(groupType))
+    fun toMovieListFragment(groupType: String,movieID: Int?) =
+        fragNavController.pushFragment(MovieListFragment.newInstance(groupType,movieID))
 
     fun clearFeaturedStack() {
         fragNavController.clearStack()

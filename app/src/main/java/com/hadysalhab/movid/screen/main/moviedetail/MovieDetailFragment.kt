@@ -94,8 +94,11 @@ class MovieDetailFragment : BaseFragment(),
         }
     }
 
+    //SeeAll can be for cast or movies!!
     override fun onSeeAllClicked(groupType: GroupType) {
-        toastHelper.displayMessage("On See All clicked for $groupType")
+        if(groupType!= GroupType.CAST){
+            mainNavigator.toMovieListFragment(groupType.value,movieID)
+        }
     }
 
     override fun onCastClicked(castId: Int) {
@@ -103,7 +106,6 @@ class MovieDetailFragment : BaseFragment(),
     }
 
     override fun onMovieClicked(movieId: Int) {
-        toastHelper.displayMessage("On movie card clicked $movieId")
         mainNavigator.toDetailFragment(movieId)
     }
 

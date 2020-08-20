@@ -9,6 +9,7 @@ import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
 import com.hadysalhab.movid.networking.ApiEmptyResponse
@@ -26,6 +27,7 @@ class FetchMovieListUseCase(
     private val fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
     private val fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
     private val fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
+    private val fetchSimilarMoviesUseCaseSync: FetchSimilarMoviesUseCaseSync,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
     private val moviesStateManager: MoviesStateManager,
@@ -41,25 +43,43 @@ class FetchMovieListUseCase(
     private lateinit var errorMessage: String
     private var page = 1
 
-    fun fetchMovieListAndNotify(region: String, groupType: String, page: Int) {
+    fun fetchMovieListAndNotify(region: String, groupType: String, page: Int, movieID: Int?) {
         assertNotBusyAndBecomeBusy()
         this.page = page
         when (groupType) {
             GroupType.POPULAR.value -> {
                 getPopularMovies(region, page)
             }
-            GroupType.NOW_PLAYING.value->{
-                getNowPlayingMovies(region,page)
+            GroupType.NOW_PLAYING.value -> {
+                getNowPlayingMovies(region, page)
             }
-            GroupType.UPCOMING.value->{
-                getUpcomingMovies(region,page)
+            GroupType.UPCOMING.value -> {
+                getUpcomingMovies(region, page)
             }
-            GroupType.TOP_RATED.value->{
-                getTopRatedMovies(region,page)
+            GroupType.TOP_RATED.value -> {
+                getTopRatedMovies(region, page)
+            }
+            GroupType.SIMILAR_MOVIES.value -> {
+                fetchSimilarMovies(movieID, page)
             }
             else -> throw RuntimeException("GroupType not supported")
         }
 
+    }
+
+    //Caching for similar movies list is not supported
+    private fun fetchSimilarMovies(movieID: Int?, pageInRequest: Int) {
+        listeners.forEach {
+            it.onFetchingMovieList()
+        }
+        backgroundThreadPoster.post {
+            val res = fetchSimilarMoviesUseCaseSync.fetchSimilarMoviesUseCaseSync(
+                movieID!!,
+                pageInRequest
+
+            ) //movieId !=null should be handled in the fragment initialization
+            handleResponse(res, GroupType.SIMILAR_MOVIES)
+        }
     }
 
     private fun getPopularMovies(region: String, pageInRequest: Int) {
@@ -83,6 +103,7 @@ class FetchMovieListUseCase(
         }
 
     }
+
     private fun getNowPlayingMovies(region: String, pageInRequest: Int) {
         //check if 24hrs passed when requesting the first page
         if (pageInRequest == 1) {
@@ -104,6 +125,7 @@ class FetchMovieListUseCase(
         }
 
     }
+
     private fun getTopRatedMovies(region: String, pageInRequest: Int) {
         //check if 24hrs passed when requesting the first page
         if (pageInRequest == 1) {
@@ -125,6 +147,7 @@ class FetchMovieListUseCase(
         }
 
     }
+
     private fun getUpcomingMovies(region: String, pageInRequest: Int) {
         //check if 24hrs passed when requesting the first page
         if (pageInRequest == 1) {
@@ -203,6 +226,9 @@ class FetchMovieListUseCase(
                     nowPlaying = moviesStateManager.nowPlayingMovies
                 }
                 nowPlaying
+            }
+            GroupType.SIMILAR_MOVIES -> {
+                createMoviesResponse(moviesResponseSchema, GroupType.SIMILAR_MOVIES)
             }
             else -> throw RuntimeException("GroupType $groupType not supported in this UseCase")
         }

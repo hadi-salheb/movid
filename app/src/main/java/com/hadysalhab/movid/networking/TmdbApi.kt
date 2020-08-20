@@ -62,6 +62,19 @@ interface TmdbApi {
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
     ): Call<MoviesResponseSchema>
 
+    @GET("/3/movie/{movie_id}/similar")
+    fun fetchSimilarMovies(
+        @Path("movie_id") movieId: Int,
+        @Query("page") page: Int = 1,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<MoviesResponseSchema>
+
+    @GET("/3/movie/{movie_id}/recommendations")
+    fun fetchRecommendedMovies(
+        @Path("movie_id") movieId: Int,
+        @Query("page") page: Int = 1,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<MoviesResponseSchema>
 
     @GET("/3/movie/{id}")
     fun fetchMovieDetail(

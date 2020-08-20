@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.screen.main.movielist
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,6 +16,7 @@ class MovieListViewModel @Inject constructor(
     private val _viewState = MutableLiveData<MovieListViewState>()
     private var page: Int
     private lateinit var groupType: String
+    private var movieID: Int? = null
     private var totalPages: Int? = null
     private val movies: MutableList<Movie> = mutableListOf()
     private val region = deviceConfigManager.getISO3166CountryCodeOrUS()
@@ -28,19 +28,19 @@ class MovieListViewModel @Inject constructor(
         page = 1
     }
 
-    fun init(groupType: String) {
+    fun init(groupType: String, movieID: Int?) {
         if (!this::groupType.isInitialized) {
             this.groupType = groupType
+            this.movieID = movieID
         }
         when (viewState.value) {
             null -> {
                 fetchMovieListUseCase.fetchMovieListAndNotify(
                     region,
-                    groupType, page
+                    groupType, page, movieID
                 )
             }
         }
-
     }
 
     fun loadMore() {
@@ -52,7 +52,8 @@ class MovieListViewModel @Inject constructor(
             fetchMovieListUseCase.fetchMovieListAndNotify(
                 region,
                 this.groupType,
-                page
+                page,
+                this.movieID
             )
         }
     }

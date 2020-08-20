@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
@@ -14,9 +15,11 @@ import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
 private const val ARG_GROUP_KEY = "arg_group_key"
+private const val ARG_MOVIE_ID = "arg_movie_id"
 
 class MovieListFragment : BaseFragment(), MovieListView.Listener {
     lateinit var groupType: String
+    private var movieID: Int? = null
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -40,6 +43,10 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
         arguments?.let {
             groupType = it.getString(ARG_GROUP_KEY)
                 ?: throw RuntimeException("Cannot Start MovieListFragment without group type key")
+            movieID = it.getInt(ARG_MOVIE_ID)
+        }
+        if((groupType == GroupType.RECOMMENDED_MOVIES.value || groupType == GroupType.SIMILAR_MOVIES.value) && movieID == null){
+            throw RuntimeException("Cannot get recommended movies or similar movies without providing a movie id!")
         }
         movieListViewModel =
             ViewModelProvider(this, myViewModelFactory).get(MovieListViewModel::class.java)
@@ -60,7 +67,7 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
-        movieListViewModel.init(groupType)
+        movieListViewModel.init(groupType,movieID)
         movieListViewModel.viewState.observe(viewLifecycleOwner, Observer {
             render(it)
         })
@@ -73,9 +80,12 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
 
     companion object {
         @JvmStatic
-        fun newInstance(groupType: String) =
+        fun newInstance(groupType: String, movieID: Int?) =
             MovieListFragment().apply {
                 arguments = Bundle().apply {
+                    movieID?.let {
+                        putInt(ARG_MOVIE_ID, movieID)
+                    }
                     putString(ARG_GROUP_KEY, groupType)
                 }
             }

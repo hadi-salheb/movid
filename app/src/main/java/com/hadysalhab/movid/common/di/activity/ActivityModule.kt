@@ -14,6 +14,7 @@ import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCase
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
 import com.hadysalhab.movid.networking.TmdbApi
@@ -94,6 +95,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
         fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
         fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
+        fetchSimilarMoviesUseCaseSync: FetchSimilarMoviesUseCaseSync,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
         moviesStateManager: MoviesStateManager,
@@ -104,6 +106,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         fetchUpcomingMoviesUseCaseSync,
         fetchTopRatedMoviesUseCaseSync,
         fetchNowPlayingMoviesUseCaseSync,
+        fetchSimilarMoviesUseCaseSync,
         backgroundThreadPoster,
         uiThreadPoster,
         moviesStateManager,

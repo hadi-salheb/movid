@@ -73,7 +73,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
     }
 
     override fun onSeeAllClicked(groupType: GroupType) {
-        mainNavigator.toMovieListFragment(groupType.value)
+        mainNavigator.toMovieListFragment(groupType.value,null)
     }
 
     private fun displayMovies(movieGroups: List<MoviesResponse>) {
