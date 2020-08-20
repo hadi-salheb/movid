@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
@@ -30,6 +31,9 @@ class MovieDetailFragment : BaseFragment(),
 
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var mainNavigator: MainNavigator
 
     @Inject
     lateinit var toastHelper: ToastHelper
@@ -100,6 +104,7 @@ class MovieDetailFragment : BaseFragment(),
 
     override fun onMovieClicked(movieId: Int) {
         toastHelper.displayMessage("On movie card clicked $movieId")
+        mainNavigator.toDetailFragment(movieId)
     }
 
 }
