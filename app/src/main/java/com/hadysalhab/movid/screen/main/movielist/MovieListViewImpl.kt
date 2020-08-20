@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.screen.main.movielist
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +32,7 @@ class MovieListViewImpl(
             setHasFixedSize(true)
             adapter = this@MovieListViewImpl.adapter
         }
-        recyclerView.addOnScrollListener(object :OnVerticalScrollListener(){
+        recyclerView.addOnScrollListener(object : OnVerticalScrollListener() {
             override fun onScrolledUp() {
 
             }
@@ -54,14 +55,20 @@ class MovieListViewImpl(
 
     override fun displayMovies(movies: List<Movie>) {
         adapter.submitList(movies)
-        paginationProgressBar.visibility = View.GONE
+
         progressBar.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
+        if (paginationProgressBar.visibility == View.VISIBLE) {
+            android.os.Handler().postDelayed({
+                paginationProgressBar.visibility = View.GONE
+            }, 300)
+        }
     }
 
     override fun displayPaginationLoading() {
         paginationProgressBar.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
+
     }
 
     override fun displayLoadingIndicator() {
@@ -76,7 +83,7 @@ class MovieListViewImpl(
         }
     }
 
-  //  https://stackoverflow.com/questions/26543131/how-to-implement-endless-list-with-recyclerview
+    //  https://stackoverflow.com/questions/26543131/how-to-implement-endless-list-with-recyclerview
     abstract class OnVerticalScrollListener : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             if (!recyclerView.canScrollVertically(-1)) {
