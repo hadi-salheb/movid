@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
@@ -27,6 +30,9 @@ class MovieDetailFragment : BaseFragment(),
 
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var toastHelper: ToastHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +88,18 @@ class MovieDetailFragment : BaseFragment(),
             }
             is DetailLoaded -> viewMvc.displayMovieDetail(viewState.movie)
         }
+    }
+
+    override fun onSeeAllClicked(groupType: GroupType) {
+        toastHelper.displayMessage("On See All clicked for $groupType")
+    }
+
+    override fun onCastClicked(castId: Int) {
+        toastHelper.displayMessage("On Cast card clicked $castId")
+    }
+
+    override fun onMovieClicked(movieId: Int) {
+        toastHelper.displayMessage("On movie card clicked $movieId")
     }
 
 }

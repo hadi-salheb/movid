@@ -11,13 +11,16 @@ import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_185
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.cardgroup.CastsView
+import com.hadysalhab.movid.screen.common.cardgroup.DataGroup
+import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.synnapps.carouselview.CarouselView
 
 class MovieDetailViewImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
-) : MovieDetailView() {
+) : MovieDetailView(), MoviesView.Listener, CastsView.Listener {
     private val carouselView: CarouselView
     private val posterImageView: ImageView
     private val movieOverviewTextView: TextView
@@ -59,7 +62,7 @@ class MovieDetailViewImpl(
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
         // avoid re-rendering the view if it is already rendered
-        if (this.movieDetail == null || this.movieDetail!= movieDetail) {
+        if (this.movieDetail == null || this.movieDetail != movieDetail) {
             this.movieDetail = movieDetail
             displayCarouselImages(movieDetail.images.backdrops)
             displayPosterImage(movieDetail.details.posterPath)
@@ -101,9 +104,9 @@ class MovieDetailViewImpl(
 
     private fun displayCasts(casts: List<Cast>) {
         if (casts.isNotEmpty()) {
-            val castGroup = CastGroup(GroupType.CAST, casts)
             val castsViews = viewFactory.getCastsView(castsFL)
-            castsViews.displayCardGroup(castGroup)
+            castsViews.registerListener(this)
+            castsViews.renderData(DataGroup(GroupType.CAST, casts))
             castsFL.removeAllViews()
             castsFL.addView(castsViews.getRootView())
         } else {
@@ -163,7 +166,13 @@ class MovieDetailViewImpl(
     private fun displaySimilarMovies(moviesResponse: MoviesResponse) {
         if (!moviesResponse.movies.isNullOrEmpty()) {
             val movieGroupView = viewFactory.getMoviesView(similarFL)
-            movieGroupView.displayCardGroup(moviesResponse)
+            movieGroupView.registerListener(this)
+            movieGroupView.renderData(
+                DataGroup(
+                    moviesResponse.tag,
+                    moviesResponse.movies ?: emptyList()
+                )
+            )
             similarFL.removeAllViews()
             similarFL.addView(movieGroupView.getRootView())
         } else {
@@ -174,7 +183,13 @@ class MovieDetailViewImpl(
     private fun displayRecommendedMovies(moviesResponse: MoviesResponse) {
         if (!moviesResponse.movies.isNullOrEmpty()) {
             val movieGroupView = viewFactory.getMoviesView(recommendedFL)
-            movieGroupView.displayCardGroup(moviesResponse)
+            movieGroupView.renderData(
+                DataGroup(
+                    moviesResponse.tag,
+                    moviesResponse.movies ?: emptyList()
+                )
+            )
+            movieGroupView.registerListener(this)
             recommendedFL.removeAllViews()
             recommendedFL.addView(movieGroupView.getRootView())
         } else {
@@ -210,9 +225,28 @@ class MovieDetailViewImpl(
     private fun displayPosterImage(posterPath: String?) {
         posterPath?.let {
             Glide.with(getContext())
-                .load(IMAGES_BASE_URL+ POSTER_SIZE_185+it)
+                .load(IMAGES_BASE_URL + POSTER_SIZE_185 + it)
                 .into(posterImageView)
         }
 
     }
+
+    override fun onMovieCardClicked(movieID: Int) {
+        listeners.forEach {
+            it.onMovieClicked(movieID)
+        }
+    }
+
+    override fun onCastCardClicked(castID: Int) {
+        listeners.forEach {
+            it.onCastClicked(castID)
+        }
+    }
+
+    override fun onSeeAllClicked(groupType: GroupType) {
+        listeners.forEach {
+            it.onSeeAllClicked(groupType)
+        }
+    }
+
 }

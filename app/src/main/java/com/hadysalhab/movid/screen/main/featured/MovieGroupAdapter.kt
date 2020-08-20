@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.ListAdapter
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
-import com.hadysalhab.movid.screen.common.cardgroup.CardGroupView
+import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 
 class MovieGroupAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
-    ListAdapter<MoviesResponse, MovieGroupViewHolder>(DIFF_CALLBACK), CardGroupView.Listener {
+    ListAdapter<MoviesResponse, MovieGroupViewHolder>(DIFF_CALLBACK), MoviesView.Listener {
     interface Listener {
         fun onMovieCardClicked(movieID: Int)
         fun onSeeMoreClicked(groupType: GroupType)
@@ -44,8 +44,9 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         holder.bind(movieGroup)
     }
 
-    override fun onCardClicked(cardID: Int) {
-        listener.onMovieCardClicked(cardID)
+
+    override fun onMovieCardClicked(movieID: Int) {
+        listener.onMovieCardClicked(movieID)
     }
 
     override fun onSeeAllClicked(groupType: GroupType) {

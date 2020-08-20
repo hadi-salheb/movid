@@ -7,4 +7,8 @@ class ToastHelper(private val context: Context) {
     fun showFeaturedUpdatedUseCase() {
         Toast.makeText(context, "Data updated", Toast.LENGTH_SHORT).show()
     }
+
+    fun displayMessage(msg:String){
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+    }
 }

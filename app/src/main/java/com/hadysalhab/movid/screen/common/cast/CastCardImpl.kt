@@ -23,7 +23,7 @@ class CastCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : CastCar
         castAsTV = findViewById(R.id.tv_cast_as)
         getRootView().setOnClickListener {
             listeners.forEach {
-                it.onCastCardClicked(cast.castID)
+                it.onCastCardClicked(cast.id)
             }
         }
     }
