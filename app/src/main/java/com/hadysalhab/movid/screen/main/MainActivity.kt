@@ -35,6 +35,11 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost {
     }
 
     override fun onBottomNavigationItemClicked(item: BottomNavigationItems) {
+        val currentSelectedItem =  view.getCurrentNavigationItem()
+        if(currentSelectedItem == item && currentSelectedItem == BottomNavigationItems.FEATURED  ){
+            mainNavigator.clearFeaturedStack()
+        }
+
 
     }
 

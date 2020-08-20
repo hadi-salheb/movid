@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hadysalhab.movid.R
+import java.lang.RuntimeException
 
 class MainViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : MainView() {
     private val fragmentFrame: FrameLayout
@@ -36,7 +37,7 @@ class MainViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : MainView() {
                     BottomNavigationItems.WISHLIST
                 }
                 else -> {
-                    BottomNavigationItems.FEATURED
+                    throw RuntimeException("BottomNavigationItem id ${item.itemId} not supported")
                 }
             }
             listeners.forEach { listener ->
@@ -47,4 +48,25 @@ class MainViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : MainView() {
     }
 
     override fun getFragmentFrame() = fragmentFrame
+    override fun getCurrentNavigationItem(): BottomNavigationItems =
+        when (bottomNavigation.selectedItemId) {
+            R.id.bottom_nav_featured -> {
+                BottomNavigationItems.FEATURED
+            }
+            R.id.bottom_nav_account -> {
+                BottomNavigationItems.ACCOUNT
+            }
+            R.id.bottom_nav_favorites -> {
+                BottomNavigationItems.FAVORITES
+            }
+            R.id.bottom_nav_search -> {
+                BottomNavigationItems.SEARCH
+            }
+            R.id.bottom_nav_wishList -> {
+                BottomNavigationItems.WISHLIST
+            }
+            else -> {
+                throw RuntimeException("BottomNavigationItem id ${bottomNavigation.selectedItemId} not supported")
+            }
+        }
 }

@@ -2,6 +2,7 @@ package com.hadysalhab.movid.screen.common.screensnavigator
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
@@ -55,5 +56,9 @@ class MainNavigator(
 
     fun toMovieListFragment(groupType: String) =
         fragNavController.pushFragment(MovieListFragment.newInstance(groupType))
+
+    fun clearFeaturedStack() {
+        fragNavController.clearStack()
+    }
 
 }
