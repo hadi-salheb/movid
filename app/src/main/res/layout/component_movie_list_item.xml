@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/iv_movie"
         android:layout_width="60dp"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
         android:adjustViewBounds="true"
         android:scaleType="fitStart"
         app:layout_constraintStart_toStartOf="parent"
