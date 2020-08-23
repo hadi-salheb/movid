@@ -16,6 +16,7 @@ import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
@@ -160,6 +161,12 @@ class ApplicationModule(private val application: Application) {
     @Provides
     fun getFetchSimilarMoviesUseCaseSync(tmdbApi: TmdbApi) =
         FetchSimilarMoviesUseCaseSync(
+            tmdbApi
+        )
+    @Singleton
+    @Provides
+    fun getFetchRecommendedMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchRecommendedMoviesUseCaseSync(
             tmdbApi
         )
 

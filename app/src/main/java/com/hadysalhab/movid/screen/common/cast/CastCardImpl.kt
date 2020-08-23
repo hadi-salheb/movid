@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.screen.common.cast
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView

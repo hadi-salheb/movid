@@ -9,6 +9,7 @@ import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
@@ -28,6 +29,7 @@ class FetchMovieListUseCase(
     private val fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
     private val fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
     private val fetchSimilarMoviesUseCaseSync: FetchSimilarMoviesUseCaseSync,
+    private val fetchRecommendedMoviesUseCaseSync: FetchRecommendedMoviesUseCaseSync,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
     private val moviesStateManager: MoviesStateManager,
@@ -62,6 +64,9 @@ class FetchMovieListUseCase(
             GroupType.SIMILAR_MOVIES.value -> {
                 fetchSimilarMovies(movieID, page)
             }
+            GroupType.RECOMMENDED_MOVIES.value->{
+                fetchRecommendedMovies(movieID,page)
+            }
             else -> throw RuntimeException("GroupType not supported")
         }
 
@@ -79,6 +84,19 @@ class FetchMovieListUseCase(
 
             ) //movieId !=null should be handled in the fragment initialization
             handleResponse(res, GroupType.SIMILAR_MOVIES)
+        }
+    }
+    private fun fetchRecommendedMovies(movieID: Int?, pageInRequest: Int) {
+        listeners.forEach {
+            it.onFetchingMovieList()
+        }
+        backgroundThreadPoster.post {
+            val res = fetchRecommendedMoviesUseCaseSync.fetchRecommendedMoviesUseCaseSync(
+                movieID!!,
+                pageInRequest
+
+            ) //movieId !=null should be handled in the fragment initialization
+            handleResponse(res, GroupType.RECOMMENDED_MOVIES)
         }
     }
 
@@ -229,6 +247,9 @@ class FetchMovieListUseCase(
             }
             GroupType.SIMILAR_MOVIES -> {
                 createMoviesResponse(moviesResponseSchema, GroupType.SIMILAR_MOVIES)
+            }
+            GroupType.RECOMMENDED_MOVIES->{
+                createMoviesResponse(moviesResponseSchema, GroupType.RECOMMENDED_MOVIES)
             }
             else -> throw RuntimeException("GroupType $groupType not supported in this UseCase")
         }

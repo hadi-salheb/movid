@@ -14,6 +14,7 @@ import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCase
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
@@ -96,6 +97,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
         fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
         fetchSimilarMoviesUseCaseSync: FetchSimilarMoviesUseCaseSync,
+        fetchRecommendedMoviesUseCaseSync: FetchRecommendedMoviesUseCaseSync,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
         moviesStateManager: MoviesStateManager,
@@ -107,6 +109,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         fetchTopRatedMoviesUseCaseSync,
         fetchNowPlayingMoviesUseCaseSync,
         fetchSimilarMoviesUseCaseSync,
+        fetchRecommendedMoviesUseCaseSync,
         backgroundThreadPoster,
         uiThreadPoster,
         moviesStateManager,
