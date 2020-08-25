@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.movies.Movie
-import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCase
 import javax.inject.Inject
 
@@ -14,18 +13,15 @@ class MovieListViewModel @Inject constructor(
     private val fetchMovieListUseCase: FetchMovieListUseCase
 ) : ViewModel(), FetchMovieListUseCase.Listener {
     private val _viewState = MutableLiveData<MovieListViewState>()
-    private var page: Int
     private lateinit var groupType: String
     private var movieID: Int? = null
-    private var totalPages: Int? = null
-    private val movies: MutableList<Movie> = mutableListOf()
+    private var page = 1
     private val region = deviceConfigManager.getISO3166CountryCodeOrUS()
     val viewState: LiveData<MovieListViewState>
         get() = _viewState
 
     init {
         fetchMovieListUseCase.registerListener(this)
-        page = 1
     }
 
     fun init(groupType: String, movieID: Int?) {
@@ -37,7 +33,7 @@ class MovieListViewModel @Inject constructor(
             null -> {
                 fetchMovieListUseCase.fetchMovieListAndNotify(
                     region,
-                    groupType, page, movieID
+                    groupType, movieID, page
                 )
             }
         }
@@ -47,17 +43,12 @@ class MovieListViewModel @Inject constructor(
         if (fetchMovieListUseCase.isBusy) {
             return
         }
-        if (page + 1 <= totalPages!!) {
-            page++
-            fetchMovieListUseCase.fetchMovieListAndNotify(
-                region,
-                this.groupType,
-                page,
-                this.movieID
-            )
-        }
+        fetchMovieListUseCase.fetchMovieListAndNotify(
+            region,
+            groupType,
+            movieID, ++page
+        )
     }
-
 
     override fun onFetchingMovieList() {
         if (page == 1) {
@@ -67,11 +58,7 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
-    override fun onFetchMovieListSuccess(moviesResponse: MoviesResponse) {
-        if (totalPages == null) {
-            totalPages = moviesResponse.total_pages
-        }
-        movies.addAll(moviesResponse.movies ?: emptyList())
+    override fun onFetchMovieListSuccess(movies: List<Movie>) {
         _viewState.value = MovieListLoaded(movies)
     }
 

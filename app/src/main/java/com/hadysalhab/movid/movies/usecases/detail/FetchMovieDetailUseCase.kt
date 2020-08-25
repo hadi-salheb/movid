@@ -1,10 +1,10 @@
 package com.hadysalhab.movid.movies.usecases.detail
 
-import android.util.Log
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.networking.TmdbApi
@@ -21,6 +21,7 @@ class FetchMovieDetailUseCase(
     private val tmdbApi: TmdbApi,
     private val gson: Gson,
     private val moviesStateManager: MoviesStateManager,
+    private val timeProvider: TimeProvider,
     private val dataValidator: DataValidator
 ) :
     BaseBusyObservable<FetchMovieDetailUseCase.Listener>() {
@@ -33,7 +34,7 @@ class FetchMovieDetailUseCase(
     private lateinit var errorMessage: String
 
     fun fetchMovieDetailAndNotify(movieId: Int, sessionId: String) {
-        if (dataValidator.isMovieDetailAvailable(movieId,moviesStateManager.movieDetailList)) {
+        if (dataValidator.isMovieDetailAvailable(movieId, moviesStateManager.movieDetailList)) {
             notifySuccess(moviesStateManager.movieDetailList.find { it.details.id == movieId }!!)
         } else {
             listeners.forEach {
@@ -72,9 +73,11 @@ class FetchMovieDetailUseCase(
             getReviews(reviews),
             getImages(images),
             getAccountState(accountStates),
-            getMoviesResponse(similar,GroupType.SIMILAR_MOVIES),
-            getMoviesResponse(recommendations,GroupType.RECOMMENDED_MOVIES)
-        )
+            getMoviesResponse(similar, GroupType.SIMILAR_MOVIES),
+            getMoviesResponse(recommendations, GroupType.RECOMMENDED_MOVIES)
+        ).apply {
+            timeStamp = timeProvider.currentTimestamp
+        }
     }
 
 
@@ -159,15 +162,16 @@ class FetchMovieDetailUseCase(
             AccountStates(id, favorite, watchlist)
         }
 
-    private fun getMoviesResponse(moviesResponseSchema: MoviesResponseSchema,tag:GroupType) = with(moviesResponseSchema) {
-        MoviesResponse(
-            page,
-            totalResults,
-            total_pages,
-            getMovies(movies),
-            tag
-        )
-    }
+    private fun getMoviesResponse(moviesResponseSchema: MoviesResponseSchema, tag: GroupType) =
+        with(moviesResponseSchema) {
+            MoviesResponse(
+                page,
+                totalResults,
+                total_pages,
+                getMovies(movies),
+                tag
+            )
+        }
 
     private fun getMovies(moviesSchema: List<MovieSchema>): MutableList<Movie> {
         val movies = mutableListOf<Movie>()

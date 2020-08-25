@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
@@ -78,12 +79,13 @@ class ActivityModule(private val activity: FragmentActivity) {
         tmdbApi: TmdbApi,
         gson: Gson,
         moviesStateManager: MoviesStateManager,
-        dataValidator: DataValidator
+        dataValidator: DataValidator, timeProvider: TimeProvider
     ): FetchMovieDetailUseCase =
         FetchMovieDetailUseCase(
             tmdbApi,
             gson,
             moviesStateManager,
+            timeProvider,
             dataValidator
         )
 
@@ -102,7 +104,8 @@ class ActivityModule(private val activity: FragmentActivity) {
         uiThreadPoster: UiThreadPoster,
         moviesStateManager: MoviesStateManager,
         dataValidator: DataValidator,
-        gson: Gson
+        gson: Gson,
+        timeProvider: TimeProvider
     ) = FetchMovieListUseCase(
         fetchPopularMoviesUseCaseSync,
         fetchUpcomingMoviesUseCaseSync,
@@ -114,7 +117,8 @@ class ActivityModule(private val activity: FragmentActivity) {
         uiThreadPoster,
         moviesStateManager,
         gson,
-        dataValidator
+        dataValidator,
+        timeProvider
     )
 
     @Provides
@@ -128,7 +132,8 @@ class ActivityModule(private val activity: FragmentActivity) {
         moviesStateManager: MoviesStateManager,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
-        dataValidator: DataValidator
+        dataValidator: DataValidator,
+        timeProvider: TimeProvider
     ): FetchMovieGroupsUseCase =
         FetchMovieGroupsUseCase(
             fetchPopularMoviesUseCaseSync,
@@ -139,6 +144,7 @@ class ActivityModule(private val activity: FragmentActivity) {
             dataValidator,
             gson,
             moviesStateManager,
+            timeProvider,
             backgroundThreadPoster,
             uiThreadPoster
         )

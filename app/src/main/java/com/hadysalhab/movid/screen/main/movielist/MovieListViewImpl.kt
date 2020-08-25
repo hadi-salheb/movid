@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.screen.main.movielist
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +60,7 @@ class MovieListViewImpl(
         if (paginationProgressBar.visibility == View.VISIBLE) {
             android.os.Handler().postDelayed({
                 paginationProgressBar.visibility = View.GONE
+                recyclerView.suppressLayout(false)
             }, 300)
         }
     }
@@ -68,7 +68,7 @@ class MovieListViewImpl(
     override fun displayPaginationLoading() {
         paginationProgressBar.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
-
+        recyclerView.suppressLayout(true)
     }
 
     override fun displayLoadingIndicator() {

@@ -3,19 +3,14 @@ package com.hadysalhab.movid.movies
 import com.hadysalhab.movid.common.time.TimeProvider
 
 
-class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
+class MoviesStateManager {
     private val _movieDetailList = mutableListOf<MovieDetail>()
     val movieDetailList: List<MovieDetail>
         get() = _movieDetailList
 
     fun addMovieDetailToList(movieDetail: MovieDetail) {
-        // only add movie that does not exist or if movie exist but its detail are not updated!!
-        if (!_movieDetailList.any { it == movieDetail }) {
-            //remove old movie detail
             _movieDetailList.filter { it.details.id != movieDetail.details.id }
-            movieDetail.timeStamp = timeProvider.currentTimestamp
             _movieDetailList.add(movieDetail)
-        }
     }
 
     val popularMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.POPULAR)
@@ -49,7 +44,7 @@ class MoviesStateManager constructor(private val timeProvider: TimeProvider) {
             totalResults = newMoviesResponse.totalResults
             movies = mutableListOf()
             movies!!.addAll(newMoviesResponse.movies ?: emptyList())
-            timeStamp = timeProvider.currentTimestamp
+            timeStamp = newMoviesResponse.timeStamp
         }
     }
 }

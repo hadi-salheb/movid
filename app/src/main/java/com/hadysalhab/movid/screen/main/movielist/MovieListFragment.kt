@@ -2,6 +2,7 @@ package com.hadysalhab.movid.screen.main.movielist
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,8 +39,10 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
     lateinit var myViewModelFactory: ViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         injector.inject(this)
+
         arguments?.let {
             groupType = it.getString(ARG_GROUP_KEY)
                 ?: throw RuntimeException("Cannot Start MovieListFragment without group type key")
@@ -50,7 +53,6 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
         }
         movieListViewModel =
             ViewModelProvider(this, myViewModelFactory).get(MovieListViewModel::class.java)
-
     }
 
     override fun onCreateView(

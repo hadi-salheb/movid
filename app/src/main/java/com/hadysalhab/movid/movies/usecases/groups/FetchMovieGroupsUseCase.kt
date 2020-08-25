@@ -3,6 +3,7 @@ package com.hadysalhab.movid.movies.usecases.groups
 
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.Movie
@@ -37,6 +38,7 @@ class FetchMovieGroupsUseCase(
     private val dataValidator: DataValidator,
     private val gson: Gson,
     private val moviesStateManager: MoviesStateManager,
+    private val timeProvider: TimeProvider,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster
 ) :
@@ -181,24 +183,24 @@ class FetchMovieGroupsUseCase(
     private fun getMovieResponse(groupType: GroupType, moviesResponseSchema: MoviesResponseSchema) =
         when (groupType) {
             GroupType.POPULAR -> {
-                val popular = createMoviesResponse(moviesResponseSchema, GroupType.POPULAR)
-                moviesStateManager.updatePopularMovies(popular)
-                moviesStateManager.popularMovies
+                createMoviesResponse(moviesResponseSchema, GroupType.POPULAR).also {
+                    moviesStateManager.updatePopularMovies(it)
+                }
             }
             GroupType.UPCOMING -> {
-                val upcoming = createMoviesResponse(moviesResponseSchema, GroupType.UPCOMING)
-                moviesStateManager.updateUpcomingMovies(upcoming)
-                moviesStateManager.upcomingMovies
+                createMoviesResponse(moviesResponseSchema, GroupType.UPCOMING).also {
+                    moviesStateManager.updateUpcomingMovies(it)
+                }
             }
             GroupType.TOP_RATED -> {
-                val topRated = createMoviesResponse(moviesResponseSchema, GroupType.TOP_RATED)
-                moviesStateManager.updateTopRatedMovies(topRated)
-                moviesStateManager.topRatedMovies
+                createMoviesResponse(moviesResponseSchema, GroupType.TOP_RATED).also {
+                    moviesStateManager.updateTopRatedMovies(it)
+                }
             }
             GroupType.NOW_PLAYING -> {
-                val nowPlaying = createMoviesResponse(moviesResponseSchema, GroupType.NOW_PLAYING)
-                moviesStateManager.updateNowPlayingMovies(nowPlaying)
-                moviesStateManager.nowPlayingMovies
+                createMoviesResponse(moviesResponseSchema, GroupType.NOW_PLAYING).also {
+                    moviesStateManager.updateNowPlayingMovies(it)
+                }
             }
             else -> throw RuntimeException("GroupType $groupType not supported in this UseCase")
         }
@@ -210,7 +212,9 @@ class FetchMovieGroupsUseCase(
             moviesResponse.total_pages,
             getMovies(moviesResponse.movies),
             groupType
-        )
+        ).apply {
+            timeStamp = timeProvider.currentTimestamp
+        }
 
     private fun getMovies(moviesSchema: List<MovieSchema>): MutableList<Movie> {
         val movies = mutableListOf<Movie>()

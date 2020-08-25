@@ -175,7 +175,7 @@ class ApplicationModule(private val application: Application) {
 
     @Singleton
     @Provides
-    fun getMoviesStateManager(timeProvider: TimeProvider) = MoviesStateManager(timeProvider)
+    fun getMoviesStateManager() = MoviesStateManager()
 
     @Provides
     fun dataValidator(timeProvider: TimeProvider): DataValidator = DataValidator(timeProvider)
