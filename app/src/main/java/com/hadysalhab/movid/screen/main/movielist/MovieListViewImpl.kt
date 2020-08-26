@@ -1,5 +1,7 @@
 package com.hadysalhab.movid.screen.main.movielist
 
+import android.content.Context
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
+
 
 class MovieListViewImpl(
     layoutInflater: LayoutInflater,
@@ -61,6 +64,9 @@ class MovieListViewImpl(
             android.os.Handler().postDelayed({
                 paginationProgressBar.visibility = View.GONE
                 recyclerView.suppressLayout(false)
+                recyclerView.post {
+                    recyclerView.smoothScrollBy(0, convertDpToPixel(16, getContext()))
+                }
             }, 300)
         }
     }
@@ -101,5 +107,10 @@ class MovieListViewImpl(
         abstract fun onScrolledDown()
         abstract fun onScrolledToTop()
         abstract fun onScrolledToBottom()
+    }
+
+    private fun convertDpToPixel(dp: Int, context: Context): Int {
+        return dp * (context.resources
+            .displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
     }
 }
