@@ -123,53 +123,6 @@ class ApplicationModule(private val application: Application) {
     fun getUserStateManager(sharedPreferencesManager: SharedPreferencesManager) =
         UserStateManager(sharedPreferencesManager)
 
-    @Singleton
-    @Provides
-    fun getFetchPopularMoviesUseCase(tmdbApi: TmdbApi) =
-        FetchPopularMoviesUseCaseSync(
-            tmdbApi
-        )
-
-    @Singleton
-    @Provides
-    fun getFetchTopRatedMoviesUseCase(tmdbApi: TmdbApi) =
-        FetchTopRatedMoviesUseCaseSync(
-            tmdbApi
-        )
-
-    @Singleton
-    @Provides
-    fun getFetchUpcomingMoviesUseCase(tmdbApi: TmdbApi) =
-        FetchUpcomingMoviesUseCaseSync(
-            tmdbApi
-        )
-
-    @Singleton
-    @Provides
-    fun getFetchLatestMoviesUseCase(tmdbApi: TmdbApi) =
-        FetchLatestMoviesUseCaseSync(
-            tmdbApi
-        )
-
-    @Singleton
-    @Provides
-    fun getFetchNowPlayingMoviesUseCase(tmdbApi: TmdbApi) =
-        FetchNowPlayingMoviesUseCaseSync(
-            tmdbApi
-        )
-    @Singleton
-    @Provides
-    fun getFetchSimilarMoviesUseCaseSync(tmdbApi: TmdbApi) =
-        FetchSimilarMoviesUseCaseSync(
-            tmdbApi
-        )
-    @Singleton
-    @Provides
-    fun getFetchRecommendedMoviesUseCase(tmdbApi: TmdbApi) =
-        FetchRecommendedMoviesUseCaseSync(
-            tmdbApi
-        )
-
     @Provides
     fun getTimeProvider() = TimeProvider()
 

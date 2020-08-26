@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
@@ -54,7 +55,7 @@ class MainNavigator(
     fun toDetailFragment(movieID: Int) =
         fragNavController.pushFragment(MovieDetailFragment.newInstance(movieID))
 
-    fun toMovieListFragment(groupType: String,movieID: Int?) =
+    fun toMovieListFragment(groupType: GroupType,movieID: Int?) =
         fragNavController.pushFragment(MovieListFragment.newInstance(groupType,movieID))
 
     fun clearFeaturedStack() {

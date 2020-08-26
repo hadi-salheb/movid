@@ -97,7 +97,7 @@ class MovieDetailFragment : BaseFragment(),
     //SeeAll can be for cast or movies!!
     override fun onSeeAllClicked(groupType: GroupType) {
         if(groupType!= GroupType.CAST){
-            mainNavigator.toMovieListFragment(groupType.value,movieID)
+            mainNavigator.toMovieListFragment(groupType,movieID)
         }
     }
 

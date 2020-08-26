@@ -1,7 +1,5 @@
 package com.hadysalhab.movid.movies
 
-import com.hadysalhab.movid.common.time.TimeProvider
-
 
 class MoviesStateManager {
     private val _movieDetailList = mutableListOf<MovieDetail>()
@@ -9,8 +7,8 @@ class MoviesStateManager {
         get() = _movieDetailList
 
     fun addMovieDetailToList(movieDetail: MovieDetail) {
-            _movieDetailList.filter { it.details.id != movieDetail.details.id }
-            _movieDetailList.add(movieDetail)
+        _movieDetailList.filter { it.details.id != movieDetail.details.id }
+        _movieDetailList.add(movieDetail)
     }
 
     val popularMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.POPULAR)
@@ -47,6 +45,25 @@ class MoviesStateManager {
             timeStamp = newMoviesResponse.timeStamp
         }
     }
+
+    fun updateMoviesResponseByGroupType(moviesResponse: MoviesResponse, groupType: GroupType) {
+        when (groupType) {
+            GroupType.POPULAR -> updatePopularMovies(moviesResponse)
+            GroupType.NOW_PLAYING -> updateNowPlayingMovies(moviesResponse)
+            GroupType.UPCOMING -> updateUpcomingMovies(moviesResponse)
+            GroupType.TOP_RATED -> updateTopRatedMovies(moviesResponse)
+            else -> throw RuntimeException("GroupType $groupType not supported in movie store")
+        }
+    }
+
+    fun getMoviesResponseByGroupType(groupType: GroupType): MoviesResponse = when (groupType) {
+        GroupType.POPULAR -> popularMovies
+        GroupType.NOW_PLAYING -> nowPlayingMovies
+        GroupType.UPCOMING -> upcomingMovies
+        GroupType.TOP_RATED -> topRatedMovies
+        else -> throw RuntimeException("GroupType $groupType not supported in movie store")
+    }
+
 }
 
 

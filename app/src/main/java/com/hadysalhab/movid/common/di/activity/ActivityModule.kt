@@ -8,11 +8,14 @@ import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScop
 import com.google.gson.Gson
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
+import com.hadysalhab.movid.movies.ErrorMessageHandler
 import com.hadysalhab.movid.movies.MoviesStateManager
+import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCase
+import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCaseFactory
+import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCaseFactoryImpl
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
@@ -93,7 +96,13 @@ class ActivityModule(private val activity: FragmentActivity) {
     fun toastHelper(activityContext: Context) = ToastHelper(activityContext)
 
     @Provides
-    fun getFetchMovieListUseCase(
+    fun getSchemaToModelHelper() = SchemaToModelHelper()
+
+    @Provides
+    fun getErrorMessageHandler(gson: Gson) = ErrorMessageHandler(gson)
+
+    @Provides
+    fun getFetchListUseCaseFactory(
         fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
         fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
         fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
@@ -102,23 +111,25 @@ class ActivityModule(private val activity: FragmentActivity) {
         fetchRecommendedMoviesUseCaseSync: FetchRecommendedMoviesUseCaseSync,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
-        moviesStateManager: MoviesStateManager,
+        schemaToModelHelper: SchemaToModelHelper,
+        timeProvider: TimeProvider,
+        errorMessageHandler: ErrorMessageHandler,
         dataValidator: DataValidator,
-        gson: Gson,
-        timeProvider: TimeProvider
-    ) = FetchMovieListUseCase(
+        moviesStateManager: MoviesStateManager
+    ): FetchMovieListUseCaseFactory = FetchMovieListUseCaseFactoryImpl(
         fetchPopularMoviesUseCaseSync,
-        fetchUpcomingMoviesUseCaseSync,
         fetchTopRatedMoviesUseCaseSync,
+        fetchUpcomingMoviesUseCaseSync,
         fetchNowPlayingMoviesUseCaseSync,
         fetchSimilarMoviesUseCaseSync,
         fetchRecommendedMoviesUseCaseSync,
         backgroundThreadPoster,
         uiThreadPoster,
-        moviesStateManager,
-        gson,
+        schemaToModelHelper,
+        timeProvider,
+        errorMessageHandler,
         dataValidator,
-        timeProvider
+        moviesStateManager
     )
 
     @Provides
@@ -147,5 +158,52 @@ class ActivityModule(private val activity: FragmentActivity) {
             timeProvider,
             backgroundThreadPoster,
             uiThreadPoster
+        )
+
+
+    @Provides
+    fun getFetchPopularMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchPopularMoviesUseCaseSync(
+            tmdbApi
+        )
+
+
+    @Provides
+    fun getFetchTopRatedMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchTopRatedMoviesUseCaseSync(
+            tmdbApi
+        )
+
+
+    @Provides
+    fun getFetchUpcomingMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchUpcomingMoviesUseCaseSync(
+            tmdbApi
+        )
+
+
+    @Provides
+    fun getFetchLatestMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchLatestMoviesUseCaseSync(
+            tmdbApi
+        )
+
+
+    @Provides
+    fun getFetchNowPlayingMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchNowPlayingMoviesUseCaseSync(
+            tmdbApi
+        )
+
+    @Provides
+    fun getFetchSimilarMoviesUseCaseSync(tmdbApi: TmdbApi) =
+        FetchSimilarMoviesUseCaseSync(
+            tmdbApi
+        )
+
+    @Provides
+    fun getFetchRecommendedMoviesUseCase(tmdbApi: TmdbApi) =
+        FetchRecommendedMoviesUseCaseSync(
+            tmdbApi
         )
 }

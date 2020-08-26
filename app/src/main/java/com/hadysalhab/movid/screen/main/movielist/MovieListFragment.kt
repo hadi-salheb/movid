@@ -19,7 +19,7 @@ private const val ARG_GROUP_KEY = "arg_group_key"
 private const val ARG_MOVIE_ID = "arg_movie_id"
 
 class MovieListFragment : BaseFragment(), MovieListView.Listener {
-    lateinit var groupType: String
+    lateinit var groupType: GroupType
     private var movieID: Int? = null
 
     @Inject
@@ -44,11 +44,11 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
         injector.inject(this)
 
         arguments?.let {
-            groupType = it.getString(ARG_GROUP_KEY)
+            groupType = it.getParcelable(ARG_GROUP_KEY)
                 ?: throw RuntimeException("Cannot Start MovieListFragment without group type key")
             movieID = it.getInt(ARG_MOVIE_ID)
         }
-        if((groupType == GroupType.RECOMMENDED_MOVIES.value || groupType == GroupType.SIMILAR_MOVIES.value) && movieID == null){
+        if((groupType == GroupType.RECOMMENDED_MOVIES || groupType == GroupType.SIMILAR_MOVIES) && movieID == null){
             throw RuntimeException("Cannot get recommended movies or similar movies without providing a movie id!")
         }
         movieListViewModel =
@@ -82,13 +82,13 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
 
     companion object {
         @JvmStatic
-        fun newInstance(groupType: String, movieID: Int?) =
+        fun newInstance(groupType: GroupType, movieID: Int?) =
             MovieListFragment().apply {
                 arguments = Bundle().apply {
                     movieID?.let {
                         putInt(ARG_MOVIE_ID, movieID)
                     }
-                    putString(ARG_GROUP_KEY, groupType)
+                    putParcelable(ARG_GROUP_KEY, groupType)
                 }
             }
     }
