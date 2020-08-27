@@ -38,6 +38,7 @@ class MovieDetailViewImpl(
     private val ratingFL: FrameLayout
     private val progressBar: ProgressBar
     private val detailSV: ScrollView
+    private val reviewsBtn:Button
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -57,7 +58,7 @@ class MovieDetailViewImpl(
         movieReviewAuthorTV = findViewById(R.id.movie_review_author)
         movieReviewReviewTV = findViewById(R.id.movie_review_review)
         ratingFL = findViewById(R.id.rating_wrapper)
-
+        reviewsBtn = findViewById(R.id.btn_reviews)
     }
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
@@ -97,8 +98,10 @@ class MovieDetailViewImpl(
             val review = reviews.review[0]
             movieReviewReviewTV.text = review.content
             movieReviewAuthorTV.text = review.author
+            reviewsBtn.visibility = View.VISIBLE
         } else {
-            reviewCV.visibility = View.GONE
+            movieReviewReviewTV.text = "No Reviews Available"
+            reviewsBtn.visibility = View.GONE
         }
     }
 
