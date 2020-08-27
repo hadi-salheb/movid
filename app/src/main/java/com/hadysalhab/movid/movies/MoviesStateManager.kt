@@ -1,35 +1,38 @@
 package com.hadysalhab.movid.movies
 
 
-class MoviesStateManager {
-    private val _movieDetailList = mutableListOf<MovieDetail>()
-    val movieDetailList: List<MovieDetail>
-        get() = _movieDetailList
+class MoviesStateManager(private val moviesState: MoviesState) {
+
+
+    fun getMovieDetailById(movieId: Int) =
+        moviesState.movieDetailList.find { it.details.id == movieId }
+
 
     fun addMovieDetailToList(movieDetail: MovieDetail) {
-        _movieDetailList.filter { it.details.id != movieDetail.details.id }
-        _movieDetailList.add(movieDetail)
+        val movieDetailList = mutableListOf<MovieDetail>()
+        movieDetailList.apply {
+            addAll(moviesState.movieDetailList)
+            filter { it.details.id != movieDetail.details.id }
+            add(movieDetail)
+        }
+        moviesState.movieDetailList = movieDetailList
     }
 
-    val popularMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.POPULAR)
-    val topRatedMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.TOP_RATED)
-    val upcomingMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.UPCOMING)
-    val nowPlayingMovies: MoviesResponse = MoviesResponse(0, 0, 0, null, GroupType.NOW_PLAYING)
 
     fun updatePopularMovies(popular: MoviesResponse) {
-        updateMoviesResponse(popular, popularMovies)
+        updateMoviesResponse(popular, moviesState.popularMovies)
     }
 
     fun updateTopRatedMovies(topRated: MoviesResponse) {
-        updateMoviesResponse(topRated, topRatedMovies)
+        updateMoviesResponse(topRated, moviesState.topRatedMovies)
     }
 
     fun updateUpcomingMovies(upcoming: MoviesResponse) {
-        updateMoviesResponse(upcoming, upcomingMovies)
+        updateMoviesResponse(upcoming, moviesState.upcomingMovies)
     }
 
     fun updateNowPlayingMovies(nowPlaying: MoviesResponse) {
-        updateMoviesResponse(nowPlaying, nowPlayingMovies)
+        updateMoviesResponse(nowPlaying, moviesState.nowPlayingMovies)
     }
 
     private fun updateMoviesResponse(
@@ -57,12 +60,18 @@ class MoviesStateManager {
     }
 
     fun getMoviesResponseByGroupType(groupType: GroupType): MoviesResponse = when (groupType) {
-        GroupType.POPULAR -> popularMovies
-        GroupType.NOW_PLAYING -> nowPlayingMovies
-        GroupType.UPCOMING -> upcomingMovies
-        GroupType.TOP_RATED -> topRatedMovies
+        GroupType.POPULAR -> moviesState.popularMovies
+        GroupType.NOW_PLAYING -> moviesState.nowPlayingMovies
+        GroupType.UPCOMING -> moviesState.upcomingMovies
+        GroupType.TOP_RATED -> moviesState.topRatedMovies
         else -> throw RuntimeException("GroupType $groupType not supported in movie store")
     }
+
+    fun getTopRatedMovies() = moviesState.topRatedMovies
+    fun getNowPlayingMovies() = moviesState.nowPlayingMovies
+    fun getUpcomingMovies() = moviesState.upcomingMovies
+    fun getPopularMovies() = moviesState.popularMovies
+
 
 }
 

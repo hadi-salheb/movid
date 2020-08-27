@@ -34,8 +34,9 @@ class FetchMovieDetailUseCase(
     private lateinit var errorMessage: String
 
     fun fetchMovieDetailAndNotify(movieId: Int, sessionId: String) {
-        if (dataValidator.isMovieDetailAvailable(movieId, moviesStateManager.movieDetailList)) {
-            notifySuccess(moviesStateManager.movieDetailList.find { it.details.id == movieId }!!)
+        val movieDetail = moviesStateManager.getMovieDetailById(movieId)
+        if (dataValidator.isMovieDetailValid(movieDetail)) {
+            notifySuccess(movieDetail!!)
         } else {
             listeners.forEach {
                 it.onFetchingMovieDetail()
@@ -58,9 +59,9 @@ class FetchMovieDetailUseCase(
                     if (response.body() == null || response.code() == 204) {
                         createErrorMessage("")
                     }
-                    val movieDetail = getMovieDetails(response)
-                    moviesStateManager.addMovieDetailToList(movieDetail)
-                    notifySuccess(movieDetail)
+                    val movieDetailResult = getMovieDetails(response)
+                    moviesStateManager.addMovieDetailToList(movieDetailResult)
+                    notifySuccess(movieDetailResult)
                 }
             })
         }

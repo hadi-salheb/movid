@@ -29,7 +29,9 @@ class MoviesView(
             movieCard.displayMovie(movie)
             linearLayout.addView(movieCard.getRootView())
         }
-        displaySeeAll()
+        if(movies.size>5) {
+            displaySeeAll()
+        }
     }
 
     private fun displaySeeAll() {

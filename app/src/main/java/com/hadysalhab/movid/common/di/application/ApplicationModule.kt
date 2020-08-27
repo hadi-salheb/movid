@@ -11,6 +11,7 @@ import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
+import com.hadysalhab.movid.movies.MoviesState
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
 import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
@@ -126,9 +127,13 @@ class ApplicationModule(private val application: Application) {
     @Provides
     fun getTimeProvider() = TimeProvider()
 
+    @Provides
+    @Singleton
+    fun getMoviesState()=MoviesState()
+
     @Singleton
     @Provides
-    fun getMoviesStateManager() = MoviesStateManager()
+    fun getMoviesStateManager(moviesState: MoviesState) = MoviesStateManager(moviesState)
 
     @Provides
     fun dataValidator(timeProvider: TimeProvider): DataValidator = DataValidator(timeProvider)

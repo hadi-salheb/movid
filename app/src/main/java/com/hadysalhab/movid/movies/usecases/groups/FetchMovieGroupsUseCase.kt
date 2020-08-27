@@ -86,25 +86,29 @@ class FetchMovieGroupsUseCase(
     }
 
     private fun validateComputations() {
-        if (dataValidator.isMoviesResponseValid(moviesStateManager.popularMovies)) this.movieGroups.add(
-            moviesStateManager.popularMovies
+        val popularMoviesStore:MoviesResponse = moviesStateManager.getPopularMovies()
+        val upcomingMoviesStore:MoviesResponse  = moviesStateManager.getUpcomingMovies()
+        val nowPLayingMoviesStore:MoviesResponse = moviesStateManager.getNowPlayingMovies()
+        val topRatedMoviesStore:MoviesResponse = moviesStateManager.getTopRatedMovies()
+        if (dataValidator.isMoviesResponseValid(popularMoviesStore)) this.movieGroups.add(
+            popularMoviesStore
         ) else computations.add(
             this::fetchPopularMovies
         )
-        if (dataValidator.isMoviesResponseValid(moviesStateManager.upcomingMovies)) this.movieGroups.add(
-            moviesStateManager.upcomingMovies
+        if (dataValidator.isMoviesResponseValid(upcomingMoviesStore)) this.movieGroups.add(
+            upcomingMoviesStore
         ) else computations.add(
             this::fetchUpcomingMovies
         )
-        if (dataValidator.isMoviesResponseValid(moviesStateManager.topRatedMovies)) this.movieGroups.add(
-            moviesStateManager.topRatedMovies
-        ) else computations.add(
-            this::fetchTopRatedMovies
-        )
-        if (dataValidator.isMoviesResponseValid(moviesStateManager.nowPlayingMovies)) this.movieGroups.add(
-            moviesStateManager.nowPlayingMovies
+        if (dataValidator.isMoviesResponseValid(nowPLayingMoviesStore)) this.movieGroups.add(
+            nowPLayingMoviesStore
         ) else computations.add(
             this::fetchNowPlayingMovies
+        )
+        if (dataValidator.isMoviesResponseValid(topRatedMoviesStore)) this.movieGroups.add(
+            topRatedMoviesStore
+        ) else computations.add(
+            this::fetchTopRatedMovies
         )
 
     }

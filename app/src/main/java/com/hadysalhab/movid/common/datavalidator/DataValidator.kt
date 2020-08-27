@@ -9,10 +9,9 @@ private const val MOVIE_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
 private const val MOVIE_DETAIL_CACHE_TIMEOUT_MS = 24 * 60 * 60 * 1000
 
 class DataValidator(private val timeProvider: TimeProvider) {
-    fun isMovieDetailAvailable(movieId: Int, movieDetailList: List<MovieDetail>): Boolean {
-        return if (movieDetailList.any { it.details.id == movieId }) {
-            val currentMovieDetail = movieDetailList.find { it.details.id == movieId }
-            timeProvider.currentTimestamp - MOVIE_DETAIL_CACHE_TIMEOUT_MS < currentMovieDetail!!.timeStamp!!
+    fun isMovieDetailValid(movieDetail: MovieDetail?): Boolean {
+        return if (movieDetail != null) {
+            timeProvider.currentTimestamp - MOVIE_DETAIL_CACHE_TIMEOUT_MS < movieDetail.timeStamp!!
         } else {
             false
         }
