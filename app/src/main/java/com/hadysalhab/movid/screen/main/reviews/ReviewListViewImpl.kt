@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.movielist
+package com.hadysalhab.movid.screen.main.reviews
 
 import android.content.Context
 import android.util.DisplayMetrics
@@ -11,30 +11,31 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.utils.convertDpToPixel
 import com.hadysalhab.movid.movies.Movie
+import com.hadysalhab.movid.movies.Review
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.scrolllistener.OnVerticalScrollListener
 
 
-class MovieListViewImpl(
+class ReviewListViewImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     viewFactory: ViewFactory
-) : MovieListView(), MovieListAdapter.Listener {
+) : ReviewListView() {
     private val recyclerView: RecyclerView
-    private val adapter: MovieListAdapter
+    private val adapter: ReviewListAdapter
     private val progressBar: ProgressBar
     private val paginationProgressBar: ProgressBar
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_list_data, parent, false))
         recyclerView = findViewById(R.id.rv_movies)
-        adapter = MovieListAdapter(this, viewFactory)
+        adapter = ReviewListAdapter(viewFactory)
         progressBar = findViewById(R.id.loading_indicator)
         paginationProgressBar = findViewById(R.id.pagination_loading_indicator)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
-            adapter = this@MovieListViewImpl.adapter
+            adapter = this@ReviewListViewImpl.adapter
         }
         recyclerView.addOnScrollListener(object : OnVerticalScrollListener() {
             override fun onScrolledUp() {
@@ -57,9 +58,8 @@ class MovieListViewImpl(
         )
     }
 
-    override fun displayMovies(movies: List<Movie>) {
-        adapter.submitList(movies)
-
+    override fun displayReviews(reviews: List<Review>) {
+        adapter.submitList(reviews)
         progressBar.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
         if (paginationProgressBar.visibility == View.VISIBLE) {
@@ -85,9 +85,4 @@ class MovieListViewImpl(
         progressBar.visibility = View.VISIBLE
     }
 
-    override fun onMovieItemClicked(movieID: Int) {
-        listeners.forEach {
-            it.onMovieItemClicked(movieID)
-        }
-    }
 }

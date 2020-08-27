@@ -8,6 +8,7 @@ import com.hadysalhab.movid.screen.main.MainActivity
 import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
 import com.hadysalhab.movid.screen.main.movielist.MovieListFragment
+import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
 import com.hadysalhab.movid.screen.splash.SplashActivity
 import dagger.Subcomponent
 
@@ -15,7 +16,7 @@ import dagger.Subcomponent
  * Presentation-Level component
  */
 @PresentationScope
-@Subcomponent(modules = [PresentationModule::class,ViewModelModule::class])
+@Subcomponent(modules = [PresentationModule::class, ViewModelModule::class])
 interface PresentationComponent {
     fun inject(authActivity: AuthActivity)
     fun inject(onBoardingFragment: OnBoardingFragment)
@@ -24,4 +25,5 @@ interface PresentationComponent {
     fun inject(splashActivity: SplashActivity)
     fun inject(movieDetailFragment: MovieDetailFragment)
     fun inject(movieListFragment: MovieListFragment)
+    fun inject(reviewsFragment: ReviewsFragment)
 }

@@ -3,7 +3,7 @@ package com.hadysalhab.movid.movies
 data class MovieDetail(
     val details: MovieInfo,
     val credits: Credits,
-    val reviews: Reviews,
+    val reviewResponse: ReviewResponse,
     val images: Images,
     val accountStates: AccountStates,
     val similar: MoviesResponse,
@@ -37,13 +37,19 @@ data class Crew(
     val profilePath: String?
 )
 
-data class Reviews(
+data class ReviewResponse(
     val id: Int,
     val page: Int,
-    val review: List<Review>,
+    var reviews: List<Review>,
     val totalPages: Int,
     val totalResults: Int
-)
+){
+    fun deepCopy():ReviewResponse = with(this){
+        ReviewResponse(id,page,reviews.map { review->
+            review.copy()
+        },totalPages,totalResults)
+    }
+}
 
 data class Review(
     val id: String,

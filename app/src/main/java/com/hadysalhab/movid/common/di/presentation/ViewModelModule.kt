@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.screen.main.featured.FeaturedViewModel
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewModel
 import com.hadysalhab.movid.screen.main.movielist.MovieListViewModel
+import com.hadysalhab.movid.screen.main.reviews.ReviewsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -26,4 +27,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MovieListViewModel::class)
     abstract fun movieListViewModel(myViewModel2: MovieListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ReviewsViewModel::class)
+    abstract fun reviewsViewModel(myViewModel2: ReviewsViewModel): ViewModel
 }

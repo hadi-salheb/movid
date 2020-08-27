@@ -18,7 +18,6 @@ class MoviesStateManager(private val moviesState: MoviesState) {
         moviesState.movieDetailList = movieDetailList
     }
 
-
     fun updatePopularMovies(popular: MoviesResponse) {
         updateMoviesResponse(popular, moviesState.popularMovies)
     }

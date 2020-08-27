@@ -4,10 +4,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.movies.MovieListItem
 
 class MovieListAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
     androidx.recyclerview.widget.ListAdapter<Movie, MovieListViewHolder>(DIFF_CALLBACK),
-    MovieListItemView.Listener {
+    MovieListItem.Listener {
     interface Listener {
         fun onMovieItemClicked(movieID: Int)
     }

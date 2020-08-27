@@ -19,6 +19,8 @@ import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCaseFactoryImp
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
+import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCaseSync
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
@@ -160,37 +162,59 @@ class ActivityModule(private val activity: FragmentActivity) {
             uiThreadPoster
         )
 
+    @Provides
+    fun getFetchReviewsUseCase(
+        reviewsUseCaseSync: FetchReviewsUseCaseSync,
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        schemaToModelHelper: SchemaToModelHelper,
+        errorMessageHandler: ErrorMessageHandler,
+        dataValidator: DataValidator,
+        moviesStateManager: MoviesStateManager
+    ) = FetchReviewsUseCase(
+        reviewsUseCaseSync,
+        backgroundThreadPoster,
+        uiThreadPoster,
+        schemaToModelHelper,
+        errorMessageHandler,
+        dataValidator,
+        moviesStateManager
+    )
 
     @Provides
-    fun getFetchPopularMoviesUseCase(tmdbApi: TmdbApi) =
+    fun getFetchReviewsUseCaseSync(tmdbApi: TmdbApi) = FetchReviewsUseCaseSync(tmdbApi)
+
+
+    @Provides
+    fun getFetchPopularMoviesUseCaseSync(tmdbApi: TmdbApi) =
         FetchPopularMoviesUseCaseSync(
             tmdbApi
         )
 
 
     @Provides
-    fun getFetchTopRatedMoviesUseCase(tmdbApi: TmdbApi) =
+    fun getFetchTopRatedMoviesUseCaseSync(tmdbApi: TmdbApi) =
         FetchTopRatedMoviesUseCaseSync(
             tmdbApi
         )
 
 
     @Provides
-    fun getFetchUpcomingMoviesUseCase(tmdbApi: TmdbApi) =
+    fun getFetchUpcomingMoviesUseCaseSync(tmdbApi: TmdbApi) =
         FetchUpcomingMoviesUseCaseSync(
             tmdbApi
         )
 
 
     @Provides
-    fun getFetchLatestMoviesUseCase(tmdbApi: TmdbApi) =
+    fun getFetchLatestMoviesUseCaseSync(tmdbApi: TmdbApi) =
         FetchLatestMoviesUseCaseSync(
             tmdbApi
         )
 
 
     @Provides
-    fun getFetchNowPlayingMoviesUseCase(tmdbApi: TmdbApi) =
+    fun getFetchNowPlayingMoviesUseCaseSync(tmdbApi: TmdbApi) =
         FetchNowPlayingMoviesUseCaseSync(
             tmdbApi
         )
@@ -202,7 +226,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         )
 
     @Provides
-    fun getFetchRecommendedMoviesUseCase(tmdbApi: TmdbApi) =
+    fun getFetchRecommendedMoviesUseCaseSync(tmdbApi: TmdbApi) =
         FetchRecommendedMoviesUseCaseSync(
             tmdbApi
         )

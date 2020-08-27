@@ -1,10 +1,7 @@
 package com.hadysalhab.movid.networking
 
 import com.hadysalhab.movid.BuildConfig
-import com.hadysalhab.movid.networking.responses.CreateAndSignTokenResponse
-import com.hadysalhab.movid.networking.responses.CreateSessionResponse
-import com.hadysalhab.movid.networking.responses.MovieDetailResponse
-import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
+import com.hadysalhab.movid.networking.responses.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -76,12 +73,18 @@ interface TmdbApi {
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
     ): Call<MoviesResponseSchema>
 
-    @GET("/3/movie/{id}")
+    @GET("/3/movie/{movie_id}")
     fun fetchMovieDetail(
-        @Path("id") id: Int,
+        @Path("movie_id") movieId: Int,
         @Query("append_to_response") details: String = "recommendations,videos,credits,reviews,images,release_dates,account_states,similar",
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("session_id") sessionID: String
-    ): Call<MovieDetailResponse>
+    ): Call<MovieDetailSchema>
 
+    @GET("/3/movie/{movie_id}/reviews")
+    fun fetchReviewsForMovie(
+        @Path("movie_id") movieId: Int,
+        @Query("page") page: Int = 1,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<ReviewsSchema>
 }

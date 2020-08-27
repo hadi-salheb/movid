@@ -109,4 +109,8 @@ class MovieDetailFragment : BaseFragment(),
         mainNavigator.toDetailFragment(movieId)
     }
 
+    override fun onSeeReviewsClicked(movieID: Int) {
+        mainNavigator.toReviewsFragment(movieID)
+    }
+
 }

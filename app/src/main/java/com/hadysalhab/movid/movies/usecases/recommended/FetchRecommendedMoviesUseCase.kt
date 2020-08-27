@@ -13,7 +13,7 @@ import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 import java.lang.RuntimeException
 
-class FetchMovieRecommendedMoviesUseCase(
+class FetchRecommendedMoviesUseCase(
     private val fetchRecommendedMoviesUseCaseSync: FetchRecommendedMoviesUseCaseSync,
      backgroundThreadPoster: BackgroundThreadPoster,
      uiThreadPoster: UiThreadPoster,

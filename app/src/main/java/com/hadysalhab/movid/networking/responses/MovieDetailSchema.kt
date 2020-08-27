@@ -2,7 +2,7 @@ package com.hadysalhab.movid.networking.responses
 
 import com.google.gson.annotations.SerializedName
 
-data class MovieDetailResponse(
+data class MovieDetailSchema(
     val adult: Boolean,
     @SerializedName("backdrop_path")
     val backdropPath: String?,

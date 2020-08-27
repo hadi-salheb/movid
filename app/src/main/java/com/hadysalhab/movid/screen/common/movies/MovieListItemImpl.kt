@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.movielist
+package com.hadysalhab.movid.screen.common.movies
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,12 +12,12 @@ import com.hadysalhab.movid.common.constants.POSTER_SIZE_92
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
 
-class MovieListItemViewImpl(
+class MovieListItemImpl(
     layoutInflater: LayoutInflater,
     private val parent: ViewGroup?,
     private val viewFactory: ViewFactory
 ) :
-    MovieListItemView() {
+    MovieListItem() {
     private val movieImageIV: ImageView
     private val movieTitleTV: TextView
     private val releasedTV: TextView

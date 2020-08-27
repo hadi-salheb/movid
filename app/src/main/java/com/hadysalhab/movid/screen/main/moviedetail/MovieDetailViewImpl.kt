@@ -74,7 +74,7 @@ class MovieDetailViewImpl(
             displayCasts(movieDetail.credits.cast)
             displaySimilarMovies(movieDetail.similar)
             displayRecommendedMovies(movieDetail.recommendations)
-            displayReviews(movieDetail.reviews)
+            displayReviews(movieDetail.reviewResponse,movieDetail.details.id)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
             progressBar.visibility = View.GONE
             detailSV.visibility = View.VISIBLE
@@ -93,12 +93,20 @@ class MovieDetailViewImpl(
         ratingFL.addView(rating.getRootView())
     }
 
-    private fun displayReviews(reviews: Reviews) {
-        if (reviews.review.size > 1) {
-            val review = reviews.review[0]
+    private fun displayReviews(reviewResponse: ReviewResponse, movieID:Int) {
+        if (reviewResponse.reviews.size > 1) {
+            val review = reviewResponse.reviews[0]
             movieReviewReviewTV.text = review.content
             movieReviewAuthorTV.text = review.author
-            reviewsBtn.visibility = View.VISIBLE
+            reviewsBtn
+            reviewsBtn.apply {
+                visibility = View.VISIBLE
+                setOnClickListener {
+                    listeners.forEach {
+                        it.onSeeReviewsClicked(movieID)
+                    }
+                }
+            }
         } else {
             movieReviewReviewTV.text = "No Reviews Available"
             reviewsBtn.visibility = View.GONE

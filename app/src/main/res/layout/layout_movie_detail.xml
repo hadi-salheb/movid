@@ -257,6 +257,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
+                            android:textColor="@color/gray_900"
                             android:maxLines="5" />
 
                         <TextView
@@ -265,7 +266,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:layout_marginTop="8dp"
-                            android:textColor="@color/gray_900"
                             android:textStyle="italic" />
 
 

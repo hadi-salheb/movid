@@ -15,8 +15,12 @@ import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewImpl
-import com.hadysalhab.movid.screen.main.movielist.MovieListItemViewImpl
+import com.hadysalhab.movid.screen.common.movies.MovieListItemImpl
+import com.hadysalhab.movid.screen.common.reviews.ReviewListItem
+import com.hadysalhab.movid.screen.common.reviews.ReviewListItemImpl
 import com.hadysalhab.movid.screen.main.movielist.MovieListViewImpl
+import com.hadysalhab.movid.screen.main.reviews.ReviewListView
+import com.hadysalhab.movid.screen.main.reviews.ReviewListViewImpl
 
 class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getFragmentFrameView(parent: ViewGroup?) = FragmentFrameView(layoutInflater, parent)
@@ -45,7 +49,7 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
         )
 
     fun getMovieListItemView(parent: ViewGroup?) =
-        MovieListItemViewImpl(layoutInflater, parent, this)
+        MovieListItemImpl(layoutInflater, parent, this)
 
     fun getMovieListView(parent: ViewGroup?) = MovieListViewImpl(layoutInflater, parent, this)
 
@@ -62,4 +66,9 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getFactView(parent: ViewGroup?) = FactView(layoutInflater, parent)
     fun getCastCard(parent: ViewGroup?) = CastCardImpl(layoutInflater, parent)
     fun getRatingView(parent: ViewGroup?): Rating = Rating(layoutInflater, parent)
+    fun getReviewListItem(parent: ViewGroup?): ReviewListItem =
+        ReviewListItemImpl(layoutInflater, parent)
+
+    fun getReviewsView(parent: ViewGroup?): ReviewListView =
+        ReviewListViewImpl(layoutInflater, parent, this)
 }

@@ -44,22 +44,22 @@ class FetchMovieDetailUseCase(
             // will throw an exception if a client triggered this flow while it is busy
             assertNotBusyAndBecomeBusy()
             tmdbApi.fetchMovieDetail(
-                id = movieId,
+                movieId = movieId,
                 sessionID = sessionId
-            ).enqueue(object : retrofit2.Callback<MovieDetailResponse> {
-                override fun onFailure(call: Call<MovieDetailResponse>, t: Throwable) {
+            ).enqueue(object : retrofit2.Callback<MovieDetailSchema> {
+                override fun onFailure(call: Call<MovieDetailSchema>, t: Throwable) {
                     createErrorMessage(t.message ?: "Unable to resolve host")
                     notifyFailure(errorMessage)
                 }
 
                 override fun onResponse(
-                    call: Call<MovieDetailResponse>,
-                    response: Response<MovieDetailResponse>
+                    call: Call<MovieDetailSchema>,
+                    schema: Response<MovieDetailSchema>
                 ) {
-                    if (response.body() == null || response.code() == 204) {
+                    if (schema.body() == null || schema.code() == 204) {
                         createErrorMessage("")
                     }
-                    val movieDetailResult = getMovieDetails(response)
+                    val movieDetailResult = getMovieDetails(schema)
                     moviesStateManager.addMovieDetailToList(movieDetailResult)
                     notifySuccess(movieDetailResult)
                 }
@@ -67,7 +67,7 @@ class FetchMovieDetailUseCase(
         }
     }
 
-    private fun getMovieDetails(response: Response<MovieDetailResponse>) = with(response.body()!!) {
+    private fun getMovieDetails(schema: Response<MovieDetailSchema>) = with(schema.body()!!) {
         MovieDetail(
             getMovieInfo(this),
             getCredits(credits),
@@ -82,7 +82,7 @@ class FetchMovieDetailUseCase(
     }
 
 
-    private fun getMovieInfo(movieDetailResponse: MovieDetailResponse) = with(movieDetailResponse) {
+    private fun getMovieInfo(movieDetailSchema: MovieDetailSchema) = with(movieDetailSchema) {
         MovieInfo(
             adult,
             backdropPath,
@@ -137,7 +137,7 @@ class FetchMovieDetailUseCase(
     }
 
     private fun getReviews(reviewsSchema: ReviewsSchema) = with(reviewsSchema) {
-        Reviews(
+        ReviewResponse(
             id,
             page,
             getReview(review),

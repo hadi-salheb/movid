@@ -2,6 +2,8 @@ package com.hadysalhab.movid.movies
 
 import com.hadysalhab.movid.networking.responses.MovieSchema
 import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
+import com.hadysalhab.movid.networking.responses.ReviewSchema
+import com.hadysalhab.movid.networking.responses.ReviewsSchema
 
 class SchemaToModelHelper {
     fun getMoviesResponseFromSchema(
@@ -33,4 +35,19 @@ class SchemaToModelHelper {
         })
         return movies
     }
+
+    fun getReviewsResponseFromSchema(body: ReviewsSchema) = ReviewResponse(
+        body.id,
+        body.page,
+        getReviewsFromSchema(body.review),
+        body.totalPages,
+        body.totalPages
+    )
+
+    private fun getReviewsFromSchema(reviewSchemaList: List<ReviewSchema>): List<Review> =
+        reviewSchemaList.map { reviewSchema ->
+            with(reviewSchema) {
+                Review(id, author, content, url)
+            }
+        }
 }

@@ -9,6 +9,7 @@ abstract class MovieDetailView : BaseObservableViewMvc<MovieDetailView.Listener>
         fun onSeeAllClicked(groupType: GroupType)
         fun onCastClicked(castId: Int)
         fun onMovieClicked(movieId: Int)
+        fun onSeeReviewsClicked(movieID: Int)
     }
 
     abstract fun displayMovieDetail(movieDetail: MovieDetail)

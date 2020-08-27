@@ -10,7 +10,7 @@ import com.hadysalhab.movid.movies.usecases.nowplaying.FetchMovieNowPlayingMovie
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchMoviePopularMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.recommended.FetchMovieRecommendedMoviesUseCase
+import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.similar.FetchMovieSimilarMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
@@ -88,7 +88,7 @@ class FetchMovieListUseCaseFactoryImpl(
             moviesStateManager
         )
         GroupType.RECOMMENDED_MOVIES
-        -> FetchMovieRecommendedMoviesUseCase(
+        -> FetchRecommendedMoviesUseCase(
             fetchRecommendedMoviesUseCaseSync,
             backgroundThreadPoster,
             uiThreadPoster,
