@@ -3,12 +3,7 @@ package com.hadysalhab.movid.screen.main.reviews
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hadysalhab.movid.common.DeviceConfigManager
-import com.hadysalhab.movid.movies.GroupType
-import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.Review
-import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCase
-import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCaseFactory
 import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
 import javax.inject.Inject
 
@@ -22,7 +17,7 @@ class ReviewsViewModel @Inject constructor(
         get() = _viewState
 
 
-    fun init( movieID: Int) {
+    fun init(movieID: Int) {
         if (this.movieID == null) {
             this.movieID = movieID
             fetchReviewsUseCase.registerListener(this)

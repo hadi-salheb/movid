@@ -10,13 +10,18 @@ import javax.inject.Provider
 class ViewModelFactory
 @Inject
 constructor(
-        private val providersMap: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>,
-        savedStateRegistryOwner: SavedStateRegistryOwner
-): AbstractSavedStateViewModelFactory(savedStateRegistryOwner, null) {
+    private val providersMap: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>,
+    savedStateRegistryOwner: SavedStateRegistryOwner
+) : AbstractSavedStateViewModelFactory(savedStateRegistryOwner, null) {
 
-    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+    override fun <T : ViewModel?> create(
+        key: String,
+        modelClass: Class<T>,
+        handle: SavedStateHandle
+    ): T {
         val provider = providersMap[modelClass]
-        val viewModel = provider?.get() ?: throw RuntimeException("unsupported viewModel type: $modelClass")
+        val viewModel =
+            provider?.get() ?: throw RuntimeException("unsupported viewModel type: $modelClass")
         if (viewModel is SavedStateViewModel) {
             viewModel.init(handle)
         }

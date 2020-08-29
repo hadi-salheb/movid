@@ -1,7 +1,6 @@
 package com.hadysalhab.movid.screen.main.movielist
 
 import com.hadysalhab.movid.movies.Movie
-import com.hadysalhab.movid.movies.MoviesResponse
 
 sealed class MovieListViewState
 

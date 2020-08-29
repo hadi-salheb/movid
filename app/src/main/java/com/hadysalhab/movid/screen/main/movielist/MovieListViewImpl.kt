@@ -38,7 +38,7 @@ class MovieListViewImpl(
         }
         recyclerView.apply {
             val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-            itemDecoration.setDrawable(ContextCompat.getDrawable(context,R.drawable.divider)!!)
+            itemDecoration.setDrawable(ContextCompat.getDrawable(context, R.drawable.divider)!!)
             addItemDecoration(itemDecoration)
             addOnScrollListener(object : OnVerticalScrollListener() {
                 override fun onScrolledUp() {

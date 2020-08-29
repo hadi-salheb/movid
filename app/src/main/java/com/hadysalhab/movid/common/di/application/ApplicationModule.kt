@@ -13,14 +13,6 @@ import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.MoviesState
 import com.hadysalhab.movid.movies.MoviesStateManager
-import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
-import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.user.UserStateManager
 import com.techyourchance.threadposter.BackgroundThreadPoster
@@ -129,7 +121,7 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun getMoviesState()=MoviesState()
+    fun getMoviesState() = MoviesState()
 
     @Singleton
     @Provides

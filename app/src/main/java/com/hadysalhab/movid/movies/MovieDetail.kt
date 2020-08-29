@@ -43,11 +43,11 @@ data class ReviewResponse(
     var reviews: List<Review>,
     val totalPages: Int,
     val totalResults: Int
-){
-    fun deepCopy():ReviewResponse = with(this){
-        ReviewResponse(id,page,reviews.map { review->
+) {
+    fun deepCopy(): ReviewResponse = with(this) {
+        ReviewResponse(id, page, reviews.map { review ->
             review.copy()
-        },totalPages,totalResults)
+        }, totalPages, totalResults)
     }
 }
 

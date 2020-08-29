@@ -9,5 +9,5 @@ abstract class MainView : BaseObservableViewMvc<MainView.Listener>() {
     }
 
     abstract fun getFragmentFrame(): FrameLayout
-    abstract fun getCurrentNavigationItem():BottomNavigationItems
+    abstract fun getCurrentNavigationItem(): BottomNavigationItems
 }

@@ -36,68 +36,69 @@ class FetchMovieListUseCaseFactoryImpl(
     private val dataValidator: DataValidator,
     private val moviesStateManager: MoviesStateManager
 ) : FetchMovieListUseCaseFactory {
-    override fun makeFetchListUseCase(groupType: GroupType): FetchMovieListUseCase = when (groupType) {
-        GroupType.POPULAR -> FetchMoviePopularMoviesUseCase(
-            fetchPopularMoviesUseCaseSync,
-            backgroundThreadPoster,
-            uiThreadPoster,
-            schemaToModelHelper,
-            timeProvider,
-            errorMessageHandler,
-            dataValidator,
-            moviesStateManager
-        )
-        GroupType.NOW_PLAYING -> FetchMovieNowPlayingMoviesUseCase(
-            fetchNowPlayingMoviesUseCaseSync,
-            backgroundThreadPoster,
-            uiThreadPoster,
-            schemaToModelHelper,
-            timeProvider,
-            errorMessageHandler,
-            dataValidator,
-            moviesStateManager
-        )
-        GroupType.UPCOMING -> FetchMovieUpComingMoviesUseCase(
-            fetchUpcomingMoviesUseCaseSync,
-            backgroundThreadPoster,
-            uiThreadPoster,
-            schemaToModelHelper,
-            timeProvider,
-            errorMessageHandler,
-            dataValidator,
-            moviesStateManager
-        )
-        GroupType.TOP_RATED -> FetchMovieTopRatedMoviesUseCase(
-            fetchTopRatedMoviesUseCaseSync,
-            backgroundThreadPoster,
-            uiThreadPoster,
-            schemaToModelHelper,
-            timeProvider,
-            errorMessageHandler,
-            dataValidator,
-            moviesStateManager
-        )
-        GroupType.SIMILAR_MOVIES -> FetchMovieSimilarMoviesUseCase(
-            fetchSimilarMoviesUseCaseSync,
-            backgroundThreadPoster,
-            uiThreadPoster,
-            schemaToModelHelper,
-            timeProvider,
-            errorMessageHandler,
-            dataValidator,
-            moviesStateManager
-        )
-        GroupType.RECOMMENDED_MOVIES
-        -> FetchRecommendedMoviesUseCase(
-            fetchRecommendedMoviesUseCaseSync,
-            backgroundThreadPoster,
-            uiThreadPoster,
-            schemaToModelHelper,
-            timeProvider,
-            errorMessageHandler,
-            dataValidator,
-            moviesStateManager
-        )
-        else -> throw RuntimeException("ListUseCase for $groupType is not supported")
-    }
+    override fun makeFetchListUseCase(groupType: GroupType): FetchMovieListUseCase =
+        when (groupType) {
+            GroupType.POPULAR -> FetchMoviePopularMoviesUseCase(
+                fetchPopularMoviesUseCaseSync,
+                backgroundThreadPoster,
+                uiThreadPoster,
+                schemaToModelHelper,
+                timeProvider,
+                errorMessageHandler,
+                dataValidator,
+                moviesStateManager
+            )
+            GroupType.NOW_PLAYING -> FetchMovieNowPlayingMoviesUseCase(
+                fetchNowPlayingMoviesUseCaseSync,
+                backgroundThreadPoster,
+                uiThreadPoster,
+                schemaToModelHelper,
+                timeProvider,
+                errorMessageHandler,
+                dataValidator,
+                moviesStateManager
+            )
+            GroupType.UPCOMING -> FetchMovieUpComingMoviesUseCase(
+                fetchUpcomingMoviesUseCaseSync,
+                backgroundThreadPoster,
+                uiThreadPoster,
+                schemaToModelHelper,
+                timeProvider,
+                errorMessageHandler,
+                dataValidator,
+                moviesStateManager
+            )
+            GroupType.TOP_RATED -> FetchMovieTopRatedMoviesUseCase(
+                fetchTopRatedMoviesUseCaseSync,
+                backgroundThreadPoster,
+                uiThreadPoster,
+                schemaToModelHelper,
+                timeProvider,
+                errorMessageHandler,
+                dataValidator,
+                moviesStateManager
+            )
+            GroupType.SIMILAR_MOVIES -> FetchMovieSimilarMoviesUseCase(
+                fetchSimilarMoviesUseCaseSync,
+                backgroundThreadPoster,
+                uiThreadPoster,
+                schemaToModelHelper,
+                timeProvider,
+                errorMessageHandler,
+                dataValidator,
+                moviesStateManager
+            )
+            GroupType.RECOMMENDED_MOVIES
+            -> FetchRecommendedMoviesUseCase(
+                fetchRecommendedMoviesUseCaseSync,
+                backgroundThreadPoster,
+                uiThreadPoster,
+                schemaToModelHelper,
+                timeProvider,
+                errorMessageHandler,
+                dataValidator,
+                moviesStateManager
+            )
+            else -> throw RuntimeException("ListUseCase for $groupType is not supported")
+        }
 }

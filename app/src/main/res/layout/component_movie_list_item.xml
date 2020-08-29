@@ -7,8 +7,7 @@
     android:clickable="true"
     android:focusable="true"
     android:background="?attr/selectableItemBackground"
-    android:paddingRight="16dp"
-   >
+    android:paddingRight="16dp">
 
     <ImageView
         android:id="@+id/iv_movie"
@@ -31,8 +30,7 @@
         style="?textAppearanceSubtitle1"
         android:textSize="18sp"
         android:textStyle="bold"
-        tools:text="Avengers - Infinity War"
-        />
+        tools:text="Avengers - Infinity War" />
 
     <FrameLayout
         android:id="@+id/rating_wrapper"

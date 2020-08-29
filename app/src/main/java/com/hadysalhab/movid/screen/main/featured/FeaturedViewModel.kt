@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.screen.main.featured
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,7 +30,7 @@ class FeaturedViewModel @Inject constructor(
     fun onStart() {
         when (_viewState.value) {
             // re-fetch in case the data is outdated
-            null,is FeaturedLoaded -> {
+            null, is FeaturedLoaded -> {
                 fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS())
             }
             Loading, is Error -> {

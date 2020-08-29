@@ -11,17 +11,16 @@ import com.hadysalhab.movid.networking.ApiResponse
 import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
-import java.lang.RuntimeException
 
 class FetchMovieSimilarMoviesUseCase(
     private val fetchSimilarMoviesUseCaseSync: FetchSimilarMoviesUseCaseSync,
-     backgroundThreadPoster: BackgroundThreadPoster,
-     uiThreadPoster: UiThreadPoster,
-     schemaToModelHelper: SchemaToModelHelper,
-     timeProvider: TimeProvider,
-     errorMessageHandler: ErrorMessageHandler,
-     dataValidator: DataValidator,
-     moviesStateManager: MoviesStateManager
+    backgroundThreadPoster: BackgroundThreadPoster,
+    uiThreadPoster: UiThreadPoster,
+    schemaToModelHelper: SchemaToModelHelper,
+    timeProvider: TimeProvider,
+    errorMessageHandler: ErrorMessageHandler,
+    dataValidator: DataValidator,
+    moviesStateManager: MoviesStateManager
 ) : FetchMovieListUseCase(
     backgroundThreadPoster,
     uiThreadPoster,
@@ -37,7 +36,7 @@ class FetchMovieSimilarMoviesUseCase(
         page: Int,
         movieID: Int?
     ): ApiResponse<MoviesResponseSchema> {
-        if(movieID == null){
+        if (movieID == null) {
             throw RuntimeException("Cannot fetch similar movies without movieID")
         }
         return fetchSimilarMoviesUseCaseSync.fetchSimilarMoviesUseCaseSync(movieID, page)

@@ -43,7 +43,7 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFact
         movieTitle.text = movie.title
         movie.backdropPath?.let {
             Glide.with(getContext())
-                .load(IMAGES_BASE_URL+ BACKDROP_SIZE_780+it)
+                .load(IMAGES_BASE_URL + BACKDROP_SIZE_780 + it)
                 .into(movieImage)
         }
         movieReleaseDate.text = movie.releaseDate

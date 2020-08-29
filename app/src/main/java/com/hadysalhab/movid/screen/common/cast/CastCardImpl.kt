@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.screen.common.cast
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -35,7 +34,7 @@ class CastCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : CastCar
         castAsTV.text = cast.character
         cast.profilePath?.let {
             Glide.with(getContext())
-                .load(IMAGES_BASE_URL+ PROFILE_SIZE_h632+it)
+                .load(IMAGES_BASE_URL + PROFILE_SIZE_h632 + it)
                 .into(castIV)
         }
     }

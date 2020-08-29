@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.ListAdapter
 import com.hadysalhab.movid.movies.Review
 import com.hadysalhab.movid.screen.common.ViewFactory
 
-class ReviewListAdapter(private val viewFactory: ViewFactory) : ListAdapter<Review, ReviewListViewHolder>(DIFF_CALLBACK){
+class ReviewListAdapter(private val viewFactory: ViewFactory) :
+    ListAdapter<Review, ReviewListViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Review>() {

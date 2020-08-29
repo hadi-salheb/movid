@@ -5,7 +5,7 @@ import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
 
 class ErrorMessageHandler(private val gson: Gson) {
 
-     fun createErrorMessage(errMessage: String) = when {
+    fun createErrorMessage(errMessage: String) = when {
         errMessage.contains("status_message") -> {
             gson.fromJson(errMessage, TmdbErrorResponse::class.java).statusMessage
         }

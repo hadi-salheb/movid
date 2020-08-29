@@ -1,7 +1,6 @@
 package com.hadysalhab.movid.movies.usecases.groups
 
 
-import com.google.gson.Gson
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
@@ -15,9 +14,7 @@ import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiResponse
 import com.hadysalhab.movid.networking.ApiSuccessResponse
-import com.hadysalhab.movid.networking.responses.MovieSchema
 import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
-import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
@@ -169,7 +166,8 @@ class FetchMovieGroupsUseCase(
                 }
                 is ApiErrorResponse -> {
                     isAnyUseCaseFailed = true
-                    this.errorMessage = errorMessageHandler.createErrorMessage(responseSchemaSchema.errorMessage)
+                    this.errorMessage =
+                        errorMessageHandler.createErrorMessage(responseSchemaSchema.errorMessage)
                 }
             }
             mNumbOfFinishedUseCase++

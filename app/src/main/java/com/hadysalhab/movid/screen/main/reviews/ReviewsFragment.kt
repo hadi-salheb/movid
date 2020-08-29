@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
-import com.hadysalhab.movid.screen.main.movielist.MovieListLoaded
 import javax.inject.Inject
 
 private const val ARG_MOVIE_ID = "movie_id"

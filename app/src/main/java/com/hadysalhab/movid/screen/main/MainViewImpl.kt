@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hadysalhab.movid.R
-import java.lang.RuntimeException
 
 class MainViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : MainView() {
     private val fragmentFrame: FrameLayout

@@ -38,7 +38,7 @@ class MovieDetailViewImpl(
     private val ratingFL: FrameLayout
     private val progressBar: ProgressBar
     private val detailSV: ScrollView
-    private val reviewsBtn:Button
+    private val reviewsBtn: Button
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -74,7 +74,7 @@ class MovieDetailViewImpl(
             displayCasts(movieDetail.credits.cast)
             displaySimilarMovies(movieDetail.similar)
             displayRecommendedMovies(movieDetail.recommendations)
-            displayReviews(movieDetail.reviewResponse,movieDetail.details.id)
+            displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
             progressBar.visibility = View.GONE
             detailSV.visibility = View.VISIBLE
@@ -93,7 +93,7 @@ class MovieDetailViewImpl(
         ratingFL.addView(rating.getRootView())
     }
 
-    private fun displayReviews(reviewResponse: ReviewResponse, movieID:Int) {
+    private fun displayReviews(reviewResponse: ReviewResponse, movieID: Int) {
         if (reviewResponse.reviews.size > 1) {
             val review = reviewResponse.reviews[0]
             movieReviewReviewTV.text = review.content

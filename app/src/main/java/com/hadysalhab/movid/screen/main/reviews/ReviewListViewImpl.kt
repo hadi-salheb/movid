@@ -1,7 +1,5 @@
 package com.hadysalhab.movid.screen.main.reviews
 
-import android.content.Context
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.utils.convertDpToPixel
-import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.Review
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.scrolllistener.OnVerticalScrollListener

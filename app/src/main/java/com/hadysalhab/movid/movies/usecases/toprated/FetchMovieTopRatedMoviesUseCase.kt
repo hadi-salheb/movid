@@ -14,13 +14,13 @@ import com.techyourchance.threadposter.UiThreadPoster
 
 class FetchMovieTopRatedMoviesUseCase(
     private val fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
-     backgroundThreadPoster: BackgroundThreadPoster,
-     uiThreadPoster: UiThreadPoster,
-     schemaToModelHelper: SchemaToModelHelper,
-     timeProvider: TimeProvider,
-     errorMessageHandler: ErrorMessageHandler,
-     dataValidator: DataValidator,
-     moviesStateManager: MoviesStateManager
+    backgroundThreadPoster: BackgroundThreadPoster,
+    uiThreadPoster: UiThreadPoster,
+    schemaToModelHelper: SchemaToModelHelper,
+    timeProvider: TimeProvider,
+    errorMessageHandler: ErrorMessageHandler,
+    dataValidator: DataValidator,
+    moviesStateManager: MoviesStateManager
 ) : FetchMovieListUseCase(
     backgroundThreadPoster,
     uiThreadPoster,

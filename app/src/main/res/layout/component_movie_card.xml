@@ -28,7 +28,7 @@
             android:scaleType="fitCenter"
             app:backgroundTint="@color/material_on_surface_emphasis_medium"
             app:backgroundTintMode="add"
-            tools:src="@drawable/movie_backdrop_300"/>
+            tools:src="@drawable/movie_backdrop_300" />
 
     </androidx.cardview.widget.CardView>
 

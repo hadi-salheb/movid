@@ -9,9 +9,9 @@ import com.hadysalhab.movid.common.di.application.DaggerApplicationComponent
  * Custom application class
  * */
 class MyApplication : Application() {
-     val appComponent:ApplicationComponent by lazy{
-         DaggerApplicationComponent.builder().applicationModule(
-             ApplicationModule((this))
-         ).build()
-     }
+    val appComponent: ApplicationComponent by lazy {
+        DaggerApplicationComponent.builder().applicationModule(
+            ApplicationModule((this))
+        ).build()
+    }
 }

@@ -1,7 +1,5 @@
 package com.hadysalhab.movid.screen.main.reviews
 
-import com.hadysalhab.movid.movies.Movie
-import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.Review
 
 sealed class ReviewListViewState

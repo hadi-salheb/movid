@@ -1,7 +1,6 @@
 package com.hadysalhab.movid.movies.usecases.reviews
 
 import com.hadysalhab.movid.common.datavalidator.DataValidator
-import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.networking.ApiEmptyResponse
