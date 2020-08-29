@@ -30,6 +30,7 @@
         app:layout_constraintTop_toTopOf="parent"
         style="?textAppearanceSubtitle1"
         android:textSize="18sp"
+        android:textStyle="bold"
         tools:text="Avengers - Infinity War"
         />
 
