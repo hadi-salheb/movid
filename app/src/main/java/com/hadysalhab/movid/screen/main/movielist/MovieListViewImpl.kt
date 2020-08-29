@@ -57,6 +57,7 @@ class MovieListViewImpl(
                     }
                 }
             })
+            setPadding(0, 0, 0, 0)
         }
     }
 
