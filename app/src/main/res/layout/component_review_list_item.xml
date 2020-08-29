@@ -22,19 +22,19 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/author_review"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:textColor="@color/gray_900"
-            android:maxLines="5" />
-
-        <TextView
             android:id="@+id/author_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/gray_800"/>
+
+        <TextView
+            android:id="@+id/author_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_900"
             android:layout_marginTop="8dp"
-            android:textStyle="italic" />
+            />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
