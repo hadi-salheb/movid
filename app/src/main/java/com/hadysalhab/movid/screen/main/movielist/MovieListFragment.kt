@@ -2,7 +2,6 @@ package com.hadysalhab.movid.screen.main.movielist
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,7 +47,7 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
                 ?: throw RuntimeException("Cannot Start MovieListFragment without group type key")
             movieID = it.getInt(ARG_MOVIE_ID)
         }
-        if((groupType == GroupType.RECOMMENDED_MOVIES || groupType == GroupType.SIMILAR_MOVIES) && movieID == null){
+        if ((groupType == GroupType.RECOMMENDED_MOVIES || groupType == GroupType.SIMILAR_MOVIES) && movieID == null) {
             throw RuntimeException("Cannot get recommended movies or similar movies without providing a movie id!")
         }
         movieListViewModel =
@@ -69,7 +68,7 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
-        movieListViewModel.init(groupType,movieID)
+        movieListViewModel.init(groupType, movieID)
         movieListViewModel.viewState.observe(viewLifecycleOwner, Observer {
             render(it)
         })
@@ -94,7 +93,7 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
     }
 
     override fun onMovieItemClicked(movieID: Int) {
-
+        mainNavigator.toDetailFragment(movieID)
     }
 
     override fun loadMoreItems() {

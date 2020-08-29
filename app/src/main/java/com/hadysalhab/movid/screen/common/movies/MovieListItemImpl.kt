@@ -29,9 +29,15 @@ class MovieListItemImpl(
         movieTitleTV = findViewById(R.id.tv_movie_title)
         releasedTV = findViewById(R.id.tv_released_movie)
         ratingFL = findViewById(R.id.rating_wrapper)
+
     }
 
     override fun displayMovie(movie: Movie) {
+        getRootView().setOnClickListener {
+            listeners.forEach {
+                it.onMovieItemClicked(movie.id)
+            }
+        }
         movie.posterPath?.let {
             Glide.with(getContext())
                 .load(IMAGES_BASE_URL + POSTER_SIZE_92 + it)
