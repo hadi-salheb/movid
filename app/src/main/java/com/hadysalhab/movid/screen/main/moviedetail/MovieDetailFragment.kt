@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.movies.VideosResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
@@ -36,6 +38,9 @@ class MovieDetailFragment : BaseFragment(),
 
     @Inject
     lateinit var toastHelper: ToastHelper
+
+    @Inject
+    lateinit var intentHandler: IntentHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,6 +115,10 @@ class MovieDetailFragment : BaseFragment(),
 
     override fun onSeeReviewsClicked(movieID: Int) {
         mainNavigator.toReviewsFragment(movieID)
+    }
+
+    override fun onSeeTrailerClicked(videosResponse: VideosResponse) {
+        intentHandler.handleTrailerIntent(videosResponse)
     }
 
 }

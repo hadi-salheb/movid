@@ -27,6 +27,7 @@ import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseS
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
+import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
@@ -232,4 +233,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         FetchRecommendedMoviesUseCaseSync(
             tmdbApi
         )
+
+    @Provides
+    fun getIntentHandler(context: Context) = IntentHandler(context)
 }

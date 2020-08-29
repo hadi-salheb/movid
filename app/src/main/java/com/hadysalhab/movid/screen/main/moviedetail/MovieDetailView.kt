@@ -2,6 +2,7 @@ package com.hadysalhab.movid.screen.main.moviedetail
 
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MovieDetail
+import com.hadysalhab.movid.movies.VideosResponse
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
 abstract class MovieDetailView : BaseObservableViewMvc<MovieDetailView.Listener>() {
@@ -10,6 +11,7 @@ abstract class MovieDetailView : BaseObservableViewMvc<MovieDetailView.Listener>
         fun onCastClicked(castId: Int)
         fun onMovieClicked(movieId: Int)
         fun onSeeReviewsClicked(movieID: Int)
+        fun onSeeTrailerClicked(videosResponse: VideosResponse)
     }
 
     abstract fun displayMovieDetail(movieDetail: MovieDetail)

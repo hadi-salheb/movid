@@ -39,6 +39,7 @@ class MovieDetailViewImpl(
     private val progressBar: ProgressBar
     private val detailSV: ScrollView
     private val reviewsBtn: Button
+    private val trailerBtn: Button
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -59,6 +60,13 @@ class MovieDetailViewImpl(
         movieReviewReviewTV = findViewById(R.id.movie_review_review)
         ratingFL = findViewById(R.id.rating_wrapper)
         reviewsBtn = findViewById(R.id.btn_reviews)
+        trailerBtn = findViewById(R.id.button_trailer)
+        trailerBtn.setOnClickListener {
+            listeners.forEach {
+                it.onSeeTrailerClicked(this.movieDetail!!.videosResponse)
+            }
+
+        }
     }
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
@@ -76,6 +84,9 @@ class MovieDetailViewImpl(
             displayRecommendedMovies(movieDetail.recommendations)
             displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
+            if (!movieDetail.videosResponse.videos.any { it.type == "Trailer" && it.site == "YouTube" }) {
+                trailerBtn.visibility = View.GONE
+            }
             progressBar.visibility = View.GONE
             detailSV.visibility = View.VISIBLE
         }

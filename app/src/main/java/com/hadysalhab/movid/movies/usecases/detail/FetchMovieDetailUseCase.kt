@@ -75,10 +75,19 @@ class FetchMovieDetailUseCase(
             getImages(images),
             getAccountState(accountStates),
             getMoviesResponse(similar, GroupType.SIMILAR_MOVIES),
-            getMoviesResponse(recommendations, GroupType.RECOMMENDED_MOVIES)
+            getMoviesResponse(recommendations, GroupType.RECOMMENDED_MOVIES),
+            getVideos(videos)
         ).apply {
             timeStamp = timeProvider.currentTimestamp
         }
+    }
+
+    private fun getVideos(videosSchema: VideosSchema) = with(videosSchema) {
+        VideosResponse(videos.map { videosSchema ->
+            with(videosSchema) {
+                Video(id, type, site, key)
+            }
+        })
     }
 
 

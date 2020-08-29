@@ -36,7 +36,20 @@ data class MovieDetailSchema(
     @SerializedName("account_states")
     val accountStates: AccountStatesSchema,
     val similar: MoviesResponseSchema,
-    val recommendations: MoviesResponseSchema
+    val recommendations: MoviesResponseSchema,
+    val videos: VideosSchema
+)
+
+data class VideosSchema(
+    @SerializedName("results")
+    val videos: List<VideoSchema>
+)
+
+data class VideoSchema(
+    val id: String,
+    val type: String,
+    val site: String,
+    val key: String
 )
 
 data class GenresSchema(

@@ -7,11 +7,22 @@ data class MovieDetail(
     val images: Images,
     val accountStates: AccountStates,
     val similar: MoviesResponse,
-    val recommendations: MoviesResponse
+    val recommendations: MoviesResponse,
+    val videosResponse: VideosResponse
 ) {
     var timeStamp: Long? = null
 }
 
+data class VideosResponse(
+    val videos: List<Video>
+)
+
+data class Video(
+    val id: String,
+    val type: String,
+    val site: String,
+    val key: String
+)
 
 data class Credits(
     val id: Int,
