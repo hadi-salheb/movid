@@ -21,7 +21,7 @@
         android:paddingStart="8dp"
         android:gravity="center_vertical"
         android:textAppearance="?attr/textAppearanceBody2"
-        android:textColor="@color/gray_700"
+        android:textColor="@color/gray_900"
         tools:text="2h:30m" />
 
 </LinearLayout>

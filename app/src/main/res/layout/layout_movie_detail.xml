@@ -6,7 +6,6 @@
     android:layout_height="match_parent">
 
     <ScrollView
-        android:visibility="gone"
         android:id="@+id/movie_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -53,7 +52,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:textAppearance="?attr/textAppearanceHeadline6"
-                android:textColor="@color/gray_700"
+                android:textColor="@color/gray_800"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/iv_poster"
@@ -65,7 +64,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textColor="@color/gray_700"
+                android:textColor="@color/gray_900"
                 android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tv_movie_title"
@@ -122,6 +121,7 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     style="?attr/materialButtonOutlinedStyle"
+                    android:textColor="@color/gray_900"
                     android:text="Add to Favorites" />
 
                 <Button
@@ -131,6 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="@color/gray_900"
                     style="?attr/materialButtonOutlinedStyle"
                     android:text="Add to Wishlist" />
             </LinearLayout>
@@ -164,7 +165,7 @@
                         android:layout_marginBottom="8dp"
                         android:text="Overview"
                         android:textAppearance="?attr/textAppearanceHeadline6"
-                        android:textColor="@color/gray_700"
+                        android:textColor="@color/gray_800"
                         android:textSize="18sp" />
 
                     <TextView
@@ -172,7 +173,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceSubtitle1"
-                        android:textColor="@color/gray_700" />
+                        android:textColor="@color/gray_900" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -201,7 +202,7 @@
                         android:layout_marginBottom="8dp"
                         android:text="Facts"
                         android:textAppearance="?attr/textAppearanceHeadline6"
-                        android:textColor="@color/gray_700"
+                        android:textColor="@color/gray_800"
                         android:textSize="18sp" />
 
 
@@ -244,7 +245,7 @@
                         android:layout_marginBottom="8dp"
                         android:text="Reviews"
                         android:textAppearance="?attr/textAppearanceHeadline6"
-                        android:textColor="@color/gray_700"
+                        android:textColor="@color/gray_800"
                         android:textSize="18sp" />
 
                     <LinearLayout
