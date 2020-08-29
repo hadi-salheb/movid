@@ -5,10 +5,7 @@ import com.google.gson.Gson
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
-import com.hadysalhab.movid.movies.GroupType
-import com.hadysalhab.movid.movies.Movie
-import com.hadysalhab.movid.movies.MoviesResponse
-import com.hadysalhab.movid.movies.MoviesStateManager
+import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
@@ -36,11 +33,12 @@ class FetchMovieGroupsUseCase(
     private val fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
     private val fetchLatestMoviesUseCaseSync: FetchLatestMoviesUseCaseSync,
     private val dataValidator: DataValidator,
-    private val gson: Gson,
     private val moviesStateManager: MoviesStateManager,
     private val timeProvider: TimeProvider,
     private val backgroundThreadPoster: BackgroundThreadPoster,
-    private val uiThreadPoster: UiThreadPoster
+    private val uiThreadPoster: UiThreadPoster,
+    private val schemaToModelHelper: SchemaToModelHelper,
+    private val errorMessageHandler: ErrorMessageHandler
 ) :
     BaseBusyObservable<FetchMovieGroupsUseCase.Listener>() {
     interface Listener {
@@ -86,10 +84,10 @@ class FetchMovieGroupsUseCase(
     }
 
     private fun validateComputations() {
-        val popularMoviesStore:MoviesResponse = moviesStateManager.getPopularMovies()
-        val upcomingMoviesStore:MoviesResponse  = moviesStateManager.getUpcomingMovies()
-        val nowPLayingMoviesStore:MoviesResponse = moviesStateManager.getNowPlayingMovies()
-        val topRatedMoviesStore:MoviesResponse = moviesStateManager.getTopRatedMovies()
+        val popularMoviesStore: MoviesResponse = moviesStateManager.getPopularMovies()
+        val upcomingMoviesStore: MoviesResponse = moviesStateManager.getUpcomingMovies()
+        val nowPLayingMoviesStore: MoviesResponse = moviesStateManager.getNowPlayingMovies()
+        val topRatedMoviesStore: MoviesResponse = moviesStateManager.getTopRatedMovies()
         if (dataValidator.isMoviesResponseValid(popularMoviesStore)) this.movieGroups.add(
             popularMoviesStore
         ) else computations.add(
@@ -166,17 +164,12 @@ class FetchMovieGroupsUseCase(
                     movieGroups.add(movieGroup)
                 }
                 is ApiEmptyResponse -> {
-                    val movieGroup = getMovieResponse(
-                        groupType, MoviesResponseSchema(
-                            1, 0, 1,
-                            emptyList()
-                        )
-                    )
-                    movieGroups.add(movieGroup)
+                    isAnyUseCaseFailed = true
+                    this.errorMessage = errorMessageHandler.createErrorMessage("")
                 }
                 is ApiErrorResponse -> {
                     isAnyUseCaseFailed = true
-                    createErrorMessage(responseSchemaSchema.errorMessage)
+                    this.errorMessage = errorMessageHandler.createErrorMessage(responseSchemaSchema.errorMessage)
                 }
             }
             mNumbOfFinishedUseCase++
@@ -185,74 +178,13 @@ class FetchMovieGroupsUseCase(
     }
 
     private fun getMovieResponse(groupType: GroupType, moviesResponseSchema: MoviesResponseSchema) =
-        when (groupType) {
-            GroupType.POPULAR -> {
-                createMoviesResponse(moviesResponseSchema, GroupType.POPULAR).also {
-                    moviesStateManager.updatePopularMovies(it)
-                }
-            }
-            GroupType.UPCOMING -> {
-                createMoviesResponse(moviesResponseSchema, GroupType.UPCOMING).also {
-                    moviesStateManager.updateUpcomingMovies(it)
-                }
-            }
-            GroupType.TOP_RATED -> {
-                createMoviesResponse(moviesResponseSchema, GroupType.TOP_RATED).also {
-                    moviesStateManager.updateTopRatedMovies(it)
-                }
-            }
-            GroupType.NOW_PLAYING -> {
-                createMoviesResponse(moviesResponseSchema, GroupType.NOW_PLAYING).also {
-                    moviesStateManager.updateNowPlayingMovies(it)
-                }
-            }
-            else -> throw RuntimeException("GroupType $groupType not supported in this UseCase")
+        schemaToModelHelper.getMoviesResponseFromSchema(
+            groupType,
+            moviesResponseSchema
+        ).also {
+            it.timeStamp = timeProvider.currentTimestamp
+            moviesStateManager.updateMoviesResponseByGroupType(it, groupType)
         }
-
-    private fun createMoviesResponse(moviesResponse: MoviesResponseSchema, groupType: GroupType) =
-        MoviesResponse(
-            moviesResponse.page,
-            moviesResponse.totalResults,
-            moviesResponse.total_pages,
-            getMovies(moviesResponse.movies),
-            groupType
-        ).apply {
-            timeStamp = timeProvider.currentTimestamp
-        }
-
-    private fun getMovies(moviesSchema: List<MovieSchema>): MutableList<Movie> {
-        val movies = mutableListOf<Movie>()
-        movies.addAll(moviesSchema.map { movieSchema ->
-            with(movieSchema) {
-
-                Movie(
-                    id,
-                    title,
-                    posterPath,
-                    backdropPath,
-                    voteAvg,
-                    voteCount,
-                    releaseDate,
-                    overview
-                )
-            }
-        })
-        return movies
-    }
-
-    private fun createErrorMessage(errMessage: String) {
-        this.errorMessage = when {
-            errMessage.contains("status_message") -> {
-                gson.fromJson(errMessage, TmdbErrorResponse::class.java).statusMessage
-            }
-            errMessage.contains("Unable to resolve host") -> {
-                "Please check network connection and try again"
-            }
-            else -> {
-                "Unable to retrieve data. Please try again.!"
-            }
-        }
-    }
 
     // notify controller
     private fun notifyFailure() {

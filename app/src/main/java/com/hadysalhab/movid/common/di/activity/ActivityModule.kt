@@ -141,7 +141,8 @@ class ActivityModule(private val activity: FragmentActivity) {
         fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
         fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
         fetchLatestMoviesUseCaseSync: FetchLatestMoviesUseCaseSync,
-        gson: Gson,
+        errorMessageHandler: ErrorMessageHandler,
+        schemaToModelHelper: SchemaToModelHelper,
         moviesStateManager: MoviesStateManager,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
@@ -155,11 +156,12 @@ class ActivityModule(private val activity: FragmentActivity) {
             fetchNowPlayingMoviesUseCaseSync,
             fetchLatestMoviesUseCaseSync,
             dataValidator,
-            gson,
             moviesStateManager,
             timeProvider,
             backgroundThreadPoster,
-            uiThreadPoster
+            uiThreadPoster,
+            schemaToModelHelper,
+            errorMessageHandler
         )
 
     @Provides
