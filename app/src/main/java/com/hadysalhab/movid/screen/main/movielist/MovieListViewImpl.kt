@@ -1,11 +1,11 @@
 package com.hadysalhab.movid.screen.main.movielist
 
-import android.content.Context
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
@@ -36,25 +36,28 @@ class MovieListViewImpl(
             setHasFixedSize(true)
             adapter = this@MovieListViewImpl.adapter
         }
-        recyclerView.addOnScrollListener(object : OnVerticalScrollListener() {
-            override fun onScrolledUp() {
+        recyclerView.apply {
+            val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            itemDecoration.setDrawable(ContextCompat.getDrawable(context,R.drawable.divider)!!)
+            addItemDecoration(itemDecoration)
+            addOnScrollListener(object : OnVerticalScrollListener() {
+                override fun onScrolledUp() {
 
-            }
-
-            override fun onScrolledDown() {
-            }
-
-            override fun onScrolledToTop() {
-            }
-
-            override fun onScrolledToBottom() {
-                listeners.forEach {
-                    it.loadMoreItems()
                 }
-            }
 
+                override fun onScrolledDown() {
+                }
+
+                override fun onScrolledToTop() {
+                }
+
+                override fun onScrolledToBottom() {
+                    listeners.forEach {
+                        it.loadMoreItems()
+                    }
+                }
+            })
         }
-        )
     }
 
     override fun displayMovies(movies: List<Movie>) {

@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="4dp">
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground"
+    android:paddingRight="16dp"
+   >
 
     <ImageView
         android:id="@+id/iv_movie"
@@ -24,8 +28,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_movie"
         app:layout_constraintTop_toTopOf="parent"
-        style="?attr/textAppearanceHeadline6"
-        tools:text="Avengers - Infinity War" />
+        style="?textAppearanceSubtitle1"
+        android:textSize="18sp"
+        tools:text="Avengers - Infinity War"
+        />
 
     <FrameLayout
         android:id="@+id/rating_wrapper"
