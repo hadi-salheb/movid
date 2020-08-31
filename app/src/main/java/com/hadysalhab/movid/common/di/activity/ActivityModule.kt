@@ -83,16 +83,18 @@ class ActivityModule(private val activity: FragmentActivity) {
     @Provides
     fun getFetchMovieDetailUseCase(
         tmdbApi: TmdbApi,
-        gson: Gson,
         moviesStateManager: MoviesStateManager,
-        dataValidator: DataValidator, timeProvider: TimeProvider
+        dataValidator: DataValidator, timeProvider: TimeProvider,
+        schemaToModelHelper: SchemaToModelHelper,
+        errorMessageHandler: ErrorMessageHandler
     ): FetchMovieDetailUseCase =
         FetchMovieDetailUseCase(
             tmdbApi,
-            gson,
             moviesStateManager,
             timeProvider,
-            dataValidator
+            dataValidator,
+            schemaToModelHelper,
+            errorMessageHandler
         )
 
     @Provides
