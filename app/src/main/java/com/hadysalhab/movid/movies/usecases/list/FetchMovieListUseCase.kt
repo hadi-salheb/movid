@@ -64,10 +64,21 @@ abstract class FetchMovieListUseCase(
                             )
                         }
                     } else {
-                        val movies = mutableListOf<Movie>()
-                        movies.addAll(this.moviesResponse.movies!!)
-                        movies.addAll(movieGroup.movies ?: emptyList())
-                        this.moviesResponse = this.moviesResponse.withMovies(movies)
+                        /*
+                        * state = {
+                        * ...state,
+                        * moviesRes:[...state.moviesRes, ...newMovies ]
+                        * }
+                        *
+                        * */
+                        val oldState = this.moviesResponse
+                        val oldList = oldState.movies
+                        this.moviesResponse = oldState.copy(
+                            movies = mutableListOf<Movie>().apply {
+                                addAll(oldList!!)
+                                addAll(movieGroup.movies ?: emptyList())
+                            }
+                        )
                     }
                     notifySuccess()
                 }

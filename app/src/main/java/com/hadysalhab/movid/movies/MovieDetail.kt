@@ -11,11 +11,25 @@ data class MovieDetail(
     val videosResponse: VideosResponse
 ) {
     var timeStamp: Long? = null
+
+    fun deepCopy(): MovieDetail = this.copy(
+        details = details.deepCopy(),
+        credits = credits.deepCopy(),
+        reviewResponse = reviewResponse.deepCopy(),
+        images = images.deepCopy(),
+        similar = similar.deepCopy(),
+        recommendations = recommendations.deepCopy(),
+        videosResponse = videosResponse.deepCopy()
+    ).also {
+        it.timeStamp = timeStamp
+    }
 }
 
 data class VideosResponse(
     val videos: List<Video>
-)
+) {
+    fun deepCopy() = this.copy(videos = videos.map { it.copy() })
+}
 
 data class Video(
     val id: String,
@@ -28,7 +42,9 @@ data class Credits(
     val id: Int,
     val cast: List<Cast>,
     val crew: List<Crew>
-)
+) {
+    fun deepCopy() = this.copy(cast = cast.map { it.copy() }, crew = crew.map { it.copy() })
+}
 
 data class Cast(
     val castID: Int,
@@ -55,11 +71,7 @@ data class ReviewResponse(
     val totalPages: Int,
     val totalResults: Int
 ) {
-    fun deepCopy(): ReviewResponse = with(this) {
-        ReviewResponse(id, page, reviews.map { review ->
-            review.copy()
-        }, totalPages, totalResults)
-    }
+    fun deepCopy(): ReviewResponse = this.copy(reviews = reviews.map { it.copy() })
 }
 
 data class Review(
@@ -71,7 +83,9 @@ data class Review(
 
 data class Images(
     val backdrops: List<Backdrops>
-)
+) {
+    fun deepCopy() = this.copy(backdrops = backdrops.map { it.copy() })
+}
 
 data class Backdrops(
     val filePath: String

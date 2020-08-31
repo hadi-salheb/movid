@@ -32,7 +32,9 @@ data class MovieInfo(
     val title: String,
     val voteAvg: Double,
     val voteCount: Int
-)
+) {
+    fun deepCopy(): MovieInfo = this.copy(genres = this.genres.map { it.copy() })
+}
 
 data class Genres(
     val id: Int,

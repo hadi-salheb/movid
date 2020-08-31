@@ -1,37 +1,43 @@
 package com.hadysalhab.movid.movies
 
 
-class MoviesStateManager(private val moviesState: MoviesState) {
-
-
-    fun getMovieDetailById(movieId: Int) =
-        moviesState.movieDetailList.find { it.details.id == movieId }
-
-
+class MoviesStateManager(private var moviesState: MoviesState) {
+    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     fun addMovieDetailToList(movieDetail: MovieDetail) {
-        val movieDetailList = mutableListOf<MovieDetail>()
-        movieDetailList.apply {
-            addAll(moviesState.movieDetailList)
-            filter { it.details.id != movieDetail.details.id }
-            add(movieDetail)
-        }
-        moviesState.movieDetailList = movieDetailList
+        /*
+         * state = {
+         * ...state,
+         * moviesRes:[...state.moviesRes, ...newMovies ]
+         * }
+         *
+         * */
+        moviesState = moviesState.copy(
+            movieDetailList = mutableListOf<MovieDetail>().apply {
+                addAll(moviesState.movieDetailList)
+                filter { it.details.id != movieDetail.details.id }
+                add(movieDetail.deepCopy())
+            }
+        )
     }
 
+    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     private fun updatePopularMovies(popular: MoviesResponse) {
-        moviesState.popularMovies = popular.deepCopy()
+        moviesState = moviesState.copy(popularMovies = popular.deepCopy())
     }
 
+    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     private fun updateTopRatedMovies(topRated: MoviesResponse) {
-        moviesState.topRatedMovies = topRated.deepCopy()
+        moviesState = moviesState.copy(topRatedMovies = topRated.deepCopy())
     }
 
+    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     private fun updateUpcomingMovies(upcoming: MoviesResponse) {
-        moviesState.upcomingMovies = upcoming.deepCopy()
+        moviesState = moviesState.copy(upcomingMovies = upcoming.deepCopy())
     }
 
+    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     private fun updateNowPlayingMovies(nowPlaying: MoviesResponse) {
-        moviesState.nowPlayingMovies = nowPlaying.deepCopy()
+        moviesState = moviesState.copy(nowPlayingMovies = nowPlaying.deepCopy())
     }
 
     fun updateMoviesResponseByGroupType(moviesResponse: MoviesResponse, groupType: GroupType) {
@@ -52,11 +58,13 @@ class MoviesStateManager(private val moviesState: MoviesState) {
         else -> throw RuntimeException("GroupType $groupType not supported in movie store")
     }
 
+    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     fun getTopRatedMovies() = moviesState.topRatedMovies.deepCopy()
     fun getNowPlayingMovies() = moviesState.nowPlayingMovies.deepCopy()
     fun getUpcomingMovies() = moviesState.upcomingMovies.deepCopy()
     fun getPopularMovies() = moviesState.popularMovies.deepCopy()
-
+    fun getMovieDetailById(movieId: Int) =
+        moviesState.movieDetailList.find { it.details.id == movieId }?.deepCopy()
 
 }
 
