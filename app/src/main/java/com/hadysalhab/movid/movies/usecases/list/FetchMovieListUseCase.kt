@@ -40,7 +40,7 @@ abstract class FetchMovieListUseCase(
         if (isMoviePartOfTheMovieStore() && page == 1) {
             val moviesResponse = moviesStateManager.getMoviesResponseByGroupType(groupType)
             if (dataValidator.isMoviesResponseValid(moviesResponse)) {
-                this.moviesResponse = moviesResponse.deepCopy()
+                this.moviesResponse = moviesResponse
                 notifySuccess()
                 return
             }
