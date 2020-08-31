@@ -28,7 +28,7 @@ abstract class FetchMovieListUseCase(
     }
 
     private var page = 1
-    lateinit var moviesResponse: MoviesResponse
+    private lateinit var moviesResponse: MoviesResponse
     private lateinit var groupType: GroupType
 
     fun fetchMovieListUseCase(region: String, pageToFetch: Int, movieID: Int?) {
@@ -64,7 +64,10 @@ abstract class FetchMovieListUseCase(
                             )
                         }
                     } else {
-                        this.moviesResponse.movies!!.addAll(movieGroup.movies ?: emptyList())
+                        val movies = mutableListOf<Movie>()
+                        movies.addAll(this.moviesResponse.movies!!)
+                        movies.addAll(movieGroup.movies ?: emptyList())
+                        this.moviesResponse = this.moviesResponse.withMovies(movies)
                     }
                     notifySuccess()
                 }

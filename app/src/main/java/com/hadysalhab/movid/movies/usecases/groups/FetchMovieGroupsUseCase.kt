@@ -47,7 +47,7 @@ class FetchMovieGroupsUseCase(
     private var mNumbOfFinishedUseCase = 0
     private var isAnyUseCaseFailed = false
     private val LOCK = Object()
-    private lateinit var movieGroups: MutableList<MoviesResponse>
+    private lateinit var movieGroups: List<MoviesResponse>
     private lateinit var errorMessage: String
     private lateinit var region: String
     private lateinit var computations: MutableList<() -> Unit>
@@ -85,24 +85,41 @@ class FetchMovieGroupsUseCase(
         val upcomingMoviesStore: MoviesResponse = moviesStateManager.getUpcomingMovies()
         val nowPLayingMoviesStore: MoviesResponse = moviesStateManager.getNowPlayingMovies()
         val topRatedMoviesStore: MoviesResponse = moviesStateManager.getTopRatedMovies()
-        if (dataValidator.isMoviesResponseValid(popularMoviesStore)) this.movieGroups.add(
-            popularMoviesStore
-        ) else computations.add(
+
+        if (dataValidator.isMoviesResponseValid(popularMoviesStore)) {
+            this.movieGroups = this.movieGroups.toMutableList().also {
+                it.add(
+                    popularMoviesStore
+                )
+            }
+        } else computations.add(
             this::fetchPopularMovies
         )
-        if (dataValidator.isMoviesResponseValid(upcomingMoviesStore)) this.movieGroups.add(
-            upcomingMoviesStore
-        ) else computations.add(
+        if (dataValidator.isMoviesResponseValid(upcomingMoviesStore)) {
+            this.movieGroups = this.movieGroups.toMutableList().also {
+                it.add(
+                    upcomingMoviesStore
+                )
+            }
+        } else computations.add(
             this::fetchUpcomingMovies
         )
-        if (dataValidator.isMoviesResponseValid(nowPLayingMoviesStore)) this.movieGroups.add(
-            nowPLayingMoviesStore
-        ) else computations.add(
+        if (dataValidator.isMoviesResponseValid(nowPLayingMoviesStore)) {
+            this.movieGroups = this.movieGroups.toMutableList().also {
+                it.add(
+                    nowPLayingMoviesStore
+                )
+            }
+        } else computations.add(
             this::fetchNowPlayingMovies
         )
-        if (dataValidator.isMoviesResponseValid(topRatedMoviesStore)) this.movieGroups.add(
-            topRatedMoviesStore
-        ) else computations.add(
+        if (dataValidator.isMoviesResponseValid(topRatedMoviesStore)) {
+            this.movieGroups = this.movieGroups.toMutableList().also {
+                it.add(
+                    topRatedMoviesStore
+                )
+            }
+        } else computations.add(
             this::fetchTopRatedMovies
         )
 
@@ -158,7 +175,9 @@ class FetchMovieGroupsUseCase(
             when (responseSchemaSchema) {
                 is ApiSuccessResponse -> {
                     val movieGroup = getMovieResponse(groupType, responseSchemaSchema.body)
-                    movieGroups.add(movieGroup)
+                    this.movieGroups = this.movieGroups.toMutableList().also {
+                        it.add(movieGroup)
+                    }
                 }
                 is ApiEmptyResponse -> {
                     isAnyUseCaseFailed = true

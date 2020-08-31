@@ -18,34 +18,20 @@ class MoviesStateManager(private val moviesState: MoviesState) {
         moviesState.movieDetailList = movieDetailList
     }
 
-    fun updatePopularMovies(popular: MoviesResponse) {
-        updateMoviesResponse(popular, moviesState.popularMovies)
+    private fun updatePopularMovies(popular: MoviesResponse) {
+        moviesState.popularMovies = popular.deepCopy()
     }
 
-    fun updateTopRatedMovies(topRated: MoviesResponse) {
-        updateMoviesResponse(topRated, moviesState.topRatedMovies)
+    private fun updateTopRatedMovies(topRated: MoviesResponse) {
+        moviesState.topRatedMovies = topRated.deepCopy()
     }
 
-    fun updateUpcomingMovies(upcoming: MoviesResponse) {
-        updateMoviesResponse(upcoming, moviesState.upcomingMovies)
+    private fun updateUpcomingMovies(upcoming: MoviesResponse) {
+        moviesState.upcomingMovies = upcoming.deepCopy()
     }
 
-    fun updateNowPlayingMovies(nowPlaying: MoviesResponse) {
-        updateMoviesResponse(nowPlaying, moviesState.nowPlayingMovies)
-    }
-
-    private fun updateMoviesResponse(
-        newMoviesResponse: MoviesResponse,
-        oldMoviesResponse: MoviesResponse
-    ) {
-        oldMoviesResponse.apply {
-            page = newMoviesResponse.page
-            total_pages = newMoviesResponse.total_pages
-            totalResults = newMoviesResponse.totalResults
-            movies = mutableListOf()
-            movies!!.addAll(newMoviesResponse.movies ?: emptyList())
-            timeStamp = newMoviesResponse.timeStamp
-        }
+    private fun updateNowPlayingMovies(nowPlaying: MoviesResponse) {
+        moviesState.nowPlayingMovies = nowPlaying.deepCopy()
     }
 
     fun updateMoviesResponseByGroupType(moviesResponse: MoviesResponse, groupType: GroupType) {
