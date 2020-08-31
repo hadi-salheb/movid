@@ -13,7 +13,7 @@ data class MoviesResponse(
         val page = this.page
         val totalPage = this.total_pages
         val totalResults = this.totalResults
-        val movies = this.movies!!.map { it.copy() }
+        val movies = if (this.movies == null) null else this.movies.map { it.copy() }
         val tag = this.tag
         return MoviesResponse(page, totalResults, totalPage, movies, tag).apply {
             timeStamp = this@MoviesResponse.timeStamp
