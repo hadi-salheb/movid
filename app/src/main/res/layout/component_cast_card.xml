@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
-    android:layout_marginBottom="8dp"
     android:clickable="true"
     android:focusable="true"
     android:background="?attr/selectableItemBackground"
@@ -28,7 +27,7 @@
             android:scaleType="fitCenter"
             app:backgroundTint="@color/material_on_surface_emphasis_medium"
             app:backgroundTintMode="add"
-            tools:src="@drawable/movie_cast_poster_h632" />
+             />
     </androidx.cardview.widget.CardView>
 
     <TextView

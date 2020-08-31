@@ -3,6 +3,7 @@ package com.hadysalhab.movid.screen.main.featured
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.hadysalhab.movid.common.utils.convertDpToPixel
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
@@ -36,6 +37,8 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieGroupViewHolder {
         val view = viewFactory.getMoviesView(parent)
         view.registerListener(this)
+        val padding = convertDpToPixel(8, parent.context)
+        view.getRootView().setPadding(0, padding, 0, padding)
         return MovieGroupViewHolder(view)
     }
 
