@@ -45,17 +45,17 @@ class MoviesStateManager(private val moviesState: MoviesState) {
     }
 
     fun getMoviesResponseByGroupType(groupType: GroupType): MoviesResponse = when (groupType) {
-        GroupType.POPULAR -> moviesState.popularMovies
-        GroupType.NOW_PLAYING -> moviesState.nowPlayingMovies
-        GroupType.UPCOMING -> moviesState.upcomingMovies
-        GroupType.TOP_RATED -> moviesState.topRatedMovies
+        GroupType.POPULAR -> getPopularMovies()
+        GroupType.NOW_PLAYING -> getNowPlayingMovies()
+        GroupType.UPCOMING -> getUpcomingMovies()
+        GroupType.TOP_RATED -> getTopRatedMovies()
         else -> throw RuntimeException("GroupType $groupType not supported in movie store")
     }
 
-    fun getTopRatedMovies() = moviesState.topRatedMovies
-    fun getNowPlayingMovies() = moviesState.nowPlayingMovies
-    fun getUpcomingMovies() = moviesState.upcomingMovies
-    fun getPopularMovies() = moviesState.popularMovies
+    fun getTopRatedMovies() = moviesState.topRatedMovies.deepCopy()
+    fun getNowPlayingMovies() = moviesState.nowPlayingMovies.deepCopy()
+    fun getUpcomingMovies() = moviesState.upcomingMovies.deepCopy()
+    fun getPopularMovies() = moviesState.popularMovies.deepCopy()
 
 
 }
