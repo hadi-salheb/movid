@@ -16,4 +16,5 @@ abstract class MovieDetailView : BaseObservableViewMvc<MovieDetailView.Listener>
 
     abstract fun displayMovieDetail(movieDetail: MovieDetail)
     abstract fun displayLoadingScreen()
+    abstract fun hideTrailerButton()
 }

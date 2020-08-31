@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_185
+import com.hadysalhab.movid.common.utils.convertDpToPixel
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.cardgroup.CastsView
@@ -40,6 +41,7 @@ class MovieDetailViewImpl(
     private val detailSV: ScrollView
     private val reviewsBtn: Button
     private val trailerBtn: Button
+    private val btnWrapperLL: LinearLayout
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -61,11 +63,11 @@ class MovieDetailViewImpl(
         ratingFL = findViewById(R.id.rating_wrapper)
         reviewsBtn = findViewById(R.id.btn_reviews)
         trailerBtn = findViewById(R.id.button_trailer)
+        btnWrapperLL = findViewById(R.id.button_wrapper)
         trailerBtn.setOnClickListener {
             listeners.forEach {
                 it.onSeeTrailerClicked(this.movieDetail!!.videosResponse)
             }
-
         }
     }
 
@@ -77,16 +79,13 @@ class MovieDetailViewImpl(
             displayPosterImage(movieDetail.details.posterPath)
             displayOverview(movieDetail.details.overview)
             displayTitle(movieDetail.details.title)
-            displayTagLine(movieDetail.details.tagLine ?: "")
+            displayTagLine(movieDetail.details.tagLine)
             displayFacts(movieDetail.details)
             displayCasts(movieDetail.credits.cast)
             displaySimilarMovies(movieDetail.similar)
             displayRecommendedMovies(movieDetail.recommendations)
             displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
-            if (!movieDetail.videosResponse.videos.any { it.type == "Trailer" && it.site == "YouTube" }) {
-                trailerBtn.visibility = View.GONE
-            }
             progressBar.visibility = View.GONE
             detailSV.visibility = View.VISIBLE
         }
@@ -95,6 +94,11 @@ class MovieDetailViewImpl(
     override fun displayLoadingScreen() {
         progressBar.visibility = View.VISIBLE
         detailSV.visibility = View.GONE
+    }
+
+    override fun hideTrailerButton() {
+        trailerBtn.visibility = View.GONE
+        btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
     }
 
     private fun displayRating(avg: Double, count: Int) {
@@ -192,7 +196,7 @@ class MovieDetailViewImpl(
             movieGroupView.renderData(
                 DataGroup(
                     moviesResponse.tag,
-                    moviesResponse.movies ?: emptyList()
+                    moviesResponse.movies
                 )
             )
             similarFL.removeAllViews()
@@ -208,7 +212,7 @@ class MovieDetailViewImpl(
             movieGroupView.renderData(
                 DataGroup(
                     moviesResponse.tag,
-                    moviesResponse.movies ?: emptyList()
+                    moviesResponse.movies
                 )
             )
             movieGroupView.registerListener(this)
@@ -231,8 +235,12 @@ class MovieDetailViewImpl(
         movieTitleTextView.text = title
     }
 
-    private fun displayTagLine(tagLine: String) {
-        movieTagLineTextView.text = tagLine
+    private fun displayTagLine(tagLine: String?) {
+        if (tagLine == null) {
+            movieTagLineTextView.text = tagLine
+        } else {
+            movieTagLineTextView.visibility = View.GONE
+        }
     }
 
     private fun displayCarouselImages(backdrops: List<Backdrops>) {

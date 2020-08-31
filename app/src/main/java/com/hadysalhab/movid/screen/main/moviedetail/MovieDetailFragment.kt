@@ -94,7 +94,12 @@ class MovieDetailFragment : BaseFragment(),
             Loading -> viewMvc.displayLoadingScreen()
             is Error -> {
             }
-            is DetailLoaded -> viewMvc.displayMovieDetail(viewState.movie)
+            is DetailLoaded -> {
+                viewMvc.displayMovieDetail(viewState.movie)
+                if (!intentHandler.canHandleTrailerIntent(viewState.movie.videosResponse)) {
+                    viewMvc.hideTrailerButton()
+                }
+            }
         }
     }
 
