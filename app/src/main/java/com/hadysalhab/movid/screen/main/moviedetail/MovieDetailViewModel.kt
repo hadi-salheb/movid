@@ -1,29 +1,32 @@
 package com.hadysalhab.movid.screen.main.moviedetail
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hadysalhab.movid.account.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
-import com.hadysalhab.movid.user.UserStateManager
 import javax.inject.Inject
 
 class MovieDetailViewModel @Inject constructor(
     private val fetchMovieDetailUseCase: FetchMovieDetailUseCase,
-    private val userStateManager: UserStateManager
+    getSessionIdUseCaseSync: GetSessionIdUseCaseSync
 ) : ViewModel(), FetchMovieDetailUseCase.Listener {
+    private val sessionId: String = getSessionIdUseCaseSync.getSessionIdUseCaseSync()
 
     private val _viewState = MutableLiveData<MovieDetailViewState>()
     val viewState: LiveData<MovieDetailViewState>
         get() = _viewState
 
     fun onStart(movieID: Int) {
+        Log.d("LoadAccount", "loading data")
         when (_viewState.value) {
             null -> {
                 fetchMovieDetailUseCase.registerListener(this)
                 fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
                     movieID,
-                    userStateManager.sessionId
+                    sessionId
                 )
             }
             Loading, is Error -> {
@@ -33,7 +36,7 @@ class MovieDetailViewModel @Inject constructor(
                 //check if movie is still valid
                 fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
                     movieID,
-                    userStateManager.sessionId
+                    sessionId
                 )
             }
         }

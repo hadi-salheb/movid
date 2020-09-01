@@ -9,6 +9,12 @@ interface TmdbApi {
     @GET("/3/authentication/token/new?api_key=9a1a4d8d07b89f0c57458dbaf6d58a99")
     fun createRequestToken(): Call<CreateAndSignTokenResponse>
 
+    @GET("/3/account")
+    fun getAccountDetail(
+        @Query("session_id") sessionID: String,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<AccountSchema>
+
     @POST("/3/authentication/token/validate_with_login?api_key=${BuildConfig.API_KEY}")
     @FormUrlEncoded
     fun signToken(

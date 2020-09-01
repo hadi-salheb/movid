@@ -1,5 +1,8 @@
 package com.hadysalhab.movid.movies
 
+import com.hadysalhab.movid.account.AccountResponse
+import com.hadysalhab.movid.account.Avatar
+import com.hadysalhab.movid.account.Gravatar
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.networking.responses.*
@@ -167,4 +170,16 @@ class SchemaToModelHelper {
                 tag
             )
         }
+
+    fun getAccountResponse(accountSchema: AccountSchema): AccountResponse = with(accountSchema) {
+        AccountResponse(
+            id,
+            name,
+            username,
+            includeAdult,
+            Avatar(Gravatar(avatarSchema.gravatarSchema.hash)),
+            language,
+            country
+        )
+    }
 }

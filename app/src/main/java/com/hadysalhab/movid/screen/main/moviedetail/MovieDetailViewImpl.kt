@@ -42,6 +42,7 @@ class MovieDetailViewImpl(
     private val reviewsBtn: Button
     private val trailerBtn: Button
     private val btnWrapperLL: LinearLayout
+    private val favoriteBtn: Button
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -64,9 +65,17 @@ class MovieDetailViewImpl(
         reviewsBtn = findViewById(R.id.btn_reviews)
         trailerBtn = findViewById(R.id.button_trailer)
         btnWrapperLL = findViewById(R.id.button_wrapper)
+        favoriteBtn = findViewById(R.id.button_favorite)
         trailerBtn.setOnClickListener {
             listeners.forEach {
                 it.onSeeTrailerClicked(this.movieDetail!!.videosResponse)
+            }
+        }
+        favoriteBtn.setOnClickListener {
+            listeners.forEach { listener ->
+                this.movieDetail?.let {
+                    listener.onAddToFavoritesClick(it.details.id)
+                }
             }
         }
     }

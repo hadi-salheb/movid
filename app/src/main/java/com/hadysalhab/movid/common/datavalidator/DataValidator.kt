@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.common.datavalidator
 
+import com.hadysalhab.movid.account.AccountResponse
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesResponse
@@ -21,4 +22,8 @@ class DataValidator(private val timeProvider: TimeProvider) {
         return moviesResponse.timeStamp != null && (timeProvider.currentTimestamp - MOVIE_CACHE_TIMEOUT_MS) < moviesResponse.timeStamp!!
     }
 
+    fun isAccountResponseValid(accountResponse: AccountResponse?): Boolean =
+        accountResponse != null
+
+    fun isSessionIdValid(sessionId: String?) = sessionId != null
 }

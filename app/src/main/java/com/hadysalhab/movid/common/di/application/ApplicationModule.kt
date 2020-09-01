@@ -1,11 +1,10 @@
 package com.hadysalhab.movid.common.di.application
 
 import android.app.Application
+import androidx.room.Room
 import com.google.gson.Gson
-import com.hadysalhab.movid.authentication.CreateRequestTokenUseCase
-import com.hadysalhab.movid.authentication.CreateSessionUseCase
-import com.hadysalhab.movid.authentication.LoginUseCase
-import com.hadysalhab.movid.authentication.SignTokenUseCase
+import com.hadysalhab.movid.account.UserState
+import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
@@ -14,7 +13,8 @@ import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.MoviesState
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.networking.TmdbApi
-import com.hadysalhab.movid.user.UserStateManager
+import com.hadysalhab.movid.persistence.MovidDB
+import com.hadysalhab.movid.persistence.MovidDB.Companion.DATABASE_NAME
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 import dagger.Module
@@ -37,6 +37,19 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     fun getDeviceConfigManager(application: Application) = DeviceConfigManager(application)
+
+    @Singleton
+    @Provides
+    fun getAppDB(app: Application): MovidDB {
+        return Room
+            .databaseBuilder(app, MovidDB::class.java, DATABASE_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun getAccountDao(db: MovidDB) = db.getAccountDao()
 
     @Provides
     @Singleton
@@ -68,43 +81,8 @@ class ApplicationModule(private val application: Application) {
     fun getUiThreadPoster(): UiThreadPoster = UiThreadPoster()
 
     @Provides
-    @Singleton
-    fun getCreateRequestTokenUseCase(tmdbApi: TmdbApi): CreateRequestTokenUseCase =
-        CreateRequestTokenUseCase(tmdbApi)
-
-    @Provides
-    @Singleton
-    fun getSignTokenUseCase(tmdbApi: TmdbApi): SignTokenUseCase =
-        SignTokenUseCase(tmdbApi)
-
-    @Provides
-    @Singleton
-    fun getCreateSessionUseCase(tmdbApi: TmdbApi): CreateSessionUseCase =
-        CreateSessionUseCase(tmdbApi)
-
-    @Provides
     fun getGson(): Gson = Gson()
 
-    @Provides
-    @Singleton
-    fun getLoginUseCase(
-        createRequestTokenUseCase: CreateRequestTokenUseCase,
-        signTokenUseCase: SignTokenUseCase,
-        createSessionUseCase: CreateSessionUseCase,
-        backgroundThreadPoster: BackgroundThreadPoster,
-        uiThreadPoster: UiThreadPoster,
-        sharedPreferencesManager: SharedPreferencesManager,
-        gson: Gson
-    ): LoginUseCase =
-        LoginUseCase(
-            createRequestTokenUseCase,
-            signTokenUseCase,
-            createSessionUseCase,
-            backgroundThreadPoster,
-            uiThreadPoster,
-            sharedPreferencesManager,
-            gson
-        )
 
     @Provides
     @Singleton
@@ -113,8 +91,10 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun getUserStateManager(sharedPreferencesManager: SharedPreferencesManager) =
-        UserStateManager(sharedPreferencesManager)
+    fun getUserStateManager(
+        userState: UserState
+    ) =
+        UserStateManager(userState)
 
     @Provides
     fun getTimeProvider() = TimeProvider()
@@ -122,6 +102,10 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun getMoviesState() = MoviesState()
+
+    @Provides
+    @Singleton
+    fun getUserState() = UserState()
 
     @Singleton
     @Provides

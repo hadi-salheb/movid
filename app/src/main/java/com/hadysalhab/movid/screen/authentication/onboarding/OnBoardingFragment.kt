@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import com.hadysalhab.movid.authentication.AuthManager
 import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
-import com.hadysalhab.movid.user.UserStateManager
 import javax.inject.Inject
 
 /**
@@ -40,7 +40,7 @@ class OnBoardingFragment : BaseFragment(),
     lateinit var loginUseCase: LoginUseCase
 
     @Inject
-    lateinit var userStateManager: UserStateManager
+    lateinit var authManager: AuthManager
 
     @Inject
     lateinit var fragActivity: FragmentActivity
@@ -84,7 +84,7 @@ class OnBoardingFragment : BaseFragment(),
                     // login flow hasn't completed yet, so just wait for the result
                 } else {
                     // login flow completed and we missed the notification
-                    if (userStateManager.isAuthenticated) {
+                    if (authManager.isUserAuthenticated()) {
                         setNewState(ScreenState.LOGIN_SUCCESS)
                     } else {
                         setNewState(ScreenState.IDLE)
@@ -115,7 +115,7 @@ class OnBoardingFragment : BaseFragment(),
     override fun onSignUpClicked() {
     }
 
-    override fun onLoggedIn(sessionId: String) {
+    override fun onLoggedIn() {
         setNewState(ScreenState.LOGIN_SUCCESS)
     }
 

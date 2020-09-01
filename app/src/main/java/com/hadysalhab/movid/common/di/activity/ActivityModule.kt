@@ -6,6 +6,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.google.gson.Gson
+import com.hadysalhab.movid.account.GetAccountDetailsUseCase
+import com.hadysalhab.movid.account.GetSessionIdUseCaseSync
+import com.hadysalhab.movid.account.UserStateManager
+import com.hadysalhab.movid.account.details.FetchAccountDetailsUseCaseSync
+import com.hadysalhab.movid.authentication.*
+import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.ErrorMessageHandler
@@ -25,9 +31,11 @@ import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSyn
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
 import com.hadysalhab.movid.networking.TmdbApi
+import com.hadysalhab.movid.persistence.AccountDao
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
+import com.hadysalhab.movid.screen.common.screensnavigator.AppNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
@@ -73,6 +81,12 @@ class ActivityModule(private val activity: FragmentActivity) {
         activityContext: Context
     ): MainNavigator =
         MainNavigator(fragmentManager, fragmentFrameHost, activityContext)
+
+    @Provides
+    @ActivityScope
+    fun getAppNavigator(
+        activityContext: Context
+    ): AppNavigator = AppNavigator(activityContext)
 
     @Provides
     fun getViewFactory(
@@ -187,8 +201,62 @@ class ActivityModule(private val activity: FragmentActivity) {
     )
 
     @Provides
+    fun getLoginUseCase(
+        createRequestTokenUseCaseSync: CreateRequestTokenUseCaseSync,
+        signTokenUseCaseSync: SignTokenUseCaseSync,
+        createSessionUseCaseSync: CreateSessionUseCaseSync,
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        gson: Gson,
+        fetchAccountDetailsUseCaseSync: FetchAccountDetailsUseCaseSync,
+        schemaToModelHelper: SchemaToModelHelper,
+        sharedPreferencesManager: SharedPreferencesManager,
+        dao: AccountDao,
+        userStateManager: UserStateManager
+    ): LoginUseCase =
+        LoginUseCase(
+            createRequestTokenUseCaseSync,
+            signTokenUseCaseSync,
+            createSessionUseCaseSync,
+            fetchAccountDetailsUseCaseSync,
+            backgroundThreadPoster,
+            uiThreadPoster,
+            gson,
+            schemaToModelHelper,
+            sharedPreferencesManager,
+            dao,
+            userStateManager
+        )
+
+    @Provides
     fun getFetchReviewsUseCaseSync(tmdbApi: TmdbApi) = FetchReviewsUseCaseSync(tmdbApi)
 
+    @Provides
+    fun getGetAccountDetailsUseCase(
+        userStateManager: UserStateManager,
+        accountDao: AccountDao,
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        dataValidator: DataValidator
+    ) = GetAccountDetailsUseCase(
+        accountDao,
+        userStateManager,
+        backgroundThreadPoster,
+        uiThreadPoster,
+        dataValidator
+    )
+
+    @Provides
+    fun getGetSessionIdUseCase(
+        userStateManager: UserStateManager,
+        sharedPreferencesManager: SharedPreferencesManager,
+        dataValidator: DataValidator
+    ) = GetSessionIdUseCaseSync(userStateManager, sharedPreferencesManager, dataValidator)
+
+    @Provides
+    fun authManager(
+        getSessionIdUseCaseSync: GetSessionIdUseCaseSync
+    ) = AuthManager(getSessionIdUseCaseSync)
 
     @Provides
     fun getFetchPopularMoviesUseCaseSync(tmdbApi: TmdbApi) =
@@ -235,6 +303,22 @@ class ActivityModule(private val activity: FragmentActivity) {
         FetchRecommendedMoviesUseCaseSync(
             tmdbApi
         )
+
+    @Provides
+    fun getCreateRequestTokenUseCase(tmdbApi: TmdbApi): CreateRequestTokenUseCaseSync =
+        CreateRequestTokenUseCaseSync(tmdbApi)
+
+    @Provides
+    fun getSignTokenUseCase(tmdbApi: TmdbApi): SignTokenUseCaseSync =
+        SignTokenUseCaseSync(tmdbApi)
+
+    @Provides
+    fun getCreateSessionUseCase(tmdbApi: TmdbApi): CreateSessionUseCaseSync =
+        CreateSessionUseCaseSync(tmdbApi)
+
+    @Provides
+    fun getFetchAccountDetailsUseCaseSync(tmdbApi: TmdbApi): FetchAccountDetailsUseCaseSync =
+        FetchAccountDetailsUseCaseSync(tmdbApi)
 
     @Provides
     fun getIntentHandler(context: Context) = IntentHandler(context)

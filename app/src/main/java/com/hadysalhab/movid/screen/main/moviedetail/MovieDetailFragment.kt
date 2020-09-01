@@ -126,4 +126,8 @@ class MovieDetailFragment : BaseFragment(),
         intentHandler.handleTrailerIntent(videosResponse)
     }
 
+    override fun onAddToFavoritesClick(movieId: Int) {
+        TODO("Not yet implemented")
+    }
+
 }
