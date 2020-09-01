@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
-import com.zhuinden.eventemitter.EventEmitter
-import com.zhuinden.eventemitter.EventSource
 import javax.inject.Inject
 
 //Process-Death case is not handled, always try reload data in this case
@@ -17,9 +15,6 @@ class FeaturedViewModel @Inject constructor(
     private val _viewState = MutableLiveData<FeaturedViewState>()
     val viewState: LiveData<FeaturedViewState>
         get() = _viewState
-
-    private val emitter: EventEmitter<Events> = EventEmitter()
-    val events: EventSource<Events> get() = emitter
 
     init {
         fetchMovieGroupsUseCase.registerListener(this)
