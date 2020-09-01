@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.movies.usecases.detail
 
+import com.hadysalhab.movid.account.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
@@ -23,7 +24,8 @@ class FetchMovieDetailUseCase(
     private val timeProvider: TimeProvider,
     private val dataValidator: DataValidator,
     private val schemaToModelHelper: SchemaToModelHelper,
-    private val errorMessageHandler: ErrorMessageHandler
+    private val errorMessageHandler: ErrorMessageHandler,
+    private val getSessionIdUseCaseSync: GetSessionIdUseCaseSync
 ) :
     BaseBusyObservable<FetchMovieDetailUseCase.Listener>() {
     interface Listener {
@@ -33,8 +35,9 @@ class FetchMovieDetailUseCase(
     }
 
     private lateinit var errorMessage: String
+    private val sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync()
 
-    fun fetchMovieDetailAndNotify(movieId: Int, sessionId: String) {
+    fun fetchMovieDetailAndNotify(movieId: Int) {
         val movieDetail = moviesStateManager.getMovieDetailById(movieId)
         if (dataValidator.isMovieDetailValid(movieDetail)) {
             notifySuccess(movieDetail!!)
@@ -63,7 +66,7 @@ class FetchMovieDetailUseCase(
                     val movieDetailResult = schemaToModelHelper.getMovieDetails(schema).apply {
                         timeStamp = timeProvider.currentTimestamp
                     }
-                    moviesStateManager.addMovieDetailToList(movieDetailResult)
+                    moviesStateManager.upsertMovieDetailToList(movieDetailResult)
                     notifySuccess(movieDetailResult)
                 }
             })

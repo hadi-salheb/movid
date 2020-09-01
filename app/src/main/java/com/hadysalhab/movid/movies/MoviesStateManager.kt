@@ -3,7 +3,7 @@ package com.hadysalhab.movid.movies
 
 class MoviesStateManager(private var moviesState: MoviesState) {
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
-    fun addMovieDetailToList(movieDetail: MovieDetail) {
+    fun upsertMovieDetailToList(movieDetail: MovieDetail) {
         /*
          * state = {
          * ...state,

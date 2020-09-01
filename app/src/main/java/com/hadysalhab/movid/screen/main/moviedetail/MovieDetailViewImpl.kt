@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
@@ -74,7 +75,7 @@ class MovieDetailViewImpl(
         favoriteBtn.setOnClickListener {
             listeners.forEach { listener ->
                 this.movieDetail?.let {
-                    listener.onAddToFavoritesClick(it.details.id)
+                    listener.onFavBtnClick(it.details.id, it.accountStates.favorite)
                 }
             }
         }
@@ -95,8 +96,17 @@ class MovieDetailViewImpl(
             displayRecommendedMovies(movieDetail.recommendations)
             displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
+            displayAccountState(movieDetail.accountStates)
             progressBar.visibility = View.GONE
             detailSV.visibility = View.VISIBLE
+        }
+    }
+
+    private fun displayAccountState(accountStates: AccountStates) {
+        if (accountStates.favorite) {
+            favoriteBtn.text = "Remove From Favorites"
+            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
+            favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
         }
     }
 
@@ -108,6 +118,11 @@ class MovieDetailViewImpl(
     override fun hideTrailerButton() {
         trailerBtn.visibility = View.GONE
         btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
+    }
+
+    override fun displayFavLoading() {
+        // TODO: CHANGE IT LATER
+        progressBar.visibility = View.VISIBLE
     }
 
     private fun displayRating(avg: Double, count: Int) {

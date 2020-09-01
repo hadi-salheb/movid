@@ -6,11 +6,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.google.gson.Gson
-import com.hadysalhab.movid.account.GetAccountDetailsUseCase
-import com.hadysalhab.movid.account.GetSessionIdUseCaseSync
-import com.hadysalhab.movid.account.UserStateManager
+import com.hadysalhab.movid.account.*
 import com.hadysalhab.movid.account.details.FetchAccountDetailsUseCaseSync
 import com.hadysalhab.movid.authentication.*
+import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
@@ -100,7 +99,8 @@ class ActivityModule(private val activity: FragmentActivity) {
         moviesStateManager: MoviesStateManager,
         dataValidator: DataValidator, timeProvider: TimeProvider,
         schemaToModelHelper: SchemaToModelHelper,
-        errorMessageHandler: ErrorMessageHandler
+        errorMessageHandler: ErrorMessageHandler,
+        sessionIdUseCaseSync: GetSessionIdUseCaseSync
     ): FetchMovieDetailUseCase =
         FetchMovieDetailUseCase(
             tmdbApi,
@@ -108,7 +108,8 @@ class ActivityModule(private val activity: FragmentActivity) {
             timeProvider,
             dataValidator,
             schemaToModelHelper,
-            errorMessageHandler
+            errorMessageHandler,
+            sessionIdUseCaseSync
         )
 
     @Provides
@@ -164,7 +165,8 @@ class ActivityModule(private val activity: FragmentActivity) {
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
         dataValidator: DataValidator,
-        timeProvider: TimeProvider
+        timeProvider: TimeProvider,
+        deviceConfigManager: DeviceConfigManager
     ): FetchMovieGroupsUseCase =
         FetchMovieGroupsUseCase(
             fetchPopularMoviesUseCaseSync,
@@ -178,7 +180,8 @@ class ActivityModule(private val activity: FragmentActivity) {
             backgroundThreadPoster,
             uiThreadPoster,
             schemaToModelHelper,
-            errorMessageHandler
+            errorMessageHandler,
+            deviceConfigManager
         )
 
     @Provides
@@ -233,18 +236,21 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getGetAccountDetailsUseCase(
-        userStateManager: UserStateManager,
-        accountDao: AccountDao,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
-        dataValidator: DataValidator
+        getAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync
     ) = GetAccountDetailsUseCase(
-        accountDao,
-        userStateManager,
         backgroundThreadPoster,
         uiThreadPoster,
-        dataValidator
+        getAccountDetailsUseCaseSync
     )
+
+    @Provides
+    fun getGetAccountDetailsUseCaseSync(
+        dao: AccountDao,
+        userStateManager: UserStateManager,
+        dataValidator: DataValidator
+    ) = GetAccountDetailsUseCaseSync(dao, userStateManager, dataValidator)
 
     @Provides
     fun getGetSessionIdUseCase(
@@ -322,4 +328,27 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getIntentHandler(context: Context) = IntentHandler(context)
+
+    @Provides
+    fun getAddToFavoritesUseCaseSync(tmdbApi: TmdbApi) = AddToFavoriteUseCaseSync(tmdbApi)
+
+    @Provides
+    fun getAddToFavoritesUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        moviesStateManager: MoviesStateManager,
+        sessionIdUseCaseSync: GetSessionIdUseCaseSync,
+        accountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
+        addToFavoriteUseCaseSync: AddToFavoriteUseCaseSync,
+        errorMessageHandler: ErrorMessageHandler
+
+    ) = AddToFavoriteUseCase(
+        backgroundThreadPoster,
+        uiThreadPoster,
+        moviesStateManager,
+        sessionIdUseCaseSync,
+        accountDetailsUseCaseSync,
+        addToFavoriteUseCaseSync,
+        errorMessageHandler
+    )
 }

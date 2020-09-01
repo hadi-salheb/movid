@@ -12,10 +12,11 @@ abstract class MovieDetailView : BaseObservableViewMvc<MovieDetailView.Listener>
         fun onMovieClicked(movieId: Int)
         fun onSeeReviewsClicked(movieID: Int)
         fun onSeeTrailerClicked(videosResponse: VideosResponse)
-        fun onAddToFavoritesClick(movieId: Int)
+        fun onFavBtnClick(movieId: Int, isFav: Boolean)
     }
 
     abstract fun displayMovieDetail(movieDetail: MovieDetail)
     abstract fun displayLoadingScreen()
     abstract fun hideTrailerButton()
+    abstract fun displayFavLoading()
 }

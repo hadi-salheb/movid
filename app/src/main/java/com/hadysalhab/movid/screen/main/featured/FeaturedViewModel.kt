@@ -3,7 +3,6 @@ package com.hadysalhab.movid.screen.main.featured
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
 import com.zhuinden.eventemitter.EventEmitter
@@ -12,8 +11,7 @@ import javax.inject.Inject
 
 //Process-Death case is not handled, always try reload data in this case
 class FeaturedViewModel @Inject constructor(
-    private val fetchMovieGroupsUseCase: FetchMovieGroupsUseCase,
-    private val deviceConfigManager: DeviceConfigManager
+    private val fetchMovieGroupsUseCase: FetchMovieGroupsUseCase
 ) : ViewModel(), FetchMovieGroupsUseCase.Listener {
 
     private val _viewState = MutableLiveData<FeaturedViewState>()
@@ -31,7 +29,7 @@ class FeaturedViewModel @Inject constructor(
         when (_viewState.value) {
             // re-fetch in case the data is outdated
             null, is FeaturedLoaded -> {
-                fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify(deviceConfigManager.getISO3166CountryCodeOrUS())
+                fetchMovieGroupsUseCase.fetchMovieGroupsAndNotify()
             }
             Loading, is Error -> {
                 return

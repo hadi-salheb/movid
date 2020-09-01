@@ -93,4 +93,16 @@ interface TmdbApi {
         @Query("page") page: Int = 1,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
     ): Call<ReviewsSchema>
+
+    @POST("/3/account/{account_id}/favorite")
+    @FormUrlEncoded
+    fun markAsFavorite(
+        @Path("account_id") accountID: Int,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
+        @Query("session_id") sessionID: String,
+        @Field("media_type") mediaType: String = "movie",
+        @Field("media_id") media_id: Int,
+        @Field("favorite") favorite: Boolean
+    ): Call<AddToFavResponse>
+
 }

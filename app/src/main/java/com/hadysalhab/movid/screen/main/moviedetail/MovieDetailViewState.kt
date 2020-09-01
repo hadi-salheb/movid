@@ -5,6 +5,7 @@ import com.hadysalhab.movid.movies.MovieDetail
 sealed class MovieDetailViewState
 
 object Loading : MovieDetailViewState()
+object FavLoading : MovieDetailViewState()
 
 data class Error(val errorMessage: String) : MovieDetailViewState()
 

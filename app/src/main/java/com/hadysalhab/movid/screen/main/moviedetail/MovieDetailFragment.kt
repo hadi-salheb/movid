@@ -100,6 +100,9 @@ class MovieDetailFragment : BaseFragment(),
                     viewMvc.hideTrailerButton()
                 }
             }
+            is FavLoading -> {
+                viewMvc.displayFavLoading()
+            }
         }
     }
 
@@ -126,8 +129,13 @@ class MovieDetailFragment : BaseFragment(),
         intentHandler.handleTrailerIntent(videosResponse)
     }
 
-    override fun onAddToFavoritesClick(movieId: Int) {
-        TODO("Not yet implemented")
+    override fun onFavBtnClick(movieId: Int, isFav: Boolean) {
+        if (isFav) {
+
+        } else {
+            movieDetailViewModel.addMovieToFavorites(movieId)
+        }
     }
+
 
 }

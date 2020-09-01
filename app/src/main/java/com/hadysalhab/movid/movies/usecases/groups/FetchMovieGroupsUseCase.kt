@@ -1,6 +1,7 @@
 package com.hadysalhab.movid.movies.usecases.groups
 
 
+import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
@@ -35,7 +36,8 @@ class FetchMovieGroupsUseCase(
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
     private val schemaToModelHelper: SchemaToModelHelper,
-    private val errorMessageHandler: ErrorMessageHandler
+    private val errorMessageHandler: ErrorMessageHandler,
+    private val deviceConfigManager: DeviceConfigManager
 ) :
     BaseBusyObservable<FetchMovieGroupsUseCase.Listener>() {
     interface Listener {
@@ -49,16 +51,15 @@ class FetchMovieGroupsUseCase(
     private val LOCK = Object()
     private lateinit var movieGroups: List<MoviesResponse>
     private lateinit var errorMessage: String
-    private lateinit var region: String
+    private val region: String = deviceConfigManager.getISO3166CountryCodeOrUS()
     private lateinit var computations: MutableList<() -> Unit>
 
-    fun fetchMovieGroupsAndNotify(region: String) {
+    fun fetchMovieGroupsAndNotify() {
         // will throw an exception if a client triggered this flow while it is busy
         assertNotBusyAndBecomeBusy()
 
         synchronized(LOCK) {
             movieGroups = mutableListOf()
-            this.region = region
             mNumbOfFinishedUseCase = 0
             isAnyUseCaseFailed = false
             computations = mutableListOf()
