@@ -3,6 +3,7 @@ package com.hadysalhab.movid.account
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.Gson
 
 
 @Entity(tableName = "account")
@@ -16,7 +17,12 @@ data class AccountResponse(
     val avatar: Avatar,
     val language: String,
     val country: String
-)
+) {
+    fun deepCopy(gson: Gson): AccountResponse {
+        val json = gson.toJson(this)
+        return gson.fromJson(json, AccountResponse::class.java)
+    }
+}
 
 data class Avatar(
     @Embedded

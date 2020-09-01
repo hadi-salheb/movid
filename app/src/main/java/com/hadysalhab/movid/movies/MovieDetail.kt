@@ -1,5 +1,7 @@
 package com.hadysalhab.movid.movies
 
+import com.google.gson.Gson
+
 data class MovieDetail(
     val details: MovieInfo,
     val credits: Credits,
@@ -12,24 +14,15 @@ data class MovieDetail(
 ) {
     var timeStamp: Long? = null
 
-    fun deepCopy(): MovieDetail = this.copy(
-        details = details.deepCopy(),
-        credits = credits.deepCopy(),
-        reviewResponse = reviewResponse.deepCopy(),
-        images = images.deepCopy(),
-        similar = similar.deepCopy(),
-        recommendations = recommendations.deepCopy(),
-        videosResponse = videosResponse.deepCopy()
-    ).also {
-        it.timeStamp = timeStamp
+    fun deepCopy(gson: Gson): MovieDetail {
+        val json = gson.toJson(this)
+        return gson.fromJson(json, MovieDetail::class.java)
     }
 }
 
 data class VideosResponse(
     val videos: List<Video>
-) {
-    fun deepCopy() = this.copy(videos = videos.map { it.copy() })
-}
+)
 
 data class Video(
     val id: String,
@@ -42,10 +35,7 @@ data class Credits(
     val id: Int,
     val cast: List<Cast>,
     val crew: List<Crew>
-) {
-    fun deepCopy() = this.copy(cast = cast.map { it.copy() }, crew = crew.map { it.copy() })
-}
-
+)
 data class Cast(
     val castID: Int,
     val character: String,
@@ -70,9 +60,7 @@ data class ReviewResponse(
     var reviews: List<Review>,
     val totalPages: Int,
     val totalResults: Int
-) {
-    fun deepCopy(): ReviewResponse = this.copy(reviews = reviews.map { it.copy() })
-}
+)
 
 data class Review(
     val id: String,
@@ -83,9 +71,7 @@ data class Review(
 
 data class Images(
     val backdrops: List<Backdrops>
-) {
-    fun deepCopy() = this.copy(backdrops = backdrops.map { it.copy() })
-}
+)
 
 data class Backdrops(
     val filePath: String

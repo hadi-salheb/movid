@@ -34,7 +34,7 @@ class FetchReviewsUseCase(
         this.page = pageToFetch
         val movieDetail = moviesStateManager.getMovieDetailById(movieID)
         if (page == 1 && dataValidator.isMovieDetailValid(movieDetail)) {
-            this.reviewResponse = movieDetail!!.reviewResponse.deepCopy()
+            this.reviewResponse = movieDetail!!.reviewResponse
             notifySuccess()
             return
         }

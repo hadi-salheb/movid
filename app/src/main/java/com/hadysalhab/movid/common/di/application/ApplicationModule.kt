@@ -92,9 +92,10 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun getUserStateManager(
-        userState: UserState
+        userState: UserState,
+        gson: Gson
     ) =
-        UserStateManager(userState)
+        UserStateManager(userState, gson)
 
     @Provides
     fun getTimeProvider() = TimeProvider()
@@ -109,7 +110,8 @@ class ApplicationModule(private val application: Application) {
 
     @Singleton
     @Provides
-    fun getMoviesStateManager(moviesState: MoviesState) = MoviesStateManager(moviesState)
+    fun getMoviesStateManager(moviesState: MoviesState, gson: Gson) =
+        MoviesStateManager(moviesState, gson)
 
     @Provides
     fun dataValidator(timeProvider: TimeProvider): DataValidator = DataValidator(timeProvider)

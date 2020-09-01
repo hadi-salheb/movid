@@ -1,46 +1,48 @@
 package com.hadysalhab.movid.movies
 
+import com.google.gson.Gson
 
-class MoviesStateManager(private var moviesState: MoviesState) {
+
+class MoviesStateManager(private var moviesState: MoviesState, private val gson: Gson) {
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     fun upsertMovieDetailToList(movieDetail: MovieDetail) {
-        /*
-         * state = {
-         * ...state,
-         * moviesRes:[...state.moviesRes, ...newMovies ]
-         * }
-         *
-         * */
+        if (movieDetail.timeStamp == null) {
+            throw RuntimeException("MovieDetail should have a timestamp to add it to the store!!!")
+        }
+        val updatedList =
+            moviesState.movieDetailList.filter { it.details.id != movieDetail.details.id }
+                .toMutableList().apply {
+                    add(movieDetail.deepCopy(gson))
+                }
         moviesState = moviesState.copy(
-            movieDetailList = mutableListOf<MovieDetail>().apply {
-                addAll(moviesState.movieDetailList)
-                filter { it.details.id != movieDetail.details.id }
-                add(movieDetail.deepCopy())
-            }
+            movieDetailList = updatedList
         )
     }
 
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     private fun updatePopularMovies(popular: MoviesResponse) {
-        moviesState = moviesState.copy(popularMovies = popular.deepCopy())
+        moviesState = moviesState.copy(popularMovies = popular.deepCopy(gson))
     }
 
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     private fun updateTopRatedMovies(topRated: MoviesResponse) {
-        moviesState = moviesState.copy(topRatedMovies = topRated.deepCopy())
+        moviesState = moviesState.copy(topRatedMovies = topRated.deepCopy(gson))
     }
 
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     private fun updateUpcomingMovies(upcoming: MoviesResponse) {
-        moviesState = moviesState.copy(upcomingMovies = upcoming.deepCopy())
+        moviesState = moviesState.copy(upcomingMovies = upcoming.deepCopy(gson))
     }
 
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     private fun updateNowPlayingMovies(nowPlaying: MoviesResponse) {
-        moviesState = moviesState.copy(nowPlayingMovies = nowPlaying.deepCopy())
+        moviesState = moviesState.copy(nowPlayingMovies = nowPlaying.deepCopy(gson))
     }
 
     fun updateMoviesResponseByGroupType(moviesResponse: MoviesResponse, groupType: GroupType) {
+        if (moviesResponse.timeStamp == null) {
+            throw RuntimeException("MoviesResponse should have a timeStamp to add it to the store")
+        }
         when (groupType) {
             GroupType.POPULAR -> updatePopularMovies(moviesResponse)
             GroupType.NOW_PLAYING -> updateNowPlayingMovies(moviesResponse)
@@ -59,12 +61,13 @@ class MoviesStateManager(private var moviesState: MoviesState) {
     }
 
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
-    fun getTopRatedMovies() = moviesState.topRatedMovies.deepCopy()
-    fun getNowPlayingMovies() = moviesState.nowPlayingMovies.deepCopy()
-    fun getUpcomingMovies() = moviesState.upcomingMovies.deepCopy()
-    fun getPopularMovies() = moviesState.popularMovies.deepCopy()
-    fun getMovieDetailById(movieId: Int) =
-        moviesState.movieDetailList.find { it.details.id == movieId }?.deepCopy()
+    fun getTopRatedMovies() = moviesState.topRatedMovies.deepCopy(gson)
+    fun getNowPlayingMovies() = moviesState.nowPlayingMovies.deepCopy(gson)
+    fun getUpcomingMovies() = moviesState.upcomingMovies.deepCopy(gson)
+    fun getPopularMovies() = moviesState.popularMovies.deepCopy(gson)
+    fun getMovieDetailById(movieId: Int): MovieDetail? =
+        moviesState.movieDetailList.find { it.details.id == movieId }?.deepCopy(gson)
+
 
 }
 

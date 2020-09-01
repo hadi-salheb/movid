@@ -47,11 +47,13 @@ class AddToFavoriteUseCase(
     private fun handleResponse(res: ApiResponse<AddToFavResponse>) {
         when (res) {
             is ApiSuccessResponse -> {
-                var movie = moviesStateManager.getMovieDetailById(movieId!!)
+                val currentMovieInStore = moviesStateManager.getMovieDetailById(movieId!!)
                     ?: throw RuntimeException("Movie cannot be null in the store while trying to add it to fav!!")
-                movie = movie.copy(
-                    accountStates = movie.accountStates.copy(favorite = true)
-                )
+                val movie = currentMovieInStore.copy(
+                    accountStates = currentMovieInStore.accountStates.copy(favorite = true)
+                ).also {
+                    it.timeStamp = currentMovieInStore.timeStamp
+                }
                 moviesStateManager.upsertMovieDetailToList(movie)
                 notifySuccess(movie)
             }

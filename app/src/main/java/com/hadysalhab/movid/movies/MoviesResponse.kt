@@ -1,5 +1,7 @@
 package com.hadysalhab.movid.movies
 
+import com.google.gson.Gson
+
 data class MoviesResponse(
     val page: Int,
     val totalResults: Int,
@@ -9,11 +11,8 @@ data class MoviesResponse(
 ) {
     var timeStamp: Long? = null
 
-    fun deepCopy(): MoviesResponse {
-        val moviesResponse = this.copy(
-            movies = movies?.map { it.copy() }
-        )
-        moviesResponse.timeStamp = this.timeStamp
-        return moviesResponse
+    fun deepCopy(gson: Gson): MoviesResponse {
+        val json = gson.toJson(this)
+        return gson.fromJson(json, MoviesResponse::class.java)
     }
 }
