@@ -131,7 +131,7 @@ class MovieDetailFragment : BaseFragment(),
 
     override fun onFavBtnClick(movieId: Int, isFav: Boolean) {
         if (isFav) {
-
+            movieDetailViewModel.removeMovieFromFavorites(movieId)
         } else {
             movieDetailViewModel.addMovieToFavorites(movieId)
         }

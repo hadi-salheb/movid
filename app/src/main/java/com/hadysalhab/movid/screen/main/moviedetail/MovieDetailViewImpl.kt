@@ -83,8 +83,7 @@ class MovieDetailViewImpl(
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
         // avoid re-rendering the view if it is already rendered
-        if (this.movieDetail == null || this.movieDetail != movieDetail) {
-            this.movieDetail = movieDetail
+        if (this.movieDetail == null) {
             displayCarouselImages(movieDetail.images.backdrops)
             displayPosterImage(movieDetail.details.posterPath)
             displayOverview(movieDetail.details.overview)
@@ -97,9 +96,14 @@ class MovieDetailViewImpl(
             displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
             displayAccountState(movieDetail.accountStates)
-            progressBar.visibility = View.GONE
-            detailSV.visibility = View.VISIBLE
+        } else if (this.movieDetail != movieDetail) {
+            if (this.movieDetail!!.accountStates != movieDetail.accountStates) {
+                displayAccountState(movieDetail.accountStates)
+            }
         }
+        progressBar.visibility = View.GONE
+        detailSV.visibility = View.VISIBLE
+        this.movieDetail = movieDetail
     }
 
     private fun displayAccountState(accountStates: AccountStates) {
@@ -107,6 +111,10 @@ class MovieDetailViewImpl(
             favoriteBtn.text = "Remove From Favorites"
             favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
             favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
+        } else {
+            favoriteBtn.text = "Add To Favorites"
+            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.gray_900))
+            favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
         }
     }
 

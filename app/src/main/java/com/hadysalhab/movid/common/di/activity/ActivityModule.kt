@@ -330,7 +330,7 @@ class ActivityModule(private val activity: FragmentActivity) {
     fun getIntentHandler(context: Context) = IntentHandler(context)
 
     @Provides
-    fun getAddToFavoritesUseCaseSync(tmdbApi: TmdbApi) = AddToFavoriteUseCaseSync(tmdbApi)
+    fun getAddToFavoritesUseCaseSync(tmdbApi: TmdbApi) = AddRemoveFavUseCaseSync(tmdbApi)
 
     @Provides
     fun getAddToFavoritesUseCase(
@@ -339,16 +339,16 @@ class ActivityModule(private val activity: FragmentActivity) {
         moviesStateManager: MoviesStateManager,
         sessionIdUseCaseSync: GetSessionIdUseCaseSync,
         accountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
-        addToFavoriteUseCaseSync: AddToFavoriteUseCaseSync,
+        addRemoveFavUseCaseSync: AddRemoveFavUseCaseSync,
         errorMessageHandler: ErrorMessageHandler
 
-    ) = AddToFavoriteUseCase(
+    ) = AddRemoveFavUseCase(
         backgroundThreadPoster,
         uiThreadPoster,
         moviesStateManager,
         sessionIdUseCaseSync,
         accountDetailsUseCaseSync,
-        addToFavoriteUseCaseSync,
+        addRemoveFavUseCaseSync,
         errorMessageHandler
     )
 }

@@ -4,16 +4,17 @@ import com.hadysalhab.movid.networking.ApiResponse
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.networking.responses.AddToFavResponse
 
-class AddToFavoriteUseCaseSync(private val tmdbApi: TmdbApi) {
+class AddRemoveFavUseCaseSync(private val tmdbApi: TmdbApi) {
     fun addToFavoriteUseCaseSync(
         accountID: Int,
         mediaID: Int,
-        sessionId: String
+        sessionId: String,
+        favorite: Boolean
     ): ApiResponse<AddToFavResponse> = try {
         val res = tmdbApi.markAsFavorite(
             accountID = accountID,
             media_id = mediaID,
-            favorite = true,
+            favorite = favorite,
             sessionID = sessionId
         ).execute()
         ApiResponse.create<AddToFavResponse>(res)

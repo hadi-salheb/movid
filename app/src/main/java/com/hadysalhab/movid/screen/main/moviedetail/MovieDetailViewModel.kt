@@ -3,15 +3,19 @@ package com.hadysalhab.movid.screen.main.moviedetail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hadysalhab.movid.account.AddToFavoriteUseCase
+import com.hadysalhab.movid.account.AddRemoveFavUseCase
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import javax.inject.Inject
 
 class MovieDetailViewModel @Inject constructor(
     private val fetchMovieDetailUseCase: FetchMovieDetailUseCase,
-    private val addToFavoriteUseCase: AddToFavoriteUseCase
-) : ViewModel(), FetchMovieDetailUseCase.Listener, AddToFavoriteUseCase.Listener {
+    private val addRemoveFavUseCase: AddRemoveFavUseCase
+) : ViewModel(), FetchMovieDetailUseCase.Listener, AddRemoveFavUseCase.Listener {
+    init {
+        fetchMovieDetailUseCase.registerListener(this)
+        addRemoveFavUseCase.registerListener(this)
+    }
 
     private val _viewState = MutableLiveData<MovieDetailViewState>()
     val viewState: LiveData<MovieDetailViewState>
@@ -20,7 +24,6 @@ class MovieDetailViewModel @Inject constructor(
     fun onStart(movieID: Int) {
         when (_viewState.value) {
             null -> {
-                fetchMovieDetailUseCase.registerListener(this)
                 fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
                     movieID
 
@@ -39,7 +42,6 @@ class MovieDetailViewModel @Inject constructor(
 
     }
 
-
     override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
         _viewState.value = DetailLoaded(movieDetail)
     }
@@ -52,27 +54,36 @@ class MovieDetailViewModel @Inject constructor(
         _viewState.value = Loading
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        fetchMovieDetailUseCase.unregisterListener(this)
-        addToFavoriteUseCase.unregisterListener(this)
-    }
-
     fun addMovieToFavorites(movieID: Int) {
-        addToFavoriteUseCase.registerListener(this)
-        addToFavoriteUseCase.addToFavoriteUseCase(movieID)
+        if (addRemoveFavUseCase.isBusy) {
+            return
+        }
+        addRemoveFavUseCase.addRemoveFavUseCase(movieID, true)
     }
 
-    override fun onAddToFavorites() {
+    fun removeMovieFromFavorites(movieID: Int) {
+        if (addRemoveFavUseCase.isBusy) {
+            return
+        }
+        addRemoveFavUseCase.addRemoveFavUseCase(movieID, false)
+    }
+
+    override fun onAddRemoveFavorites() {
         _viewState.value = FavLoading
     }
 
-    override fun onAddToFavoritesSuccess(movieDetail: MovieDetail) {
+    override fun onAddRemoveFavoritesSuccess(movieDetail: MovieDetail) {
         _viewState.value = DetailLoaded(movieDetail)
     }
 
-    override fun onAddToFavoritesFailure(err: String) {
+    override fun onAddRemoveFavoritesFailure(err: String) {
         _viewState.value = Error(err)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        fetchMovieDetailUseCase.unregisterListener(this)
+        addRemoveFavUseCase.unregisterListener(this)
     }
 
 }

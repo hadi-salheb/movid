@@ -12,33 +12,34 @@ import com.hadysalhab.movid.networking.responses.AddToFavResponse
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
-class AddToFavoriteUseCase(
+class AddRemoveFavUseCase(
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
     private val moviesStateManager: MoviesStateManager,
     private val getSessionIdUseCaseSync: GetSessionIdUseCaseSync,
     private val getAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
-    private val addToFavoriteUseCaseSync: AddToFavoriteUseCaseSync,
+    private val addRemoveFavUseCaseSync: AddRemoveFavUseCaseSync,
     private val errorMessageHandler: ErrorMessageHandler
-) : BaseBusyObservable<AddToFavoriteUseCase.Listener>() {
+) : BaseBusyObservable<AddRemoveFavUseCase.Listener>() {
     interface Listener {
-        fun onAddToFavorites()
-        fun onAddToFavoritesSuccess(movieDetail: MovieDetail)
-        fun onAddToFavoritesFailure(err: String)
+        fun onAddRemoveFavorites()
+        fun onAddRemoveFavoritesSuccess(movieDetail: MovieDetail)
+        fun onAddRemoveFavoritesFailure(err: String)
     }
 
     var movieId: Int? = null
 
-    fun addToFavoriteUseCase(movieId: Int) {
+    fun addRemoveFavUseCase(movieId: Int, favorite: Boolean) {
         assertNotBusyAndBecomeBusy()
         this.movieId = movieId
         backgroundThreadPoster.post {
             notifyLoading()
             val accountResponse = getAccountDetailsUseCaseSync.getAccountDetailsUseCaseSync()
-            val res = addToFavoriteUseCaseSync.addToFavoriteUseCaseSync(
+            val res = addRemoveFavUseCaseSync.addToFavoriteUseCaseSync(
                 accountID = accountResponse.id,
                 mediaID = movieId,
-                sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync()
+                sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync(),
+                favorite = favorite
             )
             handleResponse(res)
         }
@@ -48,9 +49,9 @@ class AddToFavoriteUseCase(
         when (res) {
             is ApiSuccessResponse -> {
                 val currentMovieInStore = moviesStateManager.getMovieDetailById(movieId!!)
-                    ?: throw RuntimeException("Movie cannot be null in the store while trying to add it to fav!!")
+                    ?: throw RuntimeException("Movie cannot be null in the store while trying to add/remove it to/from fav!!")
                 val movie = currentMovieInStore.copy(
-                    accountStates = currentMovieInStore.accountStates.copy(favorite = true)
+                    accountStates = currentMovieInStore.accountStates.copy(favorite = !currentMovieInStore.accountStates.favorite)
                 ).also {
                     it.timeStamp = currentMovieInStore.timeStamp
                 }
@@ -70,7 +71,7 @@ class AddToFavoriteUseCase(
     private fun notifyLoading() {
         uiThreadPoster.post {
             listeners.forEach {
-                it.onAddToFavorites()
+                it.onAddRemoveFavorites()
             }
         }
     }
@@ -79,7 +80,7 @@ class AddToFavoriteUseCase(
         becomeNotBusy()
         uiThreadPoster.post {
             listeners.forEach {
-                it.onAddToFavoritesSuccess(newMovie)
+                it.onAddRemoveFavoritesSuccess(newMovie)
             }
         }
     }
@@ -88,7 +89,7 @@ class AddToFavoriteUseCase(
         becomeNotBusy()
         uiThreadPoster.post {
             listeners.forEach {
-                it.onAddToFavoritesFailure(err)
+                it.onAddRemoveFavoritesFailure(err)
             }
         }
     }
