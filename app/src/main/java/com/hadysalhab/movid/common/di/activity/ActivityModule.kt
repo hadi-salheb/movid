@@ -6,26 +6,30 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.google.gson.Gson
-import com.hadysalhab.movid.account.*
-import com.hadysalhab.movid.account.details.FetchAccountDetailsUseCaseSync
-import com.hadysalhab.movid.authentication.*
+import com.hadysalhab.movid.account.UserStateManager
+import com.hadysalhab.movid.account.usecases.details.FetchAccountDetailsUseCaseSync
+import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
+import com.hadysalhab.movid.account.usecases.favmovies.AddRemoveFavMovieUseCase
+import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
+import com.hadysalhab.movid.authentication.AuthManager
+import com.hadysalhab.movid.authentication.LoginUseCase
+import com.hadysalhab.movid.authentication.createsession.CreateSessionUseCaseSync
+import com.hadysalhab.movid.authentication.createtoken.CreateRequestTokenUseCaseSync
+import com.hadysalhab.movid.authentication.signtoken.SignTokenUseCaseSync
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
-import com.hadysalhab.movid.movies.ErrorMessageHandler
+import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
-import com.hadysalhab.movid.movies.usecases.groups.FetchMovieGroupsUseCase
-import com.hadysalhab.movid.movies.usecases.latest.FetchLatestMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCaseFactory
-import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCaseFactoryImpl
+import com.hadysalhab.movid.movies.usecases.groups.FetchFeaturedMoviesUseCase
+import com.hadysalhab.movid.movies.usecases.list.FetchMoviesResponseUseCase
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
-import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCaseSync
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
@@ -122,85 +126,40 @@ class ActivityModule(private val activity: FragmentActivity) {
     fun getErrorMessageHandler(gson: Gson) = ErrorMessageHandler(gson)
 
     @Provides
-    fun getFetchListUseCaseFactory(
-        fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
-        fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
-        fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
-        fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
-        fetchSimilarMoviesUseCaseSync: FetchSimilarMoviesUseCaseSync,
-        fetchRecommendedMoviesUseCaseSync: FetchRecommendedMoviesUseCaseSync,
-        backgroundThreadPoster: BackgroundThreadPoster,
-        uiThreadPoster: UiThreadPoster,
-        schemaToModelHelper: SchemaToModelHelper,
-        timeProvider: TimeProvider,
-        errorMessageHandler: ErrorMessageHandler,
-        dataValidator: DataValidator,
-        moviesStateManager: MoviesStateManager
-    ): FetchMovieListUseCaseFactory = FetchMovieListUseCaseFactoryImpl(
-        fetchPopularMoviesUseCaseSync,
-        fetchTopRatedMoviesUseCaseSync,
-        fetchUpcomingMoviesUseCaseSync,
-        fetchNowPlayingMoviesUseCaseSync,
-        fetchSimilarMoviesUseCaseSync,
-        fetchRecommendedMoviesUseCaseSync,
-        backgroundThreadPoster,
-        uiThreadPoster,
-        schemaToModelHelper,
-        timeProvider,
-        errorMessageHandler,
-        dataValidator,
-        moviesStateManager
-    )
-
-    @Provides
     fun getFetchMovieGroupsUseCase(
         fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
         fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
         fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
         fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
-        fetchLatestMoviesUseCaseSync: FetchLatestMoviesUseCaseSync,
-        errorMessageHandler: ErrorMessageHandler,
-        schemaToModelHelper: SchemaToModelHelper,
-        moviesStateManager: MoviesStateManager,
         backgroundThreadPoster: BackgroundThreadPoster,
-        uiThreadPoster: UiThreadPoster,
-        dataValidator: DataValidator,
-        timeProvider: TimeProvider,
-        deviceConfigManager: DeviceConfigManager
-    ): FetchMovieGroupsUseCase =
-        FetchMovieGroupsUseCase(
+        uiThreadPoster: UiThreadPoster
+    ): FetchFeaturedMoviesUseCase =
+        FetchFeaturedMoviesUseCase(
             fetchPopularMoviesUseCaseSync,
             fetchTopRatedMoviesUseCaseSync,
             fetchUpcomingMoviesUseCaseSync,
             fetchNowPlayingMoviesUseCaseSync,
-            fetchLatestMoviesUseCaseSync,
-            dataValidator,
-            moviesStateManager,
-            timeProvider,
             backgroundThreadPoster,
-            uiThreadPoster,
-            schemaToModelHelper,
-            errorMessageHandler,
-            deviceConfigManager
+            uiThreadPoster
         )
 
     @Provides
     fun getFetchReviewsUseCase(
-        reviewsUseCaseSync: FetchReviewsUseCaseSync,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
         schemaToModelHelper: SchemaToModelHelper,
         errorMessageHandler: ErrorMessageHandler,
         dataValidator: DataValidator,
-        moviesStateManager: MoviesStateManager
+        moviesStateManager: MoviesStateManager,
+        tmdbApi: TmdbApi
     ) = FetchReviewsUseCase(
-        reviewsUseCaseSync,
         backgroundThreadPoster,
         uiThreadPoster,
         schemaToModelHelper,
         errorMessageHandler,
         dataValidator,
-        moviesStateManager
+        moviesStateManager,
+        tmdbApi
     )
 
     @Provides
@@ -210,12 +169,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         createSessionUseCaseSync: CreateSessionUseCaseSync,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
-        gson: Gson,
-        fetchAccountDetailsUseCaseSync: FetchAccountDetailsUseCaseSync,
-        schemaToModelHelper: SchemaToModelHelper,
-        sharedPreferencesManager: SharedPreferencesManager,
-        dao: AccountDao,
-        userStateManager: UserStateManager
+        fetchAccountDetailsUseCaseSync: FetchAccountDetailsUseCaseSync
     ): LoginUseCase =
         LoginUseCase(
             createRequestTokenUseCaseSync,
@@ -223,27 +177,8 @@ class ActivityModule(private val activity: FragmentActivity) {
             createSessionUseCaseSync,
             fetchAccountDetailsUseCaseSync,
             backgroundThreadPoster,
-            uiThreadPoster,
-            gson,
-            schemaToModelHelper,
-            sharedPreferencesManager,
-            dao,
-            userStateManager
+            uiThreadPoster
         )
-
-    @Provides
-    fun getFetchReviewsUseCaseSync(tmdbApi: TmdbApi) = FetchReviewsUseCaseSync(tmdbApi)
-
-    @Provides
-    fun getGetAccountDetailsUseCase(
-        backgroundThreadPoster: BackgroundThreadPoster,
-        uiThreadPoster: UiThreadPoster,
-        getAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync
-    ) = GetAccountDetailsUseCase(
-        backgroundThreadPoster,
-        uiThreadPoster,
-        getAccountDetailsUseCaseSync
-    )
 
     @Provides
     fun getGetAccountDetailsUseCaseSync(
@@ -265,72 +200,150 @@ class ActivityModule(private val activity: FragmentActivity) {
     ) = AuthManager(getSessionIdUseCaseSync)
 
     @Provides
-    fun getFetchPopularMoviesUseCaseSync(tmdbApi: TmdbApi) =
+    fun getFetchPopularMoviesUseCaseSync(
+        tmdbApi: TmdbApi,
+        errorMessageHandler: ErrorMessageHandler,
+        moviesStateManager: MoviesStateManager,
+        schemaToModelHelper: SchemaToModelHelper,
+        timeProvider: TimeProvider,
+        dataValidator: DataValidator,
+        deviceConfigManager: DeviceConfigManager
+    ) =
         FetchPopularMoviesUseCaseSync(
-            tmdbApi
+            tmdbApi,
+            errorMessageHandler,
+            moviesStateManager,
+            schemaToModelHelper,
+            timeProvider,
+            dataValidator,
+            deviceConfigManager
         )
 
-
     @Provides
-    fun getFetchTopRatedMoviesUseCaseSync(tmdbApi: TmdbApi) =
+    fun getFetchTopRatedMoviesUseCaseSync(
+        tmdbApi: TmdbApi,
+        errorMessageHandler: ErrorMessageHandler,
+        moviesStateManager: MoviesStateManager,
+        schemaToModelHelper: SchemaToModelHelper,
+        timeProvider: TimeProvider,
+        dataValidator: DataValidator,
+        deviceConfigManager: DeviceConfigManager
+    ) =
         FetchTopRatedMoviesUseCaseSync(
-            tmdbApi
+            tmdbApi,
+            errorMessageHandler,
+            moviesStateManager,
+            schemaToModelHelper,
+            timeProvider,
+            dataValidator,
+            deviceConfigManager
         )
 
-
     @Provides
-    fun getFetchUpcomingMoviesUseCaseSync(tmdbApi: TmdbApi) =
+    fun getFetchUpcomingMoviesUseCaseSync(
+        tmdbApi: TmdbApi,
+        errorMessageHandler: ErrorMessageHandler,
+        moviesStateManager: MoviesStateManager,
+        schemaToModelHelper: SchemaToModelHelper,
+        timeProvider: TimeProvider,
+        dataValidator: DataValidator,
+        deviceConfigManager: DeviceConfigManager
+    ) =
         FetchUpcomingMoviesUseCaseSync(
-            tmdbApi
+            tmdbApi,
+            errorMessageHandler,
+            moviesStateManager,
+            schemaToModelHelper,
+            timeProvider,
+            dataValidator,
+            deviceConfigManager
         )
 
-
     @Provides
-    fun getFetchLatestMoviesUseCaseSync(tmdbApi: TmdbApi) =
-        FetchLatestMoviesUseCaseSync(
-            tmdbApi
-        )
-
-
-    @Provides
-    fun getFetchNowPlayingMoviesUseCaseSync(tmdbApi: TmdbApi) =
+    fun getFetchNowPlayingMoviesUseCaseSync(
+        tmdbApi: TmdbApi,
+        errorMessageHandler: ErrorMessageHandler,
+        moviesStateManager: MoviesStateManager,
+        schemaToModelHelper: SchemaToModelHelper,
+        timeProvider: TimeProvider,
+        dataValidator: DataValidator,
+        deviceConfigManager: DeviceConfigManager
+    ) =
         FetchNowPlayingMoviesUseCaseSync(
-            tmdbApi
+            tmdbApi,
+            errorMessageHandler,
+            moviesStateManager,
+            schemaToModelHelper,
+            timeProvider,
+            dataValidator,
+            deviceConfigManager
         )
 
     @Provides
-    fun getFetchSimilarMoviesUseCaseSync(tmdbApi: TmdbApi) =
+    fun getFetchSimilarMoviesUseCaseSync(
+        tmdbApi: TmdbApi,
+        errorMessageHandler: ErrorMessageHandler,
+        schemaToModelHelper: SchemaToModelHelper
+    ) =
         FetchSimilarMoviesUseCaseSync(
-            tmdbApi
+            tmdbApi,
+            errorMessageHandler,
+            schemaToModelHelper
         )
 
     @Provides
-    fun getFetchRecommendedMoviesUseCaseSync(tmdbApi: TmdbApi) =
+    fun getFetchRecommendedMoviesUseCaseSync(
+        tmdbApi: TmdbApi,
+        errorMessageHandler: ErrorMessageHandler,
+        schemaToModelHelper: SchemaToModelHelper
+    ) =
         FetchRecommendedMoviesUseCaseSync(
-            tmdbApi
+            tmdbApi,
+            errorMessageHandler,
+            schemaToModelHelper
         )
 
     @Provides
-    fun getCreateRequestTokenUseCase(tmdbApi: TmdbApi): CreateRequestTokenUseCaseSync =
-        CreateRequestTokenUseCaseSync(tmdbApi)
+    fun getCreateRequestTokenUseCase(
+        tmdbApi: TmdbApi,
+        errorMessageHandler: ErrorMessageHandler
+    ): CreateRequestTokenUseCaseSync =
+        CreateRequestTokenUseCaseSync(tmdbApi, errorMessageHandler)
 
     @Provides
-    fun getSignTokenUseCase(tmdbApi: TmdbApi): SignTokenUseCaseSync =
-        SignTokenUseCaseSync(tmdbApi)
+    fun getSignTokenUseCase(
+        tmdbApi: TmdbApi,
+        errorMessageHandler: ErrorMessageHandler
+    ): SignTokenUseCaseSync =
+        SignTokenUseCaseSync(tmdbApi, errorMessageHandler)
 
     @Provides
-    fun getCreateSessionUseCase(tmdbApi: TmdbApi): CreateSessionUseCaseSync =
-        CreateSessionUseCaseSync(tmdbApi)
+    fun getCreateSessionUseCase(
+        tmdbApi: TmdbApi,
+        errorMessageHandler: ErrorMessageHandler
+    ): CreateSessionUseCaseSync =
+        CreateSessionUseCaseSync(tmdbApi, errorMessageHandler)
 
     @Provides
-    fun getFetchAccountDetailsUseCaseSync(tmdbApi: TmdbApi): FetchAccountDetailsUseCaseSync =
-        FetchAccountDetailsUseCaseSync(tmdbApi)
+    fun getFetchAccountDetailsUseCaseSync(
+        tmdbApi: TmdbApi,
+        sharedPreferencesManager: SharedPreferencesManager,
+        accountDao: AccountDao,
+        errorMessageHandler: ErrorMessageHandler,
+        userStateManager: UserStateManager,
+        schemaToModelHelper: SchemaToModelHelper
+    ): FetchAccountDetailsUseCaseSync =
+        FetchAccountDetailsUseCaseSync(
+            tmdbApi,
+            errorMessageHandler,
+            sharedPreferencesManager,
+            accountDao,
+            userStateManager,
+            schemaToModelHelper
+        )
 
     @Provides
     fun getIntentHandler(context: Context) = IntentHandler(context)
-
-    @Provides
-    fun getAddToFavoritesUseCaseSync(tmdbApi: TmdbApi) = AddRemoveFavUseCaseSync(tmdbApi)
 
     @Provides
     fun getAddToFavoritesUseCase(
@@ -339,16 +352,38 @@ class ActivityModule(private val activity: FragmentActivity) {
         moviesStateManager: MoviesStateManager,
         sessionIdUseCaseSync: GetSessionIdUseCaseSync,
         accountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
-        addRemoveFavUseCaseSync: AddRemoveFavUseCaseSync,
-        errorMessageHandler: ErrorMessageHandler
+        errorMessageHandler: ErrorMessageHandler,
+        tmdbApi: TmdbApi
 
-    ) = AddRemoveFavUseCase(
+    ) = AddRemoveFavMovieUseCase(
         backgroundThreadPoster,
         uiThreadPoster,
         moviesStateManager,
         sessionIdUseCaseSync,
         accountDetailsUseCaseSync,
-        addRemoveFavUseCaseSync,
-        errorMessageHandler
+        errorMessageHandler,
+        tmdbApi
+    )
+
+    @Provides
+    fun getFetchMoviesResponseUseCase(
+        popularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
+        topRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
+        upcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
+        nowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
+        similarMoviesUseCaseSync: FetchSimilarMoviesUseCaseSync,
+        recommendedMoviesUseCaseSync: FetchRecommendedMoviesUseCaseSync,
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster
+    ) = FetchMoviesResponseUseCase(
+        popularMoviesUseCaseSync,
+        topRatedMoviesUseCaseSync,
+        upcomingMoviesUseCaseSync,
+        nowPlayingMoviesUseCaseSync,
+        similarMoviesUseCaseSync,
+        recommendedMoviesUseCaseSync,
+        backgroundThreadPoster,
+        uiThreadPoster
+
     )
 }

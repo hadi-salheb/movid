@@ -7,10 +7,12 @@ class UserStateManager(
     private var userState: UserState,
     private val gson: Gson
 ) {
-
+    private val LOCK = Object()
     fun getSessionId() = userState.sessionID
     fun updateSessionId(sessionId: String) {
-        userState = userState.copy(sessionID = sessionId)
+        synchronized(LOCK) {
+            userState = userState.copy(sessionID = sessionId)
+        }
     }
 
     //expose a copy of the global state, to avoid any client other than the state manager to change any props.
@@ -25,6 +27,8 @@ class UserStateManager(
      * }
      * */
     fun updateAccountResponse(accountResponse: AccountResponse?) {
-        userState = userState.copy(accountResponse = accountResponse?.deepCopy(gson))
+        synchronized(LOCK) {
+            userState = userState.copy(accountResponse = accountResponse?.deepCopy(gson))
+        }
     }
 }

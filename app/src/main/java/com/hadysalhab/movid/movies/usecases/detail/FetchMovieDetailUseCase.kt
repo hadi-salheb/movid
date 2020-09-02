@@ -1,10 +1,10 @@
 package com.hadysalhab.movid.movies.usecases.detail
 
-import com.hadysalhab.movid.account.GetSessionIdUseCaseSync
+import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
-import com.hadysalhab.movid.movies.ErrorMessageHandler
+import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
@@ -38,15 +38,14 @@ class FetchMovieDetailUseCase(
     private val sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync()
 
     fun fetchMovieDetailAndNotify(movieId: Int) {
+        assertNotBusyAndBecomeBusy()
+        listeners.forEach {
+            it.onFetchingMovieDetail()
+        }
         val movieDetail = moviesStateManager.getMovieDetailById(movieId)
         if (dataValidator.isMovieDetailValid(movieDetail)) {
             notifySuccess(movieDetail!!)
         } else {
-            listeners.forEach {
-                it.onFetchingMovieDetail()
-            }
-            // will throw an exception if a client triggered this flow while it is busy
-            assertNotBusyAndBecomeBusy()
             tmdbApi.fetchMovieDetail(
                 movieId = movieId,
                 sessionID = sessionId

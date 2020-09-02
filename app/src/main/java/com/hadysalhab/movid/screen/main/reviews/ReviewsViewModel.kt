@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.movies.Review
+import com.hadysalhab.movid.movies.ReviewResponse
 import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
 import javax.inject.Inject
 
@@ -13,6 +14,8 @@ class ReviewsViewModel @Inject constructor(
     private val _viewState = MutableLiveData<ReviewListViewState>()
     private var movieID: Int? = null
     private var page = 1
+    private val reviews: MutableList<Review> = mutableListOf()
+    private var totalPages = 1
     val viewState: LiveData<ReviewListViewState>
         get() = _viewState
 
@@ -33,7 +36,7 @@ class ReviewsViewModel @Inject constructor(
     }
 
     fun loadMore() {
-        if (fetchReviewsUseCase.isBusy) {
+        if (fetchReviewsUseCase.isBusy|| this.page + 1 > this.totalPages) {
             return
         }
         fetchReviewsUseCase.fetchReviewsUseCase(
@@ -47,7 +50,7 @@ class ReviewsViewModel @Inject constructor(
         fetchReviewsUseCase.unregisterListener(this)
     }
 
-    override fun onFetching() {
+    override fun onFetchReview() {
         if (page == 1) {
             _viewState.value = Loading
         } else {
@@ -55,11 +58,13 @@ class ReviewsViewModel @Inject constructor(
         }
     }
 
-    override fun onFetchSuccess(reviews: List<Review>) {
-        _viewState.value = ReviewListLoaded(reviews)
+    override fun onFetchReviewSuccess(reviewResponse: ReviewResponse) {
+        this.totalPages = reviewResponse.totalPages
+        this.reviews.addAll(reviewResponse.reviews)
+        _viewState.value = ReviewListLoaded(this.reviews)
     }
 
-    override fun onFetchError(err: String) {
+    override fun onFetchReviewError(err: String) {
         _viewState.value = Error(err)
     }
 }

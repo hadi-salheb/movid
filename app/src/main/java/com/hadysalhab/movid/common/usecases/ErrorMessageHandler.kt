@@ -1,11 +1,14 @@
-package com.hadysalhab.movid.movies
+package com.hadysalhab.movid.common.usecases
 
 import com.google.gson.Gson
 import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
 
 class ErrorMessageHandler(private val gson: Gson) {
 
-    fun createErrorMessage(errMessage: String) = when {
+    fun createErrorMessage(errMessage: String?) = when {
+        errMessage == null -> {
+            "Unable to retrieve data. Please try again.!"
+        }
         errMessage.contains("status_message") -> {
             gson.fromJson(errMessage, TmdbErrorResponse::class.java).statusMessage
         }

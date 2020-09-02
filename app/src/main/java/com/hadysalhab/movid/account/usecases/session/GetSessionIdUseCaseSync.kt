@@ -1,5 +1,6 @@
-package com.hadysalhab.movid.account
+package com.hadysalhab.movid.account.usecases.session
 
+import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 

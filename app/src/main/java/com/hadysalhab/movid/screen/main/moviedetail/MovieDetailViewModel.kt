@@ -3,18 +3,22 @@ package com.hadysalhab.movid.screen.main.moviedetail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hadysalhab.movid.account.AddRemoveFavUseCase
+import com.hadysalhab.movid.account.usecases.favmovies.AddRemoveFavMovieUseCase
+import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import javax.inject.Inject
 
 class MovieDetailViewModel @Inject constructor(
     private val fetchMovieDetailUseCase: FetchMovieDetailUseCase,
-    private val addRemoveFavUseCase: AddRemoveFavUseCase
-) : ViewModel(), FetchMovieDetailUseCase.Listener, AddRemoveFavUseCase.Listener {
+    private val addRemoveFavMovieUseCase: AddRemoveFavMovieUseCase,
+    private val dataValidator: DataValidator
+) : ViewModel(), FetchMovieDetailUseCase.Listener, AddRemoveFavMovieUseCase.Listener {
+    private lateinit var movieDetail: MovieDetail
+
     init {
         fetchMovieDetailUseCase.registerListener(this)
-        addRemoveFavUseCase.registerListener(this)
+        addRemoveFavMovieUseCase.registerListener(this)
     }
 
     private val _viewState = MutableLiveData<MovieDetailViewState>()
@@ -26,7 +30,6 @@ class MovieDetailViewModel @Inject constructor(
             null -> {
                 fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
                     movieID
-
                 )
             }
             Loading, is Error -> {
@@ -34,15 +37,18 @@ class MovieDetailViewModel @Inject constructor(
             }
             is DetailLoaded -> {
                 //check if movie is still valid
-                fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
-                    movieID
-                )
+                if(!dataValidator.isMovieDetailValid(movieDetail)){
+                    fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
+                        movieID
+                    )
+                }
             }
         }
 
     }
 
     override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
+        this.movieDetail = movieDetail
         _viewState.value = DetailLoaded(movieDetail)
     }
 
@@ -55,17 +61,17 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     fun addMovieToFavorites(movieID: Int) {
-        if (addRemoveFavUseCase.isBusy) {
+        if (addRemoveFavMovieUseCase.isBusy) {
             return
         }
-        addRemoveFavUseCase.addRemoveFavUseCase(movieID, true)
+        addRemoveFavMovieUseCase.addRemoveFavUseCase(movieID, true)
     }
 
     fun removeMovieFromFavorites(movieID: Int) {
-        if (addRemoveFavUseCase.isBusy) {
+        if (addRemoveFavMovieUseCase.isBusy) {
             return
         }
-        addRemoveFavUseCase.addRemoveFavUseCase(movieID, false)
+        addRemoveFavMovieUseCase.addRemoveFavUseCase(movieID, false)
     }
 
     override fun onAddRemoveFavorites() {
@@ -83,7 +89,7 @@ class MovieDetailViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         fetchMovieDetailUseCase.unregisterListener(this)
-        addRemoveFavUseCase.unregisterListener(this)
+        addRemoveFavMovieUseCase.unregisterListener(this)
     }
 
 }

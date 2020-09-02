@@ -1,26 +1,25 @@
-package com.hadysalhab.movid.account
+package com.hadysalhab.movid.account.usecases.favmovies
 
+import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
+import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
-import com.hadysalhab.movid.movies.ErrorMessageHandler
+import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
-import com.hadysalhab.movid.networking.ApiEmptyResponse
-import com.hadysalhab.movid.networking.ApiErrorResponse
-import com.hadysalhab.movid.networking.ApiResponse
-import com.hadysalhab.movid.networking.ApiSuccessResponse
+import com.hadysalhab.movid.networking.*
 import com.hadysalhab.movid.networking.responses.AddToFavResponse
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
-class AddRemoveFavUseCase(
+class AddRemoveFavMovieUseCase(
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
     private val moviesStateManager: MoviesStateManager,
     private val getSessionIdUseCaseSync: GetSessionIdUseCaseSync,
     private val getAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
-    private val addRemoveFavUseCaseSync: AddRemoveFavUseCaseSync,
-    private val errorMessageHandler: ErrorMessageHandler
-) : BaseBusyObservable<AddRemoveFavUseCase.Listener>() {
+    private val errorMessageHandler: ErrorMessageHandler,
+    private val tmdbApi: TmdbApi
+) : BaseBusyObservable<AddRemoveFavMovieUseCase.Listener>() {
     interface Listener {
         fun onAddRemoveFavorites()
         fun onAddRemoveFavoritesSuccess(movieDetail: MovieDetail)
@@ -35,7 +34,7 @@ class AddRemoveFavUseCase(
         backgroundThreadPoster.post {
             notifyLoading()
             val accountResponse = getAccountDetailsUseCaseSync.getAccountDetailsUseCaseSync()
-            val res = addRemoveFavUseCaseSync.addToFavoriteUseCaseSync(
+            val res = addRemoveFav(
                 accountID = accountResponse.id,
                 mediaID = movieId,
                 sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync(),
@@ -43,6 +42,23 @@ class AddRemoveFavUseCase(
             )
             handleResponse(res)
         }
+    }
+
+    private fun addRemoveFav(
+        accountID: Int,
+        mediaID: Int,
+        sessionId: String,
+        favorite: Boolean
+    ): ApiResponse<AddToFavResponse> = try {
+        val res = tmdbApi.markAsFavorite(
+            accountID = accountID,
+            media_id = mediaID,
+            favorite = favorite,
+            sessionID = sessionId
+        ).execute()
+        ApiResponse.create<AddToFavResponse>(res)
+    } catch (err: Throwable) {
+        ApiResponse.create(err)
     }
 
     private fun handleResponse(res: ApiResponse<AddToFavResponse>) {

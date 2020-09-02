@@ -4,19 +4,23 @@ import com.google.gson.Gson
 
 
 class MoviesStateManager(private var moviesState: MoviesState, private val gson: Gson) {
+    private val LOCK = Object()
+
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
     fun upsertMovieDetailToList(movieDetail: MovieDetail) {
-        if (movieDetail.timeStamp == null) {
-            throw RuntimeException("MovieDetail should have a timestamp to add it to the store!!!")
+        synchronized(LOCK) {
+            if (movieDetail.timeStamp == null) {
+                throw RuntimeException("MovieDetail should have a timestamp to add it to the store!!!")
+            }
+            val updatedList =
+                moviesState.movieDetailList.filter { it.details.id != movieDetail.details.id }
+                    .toMutableList().apply {
+                        add(movieDetail.deepCopy(gson))
+                    }
+            moviesState = moviesState.copy(
+                movieDetailList = updatedList
+            )
         }
-        val updatedList =
-            moviesState.movieDetailList.filter { it.details.id != movieDetail.details.id }
-                .toMutableList().apply {
-                    add(movieDetail.deepCopy(gson))
-                }
-        moviesState = moviesState.copy(
-            movieDetailList = updatedList
-        )
     }
 
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
@@ -39,16 +43,18 @@ class MoviesStateManager(private var moviesState: MoviesState, private val gson:
         moviesState = moviesState.copy(nowPlayingMovies = nowPlaying.deepCopy(gson))
     }
 
-    fun updateMoviesResponseByGroupType(moviesResponse: MoviesResponse, groupType: GroupType) {
-        if (moviesResponse.timeStamp == null) {
-            throw RuntimeException("MoviesResponse should have a timeStamp to add it to the store")
-        }
-        when (groupType) {
-            GroupType.POPULAR -> updatePopularMovies(moviesResponse)
-            GroupType.NOW_PLAYING -> updateNowPlayingMovies(moviesResponse)
-            GroupType.UPCOMING -> updateUpcomingMovies(moviesResponse)
-            GroupType.TOP_RATED -> updateTopRatedMovies(moviesResponse)
-            else -> throw RuntimeException("GroupType $groupType not supported in movie store")
+    fun updateMoviesResponseByGroupType(moviesResponse: MoviesResponse) {
+        synchronized(LOCK) {
+            if (moviesResponse.timeStamp == null) {
+                throw RuntimeException("MoviesResponse should have a timeStamp to add it to the store")
+            }
+            when (moviesResponse.tag) {
+                GroupType.POPULAR -> updatePopularMovies(moviesResponse)
+                GroupType.NOW_PLAYING -> updateNowPlayingMovies(moviesResponse)
+                GroupType.UPCOMING -> updateUpcomingMovies(moviesResponse)
+                GroupType.TOP_RATED -> updateTopRatedMovies(moviesResponse)
+                else -> throw RuntimeException("GroupType ${moviesResponse.tag} not supported in movie store")
+            }
         }
     }
 

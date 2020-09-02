@@ -3,23 +3,22 @@ package com.hadysalhab.movid.screen.main.movielist
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.Movie
-import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCase
-import com.hadysalhab.movid.movies.usecases.list.FetchMovieListUseCaseFactory
+import com.hadysalhab.movid.movies.MoviesResponse
+import com.hadysalhab.movid.movies.usecases.list.FetchMoviesResponseUseCase
 import javax.inject.Inject
 
 class MovieListViewModel @Inject constructor(
-    deviceConfigManager: DeviceConfigManager,
-    private val fetchMovieListUseCaseFactory: FetchMovieListUseCaseFactory
-) : ViewModel(), FetchMovieListUseCase.Listener {
+    private val fetchMoviesResponseUseCase: FetchMoviesResponseUseCase
+) : ViewModel(), FetchMoviesResponseUseCase.Listener {
     private val _viewState = MutableLiveData<MovieListViewState>()
     private lateinit var groupType: GroupType
-    private lateinit var fetchMovieListUseCase: FetchMovieListUseCase
     private var movieID: Int? = null
     private var page = 1
-    private val region = deviceConfigManager.getISO3166CountryCodeOrUS()
+    private var totalPages = 1
+    private val moviesList = mutableListOf<Movie>()
+
     val viewState: LiveData<MovieListViewState>
         get() = _viewState
 
@@ -28,38 +27,41 @@ class MovieListViewModel @Inject constructor(
         if (!this::groupType.isInitialized) {
             this.groupType = groupType
             this.movieID = movieID
-            this.fetchMovieListUseCase =
-                fetchMovieListUseCaseFactory.makeFetchListUseCase(groupType)
-            fetchMovieListUseCase.registerListener(this)
+            fetchMoviesResponseUseCase.registerListener(this)
         }
         when (viewState.value) {
             null -> {
-                fetchMovieListUseCase.fetchMovieListUseCase(
-                    region,
-                    page,
-                    movieID
+                fetchMoviesResponseUseCase.fetchMoviesResponseUseCase(
+                    groupType = groupType,
+                    page = page,
+                    movieId = movieID
                 )
             }
         }
     }
 
     fun loadMore() {
-        if (fetchMovieListUseCase.isBusy) {
+        if (fetchMoviesResponseUseCase.isBusy || this.page + 1 > this.totalPages) {
             return
         }
-        fetchMovieListUseCase.fetchMovieListUseCase(
-            region,
-            ++page,
-            movieID
+        fetchMoviesResponseUseCase.fetchMoviesResponseUseCase(
+            groupType = groupType,
+            page = ++page,
+            movieId = movieID
         )
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        fetchMovieListUseCase.unregisterListener(this)
+    override fun onFetchMoviesResponseSuccess(moviesResponse: MoviesResponse) {
+        this.totalPages = moviesResponse.total_pages
+        moviesList.addAll(moviesResponse.movies ?: emptyList())
+        _viewState.value = MovieListLoaded(moviesList)
     }
 
-    override fun onFetching() {
+    override fun onFetchMoviesResponseFailure(msg: String) {
+        _viewState.value = Error(msg)
+    }
+
+    override fun onFetchMoviesResponse() {
         if (page == 1) {
             _viewState.value = Loading
         } else {
@@ -67,11 +69,9 @@ class MovieListViewModel @Inject constructor(
         }
     }
 
-    override fun onFetchSuccess(movies: List<Movie>) {
-        _viewState.value = MovieListLoaded(movies)
+    override fun onCleared() {
+        super.onCleared()
+        fetchMoviesResponseUseCase.unregisterListener(this)
     }
 
-    override fun onFetchError(err: String) {
-        _viewState.value = Error(err)
-    }
 }
