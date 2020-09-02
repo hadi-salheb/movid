@@ -1,47 +1,60 @@
-package com.hadysalhab.movid.movies.usecases.popular
+package com.hadysalhab.movid.common.usecases
 
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
-import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
-import com.hadysalhab.movid.common.usecases.UseCaseSyncResults
-import com.hadysalhab.movid.movies.*
-import com.hadysalhab.movid.networking.*
+import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.movies.MoviesResponse
+import com.hadysalhab.movid.movies.MoviesStateManager
+import com.hadysalhab.movid.movies.SchemaToModelHelper
+import com.hadysalhab.movid.networking.ApiEmptyResponse
+import com.hadysalhab.movid.networking.ApiErrorResponse
+import com.hadysalhab.movid.networking.ApiResponse
+import com.hadysalhab.movid.networking.ApiSuccessResponse
 import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
+import retrofit2.Response
 
-class FetchPopularMoviesUseCaseSync(
-    private val tmdbApi: TmdbApi,
-    private val errorMessageHandler: ErrorMessageHandler,
-    private val moviesStateManager: MoviesStateManager,
-    private val schemaToModelHelper: SchemaToModelHelper,
-    private val timeProvider: TimeProvider,
+abstract class BaseMoviesResponseUseCase(
+    private val deviceConfigManager: DeviceConfigManager,
     private val dataValidator: DataValidator,
-    private val deviceConfigManager: DeviceConfigManager
+    private val timeProvider: TimeProvider,
+    private val moviesStateManager: MoviesStateManager,
+    private val errorMessageHandler: ErrorMessageHandler,
+    private val schemaToModelHelper: SchemaToModelHelper
 ) {
-    private val region = deviceConfigManager.getISO3166CountryCodeOrUS()
-    private var page = 1
-    fun fetchPopularMoviesUseCaseSync(page: Int = 1): UseCaseSyncResults<MoviesResponse> {
+
+    protected val region = deviceConfigManager.getISO3166CountryCodeOrUS()
+    protected var page = 1
+    private val groupType: GroupType = getGroupType()
+    fun fetchMoviesUseCase(
+        page: Int = 1,
+        movieId: Int? = null
+    ): UseCaseSyncResults<MoviesResponse> {
         this.page = page
         return if (page == 1) {
-            val popularMoviesInStore = getPopularMoviesInStore()
-            if (isValid(popularMoviesInStore)) {
-                notifySuccess(popularMoviesInStore)
+            val moviesStore = getMoviesStore()
+            if (isValid(moviesStore)) {
+                notifySuccess(moviesStore)
             } else {
-                fetchPopularMoviesAndReturn()
+                fetchMovies()
             }
         } else {
-            fetchPopularMoviesAndReturn()
+            fetchMovies()
         }
     }
 
-    private fun fetchPopularMoviesAndReturn(): UseCaseSyncResults<MoviesResponse> = try {
-        val res = tmdbApi.fetchPopularMovies(region = region, page = page).execute()
+    private fun fetchMovies(): UseCaseSyncResults<MoviesResponse> = try {
+        val res = fetchMoviesFromApi()
         handleResponse(ApiResponse.create(res))
     } catch (err: Throwable) {
         handleResponse(ApiResponse.create(err))
     }
 
-    private fun getPopularMoviesInStore(): MoviesResponse = moviesStateManager.getPopularMovies()
+    protected abstract fun fetchMoviesFromApi(): Response<MoviesResponseSchema>
+    private fun getMoviesStore(): MoviesResponse =
+        moviesStateManager.getMoviesResponseByGroupType(groupType)
+
+    protected abstract fun getGroupType(): GroupType
     private fun isValid(moviesResponse: MoviesResponse) =
         dataValidator.isMoviesResponseValid(moviesResponse)
 
@@ -64,7 +77,10 @@ class FetchPopularMoviesUseCaseSync(
             notifyError(error)
         }
     }
-    private fun notifySuccess(moviesResponse: MoviesResponse) = UseCaseSyncResults.Results(data = moviesResponse)
+
+    private fun notifySuccess(moviesResponse: MoviesResponse) =
+        UseCaseSyncResults.Results(data = moviesResponse)
+
     private fun notifyError(msg: String) = UseCaseSyncResults.Error<MoviesResponse>(msg)
 
     private fun createErrorResultsAndReturn(msg: String?): String =
@@ -79,5 +95,5 @@ class FetchPopularMoviesUseCaseSync(
     }
 
     private fun convertSchemaToResponseAndReturn(moviesResponseSchema: MoviesResponseSchema): MoviesResponse =
-        schemaToModelHelper.getMoviesResponseFromSchema(GroupType.POPULAR, moviesResponseSchema)
+        schemaToModelHelper.getMoviesResponseFromSchema(this.groupType, moviesResponseSchema)
 }

@@ -4,18 +4,18 @@ package com.hadysalhab.movid.movies.usecases.groups
 import com.hadysalhab.movid.common.usecases.UseCaseSyncResults
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.MoviesResponse
-import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesResponseUseCaseSync
+import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesResponseUseCaseSync
+import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesResponseUseCaseSync
+import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesResponseUseCaseSync
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
 class FetchFeaturedMoviesUseCase(
-    private val fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
-    private val fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
-    private val fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
-    private val fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
+    private val fetchPopularMoviesUseCaseSync: FetchPopularMoviesResponseUseCaseSync,
+    private val fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesResponseUseCaseSync,
+    private val fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesResponseUseCaseSync,
+    private val fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesResponseUseCaseSync,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster
 ) :
@@ -63,22 +63,22 @@ class FetchFeaturedMoviesUseCase(
     }
 
     private fun fetchPopularMovies() {
-        val result = fetchPopularMoviesUseCaseSync.fetchPopularMoviesUseCaseSync(page = 1)
+        val result = fetchPopularMoviesUseCaseSync.fetchMoviesUseCase(page = 1)
         handleResult(result)
     }
 
     private fun fetchTopRatedMovies() {
-        val result = fetchTopRatedMoviesUseCaseSync.fetchTopRatedMoviesUseCaseSync(page = 1)
+        val result = fetchTopRatedMoviesUseCaseSync.fetchMoviesUseCase(page = 1)
         handleResult(result)
     }
 
     private fun fetchUpcomingMovies() {
-        val result = fetchUpcomingMoviesUseCaseSync.fetchUpcomingMoviesUseCaseSync(page = 1)
+        val result = fetchUpcomingMoviesUseCaseSync.fetchMoviesUseCase(page = 1)
         handleResult(result)
     }
 
     private fun fetchNowPlayingMovies() {
-        val result = fetchNowPlayingMoviesUseCaseSync.fetchNowPlayingMoviesUseCaseSync(page = 1)
+        val result = fetchNowPlayingMoviesUseCaseSync.fetchMoviesUseCase(page = 1)
         handleResult(result)
     }
 

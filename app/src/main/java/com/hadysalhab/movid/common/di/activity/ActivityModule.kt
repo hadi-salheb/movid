@@ -26,13 +26,13 @@ import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import com.hadysalhab.movid.movies.usecases.groups.FetchFeaturedMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.list.FetchMoviesResponseUseCase
-import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesResponseUseCaseSync
+import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesResponseUseCaseSync
 import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesResponseUseCaseSync
+import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesResponseUseCaseSync
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.persistence.AccountDao
 import com.hadysalhab.movid.screen.common.ViewFactory
@@ -127,10 +127,10 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getFetchMovieGroupsUseCase(
-        fetchPopularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
-        fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
-        fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
-        fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
+        fetchPopularMoviesUseCaseSync: FetchPopularMoviesResponseUseCaseSync,
+        fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesResponseUseCaseSync,
+        fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesResponseUseCaseSync,
+        fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesResponseUseCaseSync,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster
     ): FetchFeaturedMoviesUseCase =
@@ -209,7 +209,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         dataValidator: DataValidator,
         deviceConfigManager: DeviceConfigManager
     ) =
-        FetchPopularMoviesUseCaseSync(
+        FetchPopularMoviesResponseUseCaseSync(
             tmdbApi,
             errorMessageHandler,
             moviesStateManager,
@@ -229,7 +229,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         dataValidator: DataValidator,
         deviceConfigManager: DeviceConfigManager
     ) =
-        FetchTopRatedMoviesUseCaseSync(
+        FetchTopRatedMoviesResponseUseCaseSync(
             tmdbApi,
             errorMessageHandler,
             moviesStateManager,
@@ -249,7 +249,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         dataValidator: DataValidator,
         deviceConfigManager: DeviceConfigManager
     ) =
-        FetchUpcomingMoviesUseCaseSync(
+        FetchUpcomingMoviesResponseUseCaseSync(
             tmdbApi,
             errorMessageHandler,
             moviesStateManager,
@@ -269,7 +269,7 @@ class ActivityModule(private val activity: FragmentActivity) {
         dataValidator: DataValidator,
         deviceConfigManager: DeviceConfigManager
     ) =
-        FetchNowPlayingMoviesUseCaseSync(
+        FetchNowPlayingMoviesResponseUseCaseSync(
             tmdbApi,
             errorMessageHandler,
             moviesStateManager,
@@ -367,10 +367,10 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getFetchMoviesResponseUseCase(
-        popularMoviesUseCaseSync: FetchPopularMoviesUseCaseSync,
-        topRatedMoviesUseCaseSync: FetchTopRatedMoviesUseCaseSync,
-        upcomingMoviesUseCaseSync: FetchUpcomingMoviesUseCaseSync,
-        nowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesUseCaseSync,
+        popularMoviesUseCaseSync: FetchPopularMoviesResponseUseCaseSync,
+        topRatedMoviesUseCaseSync: FetchTopRatedMoviesResponseUseCaseSync,
+        upcomingMoviesUseCaseSync: FetchUpcomingMoviesResponseUseCaseSync,
+        nowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesResponseUseCaseSync,
         similarMoviesUseCaseSync: FetchSimilarMoviesUseCaseSync,
         recommendedMoviesUseCaseSync: FetchRecommendedMoviesUseCaseSync,
         backgroundThreadPoster: BackgroundThreadPoster,
