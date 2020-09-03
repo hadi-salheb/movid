@@ -6,7 +6,7 @@ import com.hadysalhab.movid.common.di.presentation.PresentationComponent
 import dagger.Subcomponent
 
 @ActivityScope
-@Subcomponent(modules = [ActivityModule::class])
+@Subcomponent(modules = [ActivityModule::class, UseCaseModel::class])
 interface ActivityComponent {
     fun newPresentationComponent(presentationModule: PresentationModule): PresentationComponent
 }
