@@ -20,6 +20,7 @@ import com.hadysalhab.movid.common.usecases.factory.BaseSimilarRecommendedMovies
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
+import com.hadysalhab.movid.movies.usecases.favorites.FetchFavoriteMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.groups.FetchFeaturedMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.list.FetchMoviesResponseUseCase
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
@@ -329,5 +330,23 @@ class UseCaseModel {
             sessionIdUseCaseSync
         )
 
+    @Provides
+    fun getFavoriteMoviesUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        schemaToModelHelper: SchemaToModelHelper,
+        errorMessageHandler: ErrorMessageHandler,
+        tmdbApi: TmdbApi,
+        getAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
+        getSessionIdUseCaseSync: GetSessionIdUseCaseSync
+    ): FetchFavoriteMoviesUseCase = FetchFavoriteMoviesUseCase(
+        getSessionIdUseCaseSync,
+        getAccountDetailsUseCaseSync,
+        backgroundThreadPoster,
+        errorMessageHandler,
+        schemaToModelHelper,
+        uiThreadPoster,
+        tmdbApi
+    )
 
 }

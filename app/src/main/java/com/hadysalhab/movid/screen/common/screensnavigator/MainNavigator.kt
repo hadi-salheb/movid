@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
+import com.hadysalhab.movid.screen.main.BottomNavigationItems
+import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
 import com.hadysalhab.movid.screen.main.movielist.MovieListFragment
@@ -17,9 +19,7 @@ class MainNavigator(
     private val fragmentFrameHost: FragmentFrameHost,
     private val context: Context
 ) {
-    companion object {
-        private const val TAB_COUNT = 5
-    }
+    private val TAB_COUNT = 5
 
     private lateinit var fragNavController: FragNavController
 
@@ -31,6 +31,7 @@ class MainNavigator(
         override fun getRootFragment(index: Int): Fragment {
             return when (index) {
                 FragNavController.TAB1 -> FeaturedFragment.newInstance()
+                FragNavController.TAB3 -> FavoriteMoviesFragment.newInstance()
                 else -> throw IllegalStateException("unsupported tab index: $index")
             }
         }
@@ -64,6 +65,17 @@ class MainNavigator(
 
     fun toReviewsFragment(movieID: Int) {
         fragNavController.pushFragment(ReviewsFragment.newInstance(movieID))
+    }
+
+    fun switchTab(bottomNavigationItems: BottomNavigationItems) {
+        var tabIndex: Int = when (bottomNavigationItems) {
+            BottomNavigationItems.FEATURED -> FragNavController.TAB1
+            BottomNavigationItems.SEARCH -> FragNavController.TAB2
+            BottomNavigationItems.FAVORITES -> FragNavController.TAB3
+            BottomNavigationItems.WISHLIST -> FragNavController.TAB4
+            BottomNavigationItems.ACCOUNT -> FragNavController.TAB5
+        }
+        fragNavController.switchTab(tabIndex)
     }
 
 }

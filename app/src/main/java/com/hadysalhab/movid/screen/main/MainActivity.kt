@@ -38,6 +38,11 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost {
         val currentSelectedItem = view.getCurrentNavigationItem()
         if (currentSelectedItem == item && currentSelectedItem == BottomNavigationItems.FEATURED) {
             mainNavigator.clearFeaturedStack()
+            return
+        }
+        //TODO: LATER SUPPORT ALL TABS
+        if (currentSelectedItem != item && (item == BottomNavigationItems.FEATURED || item == BottomNavigationItems.FAVORITES)) {
+            mainNavigator.switchTab(item)
         }
 
 

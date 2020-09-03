@@ -7,6 +7,7 @@ import com.hadysalhab.movid.screen.common.cardgroup.CastsView
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.hadysalhab.movid.screen.common.cast.CastCardImpl
 import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
+import com.hadysalhab.movid.screen.common.movielist.MovieListViewImpl
 import com.hadysalhab.movid.screen.common.movies.MovieCardImpl
 import com.hadysalhab.movid.screen.common.movies.MovieListItemImpl
 import com.hadysalhab.movid.screen.common.rating.Rating
@@ -18,7 +19,6 @@ import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewImpl
-import com.hadysalhab.movid.screen.main.movielist.MovieListViewImpl
 import com.hadysalhab.movid.screen.main.reviews.ReviewListView
 import com.hadysalhab.movid.screen.main.reviews.ReviewListViewImpl
 

@@ -12,5 +12,6 @@ enum class GroupType(val value: String) : Parcelable {
     NOW_PLAYING("now_playing"),
     SIMILAR_MOVIES("similar"),
     RECOMMENDED_MOVIES("recommendations"),
-    CAST("cast")
+    CAST("cast"),
+    FAVORITES("favorites")
 }

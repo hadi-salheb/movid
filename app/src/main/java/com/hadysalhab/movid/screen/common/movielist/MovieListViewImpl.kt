@@ -1,9 +1,10 @@
-package com.hadysalhab.movid.screen.main.movielist
+package com.hadysalhab.movid.screen.common.movielist
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,10 +25,12 @@ class MovieListViewImpl(
     private val adapter: MovieListAdapter
     private val progressBar: ProgressBar
     private val paginationProgressBar: ProgressBar
+    private val emptyResultIndicator: TextView
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_list_data, parent, false))
         recyclerView = findViewById(R.id.rv_movies)
+        emptyResultIndicator = findViewById(R.id.empty_result_tv)
         adapter = MovieListAdapter(this, viewFactory)
         progressBar = findViewById(R.id.loading_indicator)
         paginationProgressBar = findViewById(R.id.pagination_loading_indicator)
@@ -63,7 +66,7 @@ class MovieListViewImpl(
 
     override fun displayMovies(movies: List<Movie>) {
         adapter.submitList(movies)
-
+        emptyResultIndicator.visibility = View.GONE
         progressBar.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
         if (paginationProgressBar.visibility == View.VISIBLE) {
@@ -78,15 +81,25 @@ class MovieListViewImpl(
     }
 
     override fun displayPaginationLoading() {
+        emptyResultIndicator.visibility = View.GONE
         paginationProgressBar.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
         recyclerView.suppressLayout(true)
     }
 
     override fun displayLoadingIndicator() {
+        emptyResultIndicator.visibility = View.GONE
         paginationProgressBar.visibility = View.GONE
         recyclerView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
+    }
+
+    override fun displayEmptyListIndicator(msg: String) {
+        emptyResultIndicator.text = msg
+        emptyResultIndicator.visibility = View.VISIBLE
+        paginationProgressBar.visibility = View.GONE
+        recyclerView.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 
     override fun onMovieItemClicked(movieID: Int) {

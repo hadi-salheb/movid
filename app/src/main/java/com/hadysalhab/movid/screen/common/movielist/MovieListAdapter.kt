@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.movielist
+package com.hadysalhab.movid.screen.common.movielist
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

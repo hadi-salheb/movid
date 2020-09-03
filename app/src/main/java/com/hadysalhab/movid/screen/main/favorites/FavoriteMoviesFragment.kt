@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.movielist
+package com.hadysalhab.movid.screen.main.favorites
 
 import android.content.Context
 import android.os.Bundle
@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.movielist.MovieListView
@@ -15,13 +14,7 @@ import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
-private const val ARG_GROUP_KEY = "arg_group_key"
-private const val ARG_MOVIE_ID = "arg_movie_id"
-
-class MovieListFragment : BaseFragment(), MovieListView.Listener {
-    lateinit var groupType: GroupType
-    private var movieID: Int? = null
-
+class FavoriteMoviesFragment : BaseFragment(), MovieListView.Listener {
     @Inject
     lateinit var viewFactory: ViewFactory
 
@@ -30,10 +23,9 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
 
     @Inject
     lateinit var mainNavigator: MainNavigator
-
     private lateinit var view: MovieListView
 
-    private lateinit var movieListViewModel: MovieListViewModel
+    private lateinit var favoriteMoviesViewModel: FavoriteMoviesViewModel
 
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
@@ -43,16 +35,8 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
         super.onCreate(savedInstanceState)
         injector.inject(this)
 
-        arguments?.let {
-            groupType = it.getParcelable(ARG_GROUP_KEY)
-                ?: throw RuntimeException("Cannot Start MovieListFragment without group type key")
-            movieID = it.getInt(ARG_MOVIE_ID)
-        }
-        if ((groupType == GroupType.RECOMMENDED_MOVIES || groupType == GroupType.SIMILAR_MOVIES) && movieID == null) {
-            throw RuntimeException("Cannot get recommended movies or similar movies without providing a movie id!")
-        }
-        movieListViewModel =
-            ViewModelProvider(this, myViewModelFactory).get(MovieListViewModel::class.java)
+        favoriteMoviesViewModel =
+            ViewModelProvider(this, myViewModelFactory).get(FavoriteMoviesViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -69,8 +53,7 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
-        movieListViewModel.init(groupType, movieID)
-        movieListViewModel.viewState.observe(viewLifecycleOwner, Observer {
+        favoriteMoviesViewModel.viewState.observe(viewLifecycleOwner, Observer {
             render(it)
         })
     }
@@ -82,15 +65,8 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
 
     companion object {
         @JvmStatic
-        fun newInstance(groupType: GroupType, movieID: Int?) =
-            MovieListFragment().apply {
-                arguments = Bundle().apply {
-                    movieID?.let {
-                        putInt(ARG_MOVIE_ID, movieID)
-                    }
-                    putParcelable(ARG_GROUP_KEY, groupType)
-                }
-            }
+        fun newInstance() =
+            FavoriteMoviesFragment()
     }
 
     override fun onMovieItemClicked(movieID: Int) {
@@ -98,18 +74,22 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
     }
 
     override fun loadMoreItems() {
-        movieListViewModel.loadMore()
+        favoriteMoviesViewModel.loadMore()
     }
 
-    private fun render(viewState: MovieListViewState) {
+    private fun render(viewState: FavoriteMoviesViewState) {
         when (viewState) {
             Loading -> view.displayLoadingIndicator()
             PaginationLoading -> view.displayPaginationLoading()
             is Error -> {
             }
-            is MovieListLoaded -> view.displayMovies(viewState.movies)
+            is FavoriteMoviesLoaded -> {
+                if (viewState.movies.isEmpty()) {
+                    view.displayEmptyListIndicator("No Favorite Movies")
+                } else {
+                    view.displayMovies(viewState.movies)
+                }
+            }
         }
     }
-
-
 }

@@ -18,7 +18,7 @@ class GetAccountDetailsUseCaseSync(
             val dbAccountResponse = accountDao.getAccount()
             userStateManager.updateAccountResponse(dbAccountResponse)
             if (dbAccountResponse == null) {
-                //when user login, the database is filled with the account data!!
+                //when user login, the database should be filled with the account data!!
                 throw RuntimeException("Database Account Response, not supposed to be null!!")
             }
             dbAccountResponse

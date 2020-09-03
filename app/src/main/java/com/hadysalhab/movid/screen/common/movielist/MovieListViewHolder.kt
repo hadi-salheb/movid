@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.movielist
+package com.hadysalhab.movid.screen.common.movielist
 
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.movies.Movie

@@ -103,4 +103,12 @@ interface TmdbApi {
         @Body httpBodyRequest: FavoriteHttpBodyRequest
     ): Call<AddToFavResponse>
 
+    @GET("/3/account/{account_id}/favorite/movies")
+    fun getFavoriteMovies(
+        @Path("account_id") accountID: Int,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
+        @Query("session_id") sessionID: String,
+        @Query("page") page: Int = 1,
+        @Query("sort_by") sortBy: String = "created_at.asc"
+    ): Call<MoviesResponseSchema>
 }

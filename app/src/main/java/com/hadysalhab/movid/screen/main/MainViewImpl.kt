@@ -19,26 +19,8 @@ class MainViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : MainView() {
 
     private fun setUpViewListeners() {
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            var bottomNavigationItem: BottomNavigationItems = when (item.itemId) {
-                R.id.bottom_nav_featured -> {
-                    BottomNavigationItems.FEATURED
-                }
-                R.id.bottom_nav_account -> {
-                    BottomNavigationItems.ACCOUNT
-                }
-                R.id.bottom_nav_favorites -> {
-                    BottomNavigationItems.FAVORITES
-                }
-                R.id.bottom_nav_search -> {
-                    BottomNavigationItems.SEARCH
-                }
-                R.id.bottom_nav_wishList -> {
-                    BottomNavigationItems.WISHLIST
-                }
-                else -> {
-                    throw RuntimeException("BottomNavigationItem id ${item.itemId} not supported")
-                }
-            }
+            val bottomNavigationItem: BottomNavigationItems =
+                getBottomNavigationItemFor(item.itemId)
             listeners.forEach { listener ->
                 listener.onBottomNavigationItemClicked(bottomNavigationItem)
             }
@@ -48,24 +30,26 @@ class MainViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : MainView() {
 
     override fun getFragmentFrame() = fragmentFrame
     override fun getCurrentNavigationItem(): BottomNavigationItems =
-        when (bottomNavigation.selectedItemId) {
-            R.id.bottom_nav_featured -> {
-                BottomNavigationItems.FEATURED
-            }
-            R.id.bottom_nav_account -> {
-                BottomNavigationItems.ACCOUNT
-            }
-            R.id.bottom_nav_favorites -> {
-                BottomNavigationItems.FAVORITES
-            }
-            R.id.bottom_nav_search -> {
-                BottomNavigationItems.SEARCH
-            }
-            R.id.bottom_nav_wishList -> {
-                BottomNavigationItems.WISHLIST
-            }
-            else -> {
-                throw RuntimeException("BottomNavigationItem id ${bottomNavigation.selectedItemId} not supported")
-            }
+        getBottomNavigationItemFor(bottomNavigation.selectedItemId)
+
+    private fun getBottomNavigationItemFor(id: Int) = when (id) {
+        R.id.bottom_nav_featured -> {
+            BottomNavigationItems.FEATURED
         }
+        R.id.bottom_nav_account -> {
+            BottomNavigationItems.ACCOUNT
+        }
+        R.id.bottom_nav_favorites -> {
+            BottomNavigationItems.FAVORITES
+        }
+        R.id.bottom_nav_search -> {
+            BottomNavigationItems.SEARCH
+        }
+        R.id.bottom_nav_wishList -> {
+            BottomNavigationItems.WISHLIST
+        }
+        else -> {
+            throw RuntimeException("BottomNavigationItem id ${id} not supported")
+        }
+    }
 }
