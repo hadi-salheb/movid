@@ -14,7 +14,8 @@ import com.hadysalhab.movid.networking.ApiSuccessResponse
 import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
 import retrofit2.Response
 
-abstract class BaseMoviesResponseUseCase(
+// TopRated,UpComing,NowPlaying,Popular
+abstract class BaseFeaturedMoviesUseCase(
     private val deviceConfigManager: DeviceConfigManager,
     private val dataValidator: DataValidator,
     private val timeProvider: TimeProvider,
@@ -26,9 +27,8 @@ abstract class BaseMoviesResponseUseCase(
     protected val region = deviceConfigManager.getISO3166CountryCodeOrUS()
     protected var page = 1
     private val groupType: GroupType = getGroupType()
-    fun fetchMoviesUseCase(
-        page: Int = 1,
-        movieId: Int? = null
+    fun fetchFeaturedMoviesUseCase(
+        page: Int = 1
     ): UseCaseSyncResults<MoviesResponse> {
         this.page = page
         return if (page == 1) {

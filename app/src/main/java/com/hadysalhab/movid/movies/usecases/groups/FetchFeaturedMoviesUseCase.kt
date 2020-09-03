@@ -2,20 +2,15 @@ package com.hadysalhab.movid.movies.usecases.groups
 
 
 import com.hadysalhab.movid.common.usecases.UseCaseSyncResults
+import com.hadysalhab.movid.common.usecases.factory.BaseFeaturedMoviesUseCaseFactory
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
+import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
-import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesResponseUseCaseSync
-import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesResponseUseCaseSync
-import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesResponseUseCaseSync
-import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesResponseUseCaseSync
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
 class FetchFeaturedMoviesUseCase(
-    private val fetchPopularMoviesUseCaseSync: FetchPopularMoviesResponseUseCaseSync,
-    private val fetchTopRatedMoviesUseCaseSync: FetchTopRatedMoviesResponseUseCaseSync,
-    private val fetchUpcomingMoviesUseCaseSync: FetchUpcomingMoviesResponseUseCaseSync,
-    private val fetchNowPlayingMoviesUseCaseSync: FetchNowPlayingMoviesResponseUseCaseSync,
+    private val baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster
 ) :
@@ -31,13 +26,8 @@ class FetchFeaturedMoviesUseCase(
     private val LOCK = Object()
     private lateinit var movieGroups: List<MoviesResponse>
     private lateinit var errorMessage: String
-    private val computations: List<() -> Unit> =
-        listOf(
-            this::fetchTopRatedMovies,
-            this::fetchNowPlayingMovies,
-            this::fetchUpcomingMovies,
-            this::fetchPopularMovies
-        )
+    private val featured =
+        arrayOf(GroupType.POPULAR, GroupType.TOP_RATED, GroupType.UPCOMING, GroupType.NOW_PLAYING)
 
     fun fetchFeaturedMoviesUseCase() {
         // will throw an exception if a client triggered this flow while it is busy
@@ -55,36 +45,18 @@ class FetchFeaturedMoviesUseCase(
         backgroundThreadPoster.post {
             waitForAllUseCasesToFinish()
         }
-        computations.forEach {
+        featured.forEach {
             backgroundThreadPoster.post {
-                it.invoke()
+                val result = baseFeaturedMoviesUseCaseFactory.createBaseFeaturedMoviesUseCase(it)
+                    .fetchFeaturedMoviesUseCase(page = 1)
+                handleResult(result)
             }
         }
     }
 
-    private fun fetchPopularMovies() {
-        val result = fetchPopularMoviesUseCaseSync.fetchMoviesUseCase(page = 1)
-        handleResult(result)
-    }
-
-    private fun fetchTopRatedMovies() {
-        val result = fetchTopRatedMoviesUseCaseSync.fetchMoviesUseCase(page = 1)
-        handleResult(result)
-    }
-
-    private fun fetchUpcomingMovies() {
-        val result = fetchUpcomingMoviesUseCaseSync.fetchMoviesUseCase(page = 1)
-        handleResult(result)
-    }
-
-    private fun fetchNowPlayingMovies() {
-        val result = fetchNowPlayingMoviesUseCaseSync.fetchMoviesUseCase(page = 1)
-        handleResult(result)
-    }
-
     private fun waitForAllUseCasesToFinish() {
         synchronized(LOCK) {
-            while (mNumbOfFinishedUseCase < computations.size && !isAnyUseCaseFailed) {
+            while (mNumbOfFinishedUseCase < featured.size && !isAnyUseCaseFailed) {
                 try {
                     LOCK.wait()
                 } catch (e: InterruptedException) {

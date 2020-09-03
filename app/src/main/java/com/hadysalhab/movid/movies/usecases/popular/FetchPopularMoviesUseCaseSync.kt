@@ -1,9 +1,9 @@
-package com.hadysalhab.movid.movies.usecases.nowplaying
+package com.hadysalhab.movid.movies.usecases.popular
 
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
-import com.hadysalhab.movid.common.usecases.BaseMoviesResponseUseCase
+import com.hadysalhab.movid.common.usecases.BaseFeaturedMoviesUseCase
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesStateManager
@@ -12,7 +12,7 @@ import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
 import retrofit2.Response
 
-class FetchNowPlayingMoviesResponseUseCaseSync(
+class FetchPopularMoviesUseCaseSync(
     private val tmdbApi: TmdbApi,
     errorMessageHandler: ErrorMessageHandler,
     moviesStateManager: MoviesStateManager,
@@ -20,7 +20,7 @@ class FetchNowPlayingMoviesResponseUseCaseSync(
     timeProvider: TimeProvider,
     dataValidator: DataValidator,
     deviceConfigManager: DeviceConfigManager
-) : BaseMoviesResponseUseCase(
+) : BaseFeaturedMoviesUseCase(
     deviceConfigManager,
     dataValidator,
     timeProvider,
@@ -28,11 +28,10 @@ class FetchNowPlayingMoviesResponseUseCaseSync(
     errorMessageHandler,
     schemaToModelHelper
 ) {
-    override fun fetchMoviesFromApi(): Response<MoviesResponseSchema> =
-        tmdbApi.fetchNowPlayingMovies(
-            page = this.page,
-            region = this.region
-        ).execute()
+    override fun fetchMoviesFromApi(): Response<MoviesResponseSchema> = tmdbApi.fetchPopularMovies(
+        page = this.page,
+        region = this.region
+    ).execute()
 
-    override fun getGroupType(): GroupType = GroupType.NOW_PLAYING
+    override fun getGroupType(): GroupType = GroupType.POPULAR
 }
