@@ -1,6 +1,7 @@
 package com.hadysalhab.movid.networking
 
 import com.hadysalhab.movid.BuildConfig
+import com.hadysalhab.movid.account.usecases.favmovies.FavoriteHttpBodyRequest
 import com.hadysalhab.movid.networking.responses.*
 import retrofit2.Call
 import retrofit2.http.*
@@ -95,14 +96,11 @@ interface TmdbApi {
     ): Call<ReviewsSchema>
 
     @POST("/3/account/{account_id}/favorite")
-    @FormUrlEncoded
     fun markAsFavorite(
         @Path("account_id") accountID: Int,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("session_id") sessionID: String,
-        @Field("media_type") mediaType: String = "movie",
-        @Field("media_id") media_id: Int,
-        @Field("favorite") favorite: Boolean
+        @Body httpBodyRequest: FavoriteHttpBodyRequest
     ): Call<AddToFavResponse>
 
 }

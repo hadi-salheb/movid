@@ -1,15 +1,16 @@
 package com.hadysalhab.movid.account.usecases.favmovies
 
-import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
-import com.hadysalhab.movid.common.utils.BaseBusyObservable
+import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
+import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.networking.*
 import com.hadysalhab.movid.networking.responses.AddToFavResponse
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
+
 
 class AddRemoveFavMovieUseCase(
     private val backgroundThreadPoster: BackgroundThreadPoster,
@@ -50,11 +51,11 @@ class AddRemoveFavMovieUseCase(
         sessionId: String,
         favorite: Boolean
     ): ApiResponse<AddToFavResponse> = try {
+        val httpBodyRequest = FavoriteHttpBodyRequest(mediaId = mediaID, favorite = favorite)
         val res = tmdbApi.markAsFavorite(
             accountID = accountID,
-            media_id = mediaID,
-            favorite = favorite,
-            sessionID = sessionId
+            sessionID = sessionId,
+            httpBodyRequest = httpBodyRequest
         ).execute()
         ApiResponse.create<AddToFavResponse>(res)
     } catch (err: Throwable) {
