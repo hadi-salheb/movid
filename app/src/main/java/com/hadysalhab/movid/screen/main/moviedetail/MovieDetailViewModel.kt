@@ -34,7 +34,6 @@ class MovieDetailViewModel @Inject constructor(
                 return
             }
             is DetailLoaded -> {
-                _viewState.value = Loading
                 fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
                     movieID
                 )

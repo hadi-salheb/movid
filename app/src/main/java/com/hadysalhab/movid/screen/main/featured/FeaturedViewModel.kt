@@ -29,7 +29,6 @@ class FeaturedViewModel @Inject constructor(
                 return
             }
             is FeaturedLoaded -> {
-                _viewState.value = Loading
                 fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify()
             }
         }
