@@ -4,14 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.MoviesResponse
+import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.groups.FetchFeaturedMoviesUseCase
 import javax.inject.Inject
 
-//Process-Death case is not handled, always try reload data in this case
 class FeaturedViewModel @Inject constructor(
     private val fetchFeaturedMoviesUseCase: FetchFeaturedMoviesUseCase,
-    private val dataValidator: DataValidator
+    private val moviesStateManager: MoviesStateManager,
+    private val dataValidator: DataValidator,
+    private val timeProvider: TimeProvider
 ) : ViewModel(), FetchFeaturedMoviesUseCase.Listener {
     private lateinit var movieGroups: List<MoviesResponse>
     private val _viewState = MutableLiveData<FeaturedViewState>()
@@ -24,23 +27,31 @@ class FeaturedViewModel @Inject constructor(
 
     fun onStart() {
         when (_viewState.value) {
-            null->{
-                fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCase()
+            null -> {
+                movieGroups = moviesStateManager.getFeaturedMovies()
+                if (areMoviesValid()) {
+                    _viewState.value = FeaturedLoaded(movieGroups)
+                } else {
+                    _viewState.value = Loading
+                    fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify()
+                }
             }
             Loading, is Error -> {
                 return
             }
-            is FeaturedLoaded ->{
-                if(!areMoviesStillValid()){
-                    fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCase()
+            is FeaturedLoaded -> {
+                if (!areMoviesValid()) {
+                    _viewState.value = Loading
+                    fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify()
                 }
             }
         }
     }
-    private fun areMoviesStillValid():Boolean{
+
+    private fun areMoviesValid(): Boolean {
         var result = true
-        for(movieGroup in movieGroups){
-            if(!dataValidator.isMoviesResponseValid(movieGroup)){
+        for (movieGroup in movieGroups) {
+            if (!dataValidator.isMoviesResponseValid(movieGroup)) {
                 result = false
                 break
             }
@@ -50,6 +61,10 @@ class FeaturedViewModel @Inject constructor(
 
     override fun onFetchMovieGroupsSucceeded(movieGroups: List<MoviesResponse>) {
         this.movieGroups = movieGroups
+        this.movieGroups.forEach {
+            it.timeStamp = timeProvider.currentTimestamp
+        }
+        moviesStateManager.updateAllMoviesResponse(movieGroups)
         val featuredLoaded = FeaturedLoaded(movieGroups)
         _viewState.value = featuredLoaded
     }
@@ -57,10 +72,6 @@ class FeaturedViewModel @Inject constructor(
     override fun onFetchMovieGroupsFailed(msg: String) {
         val error = Error(msg)
         _viewState.value = error
-    }
-
-    override fun onFetchMovieGroups() {
-        _viewState.value = Loading
     }
 
     override fun onCleared() {

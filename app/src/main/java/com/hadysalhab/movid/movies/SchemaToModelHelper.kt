@@ -6,7 +6,6 @@ import com.hadysalhab.movid.account.Gravatar
 import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.networking.responses.*
-import retrofit2.Response
 
 class SchemaToModelHelper {
     fun getMoviesResponseFromSchema(
@@ -20,7 +19,7 @@ class SchemaToModelHelper {
         groupType
     )
 
-    fun getMovieDetails(schema: Response<MovieDetailSchema>) = with(schema.body()!!) {
+    fun getMovieDetails(schema: MovieDetailSchema) = with(schema) {
         MovieDetail(
             getMovieInfo(this),
             getCredits(credits),

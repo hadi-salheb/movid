@@ -1,11 +1,18 @@
 package com.hadysalhab.movid.movies.usecases.list
 
-import com.hadysalhab.movid.common.usecases.UseCaseSyncResults
+import com.hadysalhab.movid.common.DeviceConfigManager
+import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.usecases.factory.BaseFeaturedMoviesUseCaseFactory
 import com.hadysalhab.movid.common.usecases.factory.BaseSimilarRecommendedMoviesUseCaseFactory
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
+import com.hadysalhab.movid.movies.SchemaToModelHelper
+import com.hadysalhab.movid.networking.ApiEmptyResponse
+import com.hadysalhab.movid.networking.ApiErrorResponse
+import com.hadysalhab.movid.networking.ApiResponse
+import com.hadysalhab.movid.networking.ApiSuccessResponse
+import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
@@ -13,30 +20,27 @@ class FetchMoviesResponseUseCase(
     private val baseSimilarRecommendedMoviesUseCaseFactory: BaseSimilarRecommendedMoviesUseCaseFactory,
     private val baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
     private val backgroundThreadPoster: BackgroundThreadPoster,
-    private val uiThreadPoster: UiThreadPoster
+    private val uiThreadPoster: UiThreadPoster,
+    private val deviceConfigManager: DeviceConfigManager,
+    private val schemaToModelHelper: SchemaToModelHelper,
+    private val errorMessageHandler: ErrorMessageHandler
 ) :
     BaseBusyObservable<FetchMoviesResponseUseCase.Listener>() {
     interface Listener {
         fun onFetchMoviesResponseSuccess(movies: MoviesResponse)
         fun onFetchMoviesResponseFailure(msg: String)
-        fun onFetchMoviesResponse()
     }
 
-    private lateinit var errorMessage: String
     private var movieId: Int? = null
     private var page = 1
     private val LOCK = Object()
 
     fun fetchMoviesResponseUseCase(groupType: GroupType, page: Int, movieId: Int?) {
         assertNotBusyAndBecomeBusy()
-        listeners.forEach {
-            it.onFetchMoviesResponse()
-        }
         if ((groupType == GroupType.SIMILAR_MOVIES || groupType == GroupType.RECOMMENDED_MOVIES) && movieId == null) {
             throw RuntimeException("Cannot fetch similar movies or recommended movies with null movie id")
         }
         synchronized(LOCK) {
-            errorMessage = ""
             this.movieId = movieId
             this.page = page
         }
@@ -47,25 +51,33 @@ class FetchMoviesResponseUseCase(
                         groupType
                     )
                 val result = useCase.fetchSimilarRecommendedMoviesUseCase(page, movieId!!)
-                handleResult(result)
+                handleResult(groupType, result)
             } else {
                 val useCase =
                     baseFeaturedMoviesUseCaseFactory.createBaseFeaturedMoviesUseCase(
                         groupType
                     )
-                val result = useCase.fetchFeaturedMoviesUseCase(page)
-                handleResult(result)
+                val result = useCase.fetchFeaturedMoviesUseCase(
+                    page,
+                    deviceConfigManager.getISO3166CountryCodeOrUS()
+                )
+                handleResult(groupType, result)
             }
         }
     }
 
-    private fun handleResult(result: UseCaseSyncResults<MoviesResponse>) {
-        when (result) {
-            is UseCaseSyncResults.Results -> {
-                notifySuccess(result.data)
+    private fun handleResult(groupType: GroupType, response: ApiResponse<MoviesResponseSchema>) {
+        when (response) {
+            is ApiSuccessResponse -> {
+                notifySuccess(
+                    schemaToModelHelper.getMoviesResponseFromSchema(
+                        groupType,
+                        response.body
+                    )
+                )
             }
-            is UseCaseSyncResults.Error -> {
-                notifyFailure(result.errMessage)
+            is ApiErrorResponse, is ApiEmptyResponse -> {
+                notifyFailure(errorMessageHandler.getErrorMessageFromApiResponse(response))
             }
         }
     }

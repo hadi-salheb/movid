@@ -4,6 +4,7 @@ import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScop
 import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.account.usecases.details.FetchAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
+import com.hadysalhab.movid.account.usecases.details.UpdateAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.favmovies.AddRemoveFavMovieUseCase
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.authentication.LoginUseCase
@@ -44,31 +45,17 @@ class UseCaseModel {
     @Provides
     @ActivityScope
     fun getBaseFeaturedMoviesUseCaseFactory(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler,
-        moviesStateManager: MoviesStateManager,
-        schemaToModelHelper: SchemaToModelHelper,
-        timeProvider: TimeProvider,
-        dataValidator: DataValidator,
-        deviceConfigManager: DeviceConfigManager
+        tmdbApi: TmdbApi
     ) = BaseFeaturedMoviesUseCaseFactory(
-        deviceConfigManager,
-        dataValidator,
-        timeProvider,
-        moviesStateManager,
-        errorMessageHandler,
-        schemaToModelHelper,
         tmdbApi
     )
 
     @Provides
     @ActivityScope
     fun getBaseSimilarRecommendedMoviesUseCaseFactory(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler,
-        schemaToModelHelper: SchemaToModelHelper
+        tmdbApi: TmdbApi
     ) = BaseSimilarRecommendedMoviesUseCaseFactory(
-        errorMessageHandler, schemaToModelHelper, tmdbApi
+        tmdbApi
     )
 
     //UseCases--------------------------------------------------------------------------------------
@@ -76,7 +63,6 @@ class UseCaseModel {
     fun getAddToFavoritesUseCase(
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
-        moviesStateManager: MoviesStateManager,
         sessionIdUseCaseSync: GetSessionIdUseCaseSync,
         accountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
         errorMessageHandler: ErrorMessageHandler,
@@ -85,7 +71,6 @@ class UseCaseModel {
     ) = AddRemoveFavMovieUseCase(
         backgroundThreadPoster,
         uiThreadPoster,
-        moviesStateManager,
         sessionIdUseCaseSync,
         accountDetailsUseCaseSync,
         errorMessageHandler,
@@ -96,11 +81,17 @@ class UseCaseModel {
     fun getFeaturedMoviesUseCase(
         baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
         backgroundThreadPoster: BackgroundThreadPoster,
-        uiThreadPoster: UiThreadPoster
+        uiThreadPoster: UiThreadPoster,
+        errorMessageHandler: ErrorMessageHandler,
+        schemaToModelHelper: SchemaToModelHelper,
+        deviceConfigManager: DeviceConfigManager
     ): FetchFeaturedMoviesUseCase =
         FetchFeaturedMoviesUseCase(
             baseFeaturedMoviesUseCaseFactory,
+            deviceConfigManager,
             backgroundThreadPoster,
+            errorMessageHandler,
+            schemaToModelHelper,
             uiThreadPoster
         )
 
@@ -109,72 +100,40 @@ class UseCaseModel {
         baseSimilarRecommendedMoviesUseCaseFactory: BaseSimilarRecommendedMoviesUseCaseFactory,
         baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
         backgroundThreadPoster: BackgroundThreadPoster,
-        uiThreadPoster: UiThreadPoster
+        uiThreadPoster: UiThreadPoster,
+        deviceConfigManager: DeviceConfigManager,
+        errorMessageHandler: ErrorMessageHandler,
+        schemaToModelHelper: SchemaToModelHelper
     ) = FetchMoviesResponseUseCase(
         baseSimilarRecommendedMoviesUseCaseFactory,
         baseFeaturedMoviesUseCaseFactory,
         backgroundThreadPoster,
-        uiThreadPoster
+        uiThreadPoster,
+        deviceConfigManager, schemaToModelHelper, errorMessageHandler
     )
 
     @Provides
     fun getFetchPopularMoviesUseCaseSync(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler,
-        moviesStateManager: MoviesStateManager,
-        schemaToModelHelper: SchemaToModelHelper,
-        timeProvider: TimeProvider,
-        dataValidator: DataValidator,
-        deviceConfigManager: DeviceConfigManager
+        tmdbApi: TmdbApi
     ) =
         FetchPopularMoviesUseCaseSync(
-            tmdbApi,
-            errorMessageHandler,
-            moviesStateManager,
-            schemaToModelHelper,
-            timeProvider,
-            dataValidator,
-            deviceConfigManager
+            tmdbApi
         )
 
     @Provides
     fun getFetchTopRatedMoviesUseCaseSync(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler,
-        moviesStateManager: MoviesStateManager,
-        schemaToModelHelper: SchemaToModelHelper,
-        timeProvider: TimeProvider,
-        dataValidator: DataValidator,
-        deviceConfigManager: DeviceConfigManager
+        tmdbApi: TmdbApi
     ) =
         FetchTopRatedMoviesUseCaseSync(
-            tmdbApi,
-            errorMessageHandler,
-            moviesStateManager,
-            schemaToModelHelper,
-            timeProvider,
-            dataValidator,
-            deviceConfigManager
+            tmdbApi
         )
 
     @Provides
     fun getFetchUpcomingMoviesUseCaseSync(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler,
-        moviesStateManager: MoviesStateManager,
-        schemaToModelHelper: SchemaToModelHelper,
-        timeProvider: TimeProvider,
-        dataValidator: DataValidator,
-        deviceConfigManager: DeviceConfigManager
+        tmdbApi: TmdbApi
     ) =
         FetchUpcomingMoviesUseCaseSync(
-            tmdbApi,
-            errorMessageHandler,
-            moviesStateManager,
-            schemaToModelHelper,
-            timeProvider,
-            dataValidator,
-            deviceConfigManager
+            tmdbApi
         )
 
     @Provides
@@ -188,76 +147,49 @@ class UseCaseModel {
         deviceConfigManager: DeviceConfigManager
     ) =
         FetchNowPlayingMoviesUseCaseSync(
-            tmdbApi,
-            errorMessageHandler,
-            moviesStateManager,
-            schemaToModelHelper,
-            timeProvider,
-            dataValidator,
-            deviceConfigManager
+            tmdbApi
         )
 
     @Provides
     fun getFetchSimilarMoviesUseCaseSync(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler,
-        schemaToModelHelper: SchemaToModelHelper
+        tmdbApi: TmdbApi
     ) =
         FetchSimilarMoviesUseCaseSync(
-            tmdbApi,
-            errorMessageHandler,
-            schemaToModelHelper
+            tmdbApi
         )
 
     @Provides
     fun getFetchRecommendedMoviesUseCaseSync(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler,
-        schemaToModelHelper: SchemaToModelHelper
+        tmdbApi: TmdbApi
     ) =
         FetchRecommendedMoviesUseCaseSync(
-            tmdbApi,
-            errorMessageHandler,
-            schemaToModelHelper
+            tmdbApi
         )
 
     @Provides
     fun getCreateRequestTokenUseCase(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler
+        tmdbApi: TmdbApi
     ): CreateRequestTokenUseCaseSync =
-        CreateRequestTokenUseCaseSync(tmdbApi, errorMessageHandler)
+        CreateRequestTokenUseCaseSync(tmdbApi)
 
     @Provides
     fun getSignTokenUseCase(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler
+        tmdbApi: TmdbApi
     ): SignTokenUseCaseSync =
-        SignTokenUseCaseSync(tmdbApi, errorMessageHandler)
+        SignTokenUseCaseSync(tmdbApi)
 
     @Provides
     fun getCreateSessionUseCase(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler
+        tmdbApi: TmdbApi
     ): CreateSessionUseCaseSync =
-        CreateSessionUseCaseSync(tmdbApi, errorMessageHandler)
+        CreateSessionUseCaseSync(tmdbApi)
 
     @Provides
     fun getFetchAccountDetailsUseCaseSync(
-        tmdbApi: TmdbApi,
-        sharedPreferencesManager: SharedPreferencesManager,
-        accountDao: AccountDao,
-        errorMessageHandler: ErrorMessageHandler,
-        userStateManager: UserStateManager,
-        schemaToModelHelper: SchemaToModelHelper
+        tmdbApi: TmdbApi
     ): FetchAccountDetailsUseCaseSync =
         FetchAccountDetailsUseCaseSync(
-            tmdbApi,
-            errorMessageHandler,
-            sharedPreferencesManager,
-            accountDao,
-            userStateManager,
-            schemaToModelHelper
+            tmdbApi
         )
 
     @Provides
@@ -266,16 +198,12 @@ class UseCaseModel {
         uiThreadPoster: UiThreadPoster,
         schemaToModelHelper: SchemaToModelHelper,
         errorMessageHandler: ErrorMessageHandler,
-        dataValidator: DataValidator,
-        moviesStateManager: MoviesStateManager,
         tmdbApi: TmdbApi
     ) = FetchReviewsUseCase(
         backgroundThreadPoster,
         uiThreadPoster,
         schemaToModelHelper,
         errorMessageHandler,
-        dataValidator,
-        moviesStateManager,
         tmdbApi
     )
 
@@ -286,16 +214,29 @@ class UseCaseModel {
         createSessionUseCaseSync: CreateSessionUseCaseSync,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
-        fetchAccountDetailsUseCaseSync: FetchAccountDetailsUseCaseSync
+        fetchAccountDetailsUseCaseSync: FetchAccountDetailsUseCaseSync,
+        errorMessageHandler: ErrorMessageHandler,
+        updateAccountDetailsUseCaseSync: UpdateAccountDetailsUseCaseSync,
+        schemaToModelHelper: SchemaToModelHelper
     ): LoginUseCase =
         LoginUseCase(
             createRequestTokenUseCaseSync,
             signTokenUseCaseSync,
             createSessionUseCaseSync,
             fetchAccountDetailsUseCaseSync,
-            backgroundThreadPoster,
-            uiThreadPoster
+            updateAccountDetailsUseCaseSync,
+            schemaToModelHelper,
+            backgroundThreadPoster, uiThreadPoster, errorMessageHandler
         )
+
+    @Provides
+    fun getUpdatedUserStateUseCaseSync(
+        sharedPreferencesManager: SharedPreferencesManager,
+        userStateManager: UserStateManager,
+        accountDao: AccountDao
+    ) = UpdateAccountDetailsUseCaseSync(
+        sharedPreferencesManager, accountDao, userStateManager
+    )
 
     @Provides
     fun getGetAccountDetailsUseCaseSync(
@@ -318,16 +259,16 @@ class UseCaseModel {
         dataValidator: DataValidator, timeProvider: TimeProvider,
         schemaToModelHelper: SchemaToModelHelper,
         errorMessageHandler: ErrorMessageHandler,
-        sessionIdUseCaseSync: GetSessionIdUseCaseSync
+        sessionIdUseCaseSync: GetSessionIdUseCaseSync,
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster
     ): FetchMovieDetailUseCase =
         FetchMovieDetailUseCase(
             tmdbApi,
-            moviesStateManager,
-            timeProvider,
-            dataValidator,
             schemaToModelHelper,
             errorMessageHandler,
-            sessionIdUseCaseSync
+            sessionIdUseCaseSync,
+            backgroundThreadPoster, uiThreadPoster
         )
 
     @Provides

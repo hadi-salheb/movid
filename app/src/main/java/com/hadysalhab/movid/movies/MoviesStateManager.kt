@@ -3,7 +3,11 @@ package com.hadysalhab.movid.movies
 import com.google.gson.Gson
 
 
-class MoviesStateManager(private var moviesState: MoviesState, private val gson: Gson) {
+class MoviesStateManager(
+    private var moviesState: MoviesState,
+    private val gson: Gson
+) {
+
     private val LOCK = Object()
 
     // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
@@ -23,30 +27,20 @@ class MoviesStateManager(private var moviesState: MoviesState, private val gson:
         }
     }
 
-    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
-    private fun updatePopularMovies(popular: MoviesResponse) {
-        moviesState = moviesState.copy(popularMovies = popular.deepCopy(gson))
+
+    fun updateAllMoviesResponse(movieGroups: List<MoviesResponse>) {
+        movieGroups.forEach {
+            updateMoviesResponse(it)
+        }
     }
 
-    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
-    private fun updateTopRatedMovies(topRated: MoviesResponse) {
-        moviesState = moviesState.copy(topRatedMovies = topRated.deepCopy(gson))
-    }
-
-    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
-    private fun updateUpcomingMovies(upcoming: MoviesResponse) {
-        moviesState = moviesState.copy(upcomingMovies = upcoming.deepCopy(gson))
-    }
-
-    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
-    private fun updateNowPlayingMovies(nowPlaying: MoviesResponse) {
-        moviesState = moviesState.copy(nowPlayingMovies = nowPlaying.deepCopy(gson))
-    }
-
-    fun updateMoviesResponseByGroupType(moviesResponse: MoviesResponse) {
+    fun updateMoviesResponse(moviesResponse: MoviesResponse) {
         synchronized(LOCK) {
             if (moviesResponse.timeStamp == null) {
-                throw RuntimeException("MoviesResponse should have a timeStamp to add it to the store")
+                throw RuntimeException("MovieDetail should have a timestamp to add it to the store!!!")
+            }
+            if (moviesResponse.page > 1) {
+                return
             }
             when (moviesResponse.tag) {
                 GroupType.POPULAR -> updatePopularMovies(moviesResponse)
@@ -58,6 +52,22 @@ class MoviesStateManager(private var moviesState: MoviesState, private val gson:
         }
     }
 
+    private fun updatePopularMovies(popular: MoviesResponse) {
+        moviesState = moviesState.copy(popularMovies = popular.deepCopy(gson))
+    }
+
+    private fun updateTopRatedMovies(topRated: MoviesResponse) {
+        moviesState = moviesState.copy(topRatedMovies = topRated.deepCopy(gson))
+    }
+
+    private fun updateUpcomingMovies(upcoming: MoviesResponse) {
+        moviesState = moviesState.copy(upcomingMovies = upcoming.deepCopy(gson))
+    }
+
+    private fun updateNowPlayingMovies(nowPlaying: MoviesResponse) {
+        moviesState = moviesState.copy(nowPlayingMovies = nowPlaying.deepCopy(gson))
+    }
+
     fun getMoviesResponseByGroupType(groupType: GroupType): MoviesResponse = when (groupType) {
         GroupType.POPULAR -> getPopularMovies()
         GroupType.NOW_PLAYING -> getNowPlayingMovies()
@@ -66,11 +76,21 @@ class MoviesStateManager(private var moviesState: MoviesState, private val gson:
         else -> throw RuntimeException("GroupType $groupType not supported in movie store")
     }
 
-    // deep copy to avoid any client effect on the global store. Only MoviesStateManager is allowed to do so
-    fun getTopRatedMovies() = moviesState.topRatedMovies.deepCopy(gson)
-    fun getNowPlayingMovies() = moviesState.nowPlayingMovies.deepCopy(gson)
-    fun getUpcomingMovies() = moviesState.upcomingMovies.deepCopy(gson)
-    fun getPopularMovies() = moviesState.popularMovies.deepCopy(gson)
+    fun getFeaturedMovies() = synchronized(LOCK) {
+        with(moviesState) {
+            listOf(
+                topRatedMovies.deepCopy(gson),
+                upcomingMovies.deepCopy(gson),
+                nowPlayingMovies.deepCopy(gson),
+                popularMovies.deepCopy(gson)
+            )
+        }
+    }
+
+    private fun getTopRatedMovies() = moviesState.topRatedMovies.deepCopy(gson)
+    private fun getNowPlayingMovies() = moviesState.nowPlayingMovies.deepCopy(gson)
+    private fun getUpcomingMovies() = moviesState.upcomingMovies.deepCopy(gson)
+    private fun getPopularMovies() = moviesState.popularMovies.deepCopy(gson)
     fun getMovieDetailById(movieId: Int): MovieDetail? =
         moviesState.movieDetailList.find { it.details.id == movieId }?.deepCopy(gson)
 

@@ -1,24 +1,33 @@
 package com.hadysalhab.movid.movies.usecases.groups
 
 
-import com.hadysalhab.movid.common.usecases.UseCaseSyncResults
+import com.hadysalhab.movid.common.DeviceConfigManager
+import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.usecases.factory.BaseFeaturedMoviesUseCaseFactory
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
+import com.hadysalhab.movid.movies.SchemaToModelHelper
+import com.hadysalhab.movid.networking.ApiEmptyResponse
+import com.hadysalhab.movid.networking.ApiErrorResponse
+import com.hadysalhab.movid.networking.ApiResponse
+import com.hadysalhab.movid.networking.ApiSuccessResponse
+import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
 class FetchFeaturedMoviesUseCase(
     private val baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
+    private val deviceConfigManager: DeviceConfigManager,
     private val backgroundThreadPoster: BackgroundThreadPoster,
+    private val errorMessageHandler: ErrorMessageHandler,
+    private val schemaToModelHelper: SchemaToModelHelper,
     private val uiThreadPoster: UiThreadPoster
 ) :
     BaseBusyObservable<FetchFeaturedMoviesUseCase.Listener>() {
     interface Listener {
         fun onFetchMovieGroupsSucceeded(movieGroups: List<MoviesResponse>)
         fun onFetchMovieGroupsFailed(msg: String)
-        fun onFetchMovieGroups()
     }
 
     private var mNumbOfFinishedUseCase = 0
@@ -29,13 +38,8 @@ class FetchFeaturedMoviesUseCase(
     private val featured =
         arrayOf(GroupType.POPULAR, GroupType.TOP_RATED, GroupType.UPCOMING, GroupType.NOW_PLAYING)
 
-    fun fetchFeaturedMoviesUseCase() {
-        // will throw an exception if a client triggered this flow while it is busy
+    fun fetchFeaturedMoviesUseCaseAndNotify() {
         assertNotBusyAndBecomeBusy()
-        listeners.forEach {
-            it.onFetchMovieGroups()
-        }
-
         synchronized(LOCK) {
             movieGroups = mutableListOf()
             mNumbOfFinishedUseCase = 0
@@ -45,11 +49,15 @@ class FetchFeaturedMoviesUseCase(
         backgroundThreadPoster.post {
             waitForAllUseCasesToFinish()
         }
-        featured.forEach {
+        featured.forEach { groupType ->
             backgroundThreadPoster.post {
-                val result = baseFeaturedMoviesUseCaseFactory.createBaseFeaturedMoviesUseCase(it)
-                    .fetchFeaturedMoviesUseCase(page = 1)
-                handleResult(result)
+                val result =
+                    baseFeaturedMoviesUseCaseFactory.createBaseFeaturedMoviesUseCase(groupType)
+                        .fetchFeaturedMoviesUseCase(
+                            page = 1,
+                            region = deviceConfigManager.getISO3166CountryCodeOrUS()
+                        )
+                handleResult(groupType, result)
             }
         }
     }
@@ -71,17 +79,22 @@ class FetchFeaturedMoviesUseCase(
         }
     }
 
-    private fun handleResult(result: UseCaseSyncResults<MoviesResponse>) {
+    private fun handleResult(groupType: GroupType, response: ApiResponse<MoviesResponseSchema>) {
         synchronized(LOCK) {
-            when (result) {
-                is UseCaseSyncResults.Results -> {
+            when (response) {
+                is ApiSuccessResponse -> {
                     this.movieGroups = this.movieGroups.toMutableList().also {
-                        it.add(result.data)
+                        it.add(
+                            schemaToModelHelper.getMoviesResponseFromSchema(
+                                groupType,
+                                response.body
+                            )
+                        )
                     }
                 }
-                is UseCaseSyncResults.Error -> {
+                is ApiErrorResponse, is ApiEmptyResponse -> {
                     isAnyUseCaseFailed = true
-                    this.errorMessage = result.errMessage
+                    this.errorMessage = errorMessageHandler.getErrorMessageFromApiResponse(response)
                 }
             }
             mNumbOfFinishedUseCase++

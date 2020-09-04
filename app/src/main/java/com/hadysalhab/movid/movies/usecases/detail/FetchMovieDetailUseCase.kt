@@ -1,17 +1,14 @@
 package com.hadysalhab.movid.movies.usecases.detail
 
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
-import com.hadysalhab.movid.common.datavalidator.DataValidator
-import com.hadysalhab.movid.common.time.TimeProvider
-import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
+import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.MovieDetail
-import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
-import com.hadysalhab.movid.networking.TmdbApi
+import com.hadysalhab.movid.networking.*
 import com.hadysalhab.movid.networking.responses.MovieDetailSchema
-import retrofit2.Call
-import retrofit2.Response
+import com.techyourchance.threadposter.BackgroundThreadPoster
+import com.techyourchance.threadposter.UiThreadPoster
 
 /**
  * UseCase that fetch popular,top-rated,upcoming movies
@@ -20,71 +17,66 @@ import retrofit2.Response
 
 class FetchMovieDetailUseCase(
     private val tmdbApi: TmdbApi,
-    private val moviesStateManager: MoviesStateManager,
-    private val timeProvider: TimeProvider,
-    private val dataValidator: DataValidator,
     private val schemaToModelHelper: SchemaToModelHelper,
     private val errorMessageHandler: ErrorMessageHandler,
-    private val getSessionIdUseCaseSync: GetSessionIdUseCaseSync
+    private val getSessionIdUseCaseSync: GetSessionIdUseCaseSync,
+    private val backgroundThreadPoster: BackgroundThreadPoster,
+    private val uiThreadPoster: UiThreadPoster
 ) :
     BaseBusyObservable<FetchMovieDetailUseCase.Listener>() {
     interface Listener {
         fun onFetchMovieDetailSuccess(movieDetail: MovieDetail)
         fun onFetchMovieDetailFailed(msg: String)
-        fun onFetchingMovieDetail()
     }
 
-    private lateinit var errorMessage: String
     private val sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync()
 
     fun fetchMovieDetailAndNotify(movieId: Int) {
         assertNotBusyAndBecomeBusy()
-        listeners.forEach {
-            it.onFetchingMovieDetail()
+        backgroundThreadPoster.post {
+            val response = fetchApi(movieId)
+            handleResponse(response)
         }
-        val movieDetail = moviesStateManager.getMovieDetailById(movieId)
-        if (dataValidator.isMovieDetailValid(movieDetail)) {
-            notifySuccess(movieDetail!!)
-        } else {
-            tmdbApi.fetchMovieDetail(
-                movieId = movieId,
-                sessionID = sessionId
-            ).enqueue(object : retrofit2.Callback<MovieDetailSchema> {
-                override fun onFailure(call: Call<MovieDetailSchema>, t: Throwable) {
-                    errorMessageHandler.createErrorMessage(t.message ?: "Unable to resolve host")
-                    notifyFailure(errorMessage)
-                }
+    }
 
-                override fun onResponse(
-                    call: Call<MovieDetailSchema>,
-                    schema: Response<MovieDetailSchema>
-                ) {
-                    if (schema.body() == null || schema.code() == 204) {
-                        errorMessageHandler.createErrorMessage("")
-                    }
-                    val movieDetailResult = schemaToModelHelper.getMovieDetails(schema).apply {
-                        timeStamp = timeProvider.currentTimestamp
-                    }
-                    moviesStateManager.upsertMovieDetailToList(movieDetailResult)
-                    notifySuccess(movieDetailResult)
-                }
-            })
+    private fun handleResponse(response: ApiResponse<MovieDetailSchema>) {
+        when (response) {
+            is ApiSuccessResponse -> {
+                notifySuccess(schemaToModelHelper.getMovieDetails(response.body))
+            }
+            is ApiEmptyResponse, is ApiErrorResponse -> {
+                notifyFailure(errorMessageHandler.getErrorMessageFromApiResponse(response))
+            }
         }
+    }
+
+    private fun fetchApi(movieId: Int) = try {
+        val response = tmdbApi.fetchMovieDetail(
+            movieId = movieId,
+            sessionID = sessionId
+        ).execute()
+        ApiResponse.create(response)
+    } catch (err: Throwable) {
+        ApiResponse.create<MovieDetailSchema>(err)
     }
 
     private fun notifyFailure(msg: String) {
-        // notify controller
-        listeners.forEach {
-            it.onFetchMovieDetailFailed(msg)
+        uiThreadPoster.post {
+            // notify controller
+            listeners.forEach {
+                it.onFetchMovieDetailFailed(msg)
+            }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 
     private fun notifySuccess(movieDetail: MovieDetail) {
-        // notify controller
-        listeners.forEach {
-            it.onFetchMovieDetailSuccess(movieDetail)
+        uiThreadPoster.post {
+            // notify controller
+            listeners.forEach {
+                it.onFetchMovieDetailSuccess(movieDetail)
+            }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 }

@@ -1,11 +1,16 @@
 package com.hadysalhab.movid.authentication
 
 import com.hadysalhab.movid.account.usecases.details.FetchAccountDetailsUseCaseSync
+import com.hadysalhab.movid.account.usecases.details.UpdateAccountDetailsUseCaseSync
 import com.hadysalhab.movid.authentication.createsession.CreateSessionUseCaseSync
 import com.hadysalhab.movid.authentication.createtoken.CreateRequestTokenUseCaseSync
 import com.hadysalhab.movid.authentication.signtoken.SignTokenUseCaseSync
-import com.hadysalhab.movid.common.usecases.UseCaseSyncResults
+import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
+import com.hadysalhab.movid.movies.SchemaToModelHelper
+import com.hadysalhab.movid.networking.ApiEmptyResponse
+import com.hadysalhab.movid.networking.ApiErrorResponse
+import com.hadysalhab.movid.networking.ApiSuccessResponse
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
@@ -15,8 +20,11 @@ class LoginUseCase(
     private val signTokenUseCaseSync: SignTokenUseCaseSync,
     private val createSessionUseCaseSync: CreateSessionUseCaseSync,
     private val fetchAccountDetailsUseCaseSync: FetchAccountDetailsUseCaseSync,
+    private val updateAccountDetailsUseCaseSync: UpdateAccountDetailsUseCaseSync,
+    private val schemaToModelHelper: SchemaToModelHelper,
     private val backgroundThreadPoster: BackgroundThreadPoster,
-    private val uiThreadPoster: UiThreadPoster
+    private val uiThreadPoster: UiThreadPoster,
+    private val errorMessageHandler: ErrorMessageHandler
 ) :
     BaseBusyObservable<LoginUseCase.Listener>() {
     interface Listener {
@@ -39,38 +47,59 @@ class LoginUseCase(
     }
 
     private fun createRequestToken() {
-        when (val result = createRequestTokenUseCaseSync.createRequestTokenSync()) {
-            is UseCaseSyncResults.Results -> signTokenWithLogin(result.data.requestToken)
-            is UseCaseSyncResults.Error -> notifyFailure(result.errMessage)
+        when (val response = createRequestTokenUseCaseSync.createRequestTokenSync()) {
+            is ApiSuccessResponse -> signTokenWithLogin(response.body.requestToken)
+            is ApiErrorResponse, is ApiEmptyResponse -> notifyFailure(
+                errorMessageHandler.getErrorMessageFromApiResponse(
+                    response
+                )
+            )
         }
     }
 
     private fun signTokenWithLogin(token: String) {
-        when (val result = signTokenUseCaseSync.signTokenSync(
+        when (val response = signTokenUseCaseSync.signTokenSync(
             userName,
             password,
             token
         )) {
-            is UseCaseSyncResults.Results -> createSession(result.data.requestToken)
-            is UseCaseSyncResults.Error -> notifyFailure(result.errMessage)
+            is ApiSuccessResponse -> createSession(response.body.requestToken)
+            is ApiErrorResponse, is ApiEmptyResponse -> notifyFailure(
+                errorMessageHandler.getErrorMessageFromApiResponse(
+                    response
+                )
+            )
         }
     }
 
     private fun createSession(token: String) {
-        when (val result = createSessionUseCaseSync.createSessionSync(
+        when (val response = createSessionUseCaseSync.createSessionSync(
             token
         )) {
-            is UseCaseSyncResults.Results -> fetchAccountDetail(result.data.sessionId)
-            is UseCaseSyncResults.Error -> notifyFailure(result.errMessage)
+            is ApiSuccessResponse -> fetchAccountDetail(response.body.sessionId)
+            is ApiErrorResponse, is ApiEmptyResponse -> notifyFailure(
+                errorMessageHandler.getErrorMessageFromApiResponse(
+                    response
+                )
+            )
         }
     }
 
     private fun fetchAccountDetail(sessionId: String) {
-        when (val result = fetchAccountDetailsUseCaseSync.getAccountDetailsUseCaseSync(sessionId)) {
-            is UseCaseSyncResults.Results -> {
+        when (val response =
+            fetchAccountDetailsUseCaseSync.getAccountDetailsUseCaseSync(sessionId)) {
+            is ApiSuccessResponse -> {
+                updateAccountDetailsUseCaseSync.updateUserStateUseCaseSync(
+                    sessionId,
+                    schemaToModelHelper.getAccountResponse(response.body)
+                )
                 notifySuccess()
             }
-            is UseCaseSyncResults.Error -> notifyFailure(result.errMessage)
+            is ApiErrorResponse, is ApiEmptyResponse -> notifyFailure(
+                errorMessageHandler.getErrorMessageFromApiResponse(
+                    response
+                )
+            )
         }
     }
 
