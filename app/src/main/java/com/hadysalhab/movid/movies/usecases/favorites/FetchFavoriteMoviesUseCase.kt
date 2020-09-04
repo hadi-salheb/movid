@@ -24,16 +24,14 @@ class FetchFavoriteMoviesUseCase(
     interface Listener {
         fun onFetchFavoriteMoviesSuccess(movies: MoviesResponse)
         fun onFetchFavoriteMoviesFailure(msg: String)
-        fun onFetchFavoriteMovies()
     }
 
     fun fetchFavoriteMoviesUseCase(page: Int) {
         assertNotBusyAndBecomeBusy()
-        listeners.forEach {
-            it.onFetchFavoriteMovies()
-        }
         backgroundThreadPoster.post {
-            when (val response = fireRequest(page)) {
+            val sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync()
+            val accountId = getAccountDetailsUseCaseSync.getAccountDetailsUseCaseSync().id
+            when (val response = fireRequest(page, accountId, sessionId)) {
                 is ApiSuccessResponse -> {
                     val moviesResponse =
                         schemaToModelHelper.getMoviesResponseFromSchema(
@@ -42,19 +40,18 @@ class FetchFavoriteMoviesUseCase(
                         )
                     notifySuccess(moviesResponse)
                 }
-                is ApiEmptyResponse -> {
-                    notifyFailure(errorMessageHandler.createErrorMessage(""))
-                }
-                is ApiErrorResponse -> {
-                    notifyFailure(errorMessageHandler.createErrorMessage(response.errorMessage))
+                is ApiEmptyResponse, is ApiErrorResponse -> {
+                    notifyFailure(errorMessageHandler.getErrorMessageFromApiResponse(response))
                 }
             }
         }
     }
 
-    private fun fireRequest(page: Int): ApiResponse<MoviesResponseSchema> = try {
-        val sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync()
-        val accountId = getAccountDetailsUseCaseSync.getAccountDetailsUseCaseSync().id
+    private fun fireRequest(
+        page: Int,
+        accountId: Int,
+        sessionId: String
+    ): ApiResponse<MoviesResponseSchema> = try {
         val res = tmdbApi.getFavoriteMovies(
             accountID = accountId,
             page = page,

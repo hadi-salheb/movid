@@ -28,19 +28,13 @@ class MoviesStateManager(
     }
 
 
-    fun updateAllMoviesResponse(movieGroups: List<MoviesResponse>) {
-        movieGroups.forEach {
-            updateMoviesResponse(it)
-        }
-    }
-
     fun updateMoviesResponse(moviesResponse: MoviesResponse) {
         synchronized(LOCK) {
-            if (moviesResponse.timeStamp == null) {
-                throw RuntimeException("MovieDetail should have a timestamp to add it to the store!!!")
-            }
             if (moviesResponse.page > 1) {
                 return
+            }
+            if (moviesResponse.timeStamp == null) {
+                throw RuntimeException("MovieDetail should have a timestamp to add it to the store!!!")
             }
             when (moviesResponse.tag) {
                 GroupType.POPULAR -> updatePopularMovies(moviesResponse)
@@ -75,18 +69,6 @@ class MoviesStateManager(
         GroupType.TOP_RATED -> getTopRatedMovies()
         else -> throw RuntimeException("GroupType $groupType not supported in movie store")
     }
-
-    fun getFeaturedMovies() = synchronized(LOCK) {
-        with(moviesState) {
-            listOf(
-                topRatedMovies.deepCopy(gson),
-                upcomingMovies.deepCopy(gson),
-                nowPlayingMovies.deepCopy(gson),
-                popularMovies.deepCopy(gson)
-            )
-        }
-    }
-
     private fun getTopRatedMovies() = moviesState.topRatedMovies.deepCopy(gson)
     private fun getNowPlayingMovies() = moviesState.nowPlayingMovies.deepCopy(gson)
     private fun getUpcomingMovies() = moviesState.upcomingMovies.deepCopy(gson)

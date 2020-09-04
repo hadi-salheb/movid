@@ -66,15 +66,16 @@ class UseCaseModel {
         sessionIdUseCaseSync: GetSessionIdUseCaseSync,
         accountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
         errorMessageHandler: ErrorMessageHandler,
-        tmdbApi: TmdbApi
-
+        tmdbApi: TmdbApi,
+        moviesStateManager: MoviesStateManager
     ) = AddRemoveFavMovieUseCase(
         backgroundThreadPoster,
         uiThreadPoster,
         sessionIdUseCaseSync,
         accountDetailsUseCaseSync,
         errorMessageHandler,
-        tmdbApi
+        tmdbApi,
+        moviesStateManager
     )
 
     @Provides
@@ -84,10 +85,16 @@ class UseCaseModel {
         uiThreadPoster: UiThreadPoster,
         errorMessageHandler: ErrorMessageHandler,
         schemaToModelHelper: SchemaToModelHelper,
-        deviceConfigManager: DeviceConfigManager
+        deviceConfigManager: DeviceConfigManager,
+        moviesStateManager: MoviesStateManager,
+        dataValidator: DataValidator,
+        timeProvider: TimeProvider
     ): FetchFeaturedMoviesUseCase =
         FetchFeaturedMoviesUseCase(
             baseFeaturedMoviesUseCaseFactory,
+            moviesStateManager,
+            timeProvider,
+            dataValidator,
             deviceConfigManager,
             backgroundThreadPoster,
             errorMessageHandler,
@@ -103,13 +110,21 @@ class UseCaseModel {
         uiThreadPoster: UiThreadPoster,
         deviceConfigManager: DeviceConfigManager,
         errorMessageHandler: ErrorMessageHandler,
-        schemaToModelHelper: SchemaToModelHelper
+        schemaToModelHelper: SchemaToModelHelper,
+        moviesStateManager: MoviesStateManager,
+        timeProvider: TimeProvider,
+        dataValidator: DataValidator
     ) = FetchMoviesResponseUseCase(
         baseSimilarRecommendedMoviesUseCaseFactory,
         baseFeaturedMoviesUseCaseFactory,
         backgroundThreadPoster,
         uiThreadPoster,
-        deviceConfigManager, schemaToModelHelper, errorMessageHandler
+        deviceConfigManager,
+        schemaToModelHelper,
+        errorMessageHandler,
+        moviesStateManager,
+        timeProvider,
+        dataValidator
     )
 
     @Provides
@@ -198,13 +213,15 @@ class UseCaseModel {
         uiThreadPoster: UiThreadPoster,
         schemaToModelHelper: SchemaToModelHelper,
         errorMessageHandler: ErrorMessageHandler,
-        tmdbApi: TmdbApi
+        tmdbApi: TmdbApi,
+        moviesStateManager: MoviesStateManager,
+        dataValidator: DataValidator
     ) = FetchReviewsUseCase(
         backgroundThreadPoster,
         uiThreadPoster,
         schemaToModelHelper,
         errorMessageHandler,
-        tmdbApi
+        moviesStateManager, dataValidator, tmdbApi
     )
 
     @Provides
@@ -268,7 +285,7 @@ class UseCaseModel {
             schemaToModelHelper,
             errorMessageHandler,
             sessionIdUseCaseSync,
-            backgroundThreadPoster, uiThreadPoster
+            timeProvider, dataValidator, moviesStateManager, backgroundThreadPoster, uiThreadPoster
         )
 
     @Provides

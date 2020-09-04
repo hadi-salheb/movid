@@ -44,14 +44,6 @@ class FavoriteMoviesViewModel @Inject constructor(
         _viewState.value = Error(msg)
     }
 
-    override fun onFetchFavoriteMovies() {
-        if (page == 1) {
-            _viewState.value = Loading
-        } else {
-            _viewState.value = PaginationLoading
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
         fetchFavoriteMoviesUseCase.unregisterListener(this)

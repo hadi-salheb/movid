@@ -2,11 +2,14 @@ package com.hadysalhab.movid.movies.usecases.groups
 
 
 import com.hadysalhab.movid.common.DeviceConfigManager
+import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.usecases.factory.BaseFeaturedMoviesUseCaseFactory
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
+import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
@@ -18,6 +21,9 @@ import com.techyourchance.threadposter.UiThreadPoster
 
 class FetchFeaturedMoviesUseCase(
     private val baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
+    private val moviesStateManager: MoviesStateManager,
+    private val timeProvider: TimeProvider,
+    private val dataValidator: DataValidator,
     private val deviceConfigManager: DeviceConfigManager,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val errorMessageHandler: ErrorMessageHandler,
@@ -37,6 +43,7 @@ class FetchFeaturedMoviesUseCase(
     private lateinit var errorMessage: String
     private val featured =
         arrayOf(GroupType.POPULAR, GroupType.TOP_RATED, GroupType.UPCOMING, GroupType.NOW_PLAYING)
+    private lateinit var computations: Array<GroupType>
 
     fun fetchFeaturedMoviesUseCaseAndNotify() {
         assertNotBusyAndBecomeBusy()
@@ -45,26 +52,45 @@ class FetchFeaturedMoviesUseCase(
             mNumbOfFinishedUseCase = 0
             isAnyUseCaseFailed = false
             errorMessage = ""
-        }
-        backgroundThreadPoster.post {
-            waitForAllUseCasesToFinish()
+            computations = arrayOf()
         }
         featured.forEach { groupType ->
-            backgroundThreadPoster.post {
-                val result =
-                    baseFeaturedMoviesUseCaseFactory.createBaseFeaturedMoviesUseCase(groupType)
-                        .fetchFeaturedMoviesUseCase(
-                            page = 1,
-                            region = deviceConfigManager.getISO3166CountryCodeOrUS()
-                        )
-                handleResult(groupType, result)
+            val store = moviesStateManager.getMoviesResponseByGroupType(groupType)
+            if (dataValidator.isMoviesResponseValid(store)) {
+                this.movieGroups = this.movieGroups.toMutableList().apply {
+                    add(store)
+                }
+            } else {
+                computations = computations.plus(groupType)
             }
+        }
+        if (computations.isNotEmpty()) {
+            backgroundThreadPoster.post {
+                waitForAllUseCasesToFinish()
+            }
+            backgroundThreadPoster.post {
+                fireUseCases()
+            }
+        } else {
+            notifySuccess()
+        }
+    }
+
+    private fun fireUseCases() {
+        computations.forEach { groupType ->
+            val result =
+                baseFeaturedMoviesUseCaseFactory.createBaseFeaturedMoviesUseCase(groupType)
+                    .fetchFeaturedMoviesUseCase(
+                        page = 1,
+                        region = deviceConfigManager.getISO3166CountryCodeOrUS()
+                    )
+            handleResult(groupType, result)
         }
     }
 
     private fun waitForAllUseCasesToFinish() {
         synchronized(LOCK) {
-            while (mNumbOfFinishedUseCase < featured.size && !isAnyUseCaseFailed) {
+            while (mNumbOfFinishedUseCase < computations.size && !isAnyUseCaseFailed) {
                 try {
                     LOCK.wait()
                 } catch (e: InterruptedException) {
@@ -83,12 +109,15 @@ class FetchFeaturedMoviesUseCase(
         synchronized(LOCK) {
             when (response) {
                 is ApiSuccessResponse -> {
-                    this.movieGroups = this.movieGroups.toMutableList().also {
-                        it.add(
+                    this.movieGroups = this.movieGroups.toMutableList().apply {
+                        add(
                             schemaToModelHelper.getMoviesResponseFromSchema(
                                 groupType,
                                 response.body
-                            )
+                            ).also { movieResponse ->
+                                movieResponse.timeStamp = timeProvider.currentTimestamp
+                                moviesStateManager.updateMoviesResponse(movieResponse)
+                            }
                         )
                     }
                 }

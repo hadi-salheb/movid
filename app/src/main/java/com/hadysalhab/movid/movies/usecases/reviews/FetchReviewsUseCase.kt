@@ -1,7 +1,9 @@
 package com.hadysalhab.movid.movies.usecases.reviews
 
+import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
+import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.ReviewResponse
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.networking.*
@@ -14,6 +16,8 @@ class FetchReviewsUseCase(
     private val uiThreadPoster: UiThreadPoster,
     private val schemaToModelHelper: SchemaToModelHelper,
     private val errorMessageHandler: ErrorMessageHandler,
+    private val moviesStateManager: MoviesStateManager,
+    private val dataValidator: DataValidator,
     private val tmdbApi: TmdbApi
 ) : BaseBusyObservable<FetchReviewsUseCase.Listener>() {
     interface Listener {
@@ -23,8 +27,21 @@ class FetchReviewsUseCase(
 
     fun fetchReviewsUseCase(pageToFetch: Int, movieID: Int) {
         assertNotBusyAndBecomeBusy()
+        if (pageToFetch == 1) {
+            val store = moviesStateManager.getMovieDetailById(movieID)
+            if (dataValidator.isMovieDetailValid(store)) {
+                notifySuccess(store!!.reviewResponse)
+            } else {
+                fireNetworkRequest(pageToFetch, movieID)
+            }
+        } else {
+            fireNetworkRequest(pageToFetch, movieID)
+        }
+    }
+
+    private fun fireNetworkRequest(page: Int, movieID: Int) {
         backgroundThreadPoster.post {
-            when (val response = fetchReviewsUseCaseSync(pageToFetch, movieID)) {
+            when (val response = fetchReviewsUseCaseSync(page, movieID)) {
                 is ApiSuccessResponse -> {
                     val reviewResponse =
                         schemaToModelHelper.getReviewsResponseFromSchema(response.body)
@@ -36,6 +53,7 @@ class FetchReviewsUseCase(
             }
         }
     }
+
     private fun fetchReviewsUseCaseSync(page: Int, movieID: Int): ApiResponse<ReviewsSchema> = try {
         val res = tmdbApi.fetchReviewsForMovie(movieID, page).execute()
         ApiResponse.create<ReviewsSchema>(res)
@@ -43,7 +61,7 @@ class FetchReviewsUseCase(
         ApiResponse.create(err)
     }
 
-    private fun notifySuccess(reviews:ReviewResponse) {
+    private fun notifySuccess(reviews: ReviewResponse) {
         uiThreadPoster.post {
             listeners.forEach { it.onFetchReviewSuccess(reviews) }
             becomeNotBusy()

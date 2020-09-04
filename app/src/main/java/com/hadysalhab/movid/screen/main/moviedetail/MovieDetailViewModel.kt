@@ -4,19 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.account.usecases.favmovies.AddRemoveFavMovieUseCase
-import com.hadysalhab.movid.common.datavalidator.DataValidator
-import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.MovieDetail
-import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import javax.inject.Inject
 
 class MovieDetailViewModel @Inject constructor(
     private val fetchMovieDetailUseCase: FetchMovieDetailUseCase,
-    private val addRemoveFavMovieUseCase: AddRemoveFavMovieUseCase,
-    private val dataValidator: DataValidator,
-    private val moviesStateManager: MoviesStateManager,
-    private val timeProvider: TimeProvider
+    private val addRemoveFavMovieUseCase: AddRemoveFavMovieUseCase
 ) : ViewModel(), FetchMovieDetailUseCase.Listener, AddRemoveFavMovieUseCase.Listener {
     private lateinit var movieDetail: MovieDetail
 
@@ -24,7 +18,6 @@ class MovieDetailViewModel @Inject constructor(
         fetchMovieDetailUseCase.registerListener(this)
         addRemoveFavMovieUseCase.registerListener(this)
     }
-
     private val _viewState = MutableLiveData<MovieDetailViewState>()
     val viewState: LiveData<MovieDetailViewState>
         get() = _viewState
@@ -32,38 +25,21 @@ class MovieDetailViewModel @Inject constructor(
     fun onStart(movieID: Int) {
         when (_viewState.value) {
             null -> {
-                val movieDetailStore = moviesStateManager.getMovieDetailById(movieID)
-                if (movieDetailStore != null && dataValidator.isMovieDetailValid(movieDetailStore)) {
-                    movieDetail = movieDetailStore
-                    _viewState.value = DetailLoaded(movieDetailStore)
-                } else {
-                    fetchApiForUpdatedDetail(movieID)
-                }
+                _viewState.value = Loading
+                fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
+                    movieID
+                )
             }
             Loading, is Error -> {
                 return
             }
             is DetailLoaded -> {
-                val movieDetailStore = moviesStateManager.getMovieDetailById(movieID)
-                    ?: throw RuntimeException("Movie Store cannot be null, if detail is loaded")
-                if (!dataValidator.isMovieDetailValid(movieDetailStore)) {
-                    fetchApiForUpdatedDetail(movieID)
-                } else {
-                    // because movie detail can be updated from different fragment!
-                    if (this.movieDetail != movieDetailStore) {
-                        movieDetail = movieDetailStore
-                        _viewState.value = DetailLoaded(movieDetailStore)
-                    }
-                }
+                _viewState.value = Loading
+                fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
+                    movieID
+                )
             }
         }
-    }
-
-    private fun fetchApiForUpdatedDetail(movieID: Int) {
-        _viewState.value = Loading
-        fetchMovieDetailUseCase.fetchMovieDetailAndNotify(
-            movieID
-        )
     }
 
     fun addMovieToFavorites(movieID: Int) {
@@ -83,16 +59,8 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     //UseCaseResults--------------------------------------------------------------------------------
-
-    override fun onAddRemoveFavoritesSuccess() {
-        val timestamp = this.movieDetail.timeStamp
-        this.movieDetail = this.movieDetail.copy(
-            accountStates = this.movieDetail.accountStates.copy(
-                favorite = !this.movieDetail.accountStates.favorite
-            )
-        )
-        this.movieDetail.timeStamp = timestamp
-        moviesStateManager.upsertMovieDetailToList(this.movieDetail)
+    override fun onAddRemoveFavoritesSuccess(movieDetail: MovieDetail) {
+        this.movieDetail = movieDetail
         _viewState.value = DetailLoaded(this.movieDetail)
     }
 
@@ -100,17 +68,15 @@ class MovieDetailViewModel @Inject constructor(
         _viewState.value = Error(err)
     }
 
-    override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
-        this.movieDetail = movieDetail
-        this.movieDetail.timeStamp = timeProvider.currentTimestamp
-        moviesStateManager.upsertMovieDetailToList(this.movieDetail)
+    override fun onFetchMovieDetailSuccess(apiMovieDetail: MovieDetail) {
+        this.movieDetail = apiMovieDetail
         _viewState.value = DetailLoaded(this.movieDetail)
     }
 
     override fun onFetchMovieDetailFailed(msg: String) {
         _viewState.value = Error(msg)
     }
-    //----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 
     override fun onCleared() {
         super.onCleared()

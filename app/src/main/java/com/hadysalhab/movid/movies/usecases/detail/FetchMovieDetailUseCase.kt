@@ -1,9 +1,12 @@
 package com.hadysalhab.movid.movies.usecases.detail
 
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
+import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.MovieDetail
+import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.networking.*
 import com.hadysalhab.movid.networking.responses.MovieDetailSchema
@@ -20,6 +23,9 @@ class FetchMovieDetailUseCase(
     private val schemaToModelHelper: SchemaToModelHelper,
     private val errorMessageHandler: ErrorMessageHandler,
     private val getSessionIdUseCaseSync: GetSessionIdUseCaseSync,
+    private val timeProvider: TimeProvider,
+    private val dataValidator: DataValidator,
+    private val moviesStateManager: MoviesStateManager,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster
 ) :
@@ -33,16 +39,24 @@ class FetchMovieDetailUseCase(
 
     fun fetchMovieDetailAndNotify(movieId: Int) {
         assertNotBusyAndBecomeBusy()
-        backgroundThreadPoster.post {
-            val response = fetchApi(movieId)
-            handleResponse(response)
+        val store = moviesStateManager.getMovieDetailById(movieId)
+        if (dataValidator.isMovieDetailValid(store)) {
+            notifySuccess(store!!)
+        } else {
+            backgroundThreadPoster.post {
+                val response = fetchApi(movieId)
+                handleResponse(response)
+            }
         }
     }
 
     private fun handleResponse(response: ApiResponse<MovieDetailSchema>) {
         when (response) {
             is ApiSuccessResponse -> {
-                notifySuccess(schemaToModelHelper.getMovieDetails(response.body))
+                val movieDetail = schemaToModelHelper.getMovieDetails(response.body)
+                movieDetail.timeStamp = timeProvider.currentTimestamp
+                moviesStateManager.upsertMovieDetailToList(movieDetail)
+                notifySuccess(movieDetail)
             }
             is ApiEmptyResponse, is ApiErrorResponse -> {
                 notifyFailure(errorMessageHandler.getErrorMessageFromApiResponse(response))

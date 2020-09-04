@@ -4,6 +4,8 @@ import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSyn
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
+import com.hadysalhab.movid.movies.MovieDetail
+import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.networking.*
 import com.hadysalhab.movid.networking.responses.AddToFavResponse
 import com.techyourchance.threadposter.BackgroundThreadPoster
@@ -16,13 +18,17 @@ class AddRemoveFavMovieUseCase(
     private val getSessionIdUseCaseSync: GetSessionIdUseCaseSync,
     private val getAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
     private val errorMessageHandler: ErrorMessageHandler,
-    private val tmdbApi: TmdbApi
+    private val tmdbApi: TmdbApi,
+    private val moviesStateManager: MoviesStateManager
 ) : BaseBusyObservable<AddRemoveFavMovieUseCase.Listener>() {
     interface Listener {
-        fun onAddRemoveFavoritesSuccess()
+        fun onAddRemoveFavoritesSuccess(movieDetail: MovieDetail)
         fun onAddRemoveFavoritesFailure(err: String)
     }
+
+    private var movieID: Int? = null
     fun addRemoveFavUseCase(movieId: Int, favorite: Boolean) {
+        this.movieID = movieId
         assertNotBusyAndBecomeBusy()
         backgroundThreadPoster.post {
             val accountResponse = getAccountDetailsUseCaseSync.getAccountDetailsUseCaseSync()
@@ -57,7 +63,15 @@ class AddRemoveFavMovieUseCase(
     private fun handleResponse(res: ApiResponse<AddToFavResponse>) {
         when (res) {
             is ApiSuccessResponse -> {
-                notifySuccess()
+                val oldMovieDetail = moviesStateManager.getMovieDetailById(movieId = this.movieID!!)
+                if (oldMovieDetail == null) {
+                    throw  RuntimeException("$oldMovieDetail should be part of the store when changing fav state")
+                }
+                val newMovieDetail =
+                    oldMovieDetail.copy(accountStates = oldMovieDetail.accountStates.copy(favorite = !oldMovieDetail.accountStates.favorite))
+                newMovieDetail.timeStamp = oldMovieDetail.timeStamp
+                moviesStateManager.upsertMovieDetailToList(newMovieDetail)
+                notifySuccess(newMovieDetail)
             }
             is ApiEmptyResponse, is ApiErrorResponse -> {
                 notifyFailure(errorMessageHandler.getErrorMessageFromApiResponse(res))
@@ -65,11 +79,11 @@ class AddRemoveFavMovieUseCase(
         }
     }
 
-    private fun notifySuccess() {
+    private fun notifySuccess(movieDetail: MovieDetail) {
         becomeNotBusy()
         uiThreadPoster.post {
             listeners.forEach {
-                it.onAddRemoveFavoritesSuccess()
+                it.onAddRemoveFavoritesSuccess(movieDetail)
             }
         }
     }
