@@ -36,11 +36,11 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost {
 
     override fun onBottomNavigationItemClicked(item: BottomNavigationItems) {
         val currentSelectedItem = view.getCurrentNavigationItem()
-        if (currentSelectedItem == item && currentSelectedItem == BottomNavigationItems.FEATURED) {
-            mainNavigator.clearFeaturedStack()
+        if (currentSelectedItem == item) {
+            mainNavigator.clearCurrentStack()
             return
         }
-        //TODO: LATER SUPPORT ALL TABS
+
         if (currentSelectedItem != item && (item == BottomNavigationItems.FEATURED || item == BottomNavigationItems.FAVORITES || item == BottomNavigationItems.WATCHLIST)) {
             mainNavigator.switchTab(item)
         }

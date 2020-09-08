@@ -61,10 +61,6 @@ class MainNavigator(
     fun toMovieListFragment(groupType: GroupType, movieID: Int?) =
         fragNavController.pushFragment(MovieListFragment.newInstance(groupType, movieID))
 
-    fun clearFeaturedStack() {
-        fragNavController.clearStack()
-    }
-
     fun toReviewsFragment(movieID: Int) {
         fragNavController.pushFragment(ReviewsFragment.newInstance(movieID))
     }
@@ -78,6 +74,10 @@ class MainNavigator(
             BottomNavigationItems.ACCOUNT -> FragNavController.TAB5
         }
         fragNavController.switchTab(tabIndex)
+    }
+
+    fun clearCurrentStack() {
+        fragNavController.clearStack()
     }
 
 }
