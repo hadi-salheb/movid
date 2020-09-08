@@ -181,4 +181,8 @@ class SchemaToModelHelper {
             country
         )
     }
+
+    fun getMovieFromMovieDetail(movieDetail: MovieDetail): Movie = with(movieDetail.details) {
+        Movie(id, title, posterPath, backdropPath, voteAvg, voteCount, releaseDate, overview)
+    }
 }

@@ -53,6 +53,7 @@ class FavoriteMoviesFragment : BaseFragment(), MovieListView.Listener {
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
+        favoriteMoviesViewModel.onStart()
         favoriteMoviesViewModel.viewState.observe(viewLifecycleOwner, Observer {
             render(it)
         })

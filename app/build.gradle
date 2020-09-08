@@ -34,7 +34,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kapt {
+        arguments {
+            arg('eventBusIndex', 'com.hadysalhab.movid.MovidBusIndex')
+        }
+    }
 }
+
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -80,8 +87,9 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
-    //GreenRobot event bus
+    //GreenRobot event bus https://github.com/greenrobot/EventBus
     implementation 'org.greenrobot:eventbus:3.2.0'
+    kapt "org.greenrobot:eventbus-annotation-processor:3.2.0"
 
     // TextDrawable https://github.com/amulyakhare/TextDrawable
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'

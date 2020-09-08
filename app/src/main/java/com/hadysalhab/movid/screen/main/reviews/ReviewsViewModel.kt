@@ -13,7 +13,6 @@ class ReviewsViewModel @Inject constructor(
 ) : ViewModel(), FetchReviewsUseCase.Listener {
     private val _viewState = MutableLiveData<ReviewListViewState>()
     private var movieID: Int? = null
-    private var pageInRequest = 0
     private lateinit var reviewsResponse: ReviewResponse
     private val reviews: MutableList<Review> = mutableListOf()
     val viewState: LiveData<ReviewListViewState>
@@ -26,10 +25,9 @@ class ReviewsViewModel @Inject constructor(
         }
         when (viewState.value) {
             null -> {
-                this.pageInRequest = 1
                 _viewState.value = Loading
                 fetchReviewsUseCase.fetchReviewsUseCase(
-                    pageInRequest,
+                    1,
                     movieID
                 )
             }
@@ -40,10 +38,9 @@ class ReviewsViewModel @Inject constructor(
         if (fetchReviewsUseCase.isBusy || this.reviewsResponse.page + 1 > this.reviewsResponse.totalPages) {
             return
         }
-        this.pageInRequest++
         _viewState.value = PaginationLoading
         fetchReviewsUseCase.fetchReviewsUseCase(
-            pageInRequest,
+            this.reviewsResponse.page + 1,
             movieID!!
         )
     }

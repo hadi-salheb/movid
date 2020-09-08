@@ -16,7 +16,6 @@ class MovieListViewModel @Inject constructor(
     private lateinit var groupType: GroupType
     private var movieID: Int? = null
     private lateinit var moviesResponse: MoviesResponse
-    private var pageInRequest = 0
     private val moviesList = mutableListOf<Movie>()
 
     val viewState: LiveData<MovieListViewState>
@@ -32,10 +31,9 @@ class MovieListViewModel @Inject constructor(
         when (viewState.value) {
             null -> {
                 _viewState.value = Loading
-                pageInRequest = 1
                 fetchMoviesResponseUseCase.fetchMoviesResponseUseCase(
                     groupType = groupType,
-                    page = pageInRequest,
+                    page = 1,
                     movieId = movieID
                 )
             }
@@ -47,10 +45,9 @@ class MovieListViewModel @Inject constructor(
             return
         }
         _viewState.value = PaginationLoading
-        this.pageInRequest++
         fetchMoviesResponseUseCase.fetchMoviesResponseUseCase(
             groupType = groupType,
-            page = pageInRequest,
+            page = this.moviesResponse.page + 1,
             movieId = movieID
         )
     }

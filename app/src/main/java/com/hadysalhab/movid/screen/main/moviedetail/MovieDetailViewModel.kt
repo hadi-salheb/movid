@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.account.usecases.favmovies.AddRemoveFavMovieUseCase
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
+import com.hadysalhab.movid.screen.common.events.FavoritesEvent
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 class MovieDetailViewModel @Inject constructor(
@@ -60,6 +62,11 @@ class MovieDetailViewModel @Inject constructor(
     //UseCaseResults--------------------------------------------------------------------------------
     override fun onAddRemoveFavoritesSuccess(movieDetail: MovieDetail) {
         this.movieDetail = movieDetail
+        if (this.movieDetail.accountStates.favorite) {
+            EventBus.getDefault().post(FavoritesEvent.AddMovieToFav(this.movieDetail))
+        } else {
+            EventBus.getDefault().post(FavoritesEvent.RemoveMovieFromFav(this.movieDetail))
+        }
         _viewState.value = DetailLoaded(this.movieDetail)
     }
 

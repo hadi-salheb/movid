@@ -14,3 +14,4 @@ const val BACKDROP_SIZE_780 = "w780"
 const val IMAGES_BASE_URL = "https://image.tmdb.org/t/p/"
 const val TAG = "com.hadysalhab.movid"
 const val YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
+const val MAX_NUMBER_OF_DATA_PER_PAGE = 20
