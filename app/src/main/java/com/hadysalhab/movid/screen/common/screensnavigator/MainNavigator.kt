@@ -12,6 +12,7 @@ import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
 import com.hadysalhab.movid.screen.main.movielist.MovieListFragment
 import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
+import com.hadysalhab.movid.screen.main.watchlist.WatchlistMoviesFragment
 import com.ncapdevi.fragnav.FragNavController
 
 class MainNavigator(
@@ -32,6 +33,7 @@ class MainNavigator(
             return when (index) {
                 FragNavController.TAB1 -> FeaturedFragment.newInstance()
                 FragNavController.TAB3 -> FavoriteMoviesFragment.newInstance()
+                FragNavController.TAB4 -> WatchlistMoviesFragment.newInstance()
                 else -> throw IllegalStateException("unsupported tab index: $index")
             }
         }
@@ -72,7 +74,7 @@ class MainNavigator(
             BottomNavigationItems.FEATURED -> FragNavController.TAB1
             BottomNavigationItems.SEARCH -> FragNavController.TAB2
             BottomNavigationItems.FAVORITES -> FragNavController.TAB3
-            BottomNavigationItems.WISHLIST -> FragNavController.TAB4
+            BottomNavigationItems.WATCHLIST -> FragNavController.TAB4
             BottomNavigationItems.ACCOUNT -> FragNavController.TAB5
         }
         fragNavController.switchTab(tabIndex)

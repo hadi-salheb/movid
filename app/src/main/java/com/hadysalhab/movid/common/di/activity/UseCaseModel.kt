@@ -31,6 +31,7 @@ import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
+import com.hadysalhab.movid.movies.usecases.wishlist.FetchWatchlistMoviesUseCase
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.persistence.AccountDao
 import com.techyourchance.threadposter.BackgroundThreadPoster
@@ -298,6 +299,25 @@ class UseCaseModel {
         getAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
         getSessionIdUseCaseSync: GetSessionIdUseCaseSync
     ): FetchFavoriteMoviesUseCase = FetchFavoriteMoviesUseCase(
+        getSessionIdUseCaseSync,
+        getAccountDetailsUseCaseSync,
+        backgroundThreadPoster,
+        errorMessageHandler,
+        schemaToModelHelper,
+        uiThreadPoster,
+        tmdbApi
+    )
+
+    @Provides
+    fun getWatchlistMoviesUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        schemaToModelHelper: SchemaToModelHelper,
+        errorMessageHandler: ErrorMessageHandler,
+        tmdbApi: TmdbApi,
+        getAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
+        getSessionIdUseCaseSync: GetSessionIdUseCaseSync
+    ): FetchWatchlistMoviesUseCase = FetchWatchlistMoviesUseCase(
         getSessionIdUseCaseSync,
         getAccountDetailsUseCaseSync,
         backgroundThreadPoster,

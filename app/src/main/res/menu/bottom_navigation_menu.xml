@@ -15,9 +15,9 @@
         android:icon="@drawable/ic_play"
         android:title="@string/bottom_nav_favorites_title" />
     <item
-        android:id="@+id/bottom_nav_wishList"
+        android:id="@+id/bottom_nav_watchList"
         android:icon="@drawable/ic_wish"
-        android:title="@string/bottom_nav_wishlist_title" />
+        android:title="@string/bottom_nav_watchlist_title" />
     <item
         android:id="@+id/bottom_nav_account"
         android:icon="@drawable/ic_account_circle"

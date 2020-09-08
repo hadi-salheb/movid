@@ -5,7 +5,7 @@
     <string name="bottom_nav_featured_title">Featured</string>
     <string name="bottom_nav_music_title">Search</string>
     <string name="bottom_nav_favorites_title">Favorites</string>
-    <string name="bottom_nav_wishlist_title">Wishlist</string>
+    <string name="bottom_nav_watchlist_title">Watchlist</string>
     <string name="bottom_nav_account_title">Account</string>
     <string name="bottom_nav_search_title">search</string>
     <string name="see_all"><u>See All</u></string>

@@ -4,6 +4,6 @@ enum class BottomNavigationItems {
     FEATURED,
     SEARCH,
     FAVORITES,
-    WISHLIST,
+    WATCHLIST,
     ACCOUNT;
 }

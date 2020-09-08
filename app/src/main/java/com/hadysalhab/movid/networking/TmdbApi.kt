@@ -111,4 +111,13 @@ interface TmdbApi {
         @Query("page") page: Int = 1,
         @Query("sort_by") sortBy: String = "created_at.desc"
     ): Call<MoviesResponseSchema>
+
+    @GET("/3/account/{account_id}/watchlist/movies")
+    fun getWatchlistMovies(
+        @Path("account_id") accountID: Int,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
+        @Query("session_id") sessionID: String,
+        @Query("page") page: Int = 1,
+        @Query("sort_by") sortBy: String = "created_at.desc"
+    ): Call<MoviesResponseSchema>
 }
