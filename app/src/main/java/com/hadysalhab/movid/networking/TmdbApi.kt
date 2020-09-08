@@ -1,7 +1,8 @@
 package com.hadysalhab.movid.networking
 
 import com.hadysalhab.movid.BuildConfig
-import com.hadysalhab.movid.account.usecases.favmovies.FavoriteHttpBodyRequest
+import com.hadysalhab.movid.account.usecases.favorite.FavoriteHttpBodyRequest
+import com.hadysalhab.movid.account.usecases.watchlist.WatchlistHttpBodyRequest
 import com.hadysalhab.movid.networking.responses.*
 import retrofit2.Call
 import retrofit2.http.*
@@ -101,7 +102,15 @@ interface TmdbApi {
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("session_id") sessionID: String,
         @Body httpBodyRequest: FavoriteHttpBodyRequest
-    ): Call<AddToFavResponse>
+    ): Call<WatchlistFavoriteResponse>
+
+    @POST("/3/account/{account_id}/watchlist")
+    fun addToWatchlist(
+        @Path("account_id") accountID: Int,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
+        @Query("session_id") sessionID: String,
+        @Body httpBodyRequest: WatchlistHttpBodyRequest
+    ): Call<WatchlistFavoriteResponse>
 
     @GET("/3/account/{account_id}/favorite/movies")
     fun getFavoriteMovies(

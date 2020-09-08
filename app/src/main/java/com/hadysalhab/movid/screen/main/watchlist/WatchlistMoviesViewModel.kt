@@ -7,8 +7,8 @@ import com.hadysalhab.movid.common.constants.MAX_NUMBER_OF_DATA_PER_PAGE
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.SchemaToModelHelper
-import com.hadysalhab.movid.movies.usecases.wishlist.FetchWatchlistMoviesUseCase
-import com.hadysalhab.movid.screen.common.events.FavoritesEvent
+import com.hadysalhab.movid.movies.usecases.watchlist.FetchWatchlistMoviesUseCase
+import com.hadysalhab.movid.screen.common.events.WatchlistEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -25,12 +25,12 @@ class WatchlistMoviesViewModel @Inject constructor(
         get() = _viewState
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onWishlistEvent(event: FavoritesEvent) {
+    fun onWishlistEvent(event: WatchlistEvent) {
         if (!this::watchlistMovies.isInitialized) {
             return
         }
         moviesList = when (event) {
-            is FavoritesEvent.AddMovieToFav -> {
+            is WatchlistEvent.AddToWatchlist -> {
                 val oldMovieSet = this.moviesList
                 val newMovieSet = mutableSetOf(
                     schemaToModelHelper.getMovieFromMovieDetail(
@@ -40,7 +40,7 @@ class WatchlistMoviesViewModel @Inject constructor(
                 newMovieSet.addAll(oldMovieSet)
                 newMovieSet
             }
-            is FavoritesEvent.RemoveMovieFromFav -> {
+            is WatchlistEvent.RemoveFromWatchlist -> {
                 moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
             }
         }
@@ -54,7 +54,7 @@ class WatchlistMoviesViewModel @Inject constructor(
                 EventBus.getDefault().register(this)
                 fetchWatchlistMoviesUseCase.registerListener(this)
                 _viewState.value = Loading
-                fetchWatchlistMoviesUseCase.fetchWishlistMoviesUseCase(
+                fetchWatchlistMoviesUseCase.fetchWatchlistUseCase(
                     page = 1
                 )
             }
@@ -65,7 +65,7 @@ class WatchlistMoviesViewModel @Inject constructor(
                 val numberOfDisplayedMovies = moviesList.size
                 if ((numberOfDisplayedMovies < MAX_NUMBER_OF_DATA_PER_PAGE * this.watchlistMovies.page) && (this.watchlistMovies.page < this.watchlistMovies.total_pages)) {
                     _viewState.value = Loading
-                    fetchWatchlistMoviesUseCase.fetchWishlistMoviesUseCase(
+                    fetchWatchlistMoviesUseCase.fetchWatchlistUseCase(
                         this.watchlistMovies.page
                     )
                 }
@@ -78,7 +78,7 @@ class WatchlistMoviesViewModel @Inject constructor(
             return
         }
         _viewState.value = PaginationLoading
-        fetchWatchlistMoviesUseCase.fetchWishlistMoviesUseCase(
+        fetchWatchlistMoviesUseCase.fetchWatchlistUseCase(
             page = this.watchlistMovies.page + 1
         )
     }

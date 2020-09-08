@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.movies.usecases.wishlist
+package com.hadysalhab.movid.movies.usecases.watchlist
 
 import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
@@ -26,7 +26,7 @@ class FetchWatchlistMoviesUseCase(
         fun onFetchWatchlistMoviesFailure(msg: String)
     }
 
-    fun fetchWishlistMoviesUseCase(page: Int) {
+    fun fetchWatchlistUseCase(page: Int) {
         assertNotBusyAndBecomeBusy()
         backgroundThreadPoster.post {
             val sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync()

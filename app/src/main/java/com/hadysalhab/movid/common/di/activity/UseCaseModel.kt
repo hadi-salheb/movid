@@ -5,8 +5,9 @@ import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.account.usecases.details.FetchAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.details.UpdateAccountDetailsUseCaseSync
-import com.hadysalhab.movid.account.usecases.favmovies.AddRemoveFavMovieUseCase
+import com.hadysalhab.movid.account.usecases.favorite.AddRemoveFavMovieUseCase
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
+import com.hadysalhab.movid.account.usecases.watchlist.AddRemoveWatchlistMovieUseCase
 import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.authentication.createsession.CreateSessionUseCaseSync
 import com.hadysalhab.movid.authentication.createtoken.CreateRequestTokenUseCaseSync
@@ -31,7 +32,7 @@ import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
-import com.hadysalhab.movid.movies.usecases.wishlist.FetchWatchlistMoviesUseCase
+import com.hadysalhab.movid.movies.usecases.watchlist.FetchWatchlistMoviesUseCase
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.persistence.AccountDao
 import com.techyourchance.threadposter.BackgroundThreadPoster
@@ -70,6 +71,25 @@ class UseCaseModel {
         tmdbApi: TmdbApi,
         moviesStateManager: MoviesStateManager
     ) = AddRemoveFavMovieUseCase(
+        backgroundThreadPoster,
+        uiThreadPoster,
+        sessionIdUseCaseSync,
+        accountDetailsUseCaseSync,
+        errorMessageHandler,
+        tmdbApi,
+        moviesStateManager
+    )
+
+    @Provides
+    fun getAddToWatchlistUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        sessionIdUseCaseSync: GetSessionIdUseCaseSync,
+        accountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
+        errorMessageHandler: ErrorMessageHandler,
+        tmdbApi: TmdbApi,
+        moviesStateManager: MoviesStateManager
+    ) = AddRemoveWatchlistMovieUseCase(
         backgroundThreadPoster,
         uiThreadPoster,
         sessionIdUseCaseSync,

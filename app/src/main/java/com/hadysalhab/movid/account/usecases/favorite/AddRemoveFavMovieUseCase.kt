@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.account.usecases.favmovies
+package com.hadysalhab.movid.account.usecases.favorite
 
 import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
@@ -7,7 +7,7 @@ import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.networking.*
-import com.hadysalhab.movid.networking.responses.AddToFavResponse
+import com.hadysalhab.movid.networking.responses.WatchlistFavoriteResponse
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
@@ -48,19 +48,19 @@ class AddRemoveFavMovieUseCase(
         mediaID: Int,
         sessionId: String,
         favorite: Boolean
-    ): ApiResponse<AddToFavResponse> = try {
+    ): ApiResponse<WatchlistFavoriteResponse> = try {
         val httpBodyRequest = FavoriteHttpBodyRequest(mediaId = mediaID, favorite = favorite)
         val res = tmdbApi.markAsFavorite(
             accountID = accountID,
             sessionID = sessionId,
             httpBodyRequest = httpBodyRequest
         ).execute()
-        ApiResponse.create<AddToFavResponse>(res)
+        ApiResponse.create<WatchlistFavoriteResponse>(res)
     } catch (err: Throwable) {
         ApiResponse.create(err)
     }
 
-    private fun handleResponse(res: ApiResponse<AddToFavResponse>) {
+    private fun handleResponse(res: ApiResponse<WatchlistFavoriteResponse>) {
         when (res) {
             is ApiSuccessResponse -> {
                 val oldMovieDetail = moviesStateManager.getMovieDetailById(movieId = this.movieID!!)

@@ -44,6 +44,7 @@ class MovieDetailViewImpl(
     private val trailerBtn: Button
     private val btnWrapperLL: LinearLayout
     private val favoriteBtn: Button
+    private val watchlistBtn: Button
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -67,6 +68,7 @@ class MovieDetailViewImpl(
         trailerBtn = findViewById(R.id.button_trailer)
         btnWrapperLL = findViewById(R.id.button_wrapper)
         favoriteBtn = findViewById(R.id.button_favorite)
+        watchlistBtn = findViewById(R.id.button_watchlist)
         trailerBtn.setOnClickListener {
             listeners.forEach {
                 it.onSeeTrailerClicked(this.movieDetail!!.videosResponse)
@@ -76,6 +78,13 @@ class MovieDetailViewImpl(
             listeners.forEach { listener ->
                 this.movieDetail?.let {
                     listener.onFavBtnClick(it.details.id, it.accountStates.favorite)
+                }
+            }
+        }
+        watchlistBtn.setOnClickListener {
+            listeners.forEach { listener ->
+                this.movieDetail?.let {
+                    listener.onWatchlistBtnClick(it.details.id, it.accountStates.watchlist)
                 }
             }
         }
@@ -116,6 +125,15 @@ class MovieDetailViewImpl(
             favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.gray_900))
             favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
         }
+        if (accountStates.watchlist) {
+            watchlistBtn.text = "Remove From Watchlist"
+            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
+            watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
+        } else {
+            watchlistBtn.text = "Add To Watchlist"
+            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.gray_900))
+            watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
+        }
     }
 
     override fun displayLoadingScreen() {
@@ -128,7 +146,7 @@ class MovieDetailViewImpl(
         btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
     }
 
-    override fun displayFavLoading() {
+    override fun displayAccountStateLoading() {
         // TODO: CHANGE IT LATER
         progressBar.visibility = View.VISIBLE
     }

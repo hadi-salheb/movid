@@ -100,8 +100,8 @@ class MovieDetailFragment : BaseFragment(),
                     viewMvc.hideTrailerButton()
                 }
             }
-            is FavLoading -> {
-                viewMvc.displayFavLoading()
+            is AccountStateLoading -> {
+                viewMvc.displayAccountStateLoading()
             }
         }
     }
@@ -134,6 +134,14 @@ class MovieDetailFragment : BaseFragment(),
             movieDetailViewModel.removeMovieFromFavorites(movieId)
         } else {
             movieDetailViewModel.addMovieToFavorites(movieId)
+        }
+    }
+
+    override fun onWatchlistBtnClick(movieId: Int, isWatchlist: Boolean) {
+        if (isWatchlist) {
+            movieDetailViewModel.removeMovieFromWatchlist(movieId)
+        } else {
+            movieDetailViewModel.addMovieToWatchlist(movieId)
         }
     }
 

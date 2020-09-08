@@ -12,11 +12,11 @@
 
     <item
         android:id="@+id/bottom_nav_favorites"
-        android:icon="@drawable/ic_play"
+        android:icon="@drawable/ic_favorite"
         android:title="@string/bottom_nav_favorites_title" />
     <item
         android:id="@+id/bottom_nav_watchList"
-        android:icon="@drawable/ic_wish"
+        android:icon="@drawable/ic_watchlist"
         android:title="@string/bottom_nav_watchlist_title" />
     <item
         android:id="@+id/bottom_nav_account"
