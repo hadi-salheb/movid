@@ -110,8 +110,8 @@ class MovieDetailViewModel @Inject constructor(
         _viewState.value = Error(err)
     }
 
-    override fun onFetchMovieDetailSuccess(apiMovieDetail: MovieDetail) {
-        this.movieDetail = apiMovieDetail
+    override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
+        this.movieDetail = movieDetail
         _viewState.value = DetailLoaded(this.movieDetail)
     }
 

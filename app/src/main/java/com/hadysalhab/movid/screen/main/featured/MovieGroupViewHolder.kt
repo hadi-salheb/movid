@@ -8,6 +8,6 @@ import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 class MovieGroupViewHolder(private val moviesView: MoviesView) :
     RecyclerView.ViewHolder(moviesView.getRootView()) {
     fun bind(movieGroup: MoviesResponse) {
-        moviesView.renderData(DataGroup(movieGroup.tag, movieGroup.movies ?: emptyList()))
+        moviesView.renderData(DataGroup(movieGroup.tag, movieGroup.movies ?: emptyList()), 5)
     }
 }

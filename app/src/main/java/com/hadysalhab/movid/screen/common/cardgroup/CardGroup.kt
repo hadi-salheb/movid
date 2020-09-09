@@ -25,13 +25,13 @@ abstract class CardGroupViewImpl<Data : DataGroup<out Any>, ListenerType>(
         groupTitle = findViewById(R.id.group_title)
     }
 
-    fun renderData(data: Data) {
+    fun renderData(data: Data, maxNumb: Int?) {
         this.groupType = data.title
         groupTitle.text = data.title.value.toUpperCase(Locale.ROOT).split("_").joinToString(" ")
-        displayCardGroup(data)
+        displayCardGroup(data, maxNumb)
     }
 
-    protected abstract fun displayCardGroup(data: Data)
+    protected abstract fun displayCardGroup(data: Data, maxNumb: Int?)
 }
 
 

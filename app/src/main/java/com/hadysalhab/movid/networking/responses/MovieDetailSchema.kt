@@ -37,7 +37,14 @@ data class MovieDetailSchema(
     val accountStates: AccountStatesSchema,
     val similar: MoviesResponseSchema,
     val recommendations: MoviesResponseSchema,
-    val videos: VideosSchema
+    val videos: VideosSchema,
+    @SerializedName("belongs_to_collection")
+    val belongToCollection: BelongToCollectionSchema? = null
+)
+
+data class BelongToCollectionSchema(
+    val id: Int,
+    val name: String
 )
 
 data class VideosSchema(

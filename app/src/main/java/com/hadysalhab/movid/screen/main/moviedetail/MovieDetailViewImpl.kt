@@ -12,6 +12,7 @@ import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_185
 import com.hadysalhab.movid.common.utils.convertDpToPixel
 import com.hadysalhab.movid.movies.*
+import com.hadysalhab.movid.movies.Collection
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.cardgroup.CastsView
 import com.hadysalhab.movid.screen.common.cardgroup.DataGroup
@@ -33,6 +34,7 @@ class MovieDetailViewImpl(
     private val castsFL: FrameLayout
     private val similarFL: FrameLayout
     private val recommendedFL: FrameLayout
+    private val collectionFL: FrameLayout
     private var movieDetail: MovieDetail? = null
     private val reviewCV: CardView
     private val movieReviewReviewTV: TextView
@@ -59,6 +61,7 @@ class MovieDetailViewImpl(
         similarFL = findViewById(R.id.fl_similar)
         factsLL = findViewById(R.id.ll_facts)
         recommendedFL = findViewById(R.id.fl_recommended)
+        collectionFL = findViewById(R.id.fl_collection)
         castsFL = findViewById(R.id.fl_casts)
         reviewCV = findViewById(R.id.fact_review)
         movieReviewAuthorTV = findViewById(R.id.movie_review_author)
@@ -93,6 +96,7 @@ class MovieDetailViewImpl(
     override fun displayMovieDetail(movieDetail: MovieDetail) {
         // avoid re-rendering the view if it is already rendered
         if (this.movieDetail == null) {
+            this.movieDetail = movieDetail
             displayCarouselImages(movieDetail.images.backdrops)
             displayPosterImage(movieDetail.details.posterPath)
             displayOverview(movieDetail.details.overview)
@@ -105,14 +109,15 @@ class MovieDetailViewImpl(
             displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
             displayAccountState(movieDetail.accountStates)
+            displayCollection(movieDetail.collection)
         } else if (this.movieDetail != movieDetail) {
+            this.movieDetail = movieDetail
             if (this.movieDetail!!.accountStates != movieDetail.accountStates) {
                 displayAccountState(movieDetail.accountStates)
             }
         }
         progressBar.visibility = View.GONE
         detailSV.visibility = View.VISIBLE
-        this.movieDetail = movieDetail
     }
 
     private fun displayAccountState(accountStates: AccountStates) {
@@ -182,7 +187,7 @@ class MovieDetailViewImpl(
         if (casts.isNotEmpty()) {
             val castsViews = viewFactory.getCastsView(castsFL)
             castsViews.registerListener(this)
-            castsViews.renderData(DataGroup(GroupType.CAST, casts))
+            castsViews.renderData(DataGroup(GroupType.CAST, casts), 5)
             castsFL.removeAllViews()
             castsFL.addView(castsViews.getRootView())
         } else {
@@ -239,6 +244,26 @@ class MovieDetailViewImpl(
 
     }
 
+    private fun displayCollection(collection: Collection?) {
+        if (collection != null) {
+            val groupType = GroupType.COLLECTION
+            groupType.value = "From ${collection.name}"
+
+            val movieGroupView = viewFactory.getMoviesView(collectionFL)
+            movieGroupView.registerListener(this)
+            movieGroupView.renderData(
+                DataGroup(
+                    groupType,
+                    collection.movies.filter { movie -> movie.id != this.movieDetail!!.details.id }
+                ), null
+            )
+            collectionFL.removeAllViews()
+            collectionFL.addView(movieGroupView.getRootView())
+        } else {
+            collectionFL.visibility = View.GONE
+        }
+    }
+
     private fun displaySimilarMovies(moviesResponse: MoviesResponse) {
         if (!moviesResponse.movies.isNullOrEmpty()) {
             val movieGroupView = viewFactory.getMoviesView(similarFL)
@@ -247,7 +272,7 @@ class MovieDetailViewImpl(
                 DataGroup(
                     moviesResponse.tag,
                     moviesResponse.movies
-                )
+                ), 5
             )
             similarFL.removeAllViews()
             similarFL.addView(movieGroupView.getRootView())
@@ -263,7 +288,7 @@ class MovieDetailViewImpl(
                 DataGroup(
                     moviesResponse.tag,
                     moviesResponse.movies
-                )
+                ), 5
             )
             movieGroupView.registerListener(this)
             recommendedFL.removeAllViews()

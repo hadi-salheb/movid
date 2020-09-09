@@ -27,15 +27,31 @@ class CastsView(
         }
     }
 
-    private fun createCastCardAndAppend(casts: List<Cast>) {
+    override fun displayCardGroup(data: DataGroup<Cast>, maxNumb: Int?) {
+        createCastCardAndAppend(data.data, maxNumb)
+    }
+
+    private fun createCastCardAndAppend(casts: List<Cast>, maxNumb: Int?) {
         linearLayout.removeAllViews()
-        casts.take(5).forEach { cast ->
-            val castCard = viewFactory.getCastCard(linearLayout)
-            castCard.registerListener(this)
-            castCard.displayCast(cast)
-            linearLayout.addView(castCard.getRootView())
+        if (maxNumb == null) {
+            casts.forEach { cast ->
+                createCastCard(cast)
+            }
+        } else {
+            casts.take(maxNumb).forEach { cast ->
+                createCastCard(cast)
+            }
+            if (casts.size > maxNumb) {
+                displaySeeAll()
+            }
         }
-        displaySeeAll()
+    }
+
+    private fun createCastCard(cast: Cast) {
+        val castCard = viewFactory.getCastCard(linearLayout)
+        castCard.registerListener(this)
+        castCard.displayCast(cast)
+        linearLayout.addView(castCard.getRootView())
     }
 
     private fun displaySeeAll() {
@@ -48,10 +64,6 @@ class CastsView(
         listeners.forEach {
             it.onSeeAllClicked(this.groupType)
         }
-    }
-
-    override fun displayCardGroup(data: DataGroup<Cast>) {
-        createCastCardAndAppend(data.data)
     }
 
 }

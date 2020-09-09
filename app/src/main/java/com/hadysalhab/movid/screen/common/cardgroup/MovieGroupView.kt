@@ -20,18 +20,32 @@ class MoviesView(
         fun onSeeAllClicked(groupType: GroupType)
     }
 
+    override fun displayCardGroup(data: DataGroup<Movie>, maxNum: Int?) {
+        createMovieCardAndAppend(data.data, maxNum)
+    }
 
-    private fun createMovieCardAndAppend(movies: List<Movie>) {
+
+    private fun createMovieCardAndAppend(movies: List<Movie>, maxNum: Int?) {
         linearLayout.removeAllViews()
-        movies.take(5).forEach { movie ->
-            val movieCard = viewFactory.getMovieCard(linearLayout)
-            movieCard.registerListener(this)
-            movieCard.displayMovie(movie)
-            linearLayout.addView(movieCard.getRootView())
+        if (maxNum == null) {
+            movies.forEach { movie ->
+                createMovieCard(movie)
+            }
+        } else {
+            movies.take(maxNum).forEach { movie ->
+                createMovieCard(movie)
+            }
+            if (movies.size > maxNum) {
+                displaySeeAll()
+            }
         }
-        if (movies.size > 5) {
-            displaySeeAll()
-        }
+    }
+
+    private fun createMovieCard(movie: Movie) {
+        val movieCard = viewFactory.getMovieCard(linearLayout)
+        movieCard.registerListener(this)
+        movieCard.displayMovie(movie)
+        linearLayout.addView(movieCard.getRootView())
     }
 
     private fun displaySeeAll() {
@@ -52,7 +66,4 @@ class MoviesView(
         }
     }
 
-    override fun displayCardGroup(data: DataGroup<Movie>) {
-        createMovieCardAndAppend(data.data)
-    }
 }

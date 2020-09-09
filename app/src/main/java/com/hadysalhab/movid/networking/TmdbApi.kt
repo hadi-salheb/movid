@@ -129,4 +129,10 @@ interface TmdbApi {
         @Query("page") page: Int = 1,
         @Query("sort_by") sortBy: String = "created_at.desc"
     ): Call<MoviesResponseSchema>
+
+    @GET("/3/collection/{collection_id}")
+    fun getCollection(
+        @Path("collection_id") collectionID: Int,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<CollectionSchema>
 }

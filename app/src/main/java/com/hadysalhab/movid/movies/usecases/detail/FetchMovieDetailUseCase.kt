@@ -9,6 +9,7 @@ import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.networking.*
+import com.hadysalhab.movid.networking.responses.CollectionSchema
 import com.hadysalhab.movid.networking.responses.MovieDetailSchema
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
@@ -44,7 +45,7 @@ class FetchMovieDetailUseCase(
             notifySuccess(store!!)
         } else {
             backgroundThreadPoster.post {
-                val response = fetchApi(movieId)
+                val response = fetchMovieDetail(movieId)
                 handleResponse(response)
             }
         }
@@ -53,7 +54,30 @@ class FetchMovieDetailUseCase(
     private fun handleResponse(response: ApiResponse<MovieDetailSchema>) {
         when (response) {
             is ApiSuccessResponse -> {
-                val movieDetail = schemaToModelHelper.getMovieDetails(response.body)
+                if (response.body.belongToCollection == null) {
+                    val movieDetail = schemaToModelHelper.getMovieDetails(response.body)
+                    movieDetail.timeStamp = timeProvider.currentTimestamp
+                    moviesStateManager.upsertMovieDetailToList(movieDetail)
+                    notifySuccess(movieDetail)
+                } else {
+                    val collectionResponse = fetchCollection(response.body.belongToCollection.id)
+                    handleCollectionResponse(collectionResponse, response.body)
+                }
+            }
+            is ApiEmptyResponse, is ApiErrorResponse -> {
+                notifyFailure(errorMessageHandler.getErrorMessageFromApiResponse(response))
+            }
+        }
+    }
+
+    private fun handleCollectionResponse(
+        response: ApiResponse<CollectionSchema>,
+        movieDetailSchema: MovieDetailSchema
+    ) {
+        when (response) {
+            is ApiSuccessResponse -> {
+                val movieDetail =
+                    schemaToModelHelper.getMovieDetails(movieDetailSchema, response.body)
                 movieDetail.timeStamp = timeProvider.currentTimestamp
                 moviesStateManager.upsertMovieDetailToList(movieDetail)
                 notifySuccess(movieDetail)
@@ -64,7 +88,7 @@ class FetchMovieDetailUseCase(
         }
     }
 
-    private fun fetchApi(movieId: Int) = try {
+    private fun fetchMovieDetail(movieId: Int) = try {
         val response = tmdbApi.fetchMovieDetail(
             movieId = movieId,
             sessionID = sessionId
@@ -72,6 +96,13 @@ class FetchMovieDetailUseCase(
         ApiResponse.create(response)
     } catch (err: Throwable) {
         ApiResponse.create<MovieDetailSchema>(err)
+    }
+
+    private fun fetchCollection(collectionID: Int) = try {
+        val response = tmdbApi.getCollection(collectionID).execute()
+        ApiResponse.create(response)
+    } catch (err: Throwable) {
+        ApiResponse.create<CollectionSchema>(err)
     }
 
     private fun notifyFailure(msg: String) {

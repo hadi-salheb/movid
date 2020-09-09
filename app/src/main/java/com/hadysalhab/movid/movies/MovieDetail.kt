@@ -10,7 +10,8 @@ data class MovieDetail(
     val accountStates: AccountStates,
     val similar: MoviesResponse,
     val recommendations: MoviesResponse,
-    val videosResponse: VideosResponse
+    val videosResponse: VideosResponse,
+    val collection: Collection? = null
 ) {
     var timeStamp: Long? = null
 
@@ -19,6 +20,13 @@ data class MovieDetail(
         return gson.fromJson(json, MovieDetail::class.java)
     }
 }
+
+data class Collection(
+    val id: Int,
+    val name: String,
+    val overview: String,
+    val movies: List<Movie>
+)
 
 data class VideosResponse(
     val videos: List<Video>
@@ -36,6 +44,7 @@ data class Credits(
     val cast: List<Cast>,
     val crew: List<Crew>
 )
+
 data class Cast(
     val castID: Int,
     val character: String,

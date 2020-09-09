@@ -19,18 +19,32 @@ class SchemaToModelHelper {
         groupType
     )
 
-    fun getMovieDetails(schema: MovieDetailSchema) = with(schema) {
-        MovieDetail(
-            getMovieInfo(this),
-            getCredits(credits),
-            getReviews(reviews),
-            getImages(images),
-            getAccountState(accountStates),
-            getMoviesResponse(similar, GroupType.SIMILAR_MOVIES),
-            getMoviesResponse(recommendations, GroupType.RECOMMENDED_MOVIES),
-            getVideos(videos)
-        )
-    }
+    fun getMovieDetails(schema: MovieDetailSchema, collectionSchema: CollectionSchema? = null) =
+        with(schema) {
+            MovieDetail(
+                getMovieInfo(this),
+                getCredits(credits),
+                getReviews(reviews),
+                getImages(images),
+                getAccountState(accountStates),
+                getMoviesResponse(similar, GroupType.SIMILAR_MOVIES),
+                getMoviesResponse(recommendations, GroupType.RECOMMENDED_MOVIES),
+                getVideos(videos),
+                getCollections(collectionSchema)
+            )
+        }
+
+    private fun getCollections(collectionSchema: CollectionSchema?) =
+        if (collectionSchema == null) {
+            null
+        } else {
+            Collection(
+                collectionSchema.id,
+                collectionSchema.name,
+                collectionSchema.overview,
+                getMovies(collectionSchema.parts)
+            )
+        }
 
 
     fun getReviewsResponseFromSchema(body: ReviewsSchema) = ReviewResponse(

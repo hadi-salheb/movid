@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-enum class GroupType(val value: String) : Parcelable {
+enum class GroupType(var value: String) : Parcelable {
     POPULAR("popular"),
     TOP_RATED("top_rated"),
     UPCOMING("upcoming"),
@@ -14,5 +14,6 @@ enum class GroupType(val value: String) : Parcelable {
     RECOMMENDED_MOVIES("recommendations"),
     CAST("cast"),
     FAVORITES("favorites"),
-    WATCHLIST("watchlist")
+    WATCHLIST("watchlist"),
+    COLLECTION("collection")
 }
