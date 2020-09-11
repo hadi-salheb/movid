@@ -18,8 +18,8 @@ class DataValidator(private val timeProvider: TimeProvider) {
         }
     }
 
-    fun isMoviesResponseValid(moviesResponse: MoviesResponse): Boolean {
-        return moviesResponse.timeStamp != null && (timeProvider.currentTimestamp - MOVIE_CACHE_TIMEOUT_MS) < moviesResponse.timeStamp!!
+    fun isMoviesResponseValid(moviesResponse: MoviesResponse, region: String): Boolean {
+        return moviesResponse.timeStamp != null && (timeProvider.currentTimestamp - MOVIE_CACHE_TIMEOUT_MS) < moviesResponse.timeStamp!! && region == moviesResponse.region
     }
 
     fun isAccountResponseValid(accountResponse: AccountResponse?): Boolean =

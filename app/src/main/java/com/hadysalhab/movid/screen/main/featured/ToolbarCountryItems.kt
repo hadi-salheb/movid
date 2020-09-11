@@ -5,7 +5,7 @@ import com.hadysalhab.movid.R
 
 enum class ToolbarCountryItems(
     val countryName: String,
-    val iso: String,
+    val region: String,
     @DrawableRes val countryIcon: Int
 ) {
     AUSTRALIA("Australia", "AU", R.drawable.ic_australia),

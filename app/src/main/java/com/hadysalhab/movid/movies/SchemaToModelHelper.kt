@@ -27,8 +27,8 @@ class SchemaToModelHelper {
                 getReviews(reviews),
                 getImages(images),
                 getAccountState(accountStates),
-                getMoviesResponse(similar, GroupType.SIMILAR_MOVIES),
-                getMoviesResponse(recommendations, GroupType.RECOMMENDED_MOVIES),
+                getMoviesResponseFromSchema(GroupType.SIMILAR_MOVIES, similar),
+                getMoviesResponseFromSchema(GroupType.RECOMMENDED_MOVIES, recommendations),
                 getVideos(videos),
                 getCollections(collectionSchema)
             )
@@ -173,16 +173,6 @@ class SchemaToModelHelper {
             AccountStates(id, favorite, watchlist)
         }
 
-    private fun getMoviesResponse(moviesResponseSchema: MoviesResponseSchema, tag: GroupType) =
-        with(moviesResponseSchema) {
-            MoviesResponse(
-                page,
-                totalResults,
-                total_pages,
-                getMovies(movies),
-                tag
-            )
-        }
 
     fun getAccountResponse(accountSchema: AccountSchema): AccountResponse = with(accountSchema) {
         AccountResponse(

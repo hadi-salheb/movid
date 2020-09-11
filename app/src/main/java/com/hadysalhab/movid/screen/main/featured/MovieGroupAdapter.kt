@@ -18,6 +18,7 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MoviesResponse>() {
+            // check if two object are the same (id,tag...)
             override fun areItemsTheSame(
                 oldItem: MoviesResponse,
                 newItem: MoviesResponse
@@ -25,6 +26,7 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
                 return oldItem.tag == newItem.tag
             }
 
+            // check if two object have the same visual presentation (only called if two items are the same)
             override fun areContentsTheSame(
                 oldItem: MoviesResponse,
                 newItem: MoviesResponse
@@ -42,6 +44,7 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         return MovieGroupViewHolder(view)
     }
 
+    // only called if areContentsTheSame = false
     override fun onBindViewHolder(holder: MovieGroupViewHolder, position: Int) {
         val movieGroup = getItem(position)
         holder.bind(movieGroup)

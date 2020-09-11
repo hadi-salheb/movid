@@ -47,8 +47,7 @@ class FeaturedViewImpl(
             ToolbarCountryItems.values().toMutableList().mapIndexed { index, toolbarCountryItem ->
                 PowerMenuItem(
                     toolbarCountryItem.countryName,
-                    toolbarCountryItem.countryIcon,
-                    index == 0
+                    toolbarCountryItem.countryIcon
                 )
             })
         .setMenuRadius(10f) // sets the corner radius.
@@ -56,16 +55,24 @@ class FeaturedViewImpl(
         .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT) // Animation start point (TOP | LEFT).
         .setMenuColor(Color.WHITE)
         .setOnMenuItemClickListener { position, item ->
+            if (powerMenu.selectedPosition == position) {
+                return@setOnMenuItemClickListener
+            }
             powerMenu.selectedPosition = position
             menuToolbarLayout.setOverflowMenuIcon(item.icon)
             powerMenu.dismiss()
+            listeners.forEach {
+                it.onCountryToolbarItemClicked(ToolbarCountryItems.values()[position])
+            }
         }
         .build()
 
     private fun getMenuToolbarLayout() = viewFactory.getMenuToolbarLayout(toolbar)
 
     private fun setUpToolbar() {
-        menuToolbarLayout.setOverflowMenuIcon(ToolbarCountryItems.AUSTRALIA.countryIcon)
+        val defaultSelectedPosition = 0
+        powerMenu.selectedPosition = defaultSelectedPosition
+        menuToolbarLayout.setOverflowMenuIcon(ToolbarCountryItems.values()[defaultSelectedPosition].countryIcon)
         toolbar.addView(menuToolbarLayout.getRootView())
     }
 
@@ -93,17 +100,27 @@ class FeaturedViewImpl(
     override fun displayMovieGroups(movieGroups: List<MoviesResponse>) {
         circularProgress.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
-        // if adapter already contains a list
-        // diffUtil will render only items that are different
         adapter.submitList(movieGroups)
-        menuToolbarLayout.registerListener(this)
     }
 
 
     override fun displayLoadingScreen() {
-        menuToolbarLayout.unregisterListener(this)
         circularProgress.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
+    }
+
+    override fun getSelectedCountry(): ToolbarCountryItems {
+        val powerMenuSelectedItem = powerMenu.itemList[powerMenu.selectedPosition]
+        return ToolbarCountryItems.values().find { it.countryName == powerMenuSelectedItem.title }
+            ?: throw RuntimeException("PowerMenu and ToolbarCountryItems are not in sync!")
+    }
+
+    override fun disablePopupMenu() {
+        menuToolbarLayout.unregisterListener(this)
+    }
+
+    override fun enablePopupMenu() {
+        menuToolbarLayout.registerListener(this)
     }
 
     override fun onOverflowMenuIconClick() {

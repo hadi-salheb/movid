@@ -1,7 +1,6 @@
 package com.hadysalhab.movid.movies.usecases.groups
 
 
-import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
@@ -24,7 +23,6 @@ class FetchFeaturedMoviesUseCase(
     private val moviesStateManager: MoviesStateManager,
     private val timeProvider: TimeProvider,
     private val dataValidator: DataValidator,
-    private val deviceConfigManager: DeviceConfigManager,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val errorMessageHandler: ErrorMessageHandler,
     private val schemaToModelHelper: SchemaToModelHelper,
@@ -41,11 +39,12 @@ class FetchFeaturedMoviesUseCase(
     private val LOCK = Object()
     private lateinit var movieGroups: List<MoviesResponse>
     private lateinit var errorMessage: String
+    private lateinit var region: String
     private val featured =
         arrayOf(GroupType.POPULAR, GroupType.TOP_RATED, GroupType.UPCOMING, GroupType.NOW_PLAYING)
     private lateinit var computations: Array<GroupType>
 
-    fun fetchFeaturedMoviesUseCaseAndNotify() {
+    fun fetchFeaturedMoviesUseCaseAndNotify(region: String) {
         assertNotBusyAndBecomeBusy()
         synchronized(LOCK) {
             movieGroups = mutableListOf()
@@ -53,10 +52,11 @@ class FetchFeaturedMoviesUseCase(
             isAnyUseCaseFailed = false
             errorMessage = ""
             computations = arrayOf()
+            this.region = region
         }
         featured.forEach { groupType ->
             val store = moviesStateManager.getMoviesResponseByGroupType(groupType)
-            if (dataValidator.isMoviesResponseValid(store)) {
+            if (dataValidator.isMoviesResponseValid(store, region)) {
                 this.movieGroups = this.movieGroups.toMutableList().apply {
                     add(store)
                 }
@@ -82,7 +82,7 @@ class FetchFeaturedMoviesUseCase(
                 baseFeaturedMoviesUseCaseFactory.createBaseFeaturedMoviesUseCase(groupType)
                     .fetchFeaturedMoviesUseCase(
                         page = 1,
-                        region = deviceConfigManager.getISO3166CountryCodeOrUS()
+                        region = region
                     )
             handleResult(groupType, result)
         }
@@ -116,6 +116,7 @@ class FetchFeaturedMoviesUseCase(
                                 response.body
                             ).also { movieResponse ->
                                 movieResponse.timeStamp = timeProvider.currentTimestamp
+                                movieResponse.region = region
                                 moviesStateManager.updateMoviesResponse(movieResponse)
                             }
                         )

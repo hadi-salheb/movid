@@ -57,7 +57,7 @@ class FetchMoviesResponseUseCase(
         } else {
             if (page == 1) {
                 val store = moviesStateManager.getMoviesResponseByGroupType(groupType)
-                if (dataValidator.isMoviesResponseValid(store)) {
+                if (dataValidator.isMoviesResponseValid(store, "")) {
                     notifySuccess(store)
                 } else {
                     fetchFeaturedMovies()

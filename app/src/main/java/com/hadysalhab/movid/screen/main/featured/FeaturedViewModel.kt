@@ -19,19 +19,24 @@ class FeaturedViewModel @Inject constructor(
         fetchFeaturedMoviesUseCase.registerListener(this)
     }
 
-    fun onStart() {
+    fun onStart(region: String) {
         when (_viewState.value) {
             null -> {
                 _viewState.value = Loading
-                fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify()
+                fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify(region)
             }
             Loading, is Error -> {
                 return
             }
             is FeaturedLoaded -> {
-                fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify()
+                fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify(region)
             }
         }
+    }
+
+    fun fetchFeaturedMovies(region: String) {
+        _viewState.value = Loading
+        fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify(region)
     }
 
     override fun onFetchMovieGroupsSucceeded(apiMovieGroups: List<MoviesResponse>) {

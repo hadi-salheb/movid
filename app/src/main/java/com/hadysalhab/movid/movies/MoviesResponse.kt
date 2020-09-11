@@ -10,7 +10,7 @@ data class MoviesResponse(
     val tag: GroupType
 ) {
     var timeStamp: Long? = null
-
+    var region: String? = null
     fun deepCopy(gson: Gson): MoviesResponse {
         val json = gson.toJson(this)
         return gson.fromJson(json, MoviesResponse::class.java)

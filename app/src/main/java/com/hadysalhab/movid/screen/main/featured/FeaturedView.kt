@@ -8,8 +8,12 @@ abstract class FeaturedView : BaseObservableViewMvc<FeaturedView.Listener>() {
     interface Listener {
         fun onMovieCardClicked(movieID: Int)
         fun onSeeAllClicked(groupType: GroupType)
+        fun onCountryToolbarItemClicked(toolbarCountryItem: ToolbarCountryItems)
     }
 
     abstract fun displayMovieGroups(movieGroups: List<MoviesResponse>)
     abstract fun displayLoadingScreen()
+    abstract fun getSelectedCountry(): ToolbarCountryItems
+    abstract fun disablePopupMenu()
+    abstract fun enablePopupMenu()
 }

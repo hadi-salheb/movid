@@ -57,7 +57,8 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
-        featuredViewModel.onStart()
+        view.disablePopupMenu()
+        featuredViewModel.onStart(view.getSelectedCountry().region)
         featuredViewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             render(viewState)
         })
@@ -76,9 +77,9 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         mainNavigator.toMovieListFragment(groupType, null)
     }
 
-    private fun displayMovies(movieGroups: List<MoviesResponse>) {
-        view.displayMovieGroups(movieGroups.sortedBy { item -> item.tag.ordinal }
-            .filter { !it.movies.isNullOrEmpty() })
+    override fun onCountryToolbarItemClicked(toolbarCountryItem: ToolbarCountryItems) {
+        view.disablePopupMenu()
+        featuredViewModel.fetchFeaturedMovies(toolbarCountryItem.region)
     }
 
     private fun render(viewState: FeaturedViewState) {
@@ -89,7 +90,15 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
                 "error: ${viewState.errorMessage}",
                 Toast.LENGTH_LONG
             ).show()
-            is FeaturedLoaded -> displayMovies(viewState.moviesResponseList)
+            is FeaturedLoaded -> {
+                displayMovies(viewState.moviesResponseList)
+                view.enablePopupMenu()
+            }
         }
+    }
+
+    private fun displayMovies(movieGroups: List<MoviesResponse>) {
+        view.displayMovieGroups(movieGroups.sortedBy { item -> item.tag.ordinal }
+            .filter { !it.movies.isNullOrEmpty() })
     }
 }

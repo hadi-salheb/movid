@@ -106,7 +106,6 @@ class UseCaseModel {
         uiThreadPoster: UiThreadPoster,
         errorMessageHandler: ErrorMessageHandler,
         schemaToModelHelper: SchemaToModelHelper,
-        deviceConfigManager: DeviceConfigManager,
         moviesStateManager: MoviesStateManager,
         dataValidator: DataValidator,
         timeProvider: TimeProvider
@@ -116,7 +115,6 @@ class UseCaseModel {
             moviesStateManager,
             timeProvider,
             dataValidator,
-            deviceConfigManager,
             backgroundThreadPoster,
             errorMessageHandler,
             schemaToModelHelper,
