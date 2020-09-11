@@ -19,4 +19,5 @@
     <color name="gray_800">#2D3748</color>
     <color name="gray_900">#1a202c</color>
     <color name="gray_500">#a0aec0</color>
+    <color name="transparent">#00000000</color>
 </resources>

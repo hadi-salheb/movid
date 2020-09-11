@@ -14,6 +14,7 @@ import com.hadysalhab.movid.screen.common.rating.Rating
 import com.hadysalhab.movid.screen.common.reviews.ReviewListItem
 import com.hadysalhab.movid.screen.common.reviews.ReviewListItemImpl
 import com.hadysalhab.movid.screen.common.seeall.SeeAllImpl
+import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
@@ -71,4 +72,6 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
 
     fun getReviewsView(parent: ViewGroup?): ReviewListView =
         ReviewListViewImpl(layoutInflater, parent, this)
+
+    fun getMenuToolbarLayout(parent: ViewGroup?) = MenuToolbarLayout(layoutInflater, parent)
 }
