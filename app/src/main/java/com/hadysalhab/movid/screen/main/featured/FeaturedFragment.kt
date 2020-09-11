@@ -74,7 +74,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
     }
 
     override fun onSeeAllClicked(groupType: GroupType) {
-        mainNavigator.toMovieListFragment(groupType, null)
+        mainNavigator.toMovieListFragment(groupType, null, view.getSelectedCountry().region)
     }
 
     override fun onCountryToolbarItemClicked(toolbarCountryItem: ToolbarCountryItems) {

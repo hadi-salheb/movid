@@ -17,10 +17,12 @@ import javax.inject.Inject
 
 private const val ARG_GROUP_KEY = "arg_group_key"
 private const val ARG_MOVIE_ID = "arg_movie_id"
+private const val ARG_REGION = "arg_region"
 
 class MovieListFragment : BaseFragment(), MovieListView.Listener {
     lateinit var groupType: GroupType
     private var movieID: Int? = null
+    private var region: String? = null
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -47,9 +49,14 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
             groupType = it.getParcelable(ARG_GROUP_KEY)
                 ?: throw RuntimeException("Cannot Start MovieListFragment without group type key")
             movieID = it.getInt(ARG_MOVIE_ID)
+            region = it.getString(ARG_REGION)
         }
-        if ((groupType == GroupType.RECOMMENDED_MOVIES || groupType == GroupType.SIMILAR_MOVIES) && movieID == null) {
-            throw RuntimeException("Cannot get recommended movies or similar movies without providing a movie id!")
+        if (groupType == GroupType.RECOMMENDED_MOVIES || groupType == GroupType.SIMILAR_MOVIES) {
+            if (movieID == null) {
+                throw RuntimeException("Cannot get recommended movies or similar movies without providing a movie id!")
+            }
+        } else if (region == null) {
+            throw RuntimeException("Cannot get featured movies without region")
         }
         movieListViewModel =
             ViewModelProvider(this, myViewModelFactory).get(MovieListViewModel::class.java)
@@ -69,7 +76,7 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
-        movieListViewModel.init(groupType, movieID)
+        movieListViewModel.init(groupType, movieID, region)
         movieListViewModel.viewState.observe(viewLifecycleOwner, Observer {
             render(it)
         })
@@ -82,11 +89,14 @@ class MovieListFragment : BaseFragment(), MovieListView.Listener {
 
     companion object {
         @JvmStatic
-        fun newInstance(groupType: GroupType, movieID: Int?) =
+        fun newInstance(groupType: GroupType, movieID: Int?, region: String?) =
             MovieListFragment().apply {
                 arguments = Bundle().apply {
                     movieID?.let {
-                        putInt(ARG_MOVIE_ID, movieID)
+                        putInt(ARG_MOVIE_ID, it)
+                    }
+                    region?.let {
+                        putString(ARG_REGION, it)
                     }
                     putParcelable(ARG_GROUP_KEY, groupType)
                 }

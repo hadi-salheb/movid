@@ -58,8 +58,8 @@ class MainNavigator(
     fun toDetailFragment(movieID: Int) =
         fragNavController.pushFragment(MovieDetailFragment.newInstance(movieID))
 
-    fun toMovieListFragment(groupType: GroupType, movieID: Int?) =
-        fragNavController.pushFragment(MovieListFragment.newInstance(groupType, movieID))
+    fun toMovieListFragment(groupType: GroupType, movieID: Int?, region: String?) =
+        fragNavController.pushFragment(MovieListFragment.newInstance(groupType, movieID, region))
 
     fun toReviewsFragment(movieID: Int) {
         fragNavController.pushFragment(ReviewsFragment.newInstance(movieID))

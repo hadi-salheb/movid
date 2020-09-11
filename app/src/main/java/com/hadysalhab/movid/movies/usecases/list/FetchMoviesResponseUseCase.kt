@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.movies.usecases.list
 
-import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
@@ -24,7 +23,6 @@ class FetchMoviesResponseUseCase(
     private val baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
-    private val deviceConfigManager: DeviceConfigManager,
     private val schemaToModelHelper: SchemaToModelHelper,
     private val errorMessageHandler: ErrorMessageHandler,
     private val moviesStateManager: MoviesStateManager,
@@ -39,25 +37,35 @@ class FetchMoviesResponseUseCase(
 
     private var movieId: Int? = null
     private var page = 1
+    private lateinit var region: String
     private lateinit var groupType: GroupType
     private val LOCK = Object()
 
-    fun fetchMoviesResponseUseCase(groupType: GroupType, page: Int, movieId: Int?) {
+    fun fetchMoviesResponseUseCase(
+        groupType: GroupType,
+        page: Int,
+        movieId: Int?,
+        region: String?
+    ) {
         assertNotBusyAndBecomeBusy()
-        if ((groupType == GroupType.SIMILAR_MOVIES || groupType == GroupType.RECOMMENDED_MOVIES) && movieId == null) {
-            throw RuntimeException("Cannot fetch similar movies or recommended movies with null movie id")
-        }
         synchronized(LOCK) {
             this.movieId = movieId
             this.page = page
             this.groupType = groupType
         }
         if (groupType == GroupType.SIMILAR_MOVIES || groupType == GroupType.RECOMMENDED_MOVIES) {
+            if (movieId == null) {
+                throw RuntimeException("Cannot fetch similar movies or recommended movies with null movie id")
+            }
             fetchSimilarRecommendedMovies()
         } else {
+            if (region == null) {
+                throw RuntimeException("Cannot fetch featured movies without region")
+            }
             if (page == 1) {
+                this.region = region
                 val store = moviesStateManager.getMoviesResponseByGroupType(groupType)
-                if (dataValidator.isMoviesResponseValid(store, "")) {
+                if (dataValidator.isMoviesResponseValid(store, region)) {
                     notifySuccess(store)
                 } else {
                     fetchFeaturedMovies()
@@ -87,7 +95,7 @@ class FetchMoviesResponseUseCase(
         backgroundThreadPoster.post {
             val result = useCase.fetchFeaturedMoviesUseCase(
                 page,
-                deviceConfigManager.getISO3166CountryCodeOrUS()
+                this.region
             )
             handleResult(groupType, result)
         }
@@ -102,6 +110,7 @@ class FetchMoviesResponseUseCase(
                 )
                 if (groupType != GroupType.SIMILAR_MOVIES && groupType != GroupType.RECOMMENDED_MOVIES) {
                     result.timeStamp = timeProvider.currentTimestamp
+                    result.region = this.region
                     moviesStateManager.updateMoviesResponse(result)
                 }
                 notifySuccess(

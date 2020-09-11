@@ -14,6 +14,7 @@ class MovieListViewModel @Inject constructor(
 ) : ViewModel(), FetchMoviesResponseUseCase.Listener {
     private val _viewState = MutableLiveData<MovieListViewState>()
     private lateinit var groupType: GroupType
+    private var region: String? = null
     private var movieID: Int? = null
     private lateinit var moviesResponse: MoviesResponse
     private val moviesList = mutableListOf<Movie>()
@@ -22,10 +23,11 @@ class MovieListViewModel @Inject constructor(
         get() = _viewState
 
 
-    fun init(groupType: GroupType, movieID: Int?) {
+    fun init(groupType: GroupType, movieID: Int?, region: String?) {
         if (!this::groupType.isInitialized) {
             this.groupType = groupType
             this.movieID = movieID
+            this.region = region
             fetchMoviesResponseUseCase.registerListener(this)
         }
         when (viewState.value) {
@@ -34,7 +36,8 @@ class MovieListViewModel @Inject constructor(
                 fetchMoviesResponseUseCase.fetchMoviesResponseUseCase(
                     groupType = groupType,
                     page = 1,
-                    movieId = movieID
+                    movieId = movieID,
+                    region = region
                 )
             }
         }
@@ -48,7 +51,8 @@ class MovieListViewModel @Inject constructor(
         fetchMoviesResponseUseCase.fetchMoviesResponseUseCase(
             groupType = groupType,
             page = this.moviesResponse.page + 1,
-            movieId = movieID
+            movieId = movieID,
+            region = this.region
         )
     }
 

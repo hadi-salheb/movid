@@ -53,12 +53,14 @@ class FeaturedViewImpl(
         .setMenuRadius(10f) // sets the corner radius.
         .setTextSize(16)
         .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT) // Animation start point (TOP | LEFT).
+        .setPreferenceName("CountryPowerMenu")
         .setMenuColor(Color.WHITE)
         .setOnMenuItemClickListener { position, item ->
             if (powerMenu.selectedPosition == position) {
                 return@setOnMenuItemClickListener
             }
             powerMenu.selectedPosition = position
+            powerMenu.setPreferencePosition(position)
             menuToolbarLayout.setOverflowMenuIcon(item.icon)
             powerMenu.dismiss()
             listeners.forEach {
@@ -70,9 +72,9 @@ class FeaturedViewImpl(
     private fun getMenuToolbarLayout() = viewFactory.getMenuToolbarLayout(toolbar)
 
     private fun setUpToolbar() {
-        val defaultSelectedPosition = 0
-        powerMenu.selectedPosition = defaultSelectedPosition
-        menuToolbarLayout.setOverflowMenuIcon(ToolbarCountryItems.values()[defaultSelectedPosition].countryIcon)
+        val position = powerMenu.getPreferencePosition(0)
+        powerMenu.selectedPosition = position
+        menuToolbarLayout.setOverflowMenuIcon(ToolbarCountryItems.values()[position].countryIcon)
         toolbar.addView(menuToolbarLayout.getRootView())
     }
 

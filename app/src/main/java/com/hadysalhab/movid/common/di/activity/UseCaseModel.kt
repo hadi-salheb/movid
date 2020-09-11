@@ -12,7 +12,6 @@ import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.authentication.createsession.CreateSessionUseCaseSync
 import com.hadysalhab.movid.authentication.createtoken.CreateRequestTokenUseCaseSync
 import com.hadysalhab.movid.authentication.signtoken.SignTokenUseCaseSync
-import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
@@ -127,7 +126,6 @@ class UseCaseModel {
         baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
-        deviceConfigManager: DeviceConfigManager,
         errorMessageHandler: ErrorMessageHandler,
         schemaToModelHelper: SchemaToModelHelper,
         moviesStateManager: MoviesStateManager,
@@ -138,7 +136,6 @@ class UseCaseModel {
         baseFeaturedMoviesUseCaseFactory,
         backgroundThreadPoster,
         uiThreadPoster,
-        deviceConfigManager,
         schemaToModelHelper,
         errorMessageHandler,
         moviesStateManager,
@@ -172,13 +169,7 @@ class UseCaseModel {
 
     @Provides
     fun getFetchNowPlayingMoviesUseCaseSync(
-        tmdbApi: TmdbApi,
-        errorMessageHandler: ErrorMessageHandler,
-        moviesStateManager: MoviesStateManager,
-        schemaToModelHelper: SchemaToModelHelper,
-        timeProvider: TimeProvider,
-        dataValidator: DataValidator,
-        deviceConfigManager: DeviceConfigManager
+        tmdbApi: TmdbApi
     ) =
         FetchNowPlayingMoviesUseCaseSync(
             tmdbApi
