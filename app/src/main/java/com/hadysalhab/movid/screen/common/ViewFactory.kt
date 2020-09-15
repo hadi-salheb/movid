@@ -22,6 +22,10 @@ import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewImpl
 import com.hadysalhab.movid.screen.main.reviews.ReviewListView
 import com.hadysalhab.movid.screen.main.reviews.ReviewListViewImpl
+import com.hadysalhab.movid.screen.main.search.GenreListItem
+import com.hadysalhab.movid.screen.main.search.GenreListItemImpl
+import com.hadysalhab.movid.screen.main.search.SearchView
+import com.hadysalhab.movid.screen.main.search.SearchViewImpl
 
 class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getFragmentFrameView(parent: ViewGroup?) = FragmentFrameView(layoutInflater, parent)
@@ -74,4 +78,7 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
         ReviewListViewImpl(layoutInflater, parent, this)
 
     fun getMenuToolbarLayout(parent: ViewGroup?) = MenuToolbarLayout(layoutInflater, parent)
+    fun getSearchView(parent: ViewGroup?): SearchView = SearchViewImpl(layoutInflater, parent, this)
+    fun getGenreListItem(parent: ViewGroup?): GenreListItem =
+        GenreListItemImpl(layoutInflater, parent)
 }

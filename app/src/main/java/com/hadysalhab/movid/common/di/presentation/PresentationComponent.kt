@@ -10,6 +10,7 @@ import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
 import com.hadysalhab.movid.screen.main.movielist.MovieListFragment
 import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
+import com.hadysalhab.movid.screen.main.search.SearchFragment
 import com.hadysalhab.movid.screen.main.watchlist.WatchlistMoviesFragment
 import com.hadysalhab.movid.screen.splash.SplashActivity
 import dagger.Subcomponent
@@ -30,4 +31,5 @@ interface PresentationComponent {
     fun inject(reviewsFragment: ReviewsFragment)
     fun inject(favoriteMoviesFragment: FavoriteMoviesFragment)
     fun inject(watchlistMoviesFragment: WatchlistMoviesFragment)
+    fun inject(searchFragment: SearchFragment)
 }

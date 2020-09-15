@@ -41,7 +41,7 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost {
             return
         }
 
-        if (currentSelectedItem != item && (item == BottomNavigationItems.FEATURED || item == BottomNavigationItems.FAVORITES || item == BottomNavigationItems.WATCHLIST)) {
+        if (currentSelectedItem != item && (item == BottomNavigationItems.FEATURED || item == BottomNavigationItems.FAVORITES || item == BottomNavigationItems.WATCHLIST || item == BottomNavigationItems.SEARCH)) {
             mainNavigator.switchTab(item)
         }
 

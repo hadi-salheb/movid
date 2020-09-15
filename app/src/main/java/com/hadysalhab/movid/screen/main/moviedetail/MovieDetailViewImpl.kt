@@ -111,10 +111,10 @@ class MovieDetailViewImpl(
             displayAccountState(movieDetail.accountStates)
             displayCollection(movieDetail.collection)
         } else if (this.movieDetail != movieDetail) {
-            this.movieDetail = movieDetail
             if (this.movieDetail!!.accountStates != movieDetail.accountStates) {
                 displayAccountState(movieDetail.accountStates)
             }
+            this.movieDetail = movieDetail
         }
         progressBar.visibility = View.GONE
         detailSV.visibility = View.VISIBLE

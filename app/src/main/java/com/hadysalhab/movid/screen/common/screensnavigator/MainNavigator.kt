@@ -12,6 +12,7 @@ import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
 import com.hadysalhab.movid.screen.main.movielist.MovieListFragment
 import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
+import com.hadysalhab.movid.screen.main.search.SearchFragment
 import com.hadysalhab.movid.screen.main.watchlist.WatchlistMoviesFragment
 import com.ncapdevi.fragnav.FragNavController
 
@@ -32,6 +33,7 @@ class MainNavigator(
         override fun getRootFragment(index: Int): Fragment {
             return when (index) {
                 FragNavController.TAB1 -> FeaturedFragment.newInstance()
+                FragNavController.TAB2 -> SearchFragment.newInstance()
                 FragNavController.TAB3 -> FavoriteMoviesFragment.newInstance()
                 FragNavController.TAB4 -> WatchlistMoviesFragment.newInstance()
                 else -> throw IllegalStateException("unsupported tab index: $index")
