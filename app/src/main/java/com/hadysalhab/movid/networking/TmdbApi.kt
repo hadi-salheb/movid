@@ -135,4 +135,11 @@ interface TmdbApi {
         @Path("collection_id") collectionID: Int,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY
     ): Call<CollectionSchema>
+
+    @GET("/3/search/movie")
+    fun searchMovie(
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
+        @Query("query") query: String,
+        @Query("page") page: Int
+    ): Call<MoviesResponseSchema>
 }

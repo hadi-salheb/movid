@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
-import com.hadysalhab.movid.common.constants.POSTER_SIZE_92
+import com.hadysalhab.movid.common.constants.POSTER_SIZE_500
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
 
@@ -40,7 +40,7 @@ class MovieListItemImpl(
         }
         movie.posterPath?.let {
             Glide.with(getContext())
-                .load(IMAGES_BASE_URL + POSTER_SIZE_92 + it)
+                .load(IMAGES_BASE_URL + POSTER_SIZE_500 + it)
                 .into(movieImageIV)
         }
         movieTitleTV.text = movie.title

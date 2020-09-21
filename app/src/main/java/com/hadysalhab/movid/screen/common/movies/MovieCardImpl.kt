@@ -7,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
+import com.hadysalhab.movid.common.constants.POSTER_SIZE_500
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.rating.Rating
@@ -41,9 +41,9 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFact
     override fun displayMovie(movie: Movie) {
         this.movie = movie
         movieTitle.text = movie.title
-        movie.backdropPath?.let {
+        movie.posterPath?.let {
             Glide.with(getContext())
-                .load(IMAGES_BASE_URL + BACKDROP_SIZE_780 + it)
+                .load(IMAGES_BASE_URL + POSTER_SIZE_500 + it)
                 .into(movieImage)
         }
         movieReleaseDate.text = movie.releaseDate

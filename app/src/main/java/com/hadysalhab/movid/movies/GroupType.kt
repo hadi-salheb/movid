@@ -14,5 +14,6 @@ enum class GroupType(var value: String) : Parcelable {
     CAST("cast"),
     FAVORITES("favorites"),
     WATCHLIST("watchlist"),
-    COLLECTION("collection")
+    COLLECTION("collection"),
+    SEARCH("search")
 }

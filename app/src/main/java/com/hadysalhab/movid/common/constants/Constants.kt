@@ -5,6 +5,7 @@ package com.hadysalhab.movid.common.constants
  */
 const val TMDB_BASE_URL = "https://api.themoviedb.org"
 const val POSTER_SIZE_300 = "w300"
+const val POSTER_SIZE_500 = "w500"
 const val POSTER_SIZE_92 = "w92"
 const val POSTER_SIZE_185 = "w185"
 const val PROFILE_SIZE_185 = "w185"

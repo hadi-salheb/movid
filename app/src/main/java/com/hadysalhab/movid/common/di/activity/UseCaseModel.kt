@@ -28,6 +28,7 @@ import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseC
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
+import com.hadysalhab.movid.movies.usecases.search.SearchMovieUseCase
 import com.hadysalhab.movid.movies.usecases.similar.FetchSimilarMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.toprated.FetchTopRatedMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.upcoming.FetchUpcomingMoviesUseCaseSync
@@ -334,6 +335,22 @@ class UseCaseModel {
         schemaToModelHelper,
         uiThreadPoster,
         tmdbApi
+    )
+
+    @Provides
+    fun getSearchMovieUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        tmdbApi: TmdbApi,
+        schemaToModelHelper: SchemaToModelHelper,
+        errorMessageHandler: ErrorMessageHandler
+
+    ) = SearchMovieUseCase(
+        backgroundThreadPoster,
+        uiThreadPoster,
+        tmdbApi,
+        schemaToModelHelper,
+        errorMessageHandler
     )
 
 }

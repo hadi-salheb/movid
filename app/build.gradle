@@ -61,6 +61,9 @@ dependencies {
 
     //room
     implementation "android.arch.persistence.room:runtime:1.1.1"
+
+    //https://github.com/mancj/MaterialSearchBar
+    implementation project(path: ':search-library')
     kapt "android.arch.persistence.room:compiler:1.1.1"
 
     //dagger
@@ -71,8 +74,6 @@ dependencies {
     //thread poster : https://github.com/techyourchance/thread-poster
     implementation 'com.techyourchance.threadposter:threadposter:0.8.3'
 
-    //https://github.com/mancj/MaterialSearchBar
-    implementation "com.github.mancj:MaterialSearchBar:0.8.5"
 
     // Carousel https://github.com/sayyam/carouselview
     implementation 'com.synnapps:carouselview:0.1.5'

@@ -6,6 +6,7 @@ import com.hadysalhab.movid.screen.main.featured.FeaturedViewModel
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewModel
 import com.hadysalhab.movid.screen.main.movielist.MovieListViewModel
 import com.hadysalhab.movid.screen.main.reviews.ReviewsViewModel
+import com.hadysalhab.movid.screen.main.search.SearchViewModel
 import com.hadysalhab.movid.screen.main.watchlist.WatchlistMoviesViewModel
 import dagger.Binds
 import dagger.Module
@@ -44,4 +45,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(WatchlistMoviesViewModel::class)
     abstract fun watchlistMoviesViewModel(myViewModel: WatchlistMoviesViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    abstract fun searchViewModel(myViewModel: SearchViewModel): ViewModel
 }

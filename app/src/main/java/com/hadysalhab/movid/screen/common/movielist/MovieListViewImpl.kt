@@ -5,9 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.utils.convertDpToPixel
@@ -35,14 +33,11 @@ class MovieListViewImpl(
         progressBar = findViewById(R.id.loading_indicator)
         paginationProgressBar = findViewById(R.id.pagination_loading_indicator)
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = GridLayoutManager(context, 2)
             setHasFixedSize(true)
             adapter = this@MovieListViewImpl.adapter
         }
         recyclerView.apply {
-            val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-            itemDecoration.setDrawable(ContextCompat.getDrawable(context, R.drawable.divider)!!)
-            addItemDecoration(itemDecoration)
             addOnScrollListener(object : OnVerticalScrollListener() {
                 override fun onScrolledUp() {
 
@@ -65,6 +60,9 @@ class MovieListViewImpl(
     }
 
     override fun displayMovies(movies: List<Movie>) {
+        if (movies.size <= 20) {
+            adapter.notifyDataSetChanged()
+        }
         adapter.submitList(movies)
         emptyResultIndicator.visibility = View.GONE
         progressBar.visibility = View.GONE

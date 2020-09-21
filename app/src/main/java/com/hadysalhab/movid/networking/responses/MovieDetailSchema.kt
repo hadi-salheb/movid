@@ -20,7 +20,7 @@ data class MovieDetailSchema(
     val posterPath: String?,
     @SerializedName("release_date")
     val releaseDate: String? = "",
-    val revenue: Int,
+    val revenue: Long,
     val runtime: Int?,
     val status: String,
     @SerializedName("tagline")

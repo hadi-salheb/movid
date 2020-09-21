@@ -7,7 +7,7 @@ import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.movies.MovieListItem
 
 class MovieListAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
-    androidx.recyclerview.widget.ListAdapter<Movie, MovieListViewHolder>(DIFF_CALLBACK),
+    androidx.recyclerview.widget.ListAdapter<Movie, MovieListItemViewHolder>(DIFF_CALLBACK),
     MovieListItem.Listener {
     interface Listener {
         fun onMovieItemClicked(movieID: Int)
@@ -25,14 +25,14 @@ class MovieListAdapter(private val listener: Listener, private val viewFactory: 
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieListViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieListItemViewHolder {
         val view = viewFactory.getMovieListItemView(parent)
         view.registerListener(this)
-        return MovieListViewHolder(view)
+        return MovieListItemViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: MovieListViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holderItem: MovieListItemViewHolder, position: Int) {
+        holderItem.bind(getItem(position))
     }
 
     override fun onMovieItemClicked(movieID: Int) {

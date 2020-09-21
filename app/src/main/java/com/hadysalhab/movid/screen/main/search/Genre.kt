@@ -14,11 +14,11 @@ enum class Genre(val id: Int, val genre: String, @DrawableRes val icon: Int) {
     FAMILY(10751, "Family", R.drawable.ic_family),
     FANTASY(14, "Fantasy", R.drawable.ic_fantasy),
     HISTORY(36, "History", R.drawable.ic_history),
-//    HORROR(27, "Horror", R.drawable.ic_horror),
-//    MUSIC(10402, "Music", R.drawable.ic_music),
-//    MYSTERY(9648, "Mystery", R.drawable.ic_mystery),
-//    ROMANCE(10749, "Romance", R.drawable.ic_romance),
-//    SCIENCE_FICTION(878, "SCIENCE FICTION", R.drawable.ic_science_fiction),
-//    THRILLER(53, "Thriller", R.drawable.ic_thriller),
-//    WAR(10752, "War", R.drawable.ic_war)
+    HORROR(27, "Horror", R.drawable.ic_horror),
+    MUSIC(10402, "Music", R.drawable.ic_music),
+    MYSTERY(9648, "Mystery", R.drawable.ic_mystery),
+    ROMANCE(10749, "Romance", R.drawable.ic_romance),
+    SCIENCE_FICTION(878, "SCIENCE FICTION", R.drawable.ic_science_fiction),
+    THRILLER(53, "Thriller", R.drawable.ic_thriller),
+    WAR(10752, "War", R.drawable.ic_war)
 }
