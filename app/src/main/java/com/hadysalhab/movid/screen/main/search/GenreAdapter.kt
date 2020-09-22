@@ -23,13 +23,31 @@ class GenreAdapter(private val listener: Listener, private val viewFactory: View
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreViewHolder {
-        val view = viewFactory.getGenreListItem(parent)
-        view.registerListener(this)
-        return GenreViewHolder(view)
+        return if (viewType == 0) {
+            val view = viewFactory.getListHeader(parent)
+            view.setText("Browse Genres")
+            GenreHeaderViewHolder(view)
+        } else {
+            val view = viewFactory.getGenreListItem(parent)
+            view.registerListener(this)
+            GenreItemViewHolder(view)
+        }
+
     }
+
+    override fun getItemCount(): Int {
+        return currentList.size + 1
+    }
+
+    override fun getItem(position: Int): Genre {
+        return currentList[position - 1]
+    }
+
+    override fun getItemViewType(position: Int) = position
 
     override fun onBindViewHolder(holder: GenreViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        if (holder is GenreItemViewHolder) {
+            holder.bind(getItem(position))
+        }
     }
-
 }

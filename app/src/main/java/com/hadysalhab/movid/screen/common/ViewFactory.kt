@@ -7,6 +7,7 @@ import com.hadysalhab.movid.screen.common.cardgroup.CastsView
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.hadysalhab.movid.screen.common.cast.CastCardImpl
 import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
+import com.hadysalhab.movid.screen.common.listheader.ListHeader
 import com.hadysalhab.movid.screen.common.movielist.MovieListViewImpl
 import com.hadysalhab.movid.screen.common.movies.MovieCardImpl
 import com.hadysalhab.movid.screen.common.movies.MovieListItemImpl
@@ -80,4 +81,5 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
         GenreListItemImpl(layoutInflater, parent)
 
     fun getGenreList(parent: ViewGroup?): GenreList = GenreList(layoutInflater, parent, this)
+    fun getListHeader(parent: ViewGroup?): ListHeader = ListHeader(layoutInflater, parent)
 }
