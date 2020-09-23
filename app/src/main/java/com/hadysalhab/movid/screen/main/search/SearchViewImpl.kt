@@ -93,4 +93,9 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
         movieListView.displayEmptyListIndicator(msg)
     }
 
+    override fun onGenreListItemClick(genre: Genre) {
+        listeners.forEach {
+            it.onGenreListItemClick(genre)
+        }
+    }
 }

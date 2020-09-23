@@ -18,9 +18,11 @@ import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.usecases.factory.BaseFeaturedMoviesUseCaseFactory
 import com.hadysalhab.movid.common.usecases.factory.BaseSimilarRecommendedMoviesUseCaseFactory
+import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
+import com.hadysalhab.movid.movies.usecases.discover.DiscoverMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.favorites.FetchFavoriteMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.groups.FetchFeaturedMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.list.FetchMoviesResponseUseCase
@@ -351,6 +353,22 @@ class UseCaseModel {
         tmdbApi,
         schemaToModelHelper,
         errorMessageHandler
+    )
+
+    @Provides
+    fun getDiscoverMoviesUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        errorMessageHandler: ErrorMessageHandler,
+        schemaToModelHelper: SchemaToModelHelper,
+        uiThreadPoster: UiThreadPoster,
+        discoverMoviesFilterStateStore: DiscoverMoviesFilterStateStore,
+        tmdbApi: TmdbApi
+    ) = DiscoverMoviesUseCase(
+        backgroundThreadPoster,
+        errorMessageHandler,
+        schemaToModelHelper,
+        uiThreadPoster,
+        discoverMoviesFilterStateStore, tmdbApi
     )
 
 }

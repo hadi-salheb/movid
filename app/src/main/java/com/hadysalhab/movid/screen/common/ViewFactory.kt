@@ -17,6 +17,8 @@ import com.hadysalhab.movid.screen.common.reviews.ReviewListItemImpl
 import com.hadysalhab.movid.screen.common.seeall.SeeAllImpl
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 import com.hadysalhab.movid.screen.main.MainViewImpl
+import com.hadysalhab.movid.screen.main.discover.DiscoverView
+import com.hadysalhab.movid.screen.main.discover.DiscoverViewImpl
 import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailView
@@ -82,4 +84,6 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
 
     fun getGenreList(parent: ViewGroup?): GenreList = GenreList(layoutInflater, parent, this)
     fun getListHeader(parent: ViewGroup?): ListHeader = ListHeader(layoutInflater, parent)
+    fun getDiscoverView(parent: ViewGroup?): DiscoverView =
+        DiscoverViewImpl(layoutInflater, parent, this)
 }

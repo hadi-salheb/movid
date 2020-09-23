@@ -3,6 +3,7 @@ package com.hadysalhab.movid.screen.common.toolbar
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.DrawableRes
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
@@ -14,10 +15,12 @@ class MenuToolbarLayout(layoutInflater: LayoutInflater, parent: ViewGroup?) :
     }
 
     private val overflowMenuIcon: ImageView
+    private val menuToolbarTextView: TextView
 
     init {
         setRootView(layoutInflater.inflate(R.layout.component_menu_toolbar, parent, false))
         overflowMenuIcon = findViewById(R.id.overflow_menu_icon)
+        menuToolbarTextView = findViewById(R.id.menu_toolbar_title)
         overflowMenuIcon.setOnClickListener {
             listeners.forEach {
                 it.onOverflowMenuIconClick()
@@ -30,5 +33,9 @@ class MenuToolbarLayout(layoutInflater: LayoutInflater, parent: ViewGroup?) :
 
     fun setOverflowMenuIcon(@DrawableRes icon: Int) {
         overflowMenuIcon.setImageResource(icon)
+    }
+
+    fun setToolbarTitle(title: String) {
+        menuToolbarTextView.text = title
     }
 }

@@ -18,8 +18,8 @@ class SearchMovieUseCase(
     private val errorMessageHandler: ErrorMessageHandler
 ) : BaseBusyObservable<SearchMovieUseCase.Listener>() {
     interface Listener {
-        fun onSearchMovieSuccess(movies: MoviesResponse)
-        fun onSearchMovieFailure(msg: String)
+        fun onSearchMovieSuccess(movies: MoviesResponse, query: String)
+        fun onSearchMovieFailure(msg: String, query: String)
     }
 
     private lateinit var query: String
@@ -69,7 +69,7 @@ class SearchMovieUseCase(
     private fun notifyFailure(error: String) {
         uiThreadPoster.post {
             listeners.forEach {
-                it.onSearchMovieFailure(error)
+                it.onSearchMovieFailure(error, this.query)
             }
         }
         becomeNotBusy()
@@ -79,7 +79,7 @@ class SearchMovieUseCase(
     private fun notifySuccess(movies: MoviesResponse) {
         uiThreadPoster.post {
             listeners.forEach {
-                it.onSearchMovieSuccess(movies)
+                it.onSearchMovieSuccess(movies, this.query)
             }
         }
         becomeNotBusy()

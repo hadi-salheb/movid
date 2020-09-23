@@ -1,6 +1,7 @@
 package com.hadysalhab.movid.common.di.presentation
 
 import androidx.lifecycle.ViewModel
+import com.hadysalhab.movid.screen.main.discover.DiscoverViewModel
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesViewModel
 import com.hadysalhab.movid.screen.main.featured.FeaturedViewModel
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewModel
@@ -50,4 +51,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SearchViewModel::class)
     abstract fun searchViewModel(myViewModel: SearchViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DiscoverViewModel::class)
+    abstract fun discoverViewModel(myViewModel: DiscoverViewModel): ViewModel
 }

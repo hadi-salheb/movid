@@ -7,11 +7,13 @@ import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.main.BottomNavigationItems
+import com.hadysalhab.movid.screen.main.discover.DiscoverFragment
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
 import com.hadysalhab.movid.screen.main.movielist.MovieListFragment
 import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
+import com.hadysalhab.movid.screen.main.search.Genre
 import com.hadysalhab.movid.screen.main.search.SearchFragment
 import com.hadysalhab.movid.screen.main.watchlist.WatchlistMoviesFragment
 import com.ncapdevi.fragnav.FragNavController
@@ -81,5 +83,8 @@ class MainNavigator(
     fun clearCurrentStack() {
         fragNavController.clearStack()
     }
+
+    fun toDiscoverFragment(genre: Genre) =
+        fragNavController.pushFragment(DiscoverFragment.newInstance(genre))
 
 }

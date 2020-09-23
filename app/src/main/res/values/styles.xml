@@ -1,8 +1,9 @@
 <resources>
-    <!-- Base application theme. -->
-    <!--    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
-    <!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-    <!--  -->
-    <!--    </style>-->
+
+
+    <style name="TextAppearance.MyTheme.HeaderTextView" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/gray_700</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 
 </resources>

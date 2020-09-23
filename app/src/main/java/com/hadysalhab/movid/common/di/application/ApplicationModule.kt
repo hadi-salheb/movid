@@ -10,6 +10,7 @@ import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
+import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.movies.MoviesState
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.networking.TmdbApi
@@ -115,4 +116,8 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     fun dataValidator(timeProvider: TimeProvider): DataValidator = DataValidator(timeProvider)
+
+    @Provides
+    @Singleton
+    fun getDiscoverMoviesFilterStateStore() = DiscoverMoviesFilterStateStore()
 }

@@ -18,14 +18,17 @@ class SearchViewModel @Inject constructor(
     val viewState: LiveData<SearchViewState>
         get() = _viewState
 
+    init {
+        searchMovieUseCase.registerListener(this)
+    }
+
     fun searchMovie(text: CharSequence) {
+        this.query = text.toString()
         if (searchMovieUseCase.isBusy) {
             return
         }
-        searchMovieUseCase.registerListener(this)
         moviesList.clear()
         _viewState.value = Loading
-        this.query = text.toString()
         searchMovieUseCase.searchMovieUseCase(this.query, 1)
     }
 
@@ -41,19 +44,26 @@ class SearchViewModel @Inject constructor(
     }
 
 
-    override fun onSearchMovieSuccess(movies: MoviesResponse) {
-        this.moviesResponse = movies
-        moviesList.addAll(movies.movies ?: emptyList())
-        _viewState.value = SearchLoaded(moviesList)
+    override fun onSearchMovieSuccess(movies: MoviesResponse, query: String) {
+        if (_viewState.value != Genres) {
+            if (query == this.query) {
+                this.moviesResponse = movies
+                moviesList.addAll(movies.movies ?: emptyList())
+                _viewState.value = SearchLoaded(moviesList)
+            } else {
+                searchMovieUseCase.searchMovieUseCase(this.query, 1)
+            }
+        }
     }
 
-    override fun onSearchMovieFailure(msg: String) {
-        _viewState.value = Error(msg)
+    override fun onSearchMovieFailure(msg: String, query: String) {
+        if (_viewState.value != Genres) {
+            _viewState.value = Error(msg)
+        }
     }
 
     fun setGenresState() {
         _viewState.value = Genres
-        searchMovieUseCase.unregisterListener(this)
     }
 
     override fun onCleared() {

@@ -11,7 +11,9 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 class GenreList(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFactory: ViewFactory) :
     BaseObservableViewMvc<GenreList.Listener>(),
     GenreAdapter.Listener {
-    interface Listener
+    interface Listener {
+        fun onGenreListItemClick(genre: Genre)
+    }
 
     private val recyclerView: RecyclerView
     private val genreAdapter: GenreAdapter
@@ -26,6 +28,12 @@ class GenreList(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFactory:
             adapter = this@GenreList.genreAdapter
         }
         genreAdapter.submitList(Genre.values().toList())
+    }
+
+    override fun onGenreListItemClick(genre: Genre) {
+        listeners.forEach {
+            it.onGenreListItemClick(genre)
+        }
     }
 
 }

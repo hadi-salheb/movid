@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
@@ -26,6 +27,9 @@ class SearchFragment : BaseFragment(), SearchView.Listener {
 
     @Inject
     lateinit var mainNavigator: MainNavigator
+
+    @Inject
+    lateinit var discoverMoviesFilterStateStore: DiscoverMoviesFilterStateStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +68,9 @@ class SearchFragment : BaseFragment(), SearchView.Listener {
     }
 
     override fun onSearchConfirmed(text: CharSequence) {
+        if (text.isEmpty()) {
+            return
+        }
         searchViewModel.searchMovie(text)
     }
 
@@ -77,6 +84,11 @@ class SearchFragment : BaseFragment(), SearchView.Listener {
 
     override fun onMovieItemClicked(movieID: Int) {
         mainNavigator.toDetailFragment(movieID)
+    }
+
+    override fun onGenreListItemClick(genre: Genre) {
+        discoverMoviesFilterStateStore.reset()
+        mainNavigator.toDiscoverFragment(genre)
     }
 
     private fun render(viewState: SearchViewState) {

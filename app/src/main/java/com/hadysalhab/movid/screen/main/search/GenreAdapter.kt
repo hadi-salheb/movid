@@ -8,7 +8,9 @@ import com.hadysalhab.movid.screen.common.ViewFactory
 class GenreAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
     ListAdapter<Genre, GenreViewHolder>(DIFF_CALLBACK),
     GenreListItem.Listener {
-    interface Listener
+    interface Listener {
+        fun onGenreListItemClick(genre: Genre)
+    }
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Genre>() {
@@ -49,5 +51,9 @@ class GenreAdapter(private val listener: Listener, private val viewFactory: View
         if (holder is GenreItemViewHolder) {
             holder.bind(getItem(position))
         }
+    }
+
+    override fun onGenreListItemClick(genre: Genre) {
+        listener.onGenreListItemClick(genre)
     }
 }

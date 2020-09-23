@@ -16,5 +16,6 @@ abstract class SearchView : BaseObservableViewMvc<SearchView.Listener>() {
         fun onSearchBackBtnClick()
         fun loadMoreItems()
         fun onMovieItemClicked(movieID: Int)
+        fun onGenreListItemClick(genre: Genre)
     }
 }

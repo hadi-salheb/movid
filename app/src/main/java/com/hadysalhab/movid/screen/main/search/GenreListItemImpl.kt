@@ -10,15 +10,22 @@ class GenreListItemImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : Ge
     private val genreIcon: ImageView
     private val genreText: TextView
     private val genreArrow: ImageView
+    private lateinit var genre: Genre
 
     init {
         setRootView(layoutInflater.inflate(R.layout.component_genre_list_item, parent, false))
         genreIcon = findViewById(R.id.genre_icon)
         genreText = findViewById(R.id.genre_text)
         genreArrow = findViewById(R.id.genre_arrow)
+        getRootView().setOnClickListener {
+            listeners.forEach {
+                it.onGenreListItemClick(this.genre)
+            }
+        }
     }
 
     override fun displayGenre(genre: Genre) {
+        this.genre = genre
         genreIcon.setImageResource(genre.icon)
         genreText.text = genre.genre
     }

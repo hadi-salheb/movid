@@ -142,4 +142,21 @@ interface TmdbApi {
         @Query("query") query: String,
         @Query("page") page: Int
     ): Call<MoviesResponseSchema>
+
+    @GET("/3/discover/movie")
+    fun discover(
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
+        @Query("page") page: Int,
+        @Query("sort_by") sortBy: String?,
+        @Query("include_adult") includeAdult: Boolean,
+        @Query("primary_release_date.gte") primaryReleaseYearGte: String?,
+        @Query("primary_release_date.lte") primaryReleaseYearLte: String?,
+        @Query("vote_count.gte") voteCountGte: Int?,
+        @Query("vote_count.lte") voteCountLte: Int?,
+        @Query("vote_average.gte") voteAverageGte: Double?,
+        @Query("vote_average.lte") voteAverageLte: Double?,
+        @Query("with_genres") withGenres: String,
+        @Query("with_runtime.gte") withRuntimeGte: Int?,
+        @Query("with_runtime.lte") withRuntimeLte: Int?
+    ): Call<MoviesResponseSchema>
 }

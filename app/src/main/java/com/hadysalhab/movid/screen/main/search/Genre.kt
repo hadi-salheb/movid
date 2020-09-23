@@ -1,9 +1,12 @@
 package com.hadysalhab.movid.screen.main.search
 
+import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import com.hadysalhab.movid.R
+import kotlinx.android.parcel.Parcelize
 
-enum class Genre(val id: Int, val genre: String, @DrawableRes val icon: Int) {
+@Parcelize
+enum class Genre(val id: Int, val genre: String, @DrawableRes val icon: Int) : Parcelable {
     ACTION(28, "Action", R.drawable.ic_action),
     ADVENTURE(12, "Adventure", R.drawable.ic_adventure),
     ANIMATION(16, "Animation", R.drawable.ic_animation),
