@@ -20,6 +20,7 @@ class WatchlistMoviesViewModel @Inject constructor(
 ) : ViewModel(), FetchWatchlistMoviesUseCase.Listener {
     private val _viewState = MutableLiveData<WishlistMoviesViewState>()
     private lateinit var watchlistMovies: MoviesResponse
+    private var numberOfAddedMovies = 0
     private var moviesList = setOf<Movie>()
     val viewState: LiveData<WishlistMoviesViewState>
         get() = _viewState
@@ -31,6 +32,7 @@ class WatchlistMoviesViewModel @Inject constructor(
         }
         moviesList = when (event) {
             is WatchlistEvent.AddToWatchlist -> {
+                numberOfAddedMovies++
                 val oldMovieSet = this.moviesList
                 val newMovieSet = mutableSetOf(
                     schemaToModelHelper.getMovieFromMovieDetail(
@@ -38,6 +40,13 @@ class WatchlistMoviesViewModel @Inject constructor(
                     )
                 )
                 newMovieSet.addAll(oldMovieSet)
+                if (numberOfAddedMovies == MAX_NUMBER_OF_DATA_PER_PAGE) {
+                    watchlistMovies = watchlistMovies.copy(
+                        page = (newMovieSet.size + MAX_NUMBER_OF_DATA_PER_PAGE - 1) / MAX_NUMBER_OF_DATA_PER_PAGE,
+                        total_pages = watchlistMovies.total_pages + 1
+                    )
+                    numberOfAddedMovies = 0
+                }
                 newMovieSet
             }
             is WatchlistEvent.RemoveFromWatchlist -> {

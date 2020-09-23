@@ -21,6 +21,7 @@ class FavoriteMoviesViewModel @Inject constructor(
     private val _viewState = MutableLiveData<FavoriteMoviesViewState>()
     private lateinit var favoriteMovies: MoviesResponse
     private var moviesList = setOf<Movie>()
+    private var numberOfAddedMovies = 0
     val viewState: LiveData<FavoriteMoviesViewState>
         get() = _viewState
 
@@ -31,6 +32,7 @@ class FavoriteMoviesViewModel @Inject constructor(
         }
         moviesList = when (event) {
             is FavoritesEvent.AddMovieToFav -> {
+                numberOfAddedMovies++
                 val oldMovieSet = this.moviesList
                 val newMovieSet = mutableSetOf(
                     schemaToModelHelper.getMovieFromMovieDetail(
@@ -38,6 +40,13 @@ class FavoriteMoviesViewModel @Inject constructor(
                     )
                 )
                 newMovieSet.addAll(oldMovieSet)
+                if (numberOfAddedMovies == MAX_NUMBER_OF_DATA_PER_PAGE) {
+                    favoriteMovies = favoriteMovies.copy(
+                        page = (newMovieSet.size + MAX_NUMBER_OF_DATA_PER_PAGE - 1) / MAX_NUMBER_OF_DATA_PER_PAGE,
+                        total_pages = favoriteMovies.total_pages + 1
+                    )
+                    numberOfAddedMovies = 0
+                }
                 newMovieSet
             }
             is FavoritesEvent.RemoveMovieFromFav -> {
