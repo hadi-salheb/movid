@@ -2,12 +2,11 @@ package com.hadysalhab.movid.screen.main.featured
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
@@ -24,6 +23,27 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         @JvmStatic
         fun newInstance() = FeaturedFragment()
     }
+
+    //---------------------------------------------------------------------------------------------
+    private val featureMoviesObserver = Observer<List<MoviesResponse>> { featuredMovies ->
+        val sortedMovies = sortMoviesAndReturn(featuredMovies)
+        featuredView.displayMovieGroups(sortedMovies)
+    }
+    private val loadingObserver = Observer<Boolean> { isLoading ->
+        if (isLoading) featuredView.showLoadingIndicator() else featuredView.hideLoadingIndicator()
+    }
+
+    private val errorObserver = Observer<String?> { errorMessage ->
+        if (errorMessage != null) featuredView.showErrorScreen(errorMessage) else featuredView.hideErrorScreen()
+    }
+    private val powerMenuItemObserver = Observer<ToolbarCountryItems> { powerMenuItem ->
+        featuredView.setPowerMenuItem(powerMenuItem)
+    }
+    private val isPowerMenuOpenObserver = Observer<Boolean> { isPowerMenuOpen ->
+        if (isPowerMenuOpen) featuredView.showPowerMenu() else featuredView.hidePowerMenu()
+    }
+
+    //---------------------------------------------------------------------------------------------
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -43,7 +63,6 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
     private lateinit var featuredViewModel: FeaturedViewModel
     private var subscription: EventSource.NotificationToken? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector.inject(this)
@@ -61,51 +80,16 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         return featuredView.getRootView()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d("FeaturedFragment", "onViewCreated!")
-        featuredViewModel.data.observe(viewLifecycleOwner) { featuredMovies ->
-            val sortedMovies = sortMoviesAndReturn(featuredMovies)
-            featuredView.displayMovieGroups(sortedMovies)
-        }
-        featuredViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                featuredView.showLoadingIndicator()
-            } else {
-                featuredView.hideLoadingIndicator()
-            }
-        }
-        featuredViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
-            if (errorMessage != null) {
-                featuredView.showErrorScreen(errorMessage)
-            } else {
-                featuredView.hideErrorScreen()
-            }
-        }
-        featuredViewModel.isPowerMenuOpen.observe(viewLifecycleOwner) { isPowerMenuOpen ->
-            Log.d("FeaturedFragment", "registerLiveDataObservers: $isPowerMenuOpen ")
-            if (isPowerMenuOpen) featuredView.showPowerMenu() else featuredView.hidePowerMenu()
-        }
-        featuredViewModel.powerMenuItem.observe(viewLifecycleOwner) { powerMenuItem ->
-            featuredView.setPowerMenuItem(powerMenuItem)
-        }
-    }
-
     override fun onStart() {
         super.onStart()
-        featuredView.registerListener(this)
         featuredViewModel.onStart()
-        subscription = featuredViewModel.events.startListening { event ->
-            handleFeaturedEvents(event)
-        }
+        registerObservers()
     }
 
     override fun onStop() {
         super.onStop()
         featuredView.hidePowerMenu() //can cause memory leaks.!!!
-        featuredView.unregisterListener(this)
-        subscription?.stopListening()
-        subscription = null
+        unregisterObservers()
     }
 
     override fun onMovieCardClicked(movieID: Int) {
@@ -147,6 +131,29 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         when (event) {
             is ShowUserToastMessage -> toastHelper.displayMessage(event.toastMessage)
         }
+    }
+
+    private fun registerObservers() {
+        featuredView.registerListener(this)
+        subscription = featuredViewModel.events.startListening { event ->
+            handleFeaturedEvents(event)
+        }
+        featuredViewModel.data.observe(this, featureMoviesObserver)
+        featuredViewModel.isLoading.observe(this, loadingObserver)
+        featuredViewModel.errorMessage.observe(this, errorObserver)
+        featuredViewModel.isPowerMenuOpen.observe(this, isPowerMenuOpenObserver)
+        featuredViewModel.powerMenuItem.observe(this, powerMenuItemObserver)
+    }
+
+    private fun unregisterObservers() {
+        featuredViewModel.data.removeObserver(featureMoviesObserver)
+        featuredViewModel.isLoading.removeObserver(loadingObserver)
+        featuredViewModel.errorMessage.removeObserver(errorObserver)
+        featuredViewModel.isPowerMenuOpen.removeObserver(isPowerMenuOpenObserver)
+        featuredViewModel.powerMenuItem.removeObserver(powerMenuItemObserver)
+        featuredView.unregisterListener(this)
+        subscription?.stopListening()
+        subscription = null
     }
 
     private fun sortMoviesAndReturn(movieGroups: List<MoviesResponse>) =
