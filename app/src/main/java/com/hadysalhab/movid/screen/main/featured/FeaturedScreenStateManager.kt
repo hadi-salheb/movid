@@ -5,95 +5,95 @@ import androidx.lifecycle.MutableLiveData
 import com.hadysalhab.movid.movies.MoviesResponse
 
 class FeaturedScreenStateManager {
-    private val _viewState =
-        MutableLiveData<FeaturedViewState>(FeaturedViewState(powerMenuItem = ToolbarCountryItems.AUSTRALIA))
-    val viewState: LiveData<FeaturedViewState>
-        get() = _viewState
-    private var state: FeaturedViewState
-        get() {
-            return _viewState.value!!
-        }
-        set(value) {
-            _viewState.value = value
-        }
+    private val _isLoading = MutableLiveData<Boolean>(false)
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
+    private val _isPowerMenuOpen = MutableLiveData<Boolean>(false)
+    val isPowerMenuOpen: LiveData<Boolean>
+        get() = _isPowerMenuOpen
+
+    private val _errorMessage = MutableLiveData<String?>(null)
+    val errorMessage: LiveData<String?>
+        get() = _errorMessage
+
+    private val _data = MutableLiveData<List<MoviesResponse>>(emptyList())
+    val data: LiveData<List<MoviesResponse>>
+        get() = _data
+
+    private val _powerMenuItem = MutableLiveData<ToolbarCountryItems>(ToolbarCountryItems.AUSTRALIA)
+    val powerMenuItem: LiveData<ToolbarCountryItems>
+        get() = _powerMenuItem
+
 
     private var checkingForUpdates = false
 
 
     fun updatePowerMenuItem(storedFeaturedPowerMenuItem: ToolbarCountryItems) {
-        state = state.copy(powerMenuItem = storedFeaturedPowerMenuItem)
+        _powerMenuItem.value = storedFeaturedPowerMenuItem
     }
 
     fun showUserFeaturedMovies(moviesResponse: List<MoviesResponse>) {
-        state = state.copy(
-            isLoading = false,
-            data = moviesResponse,
-            errorMessage = null
-        )
+        _isLoading.value = false
+        _data.value = moviesResponse
+        _errorMessage.value = null
     }
 
     fun showUserLoadingScreen() {
-        state = state.copy(
-            isLoading = true,
-            errorMessage = null,
-            data = emptyList(),
-            isPowerMenuOpen = false
-        )
+        _isLoading.value = true
+        _data.value = emptyList()
+        _errorMessage.value = null
+        _isPowerMenuOpen.value = false
     }
 
     fun showUserLoadingScreenWithNewPowerItem(toolbarCountryItem: ToolbarCountryItems) {
-        state = state.copy(
-            isLoading = true,
-            data = emptyList(),
-            errorMessage = null,
-            powerMenuItem = toolbarCountryItem,
-            isPowerMenuOpen = false
-        )
+        _isLoading.value = true
+        _data.value = emptyList()
+        _errorMessage.value = null
+        _isPowerMenuOpen.value = false
+        _powerMenuItem.value = toolbarCountryItem
+        _isPowerMenuOpen.value = false
     }
 
     fun showUserCheckingForUpdates() {
         checkingForUpdates = true
-        state = state.copy(
-            isLoading = true,
-            errorMessage = null,
-            isPowerMenuOpen = false
-        )
+        _isLoading.value = true
+        _isPowerMenuOpen.value = false
+        _errorMessage.value = null
     }
 
     fun showUserCheckingForUpdatesSuccess(moviesResponse: List<MoviesResponse>) {
         checkingForUpdates = false
-        state = state.copy(
-            isLoading = false,
-            data = moviesResponse,
-            errorMessage = null
-        )
+        _isLoading.value = false
+        _data.value = moviesResponse
+        _errorMessage.value = null
     }
 
     fun showUserCheckingForUpdatesFailure() {
         // No need to show error Message
         checkingForUpdates = false
-        state = state.copy(
-            isLoading = false
-        )
+        _isLoading.value = false
     }
 
     fun togglePowerMenuVisibility() {
-        state = state.copy(isPowerMenuOpen = !state.isPowerMenuOpen)
+        _isPowerMenuOpen.value = _isPowerMenuOpen.value == false
     }
 
     fun closePowerMenu() {
-        state = state.copy(isPowerMenuOpen = false)
+        _isPowerMenuOpen.value = false
     }
 
     fun showUserErrorScreen(errorMessage: String) {
-        state = state.copy(isLoading = false, errorMessage = errorMessage, data = emptyList())
+        _isLoading.value = false
+        _data.value = emptyList()
+        _errorMessage.value = errorMessage
     }
 
 
-    fun areFeaturedMoviesDisplayed() = !state.data.isNullOrEmpty()
-    fun getCurrentPowerMenuItem(): ToolbarCountryItems = state.powerMenuItem
-    fun getCurrentDisplayedMovies(): List<MoviesResponse> = state.data
-    fun isPowerMenuOpen(): Boolean = state.isPowerMenuOpen
+    fun areFeaturedMoviesDisplayed() = !_data.value.isNullOrEmpty()
+    fun getCurrentPowerMenuItem(): ToolbarCountryItems = _powerMenuItem.value!!
+    fun getCurrentDisplayedMovies(): List<MoviesResponse> = _data.value!!
+    fun isPowerMenuOpen(): Boolean = _isPowerMenuOpen.value!!
     fun isCheckingForUpdate(): Boolean = checkingForUpdates
 
 

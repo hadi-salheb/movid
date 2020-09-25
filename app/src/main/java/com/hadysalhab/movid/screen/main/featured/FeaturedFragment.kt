@@ -2,11 +2,12 @@ package com.hadysalhab.movid.screen.main.featured
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
@@ -38,7 +39,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
 
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
-    private lateinit var view: FeaturedView
+    private lateinit var featuredView: FeaturedView
     private lateinit var featuredViewModel: FeaturedViewModel
     private var subscription: EventSource.NotificationToken? = null
 
@@ -54,22 +55,45 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::view.isInitialized) {
-            view = viewFactory.getFeaturedView(container)
+        if (!this::featuredView.isInitialized) {
+            featuredView = viewFactory.getFeaturedView(container)
         }
-        return view.getRootView()
+        return featuredView.getRootView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        featuredViewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            render(viewState)
-        })
+        Log.d("FeaturedFragment", "onViewCreated!")
+        featuredViewModel.data.observe(viewLifecycleOwner) { featuredMovies ->
+            val sortedMovies = sortMoviesAndReturn(featuredMovies)
+            featuredView.displayMovieGroups(sortedMovies)
+        }
+        featuredViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                featuredView.showLoadingIndicator()
+            } else {
+                featuredView.hideLoadingIndicator()
+            }
+        }
+        featuredViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage != null) {
+                featuredView.showErrorScreen(errorMessage)
+            } else {
+                featuredView.hideErrorScreen()
+            }
+        }
+        featuredViewModel.isPowerMenuOpen.observe(viewLifecycleOwner) { isPowerMenuOpen ->
+            Log.d("FeaturedFragment", "registerLiveDataObservers: $isPowerMenuOpen ")
+            if (isPowerMenuOpen) featuredView.showPowerMenu() else featuredView.hidePowerMenu()
+        }
+        featuredViewModel.powerMenuItem.observe(viewLifecycleOwner) { powerMenuItem ->
+            featuredView.setPowerMenuItem(powerMenuItem)
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        view.registerListener(this)
+        featuredView.registerListener(this)
         featuredViewModel.onStart()
         subscription = featuredViewModel.events.startListening { event ->
             handleFeaturedEvents(event)
@@ -78,26 +102,27 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
 
     override fun onStop() {
         super.onStop()
-        view.unregisterListener(this)
+        featuredView.hidePowerMenu() //can cause memory leaks.!!!
+        featuredView.unregisterListener(this)
         subscription?.stopListening()
         subscription = null
     }
 
     override fun onMovieCardClicked(movieID: Int) {
-        if (featuredViewModel.isPowerMenuOpen()) {
+        if (featuredViewModel.isPowerMenuOpen.value!!) {
             return
         }
         mainNavigator.toDetailFragment(movieID)
     }
 
     override fun onSeeAllClicked(groupType: GroupType) {
-        if (featuredViewModel.isPowerMenuOpen()) {
+        if (featuredViewModel.isPowerMenuOpen.value!!) {
             return
         }
         mainNavigator.toMovieListFragment(
             groupType,
             null,
-            featuredViewModel.getCurrentPowerMenuItem().region
+            featuredViewModel.powerMenuItem.value!!.region
         )
     }
 
@@ -117,22 +142,6 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         featuredViewModel.onRetryClicked()
     }
 
-    private fun render(viewState: FeaturedViewState) {
-        val sortedMovies = sortMoviesAndReturn(viewState.data)
-        view.displayMovieGroups(sortedMovies)
-        view.setPowerMenuItem(viewState.powerMenuItem)
-        if (viewState.isPowerMenuOpen) view.showPowerMenu() else view.hidePowerMenu()
-        if (viewState.isLoading) {
-            view.showLoadingIndicator()
-        } else {
-            view.hideLoadingIndicator()
-        }
-        if (viewState.errorMessage != null) {
-            view.showErrorScreen(viewState.errorMessage)
-        } else {
-            view.hideErrorScreen()
-        }
-    }
 
     private fun handleFeaturedEvents(event: FeaturedEvents) {
         when (event) {

@@ -22,8 +22,20 @@ class FeaturedViewModel @Inject constructor(
     private val emitter: EventEmitter<FeaturedEvents> = EventEmitter()
     val events: EventSource<FeaturedEvents> get() = emitter
 
-    val viewState: LiveData<FeaturedViewState>
-        get() = featuredScreenStateManager.viewState
+    val isLoading: LiveData<Boolean>
+        get() = featuredScreenStateManager.isLoading
+
+    val isPowerMenuOpen: LiveData<Boolean>
+        get() = featuredScreenStateManager.isPowerMenuOpen
+
+    val errorMessage: LiveData<String?>
+        get() = featuredScreenStateManager.errorMessage
+
+    val data: LiveData<List<MoviesResponse>>
+        get() = featuredScreenStateManager.data
+
+    val powerMenuItem: LiveData<ToolbarCountryItems>
+        get() = featuredScreenStateManager.powerMenuItem
 
     private var isFirstRender = true
 
@@ -34,6 +46,7 @@ class FeaturedViewModel @Inject constructor(
 
     fun onStart() {
         if (isFirstRender) {
+            isFirstRender = false
             val storeFeaturedMovies = getStoreFeaturedMovies()
             val areFeaturedMoviesValid = validateFeaturedMoviesAndReturnResult(storeFeaturedMovies)
             if (areFeaturedMoviesValid) {
@@ -41,7 +54,6 @@ class FeaturedViewModel @Inject constructor(
             } else {
                 featuredScreenStateManager.showUserLoadingScreen()
                 fetchApiForFeaturedMovies()
-                isFirstRender = false
             }
         } else if (areFeaturedMoviesDisplayed()) {
             val areDisplayedFeaturedMoviesValid =
@@ -86,12 +98,12 @@ class FeaturedViewModel @Inject constructor(
     private fun validateFeaturedMoviesAndReturnResult(moviesResponse: List<MoviesResponse>) =
         dataValidator.areFeaturedMoviesValid(
             moviesResponse,
-            getCurrentPowerMenuItem().region
+            powerMenuItem.value!!.region
         )
 
 
     private fun fetchApiForFeaturedMovies() {
-        fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify(getCurrentPowerMenuItem().region)
+        fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify(powerMenuItem.value!!.region)
     }
 
 
@@ -113,15 +125,9 @@ class FeaturedViewModel @Inject constructor(
         }
     }
 
-
     override fun onCleared() {
         super.onCleared()
-        sharedPreferencesManager.setStoredFeaturedPowerMenuItem(getCurrentPowerMenuItem())
+        sharedPreferencesManager.setStoredFeaturedPowerMenuItem(powerMenuItem.value!!)
         fetchFeaturedMoviesUseCase.unregisterListener(this)
     }
-
-    fun isPowerMenuOpen(): Boolean = featuredScreenStateManager.isPowerMenuOpen()
-    fun getCurrentPowerMenuItem() = featuredScreenStateManager.getCurrentPowerMenuItem()
-
-
 }
