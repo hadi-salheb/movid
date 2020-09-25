@@ -80,9 +80,9 @@ class FeaturedViewModel @Inject constructor(
     }
 
     fun onCountryToolbarItemClicked(toolbarCountryItem: ToolbarCountryItems) {
+        sharedPreferencesManager.setStoredFeaturedPowerMenuItem(toolbarCountryItem)
         featuredScreenStateManager.showUserLoadingScreenWithNewPowerItem(toolbarCountryItem)
         fetchApiForFeaturedMovies()
-
     }
 
     fun onRetryClicked() {
@@ -127,7 +127,6 @@ class FeaturedViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        sharedPreferencesManager.setStoredFeaturedPowerMenuItem(powerMenuItem.value!!)
         fetchFeaturedMoviesUseCase.unregisterListener(this)
     }
 }
