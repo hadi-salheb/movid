@@ -6,6 +6,7 @@ import com.hadysalhab.movid.screen.authentication.onboarding.OnBoardingViewImpl
 import com.hadysalhab.movid.screen.common.cardgroup.CastsView
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.hadysalhab.movid.screen.common.cast.CastCardImpl
+import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreenImpl
 import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
 import com.hadysalhab.movid.screen.common.listheader.ListHeader
 import com.hadysalhab.movid.screen.common.movielist.MovieListViewImpl
@@ -86,4 +87,6 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getListHeader(parent: ViewGroup?): ListHeader = ListHeader(layoutInflater, parent)
     fun getDiscoverView(parent: ViewGroup?): DiscoverView =
         DiscoverViewImpl(layoutInflater, parent, this)
+
+    fun getErrorScreen(parent: ViewGroup?) = ErrorScreenImpl(layoutInflater, parent)
 }

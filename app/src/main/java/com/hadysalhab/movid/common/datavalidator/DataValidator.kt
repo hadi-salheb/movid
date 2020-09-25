@@ -26,4 +26,15 @@ class DataValidator(private val timeProvider: TimeProvider) {
         accountResponse != null
 
     fun isSessionIdValid(sessionId: String?) = sessionId != null
+    fun areFeaturedMoviesValid(storeFeaturedMovies: List<MoviesResponse>, region: String): Boolean {
+        var result = true
+        for (moviesResponse in storeFeaturedMovies) {
+            val isValid = isMoviesResponseValid(moviesResponse, region)
+            if (!isValid) {
+                result = false
+                break
+            }
+        }
+        return result
+    }
 }

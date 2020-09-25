@@ -1,14 +1,12 @@
 package com.hadysalhab.movid.movies.usecases.groups
 
 
-import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.usecases.factory.BaseFeaturedMoviesUseCaseFactory
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
-import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
@@ -20,9 +18,7 @@ import com.techyourchance.threadposter.UiThreadPoster
 
 class FetchFeaturedMoviesUseCase(
     private val baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
-    private val moviesStateManager: MoviesStateManager,
     private val timeProvider: TimeProvider,
-    private val dataValidator: DataValidator,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val errorMessageHandler: ErrorMessageHandler,
     private val schemaToModelHelper: SchemaToModelHelper,
@@ -40,9 +36,8 @@ class FetchFeaturedMoviesUseCase(
     private lateinit var movieGroups: List<MoviesResponse>
     private lateinit var errorMessage: String
     private lateinit var region: String
-    private val featured =
+    private val computations =
         arrayOf(GroupType.POPULAR, GroupType.TOP_RATED, GroupType.UPCOMING, GroupType.NOW_PLAYING)
-    private lateinit var computations: Array<GroupType>
 
     fun fetchFeaturedMoviesUseCaseAndNotify(region: String) {
         assertNotBusyAndBecomeBusy()
@@ -51,28 +46,13 @@ class FetchFeaturedMoviesUseCase(
             mNumbOfFinishedUseCase = 0
             isAnyUseCaseFailed = false
             errorMessage = ""
-            computations = arrayOf()
             this.region = region
         }
-        featured.forEach { groupType ->
-            val store = moviesStateManager.getMoviesResponseByGroupType(groupType)
-            if (dataValidator.isMoviesResponseValid(store, region)) {
-                this.movieGroups = this.movieGroups.toMutableList().apply {
-                    add(store)
-                }
-            } else {
-                computations = computations.plus(groupType)
-            }
+        backgroundThreadPoster.post {
+            waitForAllUseCasesToFinish()
         }
-        if (computations.isNotEmpty()) {
-            backgroundThreadPoster.post {
-                waitForAllUseCasesToFinish()
-            }
-            backgroundThreadPoster.post {
-                fireUseCases()
-            }
-        } else {
-            notifySuccess()
+        backgroundThreadPoster.post {
+            fireUseCases()
         }
     }
 
@@ -117,7 +97,6 @@ class FetchFeaturedMoviesUseCase(
                             ).also { movieResponse ->
                                 movieResponse.timeStamp = timeProvider.currentTimestamp
                                 movieResponse.region = region
-                                moviesStateManager.updateMoviesResponse(movieResponse)
                             }
                         )
                     }

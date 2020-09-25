@@ -9,11 +9,17 @@ abstract class FeaturedView : BaseObservableViewMvc<FeaturedView.Listener>() {
         fun onMovieCardClicked(movieID: Int)
         fun onSeeAllClicked(groupType: GroupType)
         fun onCountryToolbarItemClicked(toolbarCountryItem: ToolbarCountryItems)
+        fun onOverflowMenuIconClick()
+        fun onBackgroundClick()
+        fun onRetryClicked()
     }
 
     abstract fun displayMovieGroups(movieGroups: List<MoviesResponse>)
-    abstract fun displayLoadingScreen()
-    abstract fun getSelectedCountry(): ToolbarCountryItems
-    abstract fun disablePopupMenu()
-    abstract fun enablePopupMenu()
+    abstract fun showLoadingIndicator()
+    abstract fun hideLoadingIndicator()
+    abstract fun showPowerMenu()
+    abstract fun hidePowerMenu()
+    abstract fun setPowerMenuItem(powerMenuItem: ToolbarCountryItems)
+    abstract fun showErrorScreen(errorMessage: String)
+    abstract fun hideErrorScreen()
 }

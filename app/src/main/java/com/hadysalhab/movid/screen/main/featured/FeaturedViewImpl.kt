@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreen
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.PowerMenu
@@ -22,13 +24,15 @@ class FeaturedViewImpl(
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
 ) :
-    FeaturedView(), MovieGroupAdapter.Listener, MenuToolbarLayout.Listener {
+    FeaturedView(), MovieGroupAdapter.Listener, MenuToolbarLayout.Listener, ErrorScreen.Listener {
     private val recyclerView: RecyclerView
     private val adapter: MovieGroupAdapter
     private val circularProgress: ProgressBar
     private val toolbar: Toolbar
     private val powerMenu: PowerMenu
     private val menuToolbarLayout: MenuToolbarLayout
+    private val errorScreen: ErrorScreen
+    private val errorScreenPlaceHolder: FrameLayout
 
     init {
         setRootView(inflater.inflate(R.layout.layout_featured, parent, false))
@@ -37,7 +41,12 @@ class FeaturedViewImpl(
         circularProgress = findViewById(R.id.progress_circular)
         toolbar = findViewById(R.id.toolbar)
         powerMenu = getPowerMenu()
+        errorScreenPlaceHolder = findViewById(R.id.error_screen_placeholder)
+        errorScreen = viewFactory.getErrorScreen(errorScreenPlaceHolder)
+        errorScreen.registerListener(this)
+        errorScreenPlaceHolder.addView(errorScreen.getRootView())
         menuToolbarLayout = getMenuToolbarLayout()
+        menuToolbarLayout.registerListener(this)
         setupRecyclerView()
         setUpToolbar()
     }
@@ -53,16 +62,19 @@ class FeaturedViewImpl(
         .setMenuRadius(10f) // sets the corner radius.
         .setTextSize(16)
         .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT) // Animation start point (TOP | LEFT).
-        .setPreferenceName("CountryPowerMenu")
         .setMenuColor(Color.WHITE)
+        .setDismissIfShowAgain(false)
+        .setOnBackgroundClickListener {
+            listeners.forEach {
+                it.onBackgroundClick()
+            }
+        }
+        .setAutoDismiss(false)
+        .setFocusable(true)
         .setOnMenuItemClickListener { position, item ->
             if (powerMenu.selectedPosition == position) {
                 return@setOnMenuItemClickListener
             }
-            powerMenu.selectedPosition = position
-            powerMenu.setPreferencePosition(position)
-            menuToolbarLayout.setOverflowMenuIcon(item.icon)
-            powerMenu.dismiss()
             listeners.forEach {
                 it.onCountryToolbarItemClicked(ToolbarCountryItems.values()[position])
             }
@@ -72,18 +84,56 @@ class FeaturedViewImpl(
     private fun getMenuToolbarLayout() = viewFactory.getMenuToolbarLayout(toolbar)
 
     private fun setUpToolbar() {
-        val position = powerMenu.getPreferencePosition(0)
-        powerMenu.selectedPosition = position
-        menuToolbarLayout.setOverflowMenuIcon(ToolbarCountryItems.values()[position].countryIcon)
         toolbar.addView(menuToolbarLayout.getRootView())
     }
-
 
     private fun setupRecyclerView() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
             adapter = this@FeaturedViewImpl.adapter
+        }
+    }
+
+
+    override fun showLoadingIndicator() {
+        circularProgress.visibility = View.VISIBLE
+    }
+
+    override fun hideLoadingIndicator() {
+        circularProgress.visibility = View.GONE
+    }
+
+    override fun showPowerMenu() {
+        powerMenu.showAsAnchorRightTop(menuToolbarLayout.getOverflowMenuIconPlaceHolder())
+    }
+
+    override fun hidePowerMenu() {
+        powerMenu.dismiss()
+    }
+
+    override fun setPowerMenuItem(powerMenuItem: ToolbarCountryItems) {
+        powerMenu.selectedPosition = powerMenuItem.ordinal
+        menuToolbarLayout.setOverflowMenuIcon(powerMenuItem.countryIcon)
+    }
+
+    override fun showErrorScreen(errorMessage: String) {
+        errorScreen.displayErrorMessage(errorMessage)
+        errorScreenPlaceHolder.visibility = View.VISIBLE
+    }
+
+    override fun hideErrorScreen() {
+        errorScreenPlaceHolder.visibility = View.GONE
+    }
+
+    override fun displayMovieGroups(movieGroups: List<MoviesResponse>) {
+        adapter.submitList(movieGroups)
+    }
+
+
+    override fun onOverflowMenuIconClick() {
+        listeners.forEach {
+            it.onOverflowMenuIconClick()
         }
     }
 
@@ -99,34 +149,8 @@ class FeaturedViewImpl(
         }
     }
 
-    override fun displayMovieGroups(movieGroups: List<MoviesResponse>) {
-        circularProgress.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
-        adapter.submitList(movieGroups)
-    }
-
-
-    override fun displayLoadingScreen() {
-        circularProgress.visibility = View.VISIBLE
-        recyclerView.visibility = View.GONE
-    }
-
-    override fun getSelectedCountry(): ToolbarCountryItems {
-        val powerMenuSelectedItem = powerMenu.itemList[powerMenu.selectedPosition]
-        return ToolbarCountryItems.values().find { it.countryName == powerMenuSelectedItem.title }
-            ?: throw RuntimeException("PowerMenu and ToolbarCountryItems are not in sync!")
-    }
-
-    override fun disablePopupMenu() {
-        menuToolbarLayout.unregisterListener(this)
-    }
-
-    override fun enablePopupMenu() {
-        menuToolbarLayout.registerListener(this)
-    }
-
-    override fun onOverflowMenuIconClick() {
-        powerMenu.showAsAnchorRightTop(menuToolbarLayout.getOverflowMenuIconPlaceHolder())
+    override fun onRetryClicked() {
+        listeners.forEach { it.onRetryClicked() }
     }
 
 }

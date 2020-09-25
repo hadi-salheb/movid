@@ -69,6 +69,7 @@ class MoviesStateManager(
         GroupType.TOP_RATED -> getTopRatedMovies()
         else -> throw RuntimeException("GroupType $groupType not supported in movie store")
     }
+
     private fun getTopRatedMovies() = moviesState.topRatedMovies.deepCopy(gson)
     private fun getNowPlayingMovies() = moviesState.nowPlayingMovies.deepCopy(gson)
     private fun getUpcomingMovies() = moviesState.upcomingMovies.deepCopy(gson)
@@ -76,7 +77,15 @@ class MoviesStateManager(
     fun getMovieDetailById(movieId: Int): MovieDetail? =
         moviesState.movieDetailList.find { it.details.id == movieId }?.deepCopy(gson)
 
-
+    fun getFeaturedMovies() =
+        synchronized(LOCK) {
+            listOf(
+                getTopRatedMovies(),
+                getNowPlayingMovies(),
+                getUpcomingMovies(),
+                getPopularMovies()
+            )
+        }
 }
 
 

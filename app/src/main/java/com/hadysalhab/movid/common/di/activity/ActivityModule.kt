@@ -17,6 +17,7 @@ import com.hadysalhab.movid.screen.common.screensnavigator.AppNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
+import com.hadysalhab.movid.screen.main.featured.FeaturedScreenStateManager
 import dagger.Module
 import dagger.Provides
 
@@ -87,5 +88,8 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getIntentHandler(context: Context) = IntentHandler(context)
+
+    @Provides
+    fun getFeaturedScreenStateManager() = FeaturedScreenStateManager()
 
 }

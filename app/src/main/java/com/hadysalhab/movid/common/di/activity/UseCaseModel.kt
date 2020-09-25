@@ -108,15 +108,11 @@ class UseCaseModel {
         uiThreadPoster: UiThreadPoster,
         errorMessageHandler: ErrorMessageHandler,
         schemaToModelHelper: SchemaToModelHelper,
-        moviesStateManager: MoviesStateManager,
-        dataValidator: DataValidator,
         timeProvider: TimeProvider
     ): FetchFeaturedMoviesUseCase =
         FetchFeaturedMoviesUseCase(
             baseFeaturedMoviesUseCaseFactory,
-            moviesStateManager,
             timeProvider,
-            dataValidator,
             backgroundThreadPoster,
             errorMessageHandler,
             schemaToModelHelper,

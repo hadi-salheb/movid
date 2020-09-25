@@ -51,7 +51,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     // https://github.com/skydoves/PowerMenu
-    implementation "com.github.skydoves:powermenu:2.1.3"
+    implementation "com.github.skydoves:powermenu:2.1.4"
 
     // Material Design
     implementation "com.google.android.material:material:1.1.0"
@@ -73,6 +73,11 @@ dependencies {
 
     //thread poster : https://github.com/techyourchance/thread-poster
     implementation 'com.techyourchance.threadposter:threadposter:0.8.3'
+
+    //https://github.com/zhanghai/MaterialProgressBar
+    implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
+    //https://github.com/ybq/Android-SpinKit
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
 
     // Carousel https://github.com/sayyam/carouselview
@@ -96,9 +101,6 @@ dependencies {
     //GreenRobot event bus https://github.com/greenrobot/EventBus
     implementation 'org.greenrobot:eventbus:3.2.0'
     kapt "org.greenrobot:eventbus-annotation-processor:3.2.0"
-
-    // TextDrawable https://github.com/amulyakhare/TextDrawable
-    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
