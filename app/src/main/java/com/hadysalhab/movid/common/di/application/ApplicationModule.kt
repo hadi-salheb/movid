@@ -58,7 +58,7 @@ class ApplicationModule(private val application: Application) {
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
-        .readTimeout(20, TimeUnit.SECONDS)
+        .readTimeout(3, TimeUnit.SECONDS)
         .build()
 
     @Provides
