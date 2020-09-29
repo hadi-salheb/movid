@@ -83,10 +83,5 @@ class FeaturedScreenStateManager {
         _isRefreshing.value = false
     }
 
-
-    fun areFeaturedMoviesDisplayed() = !_data.value.isNullOrEmpty()
-    fun getCurrentPowerMenuItem(): ToolbarCountryItems = _powerMenuItem.value!!
-    fun getCurrentDisplayedMovies(): List<MoviesResponse> = _data.value!!
-    fun isPowerMenuOpen(): Boolean = _isPowerMenuOpen.value!!
     fun isRefreshing(): Boolean = isRefreshing.value!!
 }
