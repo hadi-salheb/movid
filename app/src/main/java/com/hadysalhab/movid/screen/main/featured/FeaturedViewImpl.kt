@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
@@ -24,7 +26,8 @@ class FeaturedViewImpl(
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
 ) :
-    FeaturedView(), MovieGroupAdapter.Listener, MenuToolbarLayout.Listener, ErrorScreen.Listener {
+    FeaturedView(), MovieGroupAdapter.Listener, MenuToolbarLayout.Listener, ErrorScreen.Listener,
+    SwipeRefreshLayout.OnRefreshListener {
     private val recyclerView: RecyclerView
     private val adapter: MovieGroupAdapter
     private val circularProgress: ProgressBar
@@ -33,6 +36,7 @@ class FeaturedViewImpl(
     private val menuToolbarLayout: MenuToolbarLayout
     private val errorScreen: ErrorScreen
     private val errorScreenPlaceHolder: FrameLayout
+    private val pullToRefresh: SwipeRefreshLayout
 
     init {
         setRootView(inflater.inflate(R.layout.layout_featured, parent, false))
@@ -47,6 +51,9 @@ class FeaturedViewImpl(
         errorScreenPlaceHolder.addView(errorScreen.getRootView())
         menuToolbarLayout = getMenuToolbarLayout()
         menuToolbarLayout.registerListener(this)
+        pullToRefresh = findViewById(R.id.pull_to_refresh)
+        pullToRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.teal_600))
+        pullToRefresh.setOnRefreshListener(this)
         setupRecyclerView()
         setUpToolbar()
     }
@@ -126,6 +133,14 @@ class FeaturedViewImpl(
         errorScreenPlaceHolder.visibility = View.GONE
     }
 
+    override fun hideRefreshIndicator() {
+        pullToRefresh.isRefreshing = false
+    }
+
+    override fun showRefreshIndicator() {
+        pullToRefresh.isRefreshing = true
+    }
+
     override fun displayMovieGroups(movieGroups: List<MoviesResponse>) {
         adapter.submitList(movieGroups)
     }
@@ -151,6 +166,12 @@ class FeaturedViewImpl(
 
     override fun onRetryClicked() {
         listeners.forEach { it.onRetryClicked() }
+    }
+
+    override fun onRefresh() {
+        listeners.forEach {
+            it.onRefresh()
+        }
     }
 
 }

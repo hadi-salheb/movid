@@ -42,6 +42,13 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
     private val isPowerMenuOpenObserver = Observer<Boolean> { isPowerMenuOpen ->
         if (isPowerMenuOpen) featuredView.showPowerMenu() else featuredView.hidePowerMenu()
     }
+    private val isRefreshingObserver = Observer<Boolean> { isRefreshing ->
+        if (isRefreshing) {
+            featuredView.showRefreshIndicator()
+        } else {
+            featuredView.hideRefreshIndicator()
+        }
+    }
 
     //---------------------------------------------------------------------------------------------
 
@@ -126,6 +133,10 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         featuredViewModel.onRetryClicked()
     }
 
+    override fun onRefresh() {
+        featuredViewModel.onRefresh()
+    }
+
 
     private fun handleFeaturedEvents(event: FeaturedEvents) {
         when (event) {
@@ -143,6 +154,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         featuredViewModel.errorMessage.observe(this, errorObserver)
         featuredViewModel.isPowerMenuOpen.observe(this, isPowerMenuOpenObserver)
         featuredViewModel.powerMenuItem.observe(this, powerMenuItemObserver)
+        featuredViewModel.refresh.observe(this, isRefreshingObserver)
     }
 
     private fun unregisterObservers() {
@@ -151,6 +163,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         featuredViewModel.errorMessage.removeObserver(errorObserver)
         featuredViewModel.isPowerMenuOpen.removeObserver(isPowerMenuOpenObserver)
         featuredViewModel.powerMenuItem.removeObserver(powerMenuItemObserver)
+        featuredViewModel.refresh.removeObserver(isRefreshingObserver)
         featuredView.unregisterListener(this)
         subscription?.stopListening()
         subscription = null

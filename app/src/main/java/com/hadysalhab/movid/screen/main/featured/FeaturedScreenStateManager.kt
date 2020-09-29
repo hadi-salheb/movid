@@ -25,8 +25,9 @@ class FeaturedScreenStateManager {
     val powerMenuItem: LiveData<ToolbarCountryItems>
         get() = _powerMenuItem
 
-
-    private var checkingForUpdates = false
+    private val _isRefreshing = MutableLiveData<Boolean>(false)
+    val isRefreshing: LiveData<Boolean>
+        get() = _isRefreshing
 
 
     fun updatePowerMenuItem(storedFeaturedPowerMenuItem: ToolbarCountryItems) {
@@ -55,26 +56,6 @@ class FeaturedScreenStateManager {
         _isPowerMenuOpen.value = false
     }
 
-    fun showUserCheckingForUpdates() {
-        checkingForUpdates = true
-        _isLoading.value = true
-        _isPowerMenuOpen.value = false
-        _errorMessage.value = null
-    }
-
-    fun showUserCheckingForUpdatesSuccess(moviesResponse: List<MoviesResponse>) {
-        checkingForUpdates = false
-        _isLoading.value = false
-        _data.value = moviesResponse
-        _errorMessage.value = null
-    }
-
-    fun showUserCheckingForUpdatesFailure() {
-        // No need to show error Message
-        checkingForUpdates = false
-        _isLoading.value = false
-    }
-
     fun togglePowerMenuVisibility() {
         _isPowerMenuOpen.value = _isPowerMenuOpen.value == false
     }
@@ -89,12 +70,23 @@ class FeaturedScreenStateManager {
         _errorMessage.value = errorMessage
     }
 
+    fun showUserRefresh() {
+        _isRefreshing.value = true
+    }
+
+    fun showUserRefreshSuccess(moviesResponse: List<MoviesResponse>) {
+        _isRefreshing.value = false
+        _data.value = moviesResponse
+    }
+
+    fun showUserRefreshError() {
+        _isRefreshing.value = false
+    }
+
 
     fun areFeaturedMoviesDisplayed() = !_data.value.isNullOrEmpty()
     fun getCurrentPowerMenuItem(): ToolbarCountryItems = _powerMenuItem.value!!
     fun getCurrentDisplayedMovies(): List<MoviesResponse> = _data.value!!
     fun isPowerMenuOpen(): Boolean = _isPowerMenuOpen.value!!
-    fun isCheckingForUpdate(): Boolean = checkingForUpdates
-
-
+    fun isRefreshing(): Boolean = isRefreshing.value!!
 }

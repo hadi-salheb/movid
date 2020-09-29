@@ -12,6 +12,7 @@ abstract class FeaturedView : BaseObservableViewMvc<FeaturedView.Listener>() {
         fun onOverflowMenuIconClick()
         fun onBackgroundClick()
         fun onRetryClicked()
+        fun onRefresh()
     }
 
     abstract fun displayMovieGroups(movieGroups: List<MoviesResponse>)
@@ -22,4 +23,6 @@ abstract class FeaturedView : BaseObservableViewMvc<FeaturedView.Listener>() {
     abstract fun setPowerMenuItem(powerMenuItem: ToolbarCountryItems)
     abstract fun showErrorScreen(errorMessage: String)
     abstract fun hideErrorScreen()
+    abstract fun hideRefreshIndicator()
+    abstract fun showRefreshIndicator()
 }

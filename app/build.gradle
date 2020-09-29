@@ -62,9 +62,6 @@ dependencies {
     // Material Design
     implementation "com.google.android.material:material:1.1.0"
 
-    //https://github.com/Yalantis/Phoenix
-    implementation 'com.yalantis:phoenix:1.2.3'
-
     //fragNav library : https://github.com/ncapdevi/FragNav
     implementation 'com.ncapdevi:frag-nav:3.2.0'
 
