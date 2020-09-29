@@ -4,6 +4,7 @@ import android.app.Application
 import com.hadysalhab.movid.common.di.application.ApplicationComponent
 import com.hadysalhab.movid.common.di.application.ApplicationModule
 import com.hadysalhab.movid.common.di.application.DaggerApplicationComponent
+import timber.log.Timber
 
 /**
  * Custom application class
@@ -13,5 +14,10 @@ class MyApplication : Application() {
         DaggerApplicationComponent.builder().applicationModule(
             ApplicationModule((this))
         ).build()
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        Timber.plant(Timber.DebugTree())
     }
 }

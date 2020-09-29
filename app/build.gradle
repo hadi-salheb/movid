@@ -56,8 +56,14 @@ dependencies {
     // https://github.com/skydoves/PowerMenu
     implementation "com.github.skydoves:powermenu:2.1.4"
 
+    //https://github.com/JakeWharton/timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
     // Material Design
     implementation "com.google.android.material:material:1.1.0"
+
+    //https://github.com/Yalantis/Phoenix
+    implementation 'com.yalantis:phoenix:1.2.3'
 
     //fragNav library : https://github.com/ncapdevi/FragNav
     implementation 'com.ncapdevi:frag-nav:3.2.0'
