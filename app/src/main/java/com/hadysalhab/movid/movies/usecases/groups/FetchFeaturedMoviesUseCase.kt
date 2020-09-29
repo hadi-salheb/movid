@@ -7,6 +7,7 @@ import com.hadysalhab.movid.common.usecases.factory.BaseFeaturedMoviesUseCaseFac
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
+import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
@@ -22,7 +23,8 @@ class FetchFeaturedMoviesUseCase(
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val errorMessageHandler: ErrorMessageHandler,
     private val schemaToModelHelper: SchemaToModelHelper,
-    private val uiThreadPoster: UiThreadPoster
+    private val uiThreadPoster: UiThreadPoster,
+    private val moviesStateManager: MoviesStateManager
 ) :
     BaseBusyObservable<FetchFeaturedMoviesUseCase.Listener>() {
     interface Listener {
@@ -97,6 +99,7 @@ class FetchFeaturedMoviesUseCase(
                             ).also { movieResponse ->
                                 movieResponse.timeStamp = timeProvider.currentTimestamp
                                 movieResponse.region = region
+                                moviesStateManager.updateMoviesResponse(movieResponse)
                             }
                         )
                     }
