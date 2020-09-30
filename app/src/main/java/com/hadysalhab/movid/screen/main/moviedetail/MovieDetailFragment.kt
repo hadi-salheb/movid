@@ -29,6 +29,11 @@ class MovieDetailFragment : BaseFragment(),
     private val movieDetailObserver = Observer<MovieDetail> { movieDetail ->
         if (movieDetail != null) {
             movieDetailView.displayMovieDetail(movieDetail)
+            if (intentHandler.canHandleTrailerIntent(movieDetail.videosResponse)) {
+                movieDetailView.showTrailerButton()
+            } else {
+                movieDetailView.hideTrailerButton()
+            }
         } else {
             movieDetailView.hideMovieDetail() //hide will disable pull to refresh!
         }
