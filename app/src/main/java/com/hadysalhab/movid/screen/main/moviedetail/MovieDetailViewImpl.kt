@@ -275,9 +275,11 @@ class MovieDetailViewImpl(
     private fun displayFacts(movieInfo: MovieInfo) {
         factsLL.removeAllViews()
         movieInfo.revenue.let {
-            val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_money)!!, it.toString())
-            factsLL.addView(factView.getRootView())
+            if (it != 0L) {
+                val factView = viewFactory.getFactView(factsLL)
+                factView.displayFact(getContext().getDrawable(R.drawable.ic_money)!!, it.toString())
+                factsLL.addView(factView.getRootView())
+            }
         }
         movieInfo.homepage?.let {
             val factView = viewFactory.getFactView(factsLL)
