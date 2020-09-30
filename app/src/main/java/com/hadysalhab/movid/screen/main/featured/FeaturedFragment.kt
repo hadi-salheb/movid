@@ -15,6 +15,7 @@ import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import com.zhuinden.eventemitter.EventSource
+import com.zhuinden.tupleskt.Tuple4
 import javax.inject.Inject
 
 
@@ -30,11 +31,17 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         featuredView.displayMovieGroups(sortedMovies)
     }
     private val loadingObserver = Observer<Boolean> { isLoading ->
-        if (isLoading) featuredView.showLoadingIndicator() else featuredView.hideLoadingIndicator()
+        if (isLoading) {
+            featuredView.showLoadingIndicator()
+        } else {
+            featuredView.hideLoadingIndicator()
+        }
     }
 
     private val errorObserver = Observer<String?> { errorMessage ->
-        if (errorMessage != null) featuredView.showErrorScreen(errorMessage) else featuredView.hideErrorScreen()
+        if (errorMessage != null) {
+            featuredView.showErrorScreen(errorMessage)
+        } else featuredView.hideErrorScreen()
     }
     private val powerMenuItemObserver = Observer<ToolbarCountryItems> { powerMenuItem ->
         featuredView.setPowerMenuItem(powerMenuItem)
@@ -49,6 +56,17 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
             featuredView.hideRefreshIndicator()
         }
     }
+    private val combinedStateObserver =
+        Observer<Tuple4<List<MoviesResponse>?, Boolean?, String?, Boolean?>> { (featuredMovies, loading, errorMessage, isRefreshing) ->
+            if (!isRefreshing!!) {
+                if (loading!! || errorMessage != null) {
+                    featuredView.disablePullToRefresh()
+                } else {
+                    featuredView.enablePullToRefresh()
+                }
+            }
+
+        }
 
     //---------------------------------------------------------------------------------------------
 
@@ -155,6 +173,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         featuredViewModel.isPowerMenuOpen.observe(this, isPowerMenuOpenObserver)
         featuredViewModel.powerMenuItem.observe(this, powerMenuItemObserver)
         featuredViewModel.refresh.observe(this, isRefreshingObserver)
+        featuredViewModel.combinedState.observe(this, combinedStateObserver)
     }
 
     private fun unregisterObservers() {
@@ -164,6 +183,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         featuredViewModel.isPowerMenuOpen.removeObserver(isPowerMenuOpenObserver)
         featuredViewModel.powerMenuItem.removeObserver(powerMenuItemObserver)
         featuredViewModel.refresh.removeObserver(isRefreshingObserver)
+        featuredViewModel.combinedState.removeObserver(combinedStateObserver)
         featuredView.unregisterListener(this)
         subscription?.stopListening()
         subscription = null

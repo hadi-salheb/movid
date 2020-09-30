@@ -7,6 +7,7 @@ import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.usecases.groups.FetchFeaturedMoviesUseCase
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
+import com.zhuinden.livedatacombinetuplekt.combineTuple
 import javax.inject.Inject
 
 class FeaturedViewModel @Inject constructor(
@@ -36,6 +37,7 @@ class FeaturedViewModel @Inject constructor(
     val refresh: LiveData<Boolean>
         get() = featuredScreenStateManager.isRefreshing
 
+    val combinedState = combineTuple(data, isLoading, errorMessage, refresh)
     private var isFirstRender = true
 
     init {
@@ -71,11 +73,17 @@ class FeaturedViewModel @Inject constructor(
     }
 
     fun onRetryClicked() {
+        if (fetchFeaturedMoviesUseCase.isBusy) {
+            return
+        }
         featuredScreenStateManager.showUserLoadingScreen()
         fetchApiForFeaturedMovies()
     }
 
     fun onRefresh() {
+        if (fetchFeaturedMoviesUseCase.isBusy) {
+            return
+        }
         featuredScreenStateManager.showUserRefresh()
         fetchApiForFeaturedMovies()
     }
@@ -98,7 +106,7 @@ class FeaturedViewModel @Inject constructor(
     override fun onFetchMovieGroupsFailed(msg: String) {
         if (featuredScreenStateManager.isRefreshing()) {
             featuredScreenStateManager.showUserRefreshError()
-            emitter.emit(ShowUserToastMessage("Updating Movies Failed"))
+            emitter.emit(ShowUserToastMessage(msg))
         } else {
             featuredScreenStateManager.showUserErrorScreen(msg)
         }

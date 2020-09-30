@@ -141,6 +141,14 @@ class FeaturedViewImpl(
         pullToRefresh.isRefreshing = true
     }
 
+    override fun enablePullToRefresh() {
+        pullToRefresh.isEnabled = true
+    }
+
+    override fun disablePullToRefresh() {
+        pullToRefresh.isEnabled = false
+    }
+
     override fun displayMovieGroups(movieGroups: List<MoviesResponse>) {
         adapter.submitList(movieGroups)
     }

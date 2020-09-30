@@ -25,4 +25,6 @@ abstract class FeaturedView : BaseObservableViewMvc<FeaturedView.Listener>() {
     abstract fun hideErrorScreen()
     abstract fun hideRefreshIndicator()
     abstract fun showRefreshIndicator()
+    abstract fun enablePullToRefresh()
+    abstract fun disablePullToRefresh()
 }
