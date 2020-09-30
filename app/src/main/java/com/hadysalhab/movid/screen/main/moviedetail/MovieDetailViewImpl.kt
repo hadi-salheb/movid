@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.screen.main.moviedetail
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,8 @@ import com.hadysalhab.movid.screen.common.cardgroup.DataGroup
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreen
 import com.synnapps.carouselview.CarouselView
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MovieDetailViewImpl(
     layoutInflater: LayoutInflater,
@@ -272,53 +275,78 @@ class MovieDetailViewImpl(
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun displayFacts(movieInfo: MovieInfo) {
         factsLL.removeAllViews()
         movieInfo.revenue.let {
             if (it != 0L) {
                 val factView = viewFactory.getFactView(factsLL)
-                factView.displayFact(getContext().getDrawable(R.drawable.ic_money)!!, it.toString())
+                factView.displayFact(
+                    getContext().getDrawable(R.drawable.ic_money)!!,
+                    "%,d".format(it)
+                )
                 factsLL.addView(factView.getRootView())
             }
         }
-        movieInfo.homepage?.let {
-            val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_web)!!, it)
-            factsLL.addView(factView.getRootView())
-        }
-        movieInfo.popularity.let {
-            val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(
-                getContext().getDrawable(R.drawable.ic_popularity)!!,
-                it.toString()
-            )
-            factsLL.addView(factView.getRootView())
-        }
+//        movieInfo.homepage?.let {
+//            if (it.isNotEmpty()) {
+//                val factView = viewFactory.getFactView(factsLL)
+//                factView.displayFact(getContext().getDrawable(R.drawable.ic_web)!!, it)
+//                factsLL.addView(factView.getRootView())
+//            }
+//        }
+//        movieInfo.popularity.let {
+//            val factView = viewFactory.getFactView(factsLL)
+//            factView.displayFact(
+//                getContext().getDrawable(R.drawable.ic_popularity)!!,
+//                it.toString()
+//            )
+//            factsLL.addView(factView.getRootView())
+//        }
         movieInfo.genres.let {
-            val factView = viewFactory.getFactView(factsLL)
-            val genres = it.joinToString { genre -> genre.name }
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_genre)!!, genres)
-            factsLL.addView(factView.getRootView())
+            if (it.isNotEmpty()) {
+                val factView = viewFactory.getFactView(factsLL)
+                val genres = it.joinToString { genre -> genre.name }
+                factView.displayFact(getContext().getDrawable(R.drawable.ic_genre)!!, genres)
+                factsLL.addView(factView.getRootView())
+            }
         }
         movieInfo.status.let {
-            val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_status)!!, it)
-            factsLL.addView(factView.getRootView())
+            if (it.isNotEmpty()) {
+                val factView = viewFactory.getFactView(factsLL)
+                factView.displayFact(getContext().getDrawable(R.drawable.ic_status)!!, it)
+                factsLL.addView(factView.getRootView())
+            }
         }
         movieInfo.originalLanguage.let {
-            val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_language)!!, it)
-            factsLL.addView(factView.getRootView())
+            if (it.isNotEmpty()) {
+                val codeLocale = Locale(it)
+                val englishLocale = Locale("en")
+                val languageName = codeLocale.getDisplayLanguage(englishLocale)
+                val factView = viewFactory.getFactView(factsLL)
+                factView.displayFact(
+                    getContext().getDrawable(R.drawable.ic_language)!!,
+                    languageName
+                )
+                factsLL.addView(factView.getRootView())
+            }
         }
         movieInfo.runtime.let {
-            val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_video)!!, "$it ")
-            factsLL.addView(factView.getRootView())
+            if (it != null && it != 0) {
+                val factView = viewFactory.getFactView(factsLL)
+                factView.displayFact(getContext().getDrawable(R.drawable.ic_video)!!, "$it minutes")
+                factsLL.addView(factView.getRootView())
+            }
         }
-        movieInfo.releaseDate?.let {
-            val factView = viewFactory.getFactView(factsLL)
-            factView.displayFact(getContext().getDrawable(R.drawable.ic_date)!!, it)
-            factsLL.addView(factView.getRootView())
+        movieInfo.releaseDate?.let { releaseDate ->
+            if (releaseDate.isNotEmpty()) {
+                val parser = SimpleDateFormat("yyyy-MM-dd")
+                val formatter = SimpleDateFormat("MMM dd, yyyy.")
+                val output = formatter.format(parser.parse(releaseDate)!!)
+                val factView = viewFactory.getFactView(factsLL)
+                factView.displayFact(getContext().getDrawable(R.drawable.ic_date)!!, output)
+                factsLL.addView(factView.getRootView())
+            }
         }
     }
 
