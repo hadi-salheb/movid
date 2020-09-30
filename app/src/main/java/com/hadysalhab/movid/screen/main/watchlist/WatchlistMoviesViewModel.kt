@@ -8,7 +8,7 @@ import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.watchlist.FetchWatchlistMoviesUseCase
-import com.hadysalhab.movid.screen.common.events.WatchlistEvent
+import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -26,12 +26,12 @@ class WatchlistMoviesViewModel @Inject constructor(
         get() = _viewState
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onWishlistEvent(event: WatchlistEvent) {
+    fun onWishlistEvent(event: MovieDetailEvents) {
         if (!this::watchlistMovies.isInitialized) {
             return
         }
-        moviesList = when (event) {
-            is WatchlistEvent.AddToWatchlist -> {
+        when (event) {
+            is MovieDetailEvents.AddToWatchlist -> {
                 numberOfAddedMovies++
                 val oldMovieSet = this.moviesList
                 val newMovieSet = mutableSetOf(
@@ -47,13 +47,15 @@ class WatchlistMoviesViewModel @Inject constructor(
                     )
                     numberOfAddedMovies = 0
                 }
-                newMovieSet
+                moviesList = newMovieSet
+                _viewState.value = WatchlistMoviesLoaded(moviesList.toList())
             }
-            is WatchlistEvent.RemoveFromWatchlist -> {
-                moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
+            is MovieDetailEvents.RemoveFromWatchlist -> {
+                moviesList = moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
+                _viewState.value = WatchlistMoviesLoaded(moviesList.toList())
             }
         }
-        _viewState.value = WatchlistMoviesLoaded(moviesList.toList())
+
     }
 
 

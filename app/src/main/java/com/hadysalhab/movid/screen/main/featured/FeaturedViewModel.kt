@@ -16,8 +16,8 @@ class FeaturedViewModel @Inject constructor(
     private val featuredScreenStateManager: FeaturedScreenStateManager
 ) : ViewModel(), FetchFeaturedMoviesUseCase.Listener {
 
-    private val emitter: EventEmitter<FeaturedEvents> = EventEmitter()
-    val events: EventSource<FeaturedEvents> get() = emitter
+    private val emitter: EventEmitter<FeaturedScreenEvents> = EventEmitter()
+    val screenEvents: EventSource<FeaturedScreenEvents> get() = emitter
 
     val isLoading: LiveData<Boolean>
         get() = featuredScreenStateManager.isLoading

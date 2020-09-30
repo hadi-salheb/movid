@@ -180,7 +180,7 @@ class MovieDetailFragment : BaseFragment(),
 
     //----------------------------------------------------------------------------------------------
 
-    private fun handleFeaturedEvents(event: MovieDetailEvents) {
+    private fun handleFeaturedEvents(event: MovieDetailScreenEvents) {
         when (event) {
             is ShowUserToastMessage -> toastHelper.displayMessage(event.toastMessage)
         }
@@ -188,7 +188,7 @@ class MovieDetailFragment : BaseFragment(),
 
     private fun registerObservers() {
         movieDetailView.registerListener(this)
-        subscription = movieDetailViewModel.events.startListening { event ->
+        subscription = movieDetailViewModel.screenEvents.startListening { event ->
             handleFeaturedEvents(event)
         }
         movieDetailViewModel.combinedState.observe(this, combinedStateObserver)

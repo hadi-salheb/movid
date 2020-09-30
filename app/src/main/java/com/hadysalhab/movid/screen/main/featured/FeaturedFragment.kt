@@ -156,7 +156,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
     }
 
 
-    private fun handleFeaturedEvents(event: FeaturedEvents) {
+    private fun handleFeaturedEvents(event: FeaturedScreenEvents) {
         when (event) {
             is ShowUserToastMessage -> toastHelper.displayMessage(event.toastMessage)
         }
@@ -164,7 +164,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
 
     private fun registerObservers() {
         featuredView.registerListener(this)
-        subscription = featuredViewModel.events.startListening { event ->
+        subscription = featuredViewModel.screenEvents.startListening { event ->
             handleFeaturedEvents(event)
         }
         featuredViewModel.data.observe(this, featureMoviesObserver)

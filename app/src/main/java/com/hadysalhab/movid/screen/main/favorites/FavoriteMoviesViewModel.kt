@@ -8,7 +8,7 @@ import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.favorites.FetchFavoriteMoviesUseCase
-import com.hadysalhab.movid.screen.common.events.FavoritesEvent
+import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -26,12 +26,12 @@ class FavoriteMoviesViewModel @Inject constructor(
         get() = _viewState
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onFavoriteEvent(event: FavoritesEvent) {
+    fun onFavoriteEvent(event: MovieDetailEvents) {
         if (!this::favoriteMovies.isInitialized) {
             return
         }
-        moviesList = when (event) {
-            is FavoritesEvent.AddMovieToFav -> {
+        when (event) {
+            is MovieDetailEvents.AddMovieToFav -> {
                 numberOfAddedMovies++
                 val oldMovieSet = this.moviesList
                 val newMovieSet = mutableSetOf(
@@ -47,13 +47,14 @@ class FavoriteMoviesViewModel @Inject constructor(
                     )
                     numberOfAddedMovies = 0
                 }
-                newMovieSet
+                moviesList = newMovieSet
+                _viewState.value = FavoriteMoviesLoaded(moviesList.toList())
             }
-            is FavoritesEvent.RemoveMovieFromFav -> {
-                moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
+            is MovieDetailEvents.RemoveMovieFromFav -> {
+                moviesList = moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
+                _viewState.value = FavoriteMoviesLoaded(moviesList.toList())
             }
         }
-        _viewState.value = FavoriteMoviesLoaded(moviesList.toList())
     }
 
 

@@ -8,12 +8,13 @@ import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
-import com.hadysalhab.movid.screen.common.events.FavoritesEvent
-import com.hadysalhab.movid.screen.common.events.WatchlistEvent
+import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import com.zhuinden.livedatacombinetuplekt.combineTuple
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 class MovieDetailViewModel @Inject constructor(
@@ -28,8 +29,8 @@ class MovieDetailViewModel @Inject constructor(
     private var isFirstRender = true
     private var movieID: Int? = null
 
-    private val emitter: EventEmitter<MovieDetailEvents> = EventEmitter()
-    val events: EventSource<MovieDetailEvents> get() = emitter
+    private val emitter: EventEmitter<MovieDetailScreenEvents> = EventEmitter()
+    val screenEvents: EventSource<MovieDetailScreenEvents> get() = emitter
 
     val data: LiveData<MovieDetail>
         get() = movieDetailScreenStateManager.data
@@ -49,6 +50,7 @@ class MovieDetailViewModel @Inject constructor(
         fetchMovieDetailUseCase.registerListener(this)
         addRemoveFavMovieUseCase.registerListener(this)
         addRemoveWatchlistMovieUseCase.registerListener(this)
+        EventBus.getDefault().register(this)
     }
 
     fun onStart(movieID: Int) {
@@ -62,12 +64,8 @@ class MovieDetailViewModel @Inject constructor(
                 movieDetailScreenStateManager.showUserLoadingScreen()
                 fetchApiForMovieDetail()
             }
-        } else {
-            //if data was displayed and user updated favorites/watchlist!
-            //user can open movie detail from featured and favorites/watchlist tab
-            if (data.value != null && movieDetailStored != null && data.value != movieDetailStored) {
-                movieDetailScreenStateManager.showMovieDetail(movieDetailStored)
-            }
+        } else if (errorMessage.value != null && movieDetailStored != null) {
+            movieDetailScreenStateManager.showMovieDetail(movieDetailStored)
         }
     }
 
@@ -132,36 +130,38 @@ class MovieDetailViewModel @Inject constructor(
         isAddRemoveFavMovieUseCaseBusy() || isAddRemoveWatchlistMovieUseCaseBusy()
 
     //UseCaseResults--------------------------------------------------------------------------------
+
+    //SUCCESS
     override fun onAddRemoveFavoritesSuccess(movieDetail: MovieDetail) {
         if (movieDetail.accountStates.favorite) {
-            EventBus.getDefault().post(FavoritesEvent.AddMovieToFav(movieDetail))
+            EventBus.getDefault().post(MovieDetailEvents.AddMovieToFav(movieDetail))
         } else {
-            EventBus.getDefault().post(FavoritesEvent.RemoveMovieFromFav(movieDetail))
+            EventBus.getDefault().post(MovieDetailEvents.RemoveMovieFromFav(movieDetail))
         }
-        movieDetailScreenStateManager.showMovieDetail(movieDetail)
     }
 
     override fun onAddRemoveWatchlistSuccess(movieDetail: MovieDetail) {
         if (movieDetail.accountStates.watchlist) {
-            EventBus.getDefault().post(WatchlistEvent.AddToWatchlist(movieDetail))
+            EventBus.getDefault().post(MovieDetailEvents.AddToWatchlist(movieDetail))
         } else {
-            EventBus.getDefault().post(WatchlistEvent.RemoveFromWatchlist(movieDetail))
+            EventBus.getDefault().post(MovieDetailEvents.RemoveFromWatchlist(movieDetail))
         }
-        movieDetailScreenStateManager.showMovieDetail(movieDetail)
     }
 
     override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
-        if (movieDetailScreenStateManager.isRefreshing()) {
-            movieDetailScreenStateManager.showUserRefreshSuccess(movieDetail)
-            emitter.emit(ShowUserToastMessage("Movie Updated"))
-        } else {
-            movieDetailScreenStateManager.showMovieDetail(movieDetail)
-        }
+        EventBus.getDefault().post(MovieDetailEvents.MovieDetailFetched(movieDetail))
     }
 
+
+    //Failure
     override fun onAddRemoveFavoritesFailure(err: String) {
         emitter.emit(ShowUserToastMessage(err))
         movieDetailScreenStateManager.showAddRemoveFavoritesFailure()
+    }
+
+    override fun onAddRemoveWatchlistFailure(err: String) {
+        emitter.emit(ShowUserToastMessage(err))
+        movieDetailScreenStateManager.showAddRemoveWatchListFailure()
     }
 
     override fun onFetchMovieDetailFailed(msg: String) {
@@ -173,10 +173,7 @@ class MovieDetailViewModel @Inject constructor(
         }
     }
 
-    override fun onAddRemoveWatchlistFailure(err: String) {
-        emitter.emit(ShowUserToastMessage(err))
-        movieDetailScreenStateManager.showAddRemoveWatchListFailure()
-    }
+
 //----------------------------------------------------------------------------------------------
 
     override fun onCleared() {
@@ -184,9 +181,19 @@ class MovieDetailViewModel @Inject constructor(
         fetchMovieDetailUseCase.unregisterListener(this)
         addRemoveFavMovieUseCase.unregisterListener(this)
         addRemoveWatchlistMovieUseCase.unregisterListener(this)
+        EventBus.getDefault().unregister(this)
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onMovieDetailEvent(event: MovieDetailEvents) {
+        if (event.movieDetail.details.id == this.movieID) {
+            if (movieDetailScreenStateManager.isRefreshing()) {
+                movieDetailScreenStateManager.showUserRefreshSuccess(event.movieDetail)
+                emitter.emit(ShowUserToastMessage("Movie Updated"))
+            } else {
+                movieDetailScreenStateManager.showMovieDetail(event.movieDetail)
 
-
-
+            }
+        }
+    }
 }
