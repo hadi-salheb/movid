@@ -64,8 +64,6 @@ class MovieDetailViewModel @Inject constructor(
                 movieDetailScreenStateManager.showUserLoadingScreen()
                 fetchApiForMovieDetail()
             }
-        } else if (errorMessage.value != null && movieDetailStored != null) {
-            movieDetailScreenStateManager.showMovieDetail(movieDetailStored)
         }
     }
 
