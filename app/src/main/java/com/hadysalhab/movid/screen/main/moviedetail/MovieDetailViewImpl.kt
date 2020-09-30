@@ -83,6 +83,7 @@ class MovieDetailViewImpl(
         //data
         pullToRefresh = findViewById(R.id.pull_to_refresh)
         pullToRefresh.setOnRefreshListener(this)
+        pullToRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.teal_600))
 
         detailSV = findViewById(R.id.movie_detail)
         carouselView = findViewById(R.id.carouselView)
