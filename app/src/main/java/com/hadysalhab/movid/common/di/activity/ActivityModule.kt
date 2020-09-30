@@ -18,6 +18,7 @@ import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.main.featured.FeaturedScreenStateManager
+import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenStateManager
 import dagger.Module
 import dagger.Provides
 
@@ -91,5 +92,8 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getFeaturedScreenStateManager() = FeaturedScreenStateManager()
+
+    @Provides
+    fun getMovieDetailScreenStateManager() = MovieDetailScreenStateManager()
 
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.VideosResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
@@ -14,6 +15,8 @@ import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
+import com.zhuinden.eventemitter.EventSource
+import com.zhuinden.tupleskt.Tuple4
 import javax.inject.Inject
 
 private const val MOVIE_ID = "MOVIE_ID"
@@ -22,12 +25,56 @@ private const val MOVIE_ID = "MOVIE_ID"
 class MovieDetailFragment : BaseFragment(),
     MovieDetailView.Listener {
 
+    //----------------------------------------------------------------------------------------------
+    private val movieDetailObserver = Observer<MovieDetail> { movieDetail ->
+        if (movieDetail != null) {
+            movieDetailView.displayMovieDetail(movieDetail)
+        } else {
+            movieDetailView.hideMovieDetail() //hide will disable pull to refresh!
+        }
+    }
+    private val loadingObserver = Observer<Boolean> { isLoading ->
+        if (isLoading) {
+            movieDetailView.showLoadingIndicator()
+        } else {
+            movieDetailView.hideLoadingIndicator()
+        }
+    }
+
+    private val errorObserver = Observer<String?> { errorMessage ->
+        if (errorMessage != null) {
+            movieDetailView.showErrorScreen(errorMessage)
+        } else {
+            movieDetailView.hideErrorScreen()
+        }
+    }
+    private val isRefreshingObserver = Observer<Boolean> { isRefreshing ->
+        if (isRefreshing) {
+            movieDetailView.showRefreshIndicator()
+        } else {
+            movieDetailView.hideRefreshIndicator()
+        }
+    }
+    private val combinedStateObserver =
+        Observer<Tuple4<MovieDetail?, Boolean?, String?, Boolean?>> { (movieDetail, loading, errorMessage, isRefreshing) ->
+            if (!isRefreshing!!) {
+                if (loading!! || errorMessage != null) {
+                    movieDetailView.disablePullToRefresh()
+                } else {
+                    movieDetailView.enablePullToRefresh()
+                }
+            }
+
+        }
+    //---------------------------------------------------------------------------------------------
+
+    private var subscription: EventSource.NotificationToken? = null
     private var movieID: Int? = null
 
     @Inject
     lateinit var viewFactory: ViewFactory
 
-    private lateinit var viewMvc: MovieDetailView
+    private lateinit var movieDetailView: MovieDetailView
     private lateinit var movieDetailViewModel: MovieDetailViewModel
 
     @Inject
@@ -41,6 +88,16 @@ class MovieDetailFragment : BaseFragment(),
 
     @Inject
     lateinit var intentHandler: IntentHandler
+
+    companion object {
+        @JvmStatic
+        fun newInstance(movieID: Int) =
+            MovieDetailFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(MOVIE_ID, movieID)
+                }
+            }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,53 +116,24 @@ class MovieDetailFragment : BaseFragment(),
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::viewMvc.isInitialized) {
-            viewMvc = viewFactory.getMovieDetailView(container)
+        if (!this::movieDetailView.isInitialized) {
+            movieDetailView = viewFactory.getMovieDetailView(container)
         }
-        return viewMvc.getRootView()
+        return movieDetailView.getRootView()
     }
 
     override fun onStart() {
         super.onStart()
-        viewMvc.registerListener(this)
         movieDetailViewModel.onStart(movieID!!)
-        movieDetailViewModel.viewState.observe(viewLifecycleOwner, Observer {
-            render(it)
-        })
+        registerObservers()
     }
 
     override fun onStop() {
         super.onStop()
-        viewMvc.unregisterListener(this)
+        unregisterObservers()
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(movieID: Int) =
-            MovieDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(MOVIE_ID, movieID)
-                }
-            }
-    }
-
-    private fun render(viewState: MovieDetailViewState) {
-        when (viewState) {
-            Loading -> viewMvc.displayLoadingScreen()
-            is Error -> {
-            }
-            is DetailLoaded -> {
-                viewMvc.displayMovieDetail(viewState.movie)
-                if (!intentHandler.canHandleTrailerIntent(viewState.movie.videosResponse)) {
-                    viewMvc.hideTrailerButton()
-                }
-            }
-            is AccountStateLoading -> {
-                viewMvc.displayAccountStateLoading()
-            }
-        }
-    }
-
+    //UserActions-----------------------------------------------------------------------------------
     //SeeAll can be for cast or movies!!
     override fun onSeeAllClicked(groupType: GroupType) {
         if (groupType != GroupType.CAST) {
@@ -129,21 +157,52 @@ class MovieDetailFragment : BaseFragment(),
         intentHandler.handleTrailerIntent(videosResponse)
     }
 
-    override fun onFavBtnClick(movieId: Int, isFav: Boolean) {
-        if (isFav) {
-            movieDetailViewModel.removeMovieFromFavorites(movieId)
-        } else {
-            movieDetailViewModel.addMovieToFavorites(movieId)
+    override fun onFavBtnClick() {
+        movieDetailViewModel.onAddRemoveFavoritesClicked()
+    }
+
+    override fun onWatchlistBtnClick() {
+        movieDetailViewModel.onAddRemoveWatchlistClicked()
+    }
+
+    override fun onRefresh() {
+        movieDetailViewModel.onRefresh()
+    }
+
+    override fun onRetry() {
+        movieDetailViewModel.retry()
+    }
+
+    //----------------------------------------------------------------------------------------------
+
+    private fun handleFeaturedEvents(event: MovieDetailEvents) {
+        when (event) {
+            is ShowUserToastMessage -> toastHelper.displayMessage(event.toastMessage)
         }
     }
 
-    override fun onWatchlistBtnClick(movieId: Int, isWatchlist: Boolean) {
-        if (isWatchlist) {
-            movieDetailViewModel.removeMovieFromWatchlist(movieId)
-        } else {
-            movieDetailViewModel.addMovieToWatchlist(movieId)
+    private fun registerObservers() {
+        movieDetailView.registerListener(this)
+        subscription = movieDetailViewModel.events.startListening { event ->
+            handleFeaturedEvents(event)
         }
+        movieDetailViewModel.combinedState.observe(this, combinedStateObserver)
+        movieDetailViewModel.data.observe(this, movieDetailObserver)
+        movieDetailViewModel.isLoading.observe(this, loadingObserver)
+        movieDetailViewModel.errorMessage.observe(this, errorObserver)
+        movieDetailViewModel.refresh.observe(this, isRefreshingObserver)
+
     }
 
+    private fun unregisterObservers() {
+        movieDetailViewModel.combinedState.removeObserver(combinedStateObserver)
+        movieDetailViewModel.data.removeObserver(movieDetailObserver)
+        movieDetailViewModel.isLoading.removeObserver(loadingObserver)
+        movieDetailViewModel.errorMessage.removeObserver(errorObserver)
+        movieDetailViewModel.refresh.removeObserver(isRefreshingObserver)
+        movieDetailView.unregisterListener(this)
+        subscription?.stopListening()
+        subscription = null
+    }
 
 }

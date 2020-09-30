@@ -284,7 +284,7 @@ class UseCaseModel {
     fun getFetchMovieDetailUseCase(
         tmdbApi: TmdbApi,
         moviesStateManager: MoviesStateManager,
-        dataValidator: DataValidator, timeProvider: TimeProvider,
+        timeProvider: TimeProvider,
         schemaToModelHelper: SchemaToModelHelper,
         errorMessageHandler: ErrorMessageHandler,
         sessionIdUseCaseSync: GetSessionIdUseCaseSync,
@@ -296,7 +296,10 @@ class UseCaseModel {
             schemaToModelHelper,
             errorMessageHandler,
             sessionIdUseCaseSync,
-            timeProvider, dataValidator, moviesStateManager, backgroundThreadPoster, uiThreadPoster
+            timeProvider,
+            moviesStateManager,
+            backgroundThreadPoster,
+            uiThreadPoster
         )
 
     @Provides

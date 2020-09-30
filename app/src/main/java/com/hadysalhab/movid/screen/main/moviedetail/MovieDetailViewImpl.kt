@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
@@ -17,40 +18,72 @@ import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.cardgroup.CastsView
 import com.hadysalhab.movid.screen.common.cardgroup.DataGroup
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
+import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreen
 import com.synnapps.carouselview.CarouselView
 
 class MovieDetailViewImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
-) : MovieDetailView(), MoviesView.Listener, CastsView.Listener {
+) : MovieDetailView(), MoviesView.Listener, CastsView.Listener,
+    SwipeRefreshLayout.OnRefreshListener, ErrorScreen.Listener {
+
+    //loading
+    private val progressBar: ProgressBar
+
+    //error
+    private val errorScreenFrame: FrameLayout
+    private val errorScreen: ErrorScreen
+
+    //data
+    private val pullToRefresh: SwipeRefreshLayout
+    private lateinit var movieDetail: MovieDetail
+    private val detailSV: ScrollView
+
     private val carouselView: CarouselView
     private val posterImageView: ImageView
-    private val movieOverviewTextView: TextView
     private val movieTitleTextView: TextView
-    private val movieOverviewLL: LinearLayout
     private val movieTagLineTextView: TextView
-    private val factsLL: LinearLayout
-    private val castsFL: FrameLayout
-    private val similarFL: FrameLayout
-    private val recommendedFL: FrameLayout
-    private val collectionFL: FrameLayout
-    private var movieDetail: MovieDetail? = null
-    private val reviewCV: CardView
-    private val movieReviewReviewTV: TextView
-    private val movieReviewAuthorTV: TextView
     private val ratingFL: FrameLayout
-    private val progressBar: ProgressBar
-    private val detailSV: ScrollView
-    private val reviewsBtn: Button
+
     private val trailerBtn: Button
     private val btnWrapperLL: LinearLayout
     private val favoriteBtn: Button
     private val watchlistBtn: Button
 
+    private val movieOverviewLL: LinearLayout
+    private val movieOverviewTextView: TextView
+
+    private val factsLL: LinearLayout
+
+    private val castsFL: FrameLayout
+
+    private val reviewCV: CardView
+    private val movieReviewReviewTV: TextView
+    private val movieReviewAuthorTV: TextView
+    private val reviewsBtn: Button
+
+    private val collectionFL: FrameLayout
+    private val recommendedFL: FrameLayout
+    private val similarFL: FrameLayout
+
+
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
+
+        //error
+        errorScreenFrame = findViewById(R.id.error_screen_placeholder)
+        errorScreen = viewFactory.getErrorScreen(errorScreenFrame)
+        errorScreen.registerListener(this)
+        errorScreenFrame.addView(errorScreen.getRootView())
+
+        //loading
         progressBar = findViewById(R.id.detail_progress)
+
+        //data
+        pullToRefresh = findViewById(R.id.pull_to_refresh)
+        pullToRefresh.setOnRefreshListener(this)
+
         detailSV = findViewById(R.id.movie_detail)
         carouselView = findViewById(R.id.carouselView)
         posterImageView = findViewById(R.id.iv_poster)
@@ -72,78 +105,85 @@ class MovieDetailViewImpl(
         btnWrapperLL = findViewById(R.id.button_wrapper)
         favoriteBtn = findViewById(R.id.button_favorite)
         watchlistBtn = findViewById(R.id.button_watchlist)
+
         trailerBtn.setOnClickListener {
             listeners.forEach {
-                it.onSeeTrailerClicked(this.movieDetail!!.videosResponse)
+                it.onSeeTrailerClicked(this.movieDetail.videosResponse)
             }
         }
         favoriteBtn.setOnClickListener {
             listeners.forEach { listener ->
-                this.movieDetail?.let {
-                    listener.onFavBtnClick(it.details.id, it.accountStates.favorite)
+                this.movieDetail.let {
+                    listener.onFavBtnClick()
                 }
             }
         }
         watchlistBtn.setOnClickListener {
             listeners.forEach { listener ->
-                this.movieDetail?.let {
-                    listener.onWatchlistBtnClick(it.details.id, it.accountStates.watchlist)
+                this.movieDetail.let {
+                    listener.onWatchlistBtnClick()
                 }
             }
         }
     }
 
     override fun displayMovieDetail(movieDetail: MovieDetail) {
-        // avoid re-rendering the view if it is already rendered
-        if (this.movieDetail == null) {
+        pullToRefresh.visibility = View.VISIBLE
+        //first render
+        if (!this::movieDetail.isInitialized) {
             this.movieDetail = movieDetail
             displayCarouselImages(movieDetail.images.backdrops)
             displayPosterImage(movieDetail.details.posterPath)
-            displayOverview(movieDetail.details.overview)
             displayTitle(movieDetail.details.title)
             displayTagLine(movieDetail.details.tagLine)
-            displayFacts(movieDetail.details)
-            displayCasts(movieDetail.credits.cast)
-            displaySimilarMovies(movieDetail.similar)
-            displayRecommendedMovies(movieDetail.recommendations)
-            displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
             displayAccountState(movieDetail.accountStates)
+            displayOverview(movieDetail.details.overview)
+            displayFacts(movieDetail.details)
+            displayCasts(movieDetail.credits.cast)
+            displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
             displayCollection(movieDetail.collection)
-        } else if (this.movieDetail != movieDetail) {
-            if (this.movieDetail!!.accountStates != movieDetail.accountStates) {
+            displayRecommendedMovies(movieDetail.recommendations)
+            displaySimilarMovies(movieDetail.similar)
+        } else {
+            if (this.movieDetail.images.backdrops != movieDetail.images.backdrops) {
+                displayCarouselImages(movieDetail.images.backdrops)
+            }
+            if (this.movieDetail.details.posterPath != movieDetail.details.posterPath) {
+                displayPosterImage(movieDetail.details.posterPath)
+            }
+            if (this.movieDetail.details.title != movieDetail.details.title) {
+                displayTitle(movieDetail.details.title)
+            }
+            if (this.movieDetail.details.tagLine != movieDetail.details.tagLine) {
+                displayTagLine(movieDetail.details.tagLine)
+            }
+            if (this.movieDetail.details.voteAvg != movieDetail.details.voteAvg || this.movieDetail.details.voteCount != movieDetail.details.voteCount) {
+                displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
+            }
+            if (this.movieDetail.accountStates != movieDetail.accountStates) {
                 displayAccountState(movieDetail.accountStates)
+            }
+            if (this.movieDetail.details.overview != movieDetail.details.overview) {
+                displayOverview(movieDetail.details.overview)
+            }
+            if (this.movieDetail.details != movieDetail.details) {
+                displayFacts(movieDetail.details)
+            }
+            if (this.movieDetail.reviewResponse != movieDetail.reviewResponse) {
+                displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
+            }
+            if (this.movieDetail.collection != movieDetail.collection) {
+                displayCollection(movieDetail.collection)
+            }
+            if (this.movieDetail.recommendations != movieDetail.recommendations) {
+                displayRecommendedMovies(movieDetail.recommendations)
+            }
+            if (this.movieDetail.similar != movieDetail.similar) {
+                displaySimilarMovies(movieDetail.similar)
             }
             this.movieDetail = movieDetail
         }
-        progressBar.visibility = View.GONE
-        detailSV.visibility = View.VISIBLE
-    }
-
-    private fun displayAccountState(accountStates: AccountStates) {
-        if (accountStates.favorite) {
-            favoriteBtn.text = "Remove From Favorites"
-            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
-            favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
-        } else {
-            favoriteBtn.text = "Add To Favorites"
-            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.gray_900))
-            favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
-        }
-        if (accountStates.watchlist) {
-            watchlistBtn.text = "Remove From Watchlist"
-            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
-            watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
-        } else {
-            watchlistBtn.text = "Add To Watchlist"
-            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.gray_900))
-            watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
-        }
-    }
-
-    override fun displayLoadingScreen() {
-        progressBar.visibility = View.VISIBLE
-        detailSV.visibility = View.GONE
     }
 
     override fun hideTrailerButton() {
@@ -151,47 +191,78 @@ class MovieDetailViewImpl(
         btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
     }
 
-    override fun displayAccountStateLoading() {
-        // TODO: CHANGE IT LATER
+    override fun showLoadingIndicator() {
         progressBar.visibility = View.VISIBLE
     }
 
-    private fun displayRating(avg: Double, count: Int) {
-        val rating = viewFactory.getRatingView(ratingFL)
-        rating.displayRating(avg, count)
-        ratingFL.removeAllViews()
-        ratingFL.addView(rating.getRootView())
+    override fun hideLoadingIndicator() {
+        progressBar.visibility = View.GONE
     }
 
-    private fun displayReviews(reviewResponse: ReviewResponse, movieID: Int) {
-        if (reviewResponse.reviews.size > 1) {
-            val review = reviewResponse.reviews[0]
-            movieReviewReviewTV.text = review.content
-            movieReviewAuthorTV.text = review.author
-            reviewsBtn
-            reviewsBtn.apply {
-                visibility = View.VISIBLE
-                setOnClickListener {
-                    listeners.forEach {
-                        it.onSeeReviewsClicked(movieID)
-                    }
-                }
-            }
-        } else {
-            movieReviewReviewTV.text = "No Reviews Available"
-            reviewsBtn.visibility = View.GONE
+    override fun showErrorScreen(errorMessage: String) {
+        errorScreenFrame.visibility = View.VISIBLE
+        errorScreen.displayErrorMessage(errorMessage)
+    }
+
+    override fun hideErrorScreen() {
+        errorScreenFrame.visibility = View.GONE
+    }
+
+    override fun showRefreshIndicator() {
+        pullToRefresh.isRefreshing = true
+    }
+
+    override fun hideRefreshIndicator() {
+        pullToRefresh.isRefreshing = false
+    }
+
+    override fun hideMovieDetail() {
+        pullToRefresh.visibility = View.GONE
+    }
+
+    override fun disablePullToRefresh() {
+        pullToRefresh.isEnabled = false
+    }
+
+    override fun enablePullToRefresh() {
+        pullToRefresh.isEnabled = true
+    }
+
+    //Helper Functions------------------------------------------------------------------------------
+    private fun displayCarouselImages(backdrops: List<Backdrops>) {
+        carouselView.setImageListener { position, imageView ->
+            Glide.with(getContext())
+                .load(backdrops[position].filePath)
+                .into(imageView)
+        }
+        carouselView.pageCount = backdrops.size
+    }
+
+    private fun displayPosterImage(posterPath: String?) {
+        posterPath?.let {
+            Glide.with(getContext())
+                .load(IMAGES_BASE_URL + POSTER_SIZE_185 + it)
+                .into(posterImageView)
         }
     }
 
-    private fun displayCasts(casts: List<Cast>) {
-        if (casts.isNotEmpty()) {
-            val castsViews = viewFactory.getCastsView(castsFL)
-            castsViews.registerListener(this)
-            castsViews.renderData(DataGroup(GroupType.CAST, casts), 5)
-            castsFL.removeAllViews()
-            castsFL.addView(castsViews.getRootView())
+    private fun displayTitle(title: String) {
+        movieTitleTextView.text = title
+    }
+
+    private fun displayTagLine(tagLine: String?) {
+        if (tagLine == null) {
+            movieTagLineTextView.text = tagLine
         } else {
-            castsFL.visibility = View.GONE
+            movieTagLineTextView.visibility = View.GONE
+        }
+    }
+
+    private fun displayOverview(overview: String?) {
+        if (overview == null) {
+            movieOverviewLL.visibility = View.GONE
+        } else {
+            movieOverviewTextView.text = overview
         }
     }
 
@@ -241,10 +312,70 @@ class MovieDetailViewImpl(
             factView.displayFact(getContext().getDrawable(R.drawable.ic_date)!!, it)
             factsLL.addView(factView.getRootView())
         }
+    }
 
+    private fun displayAccountState(accountStates: AccountStates) {
+        if (accountStates.favorite) {
+            favoriteBtn.text = "Remove From Favorites"
+            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
+            favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
+        } else {
+            favoriteBtn.text = "Add To Favorites"
+            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.gray_900))
+            favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
+        }
+        if (accountStates.watchlist) {
+            watchlistBtn.text = "Remove From Watchlist"
+            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
+            watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
+        } else {
+            watchlistBtn.text = "Add To Watchlist"
+            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.gray_900))
+            watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
+        }
+    }
+
+    private fun displayCasts(casts: List<Cast>) {
+        castsFL.removeAllViews()
+        if (casts.isNotEmpty()) {
+            val castsViews = viewFactory.getCastsView(castsFL)
+            castsViews.registerListener(this)
+            castsViews.renderData(DataGroup(GroupType.CAST, casts), 5)
+            castsFL.addView(castsViews.getRootView())
+        } else {
+            castsFL.visibility = View.GONE
+        }
+    }
+
+    private fun displayRating(avg: Double, count: Int) {
+        ratingFL.removeAllViews()
+        val rating = viewFactory.getRatingView(ratingFL)
+        rating.displayRating(avg, count)
+        ratingFL.addView(rating.getRootView())
+    }
+
+    private fun displayReviews(reviewResponse: ReviewResponse, movieID: Int) {
+        if (reviewResponse.reviews.size > 1) {
+            val review = reviewResponse.reviews[0]
+            movieReviewReviewTV.text = review.content
+            movieReviewAuthorTV.text = review.author
+            reviewsBtn
+            reviewsBtn.apply {
+                visibility = View.VISIBLE
+                setOnClickListener {
+                    listeners.forEach {
+                        it.onSeeReviewsClicked(movieID)
+                    }
+                }
+            }
+        } else {
+            movieReviewReviewTV.text = "No Reviews Available"
+            reviewsBtn.visibility = View.GONE
+        }
     }
 
     private fun displayCollection(collection: Collection?) {
+        collectionFL.removeAllViews()
         if (collection != null) {
             val groupType = GroupType.COLLECTION
             groupType.value = "From ${collection.name}"
@@ -254,10 +385,9 @@ class MovieDetailViewImpl(
             movieGroupView.renderData(
                 DataGroup(
                     groupType,
-                    collection.movies.filter { movie -> movie.id != this.movieDetail!!.details.id }
+                    collection.movies.filter { movie -> movie.id != this.movieDetail.details.id }
                 ), null
             )
-            collectionFL.removeAllViews()
             collectionFL.addView(movieGroupView.getRootView())
         } else {
             collectionFL.visibility = View.GONE
@@ -265,6 +395,7 @@ class MovieDetailViewImpl(
     }
 
     private fun displaySimilarMovies(moviesResponse: MoviesResponse) {
+        similarFL.removeAllViews()
         if (!moviesResponse.movies.isNullOrEmpty()) {
             val movieGroupView = viewFactory.getMoviesView(similarFL)
             movieGroupView.registerListener(this)
@@ -274,7 +405,6 @@ class MovieDetailViewImpl(
                     moviesResponse.movies
                 ), 5
             )
-            similarFL.removeAllViews()
             similarFL.addView(movieGroupView.getRootView())
         } else {
             similarFL.visibility = View.GONE
@@ -282,6 +412,7 @@ class MovieDetailViewImpl(
     }
 
     private fun displayRecommendedMovies(moviesResponse: MoviesResponse) {
+        recommendedFL.removeAllViews()
         if (!moviesResponse.movies.isNullOrEmpty()) {
             val movieGroupView = viewFactory.getMoviesView(recommendedFL)
             movieGroupView.renderData(
@@ -291,51 +422,14 @@ class MovieDetailViewImpl(
                 ), 5
             )
             movieGroupView.registerListener(this)
-            recommendedFL.removeAllViews()
             recommendedFL.addView(movieGroupView.getRootView())
         } else {
             recommendedFL.visibility = View.GONE
         }
     }
 
-    private fun displayOverview(overview: String?) {
-        if (overview == null) {
-            movieOverviewLL.visibility = View.GONE
-        } else {
-            movieOverviewTextView.text = overview
-        }
-    }
 
-    private fun displayTitle(title: String) {
-        movieTitleTextView.text = title
-    }
-
-    private fun displayTagLine(tagLine: String?) {
-        if (tagLine == null) {
-            movieTagLineTextView.text = tagLine
-        } else {
-            movieTagLineTextView.visibility = View.GONE
-        }
-    }
-
-    private fun displayCarouselImages(backdrops: List<Backdrops>) {
-        carouselView.setImageListener { position, imageView ->
-            Glide.with(getContext())
-                .load(backdrops[position].filePath)
-                .into(imageView)
-        }
-        carouselView.pageCount = backdrops.size
-    }
-
-    private fun displayPosterImage(posterPath: String?) {
-        posterPath?.let {
-            Glide.with(getContext())
-                .load(IMAGES_BASE_URL + POSTER_SIZE_185 + it)
-                .into(posterImageView)
-        }
-
-    }
-
+    //Callbacks-----------------------------------------------------------------------------------
     override fun onMovieCardClicked(movieID: Int) {
         listeners.forEach {
             it.onMovieClicked(movieID)
@@ -354,4 +448,15 @@ class MovieDetailViewImpl(
         }
     }
 
+    override fun onRefresh() {
+        listeners.forEach {
+            it.onRefresh()
+        }
+    }
+
+    override fun onRetryClicked() {
+        listeners.forEach {
+            it.onRetry()
+        }
+    }
 }
