@@ -41,8 +41,6 @@
 
     <TextView
         android:id="@+id/tv_cast_as"
-        style="?attr/textAppearanceBody2"
-        android:textColor="@color/gray_800"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxWidth="150dp"

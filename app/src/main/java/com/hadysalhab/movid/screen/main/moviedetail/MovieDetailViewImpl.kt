@@ -93,7 +93,7 @@ class MovieDetailViewImpl(
         movieTitleTextView = findViewById(R.id.tv_movie_title)
         movieTagLineTextView = findViewById(R.id.tv_movie_tagLine)
         similarFL = findViewById(R.id.fl_similar)
-        factsLL = findViewById(R.id.ll_facts)
+        factsLL = findViewById(R.id.ll_facts_placeholder)
         recommendedFL = findViewById(R.id.fl_recommended)
         collectionFL = findViewById(R.id.fl_collection)
         castsFL = findViewById(R.id.fl_casts)
@@ -192,6 +192,11 @@ class MovieDetailViewImpl(
         btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
     }
 
+    override fun showTrailerButton() {
+        trailerBtn.visibility = View.VISIBLE
+        btnWrapperLL.setPadding(0, 0, 0, 0)
+    }
+
     override fun showLoadingIndicator() {
         progressBar.visibility = View.VISIBLE
     }
@@ -252,15 +257,15 @@ class MovieDetailViewImpl(
     }
 
     private fun displayTagLine(tagLine: String?) {
-        if (tagLine == null) {
-            movieTagLineTextView.text = tagLine
-        } else {
+        if (tagLine == null || tagLine.isEmpty()) {
             movieTagLineTextView.visibility = View.GONE
+        } else {
+            movieTagLineTextView.text = tagLine
         }
     }
 
     private fun displayOverview(overview: String?) {
-        if (overview == null) {
+        if (overview == null || overview.isEmpty()) {
             movieOverviewLL.visibility = View.GONE
         } else {
             movieOverviewTextView.text = overview
@@ -317,21 +322,17 @@ class MovieDetailViewImpl(
 
     private fun displayAccountState(accountStates: AccountStates) {
         if (accountStates.favorite) {
-            favoriteBtn.text = "Remove From Favorites"
             favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
             favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
         } else {
-            favoriteBtn.text = "Add To Favorites"
-            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.gray_900))
+            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_800))
             favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
         }
         if (accountStates.watchlist) {
-            watchlistBtn.text = "Remove From Watchlist"
             watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
             watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
         } else {
-            watchlistBtn.text = "Add To Watchlist"
-            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.gray_900))
+            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_800))
             watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
         }
     }

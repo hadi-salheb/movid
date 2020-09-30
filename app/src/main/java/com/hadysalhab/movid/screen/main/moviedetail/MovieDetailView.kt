@@ -29,4 +29,5 @@ abstract class MovieDetailView : BaseObservableViewMvc<MovieDetailView.Listener>
     abstract fun hideMovieDetail()
     abstract fun disablePullToRefresh()
     abstract fun enablePullToRefresh()
+    abstract fun showTrailerButton()
 }
