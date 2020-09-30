@@ -13,6 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Data -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/pull_to_refresh"
         android:layout_width="match_parent"
@@ -29,6 +30,7 @@
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <!-- Error -->
     <FrameLayout
         android:id="@+id/error_screen_placeholder"
         android:layout_width="0dp"
@@ -39,6 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar" />
 
+    <!-- Loading -->
     <me.zhanghai.android.materialprogressbar.MaterialProgressBar
         android:id="@+id/progress_circular"
         android:layout_width="wrap_content"

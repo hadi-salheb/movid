@@ -92,6 +92,9 @@ dependencies {
     // https://github.com/Zhuinden/event-emitter
     implementation 'com.github.Zhuinden:event-emitter:1.1.0'
 
+    // https://github.com/Zhuinden/livedata-combinetuple-kt
+    implementation 'com.github.Zhuinden:livedata-combinetuple-kt:1.0.0'
+
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.7.2"
     implementation "com.squareup.retrofit2:converter-gson:2.6.0"
