@@ -52,15 +52,21 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     fun onStart(movieID: Int) {
+        val movieDetailStored = moviesStateManager.getMovieDetailById(movieID)
         if (isFirstRender) {
             this.movieID = movieID
             isFirstRender = false
-            val movieDetailStored = moviesStateManager.getMovieDetailById(movieID)
             if (dataValidator.isMovieDetailValid(movieDetailStored)) {
                 movieDetailScreenStateManager.showMovieDetail(movieDetailStored)
             } else {
                 movieDetailScreenStateManager.showUserLoadingScreen()
                 fetchApiForMovieDetail()
+            }
+        } else {
+            //if data was displayed and user updated favorites/watchlist!
+            //user can open movie detail from featured and favorites/watchlist tab
+            if (data.value != null && movieDetailStored != null && data.value != movieDetailStored) {
+                movieDetailScreenStateManager.showMovieDetail(movieDetailStored)
             }
         }
     }
