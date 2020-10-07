@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
@@ -115,8 +116,40 @@ class FeaturedFragment : BaseFragment(), FeaturedScreen.Listener {
     }
 
     private val featuredStateObserver = Observer<FeaturedScreenState> { featuredState ->
-        featuredScreen.handleState(featuredState)
+        val sortedMovies = sortMoviesAndReturn(featuredState.data)
+        featuredScreen.displayFeaturedMovies(sortedMovies)
+        if (featuredState.isLoading) {
+            featuredScreen.showLoadingIndicator()
+        } else {
+            featuredScreen.hideLoadingIndicator()
+        }
+
+        if (featuredState.errorMessage != null) {
+            featuredScreen.showErrorScreen(featuredState.errorMessage)
+        } else featuredScreen.hideErrorScreen()
+        featuredScreen.setPowerMenuItem(featuredState.powerMenuItem)
+        if (featuredState.isPowerMenuOpen) {
+            featuredScreen.showPowerMenu()
+        } else {
+            featuredScreen.hidePowerMenu()
+        }
+        if (featuredState.isRefreshing) {
+            featuredScreen.showRefreshIndicator()
+        } else {
+            featuredScreen.hideRefreshIndicator()
+        }
+        if (!featuredState.isRefreshing) {
+            if (featuredState.isLoading || featuredState.errorMessage != null) {
+                featuredScreen.disablePullRefresh()
+            } else {
+                featuredScreen.enablePullRefresh()
+            }
+        }
     }
+
+    private fun sortMoviesAndReturn(movieGroups: List<MoviesResponse>) =
+        movieGroups.sortedBy { item -> item.tag.ordinal }
+            .filter { !it.movies.isNullOrEmpty() }
 
     private fun registerObservers() {
         featuredScreen.registerListener(this)

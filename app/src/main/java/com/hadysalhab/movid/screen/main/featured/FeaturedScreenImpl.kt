@@ -102,90 +102,55 @@ class FeaturedScreenImpl(
         }
     }
 
-
-    override fun handleState(featuredState: FeaturedScreenState) {
-        val sortedMovies = sortMoviesAndReturn(featuredState.data)
-        displayMovieGroups(sortedMovies)
-        if (featuredState.isLoading) {
-            showLoadingIndicator()
-        } else {
-            hideLoadingIndicator()
-        }
-
-        if (featuredState.errorMessage != null) {
-            showErrorScreen(featuredState.errorMessage)
-        } else hideErrorScreen()
-        setPowerMenuItem(featuredState.powerMenuItem)
-        if (featuredState.isPowerMenuOpen) showPowerMenu() else hidePowerMenu()
-        if (featuredState.isRefreshing) {
-            showRefreshIndicator()
-        } else {
-            hideRefreshIndicator()
-        }
-        if (!featuredState.isRefreshing) {
-            if (featuredState.isLoading || featuredState.errorMessage != null) {
-                disablePullToRefresh()
-            } else {
-                enablePullToRefresh()
-            }
-        }
-
+    override fun displayFeaturedMovies(featured: List<MoviesResponse>) {
+        adapter.submitList(featured)
     }
 
-    private fun sortMoviesAndReturn(movieGroups: List<MoviesResponse>) =
-        movieGroups.sortedBy { item -> item.tag.ordinal }
-            .filter { !it.movies.isNullOrEmpty() }
-
-    private fun displayMovieGroups(movieGroups: List<MoviesResponse>) {
-        adapter.submitList(movieGroups)
-    }
-
-    private fun showLoadingIndicator() {
+    override fun showLoadingIndicator() {
         circularProgress.visibility = View.VISIBLE
     }
 
-    private fun hideLoadingIndicator() {
+    override fun hideLoadingIndicator() {
         circularProgress.visibility = View.GONE
     }
 
-    private fun showPowerMenu() {
+    override fun showPowerMenu() {
         powerMenu.showAsAnchorRightTop(menuToolbarLayout.getOverflowMenuIconPlaceHolder())
     }
 
-    private fun hidePowerMenu() {
+    override fun hidePowerMenu() {
         powerMenu.dismiss()
     }
 
-    private fun setPowerMenuItem(powerMenuItem: ToolbarCountryItems) {
+    override fun setPowerMenuItem(powerMenuItem: ToolbarCountryItems) {
         powerMenu.selectedPosition = powerMenuItem.ordinal
         menuToolbarLayout.setOverflowMenuIcon(powerMenuItem.countryIcon)
     }
 
-    private fun showErrorScreen(errorMessage: String) {
+    override fun disablePullRefresh() {
+        pullToRefresh.isEnabled = false
+    }
+
+    override fun enablePullRefresh() {
+        pullToRefresh.isEnabled = true
+    }
+
+    override fun showErrorScreen(errorMessage: String) {
         errorScreen.displayErrorMessage(errorMessage)
         errorScreenPlaceHolder.visibility = View.VISIBLE
     }
 
-    private fun hideErrorScreen() {
+    override fun hideErrorScreen() {
         errorScreenPlaceHolder.visibility = View.GONE
     }
 
-    private fun hideRefreshIndicator() {
+    override fun hideRefreshIndicator() {
         pullToRefresh.isRefreshing = false
     }
 
-    private fun showRefreshIndicator() {
+    override fun showRefreshIndicator() {
         pullToRefresh.isRefreshing = true
     }
-
-    private fun enablePullToRefresh() {
-        pullToRefresh.isEnabled = true
-    }
-
-    private fun disablePullToRefresh() {
-        pullToRefresh.isEnabled = false
-    }
-
 
     override fun onOverflowMenuIconClick() {
         listeners.forEach {
