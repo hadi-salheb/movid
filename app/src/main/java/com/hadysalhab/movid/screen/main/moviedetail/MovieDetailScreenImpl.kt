@@ -13,7 +13,6 @@ import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_185
 import com.hadysalhab.movid.common.utils.convertDpToPixel
-import com.hadysalhab.movid.common.utils.getYoutubeTrailerFromResponse
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.movies.Collection
 import com.hadysalhab.movid.screen.common.ViewFactory
@@ -137,43 +136,59 @@ class MovieDetailScreenImpl(
         }
     }
 
-    //props
-    override fun handleState(movieDetailScreenState: MovieDetailScreenState) {
-        if (movieDetailScreenState.isLoading) {
-            showLoadingIndicator()
-        } else {
-            hideLoadingIndicator()
-        }
-        if (movieDetailScreenState.isRefreshing) {
-            showRefreshIndicator()
-        } else {
-            hideRefreshIndicator()
-        }
-        if (movieDetailScreenState.data != null) {
-            displayMovieDetail(movieDetailScreenState.data)
-        } else {
-            hideMovieDetail()
-        }
-        if (movieDetailScreenState.error != null) {
-            showErrorScreen(movieDetailScreenState.error)
-        } else {
-            hideErrorScreen()
-        }
-        if (movieDetailScreenState.isLoading || movieDetailScreenState.error != null) {
-            disablePullToRefresh()
-        } else {
-            enablePullToRefresh()
-        }
+
+    override fun showLoadingIndicator() {
+        loadingViewFrame.visibility = View.VISIBLE
+    }
+
+    override fun hideLoadingIndicator() {
+        loadingViewFrame.visibility = View.GONE
+    }
+
+    override fun showErrorScreen(errorMessage: String) {
+        errorScreenFrame.visibility = View.VISIBLE
+        errorScreen.displayErrorMessage(errorMessage)
+    }
+
+    override fun hideErrorScreen() {
+        errorScreenFrame.visibility = View.GONE
+    }
+
+    override fun disablePullRefresh() {
+        pullToRefresh.isEnabled = false
+    }
+
+    override fun enablePullRefresh() {
+        pullToRefresh.isEnabled = true
+
+    }
+
+    override fun showTrailerIndicator() {
+        trailerBtn.visibility = View.VISIBLE
+        btnWrapperLL.setPadding(0, 0, 0, 0)
+    }
+
+    override fun hideTrailerIndicator() {
+        trailerBtn.visibility = View.GONE
+        btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
     }
 
 
-    private fun displayMovieDetail(movieDetail: MovieDetail) {
+    override fun showRefreshIndicator() {
+        pullToRefresh.isRefreshing = true
+    }
+
+    override fun hideRefreshIndicator() {
+        pullToRefresh.isRefreshing = false
+    }
+
+    override fun hideMovieDetail() {
+        pullToRefresh.visibility = View.GONE
+    }
+
+
+    override fun displayMovieDetail(movieDetail: MovieDetail) {
         pullToRefresh.visibility = View.VISIBLE
-        if (canHandleTrailerIntent(movieDetail.videosResponse)) {
-            showTrailerButton()
-        } else {
-            hideTrailerButton()
-        }
         //first render
         if (!this::movieDetail.isInitialized) {
             this.movieDetail = movieDetail
@@ -442,60 +457,6 @@ class MovieDetailScreenImpl(
             recommendedFL.visibility = View.GONE
         }
     }
-
-
-    private fun canHandleTrailerIntent(videoResponse: VideosResponse): Boolean {
-        val video = getYoutubeTrailerFromResponse(videoResponse)
-        return video != null
-    }
-
-    private fun hideTrailerButton() {
-        trailerBtn.visibility = View.GONE
-        btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
-    }
-
-    private fun showTrailerButton() {
-        trailerBtn.visibility = View.VISIBLE
-        btnWrapperLL.setPadding(0, 0, 0, 0)
-    }
-
-    private fun showLoadingIndicator() {
-        loadingViewFrame.visibility = View.VISIBLE
-    }
-
-    private fun hideLoadingIndicator() {
-        loadingViewFrame.visibility = View.GONE
-    }
-
-    private fun showErrorScreen(errorMessage: String) {
-        errorScreenFrame.visibility = View.VISIBLE
-        errorScreen.displayErrorMessage(errorMessage)
-    }
-
-    private fun hideErrorScreen() {
-        errorScreenFrame.visibility = View.GONE
-    }
-
-    private fun showRefreshIndicator() {
-        pullToRefresh.isRefreshing = true
-    }
-
-    private fun hideRefreshIndicator() {
-        pullToRefresh.isRefreshing = false
-    }
-
-    private fun hideMovieDetail() {
-        pullToRefresh.visibility = View.GONE
-    }
-
-    private fun disablePullToRefresh() {
-        pullToRefresh.isEnabled = false
-    }
-
-    private fun enablePullToRefresh() {
-        pullToRefresh.isEnabled = true
-    }
-
 
     //Callbacks-----------------------------------------------------------------------------------
     override fun onMovieCardClicked(movieID: Int) {

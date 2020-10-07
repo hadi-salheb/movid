@@ -138,7 +138,36 @@ class MovieDetailFragment : BaseFragment(),
 
     private val movieDetailScreenStateObserver =
         Observer<MovieDetailScreenState> { movieDetailScreenState ->
-            movieDetailScreen.handleState(movieDetailScreenState)
+            if (movieDetailScreenState.isLoading) {
+                movieDetailScreen.showLoadingIndicator()
+            } else {
+                movieDetailScreen.hideLoadingIndicator()
+            }
+            if (movieDetailScreenState.isRefreshing) {
+                movieDetailScreen.showRefreshIndicator()
+            } else {
+                movieDetailScreen.hideRefreshIndicator()
+            }
+            if (movieDetailScreenState.data != null) {
+                movieDetailScreen.displayMovieDetail(movieDetailScreenState.data)
+                if (intentHandler.canHandleTrailerIntent(movieDetailScreenState.data.videosResponse)) {
+                    movieDetailScreen.showTrailerIndicator()
+                } else {
+                    movieDetailScreen.hideTrailerIndicator()
+                }
+            } else {
+                movieDetailScreen.hideMovieDetail()
+            }
+            if (movieDetailScreenState.error != null) {
+                movieDetailScreen.showErrorScreen(movieDetailScreenState.error)
+            } else {
+                movieDetailScreen.hideErrorScreen()
+            }
+            if (movieDetailScreenState.isLoading || movieDetailScreenState.error != null) {
+                movieDetailScreen.disablePullRefresh()
+            } else {
+                movieDetailScreen.enablePullRefresh()
+            }
         }
 
 
