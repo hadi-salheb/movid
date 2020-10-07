@@ -8,67 +8,20 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.movies.GroupType
-import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import com.zhuinden.eventemitter.EventSource
-import com.zhuinden.tupleskt.Tuple4
 import javax.inject.Inject
 
 
-class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
+class FeaturedFragment : BaseFragment(), FeaturedScreen.Listener {
     companion object {
         @JvmStatic
         fun newInstance() = FeaturedFragment()
     }
-
-    //---------------------------------------------------------------------------------------------
-    private val featureMoviesObserver = Observer<List<MoviesResponse>> { featuredMovies ->
-        val sortedMovies = sortMoviesAndReturn(featuredMovies)
-        featuredView.displayMovieGroups(sortedMovies)
-    }
-    private val loadingObserver = Observer<Boolean> { isLoading ->
-        if (isLoading) {
-            featuredView.showLoadingIndicator()
-        } else {
-            featuredView.hideLoadingIndicator()
-        }
-    }
-
-    private val errorObserver = Observer<String?> { errorMessage ->
-        if (errorMessage != null) {
-            featuredView.showErrorScreen(errorMessage)
-        } else featuredView.hideErrorScreen()
-    }
-    private val powerMenuItemObserver = Observer<ToolbarCountryItems> { powerMenuItem ->
-        featuredView.setPowerMenuItem(powerMenuItem)
-    }
-    private val isPowerMenuOpenObserver = Observer<Boolean> { isPowerMenuOpen ->
-        if (isPowerMenuOpen) featuredView.showPowerMenu() else featuredView.hidePowerMenu()
-    }
-    private val isRefreshingObserver = Observer<Boolean> { isRefreshing ->
-        if (isRefreshing) {
-            featuredView.showRefreshIndicator()
-        } else {
-            featuredView.hideRefreshIndicator()
-        }
-    }
-    private val combinedStateObserver =
-        Observer<Tuple4<List<MoviesResponse>?, Boolean?, String?, Boolean?>> { (featuredMovies, loading, errorMessage, isRefreshing) ->
-            if (!isRefreshing!!) {
-                if (loading!! || errorMessage != null) {
-                    featuredView.disablePullToRefresh()
-                } else {
-                    featuredView.enablePullToRefresh()
-                }
-            }
-
-        }
-
-    //---------------------------------------------------------------------------------------------
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -84,7 +37,7 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
 
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
-    private lateinit var featuredView: FeaturedView
+    private lateinit var featuredScreen: FeaturedScreen
     private lateinit var featuredViewModel: FeaturedViewModel
     private var subscription: EventSource.NotificationToken? = null
 
@@ -99,10 +52,10 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::featuredView.isInitialized) {
-            featuredView = viewFactory.getFeaturedView(container)
+        if (!this::featuredScreen.isInitialized) {
+            featuredScreen = viewFactory.getFeaturedView(container)
         }
-        return featuredView.getRootView()
+        return featuredScreen.getRootView()
     }
 
     override fun onStart() {
@@ -113,25 +66,24 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
 
     override fun onStop() {
         super.onStop()
-        featuredView.hidePowerMenu() //can cause memory leaks.!!!
         unregisterObservers()
     }
 
     override fun onMovieCardClicked(movieID: Int) {
-        if (featuredViewModel.isPowerMenuOpen.value!!) {
+        if (featuredViewModel.state.value!!.isPowerMenuOpen) {
             return
         }
         mainNavigator.toDetailFragment(movieID)
     }
 
     override fun onSeeAllClicked(groupType: GroupType) {
-        if (featuredViewModel.isPowerMenuOpen.value!!) {
+        if (featuredViewModel.state.value!!.isPowerMenuOpen) {
             return
         }
         mainNavigator.toMovieListFragment(
             groupType,
             null,
-            featuredViewModel.powerMenuItem.value!!.region
+            featuredViewModel.state.value!!.powerMenuItem.region
         )
     }
 
@@ -162,35 +114,23 @@ class FeaturedFragment : BaseFragment(), FeaturedView.Listener {
         }
     }
 
+    private val featuredStateObserver = Observer<FeaturedScreenState> { featuredState ->
+        featuredScreen.handleState(featuredState)
+    }
+
     private fun registerObservers() {
-        featuredView.registerListener(this)
+        featuredScreen.registerListener(this)
         subscription = featuredViewModel.screenEvents.startListening { event ->
             handleFeaturedEvents(event)
         }
-        featuredViewModel.data.observe(this, featureMoviesObserver)
-        featuredViewModel.isLoading.observe(this, loadingObserver)
-        featuredViewModel.errorMessage.observe(this, errorObserver)
-        featuredViewModel.isPowerMenuOpen.observe(this, isPowerMenuOpenObserver)
-        featuredViewModel.powerMenuItem.observe(this, powerMenuItemObserver)
-        featuredViewModel.refresh.observe(this, isRefreshingObserver)
-        featuredViewModel.combinedState.observe(this, combinedStateObserver)
+        featuredViewModel.state.observe(this, featuredStateObserver)
     }
 
     private fun unregisterObservers() {
-        featuredViewModel.data.removeObserver(featureMoviesObserver)
-        featuredViewModel.isLoading.removeObserver(loadingObserver)
-        featuredViewModel.errorMessage.removeObserver(errorObserver)
-        featuredViewModel.isPowerMenuOpen.removeObserver(isPowerMenuOpenObserver)
-        featuredViewModel.powerMenuItem.removeObserver(powerMenuItemObserver)
-        featuredViewModel.refresh.removeObserver(isRefreshingObserver)
-        featuredViewModel.combinedState.removeObserver(combinedStateObserver)
-        featuredView.unregisterListener(this)
+        featuredViewModel.state.removeObserver(featuredStateObserver)
+        featuredScreen.unregisterListener(this)
         subscription?.stopListening()
         subscription = null
     }
-
-    private fun sortMoviesAndReturn(movieGroups: List<MoviesResponse>) =
-        movieGroups.sortedBy { item -> item.tag.ordinal }
-            .filter { !it.movies.isNullOrEmpty() }
 
 }

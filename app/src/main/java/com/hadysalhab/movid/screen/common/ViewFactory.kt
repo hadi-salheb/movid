@@ -21,7 +21,7 @@ import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.discover.DiscoverView
 import com.hadysalhab.movid.screen.main.discover.DiscoverViewImpl
-import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
+import com.hadysalhab.movid.screen.main.featured.FeaturedScreenImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreen
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenImpl
@@ -34,7 +34,7 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getLauncherView(parent: ViewGroup?) = OnBoardingViewImpl(layoutInflater, parent)
     fun getMainView(parent: ViewGroup?) = MainViewImpl(layoutInflater, parent)
 
-    fun getFeaturedView(container: ViewGroup?) = FeaturedViewImpl(layoutInflater, container, this)
+    fun getFeaturedView(container: ViewGroup?) = FeaturedScreenImpl(layoutInflater, container, this)
     fun getMovieCard(parent: ViewGroup?) =
         MovieCardImpl(
             layoutInflater,

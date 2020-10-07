@@ -1,87 +1,97 @@
 package com.hadysalhab.movid.screen.main.featured
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hadysalhab.movid.movies.MoviesResponse
 
+data class FeaturedScreenState(
+    val isLoading: Boolean = false,
+    val isPowerMenuOpen: Boolean = false,
+    val powerMenuItem: ToolbarCountryItems = ToolbarCountryItems.AUSTRALIA,
+    val isRefreshing: Boolean = false,
+    val data: List<MoviesResponse> = emptyList(),
+    val errorMessage: String? = null
+)
+
+sealed class FeaturedActions {
+    data class FeaturedRequest(val toolbarCountryItems: ToolbarCountryItems) : FeaturedActions()
+    object FeaturedRefresh : FeaturedActions()
+    data class FeaturedSuccess(val data: List<MoviesResponse>) : FeaturedActions()
+    object FeaturedRefreshError : FeaturedActions()
+    data class FeaturedError(val errorMessage: String) : FeaturedActions()
+    object Reset : FeaturedActions()
+    object OpenPowerMenu : FeaturedActions()
+    object ClosePowerMenu : FeaturedActions()
+    object TogglePowerMenuVisibility : FeaturedActions()
+}
+
 class FeaturedScreenStateManager {
-    private val _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
+    val stateLiveData = MutableLiveData<FeaturedScreenState>(FeaturedScreenState())
+    private var state: FeaturedScreenState
+        get() {
+            return stateLiveData.value!!
+        }
+        set(value) {
+            stateLiveData.value = value
+        }
 
-    private val _isPowerMenuOpen = MutableLiveData<Boolean>(false)
-    val isPowerMenuOpen: LiveData<Boolean>
-        get() = _isPowerMenuOpen
+    fun dispatch(featuredActions: FeaturedActions) {
+        when (featuredActions) {
+            is FeaturedActions.TogglePowerMenuVisibility -> {
+                state = state.copy(isPowerMenuOpen = !state.isPowerMenuOpen)
+            }
 
-    private val _errorMessage = MutableLiveData<String?>(null)
-    val errorMessage: LiveData<String?>
-        get() = _errorMessage
-
-    private val _data = MutableLiveData<List<MoviesResponse>>(emptyList())
-    val data: LiveData<List<MoviesResponse>>
-        get() = _data
-
-    private val _powerMenuItem = MutableLiveData<ToolbarCountryItems>(ToolbarCountryItems.AUSTRALIA)
-    val powerMenuItem: LiveData<ToolbarCountryItems>
-        get() = _powerMenuItem
-
-    private val _isRefreshing = MutableLiveData<Boolean>(false)
-    val isRefreshing: LiveData<Boolean>
-        get() = _isRefreshing
-
-
-    fun updatePowerMenuItem(storedFeaturedPowerMenuItem: ToolbarCountryItems) {
-        _powerMenuItem.value = storedFeaturedPowerMenuItem
+            is FeaturedActions.FeaturedRequest -> {
+                state = state.copy(
+                    isLoading = true,
+                    isRefreshing = false,
+                    errorMessage = null,
+                    isPowerMenuOpen = false,
+                    data = emptyList(),
+                    powerMenuItem = featuredActions.toolbarCountryItems
+                )
+            }
+            is FeaturedActions.FeaturedRefresh -> {
+                state = state.copy(
+                    isLoading = false,
+                    isRefreshing = true,
+                    errorMessage = null,
+                    isPowerMenuOpen = false
+                )
+            }
+            is FeaturedActions.FeaturedSuccess -> {
+                state = state.copy(
+                    isLoading = false,
+                    isRefreshing = false,
+                    data = featuredActions.data,
+                    errorMessage = null
+                )
+            }
+            is FeaturedActions.FeaturedRefreshError -> {
+                state = state.copy(
+                    isRefreshing = false
+                )
+            }
+            is FeaturedActions.FeaturedError -> {
+                state = state.copy(
+                    errorMessage = featuredActions.errorMessage,
+                    isRefreshing = false,
+                    isLoading = false,
+                    data = emptyList()
+                )
+            }
+            is FeaturedActions.OpenPowerMenu -> {
+                state = state.copy(
+                    isPowerMenuOpen = true
+                )
+            }
+            is FeaturedActions.ClosePowerMenu -> {
+                state = state.copy(
+                    isPowerMenuOpen = false
+                )
+            }
+            is FeaturedActions.Reset -> {
+                state = FeaturedScreenState()
+            }
+        }
     }
-
-    fun showUserFeaturedMovies(moviesResponse: List<MoviesResponse>) {
-        _isLoading.value = false
-        _data.value = moviesResponse
-        _errorMessage.value = null
-    }
-
-    fun showUserLoadingScreen() {
-        _isLoading.value = true
-        _data.value = emptyList()
-        _errorMessage.value = null
-        _isPowerMenuOpen.value = false
-    }
-
-    fun showUserLoadingScreenWithNewPowerItem(toolbarCountryItem: ToolbarCountryItems) {
-        _isLoading.value = true
-        _data.value = emptyList()
-        _errorMessage.value = null
-        _isPowerMenuOpen.value = false
-        _powerMenuItem.value = toolbarCountryItem
-        _isPowerMenuOpen.value = false
-    }
-
-    fun togglePowerMenuVisibility() {
-        _isPowerMenuOpen.value = _isPowerMenuOpen.value == false
-    }
-
-    fun closePowerMenu() {
-        _isPowerMenuOpen.value = false
-    }
-
-    fun showUserErrorScreen(errorMessage: String) {
-        _isLoading.value = false
-        _data.value = emptyList()
-        _errorMessage.value = errorMessage
-    }
-
-    fun showUserRefresh() {
-        _isRefreshing.value = true
-    }
-
-    fun showUserRefreshSuccess(moviesResponse: List<MoviesResponse>) {
-        _isRefreshing.value = false
-        _data.value = moviesResponse
-    }
-
-    fun showUserRefreshError() {
-        _isRefreshing.value = false
-    }
-
-    fun isRefreshing(): Boolean = isRefreshing.value!!
 }

@@ -7,7 +7,6 @@ import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.usecases.groups.FetchFeaturedMoviesUseCase
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
-import com.zhuinden.livedatacombinetuplekt.combineTuple
 import javax.inject.Inject
 
 class FeaturedViewModel @Inject constructor(
@@ -19,36 +18,21 @@ class FeaturedViewModel @Inject constructor(
     private val emitter: EventEmitter<FeaturedScreenEvents> = EventEmitter()
     val screenEvents: EventSource<FeaturedScreenEvents> get() = emitter
 
-    val isLoading: LiveData<Boolean>
-        get() = featuredScreenStateManager.isLoading
-
-    val isPowerMenuOpen: LiveData<Boolean>
-        get() = featuredScreenStateManager.isPowerMenuOpen
-
-    val errorMessage: LiveData<String?>
-        get() = featuredScreenStateManager.errorMessage
-
-    val data: LiveData<List<MoviesResponse>>
-        get() = featuredScreenStateManager.data
-
-    val powerMenuItem: LiveData<ToolbarCountryItems>
-        get() = featuredScreenStateManager.powerMenuItem
-
-    val refresh: LiveData<Boolean>
-        get() = featuredScreenStateManager.isRefreshing
-
-    val combinedState = combineTuple(data, isLoading, errorMessage, refresh)
-    private var isFirstRender = true
+    val state: LiveData<FeaturedScreenState> = featuredScreenStateManager.stateLiveData
+    private var isFirstRender: Boolean = true
 
     init {
         fetchFeaturedMoviesUseCase.registerListener(this)
-        featuredScreenStateManager.updatePowerMenuItem(sharedPreferencesManager.getStoredFeaturedPowerMenuItem())
     }
 
     fun onStart() {
         if (isFirstRender) {
             isFirstRender = false
-            featuredScreenStateManager.showUserLoadingScreen()
+            featuredScreenStateManager.dispatch(
+                FeaturedActions.FeaturedRequest(
+                    sharedPreferencesManager.getStoredFeaturedPowerMenuItem()
+                )
+            )
             fetchApiForFeaturedMovies()
         }
     }
@@ -56,19 +40,19 @@ class FeaturedViewModel @Inject constructor(
     //User Actions----------------------------------------------------------------------------------
     fun onOverflowMenuIconClick() {
         if (!fetchFeaturedMoviesUseCase.isBusy) {
-            featuredScreenStateManager.togglePowerMenuVisibility()
+            featuredScreenStateManager.dispatch(FeaturedActions.TogglePowerMenuVisibility)
         } else {
             emitter.emit(ShowUserToastMessage("Please Wait..."))
         }
     }
 
     fun onBackgroundClick() {
-        featuredScreenStateManager.closePowerMenu()
+        featuredScreenStateManager.dispatch(FeaturedActions.ClosePowerMenu)
     }
 
     fun onCountryToolbarItemClicked(toolbarCountryItem: ToolbarCountryItems) {
         sharedPreferencesManager.setStoredFeaturedPowerMenuItem(toolbarCountryItem)
-        featuredScreenStateManager.showUserLoadingScreenWithNewPowerItem(toolbarCountryItem)
+        featuredScreenStateManager.dispatch(FeaturedActions.FeaturedRequest(toolbarCountryItem))
         fetchApiForFeaturedMovies()
     }
 
@@ -76,7 +60,7 @@ class FeaturedViewModel @Inject constructor(
         if (fetchFeaturedMoviesUseCase.isBusy) {
             return
         }
-        featuredScreenStateManager.showUserLoadingScreen()
+        featuredScreenStateManager.dispatch(FeaturedActions.FeaturedRequest(state.value!!.powerMenuItem))
         fetchApiForFeaturedMovies()
     }
 
@@ -84,31 +68,31 @@ class FeaturedViewModel @Inject constructor(
         if (fetchFeaturedMoviesUseCase.isBusy) {
             return
         }
-        featuredScreenStateManager.showUserRefresh()
+        featuredScreenStateManager.dispatch(FeaturedActions.FeaturedRefresh)
         fetchApiForFeaturedMovies()
     }
 
     //----------------------------------------------------------------------------------------------
     private fun fetchApiForFeaturedMovies() {
-        fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify(powerMenuItem.value!!.region)
+        fetchFeaturedMoviesUseCase.fetchFeaturedMoviesUseCaseAndNotify(state.value!!.powerMenuItem.region)
     }
 
 
     override fun onFetchMovieGroupsSucceeded(movieGroups: List<MoviesResponse>) {
-        if (featuredScreenStateManager.isRefreshing()) {
-            featuredScreenStateManager.showUserRefreshSuccess(movieGroups)
+        if (state.value!!.isRefreshing) {
+            featuredScreenStateManager.dispatch(FeaturedActions.FeaturedSuccess(movieGroups))
             emitter.emit(ShowUserToastMessage("Movies Updated"))
         } else {
-            featuredScreenStateManager.showUserFeaturedMovies(movieGroups)
+            featuredScreenStateManager.dispatch(FeaturedActions.FeaturedSuccess(movieGroups))
         }
     }
 
     override fun onFetchMovieGroupsFailed(msg: String) {
-        if (featuredScreenStateManager.isRefreshing()) {
-            featuredScreenStateManager.showUserRefreshError()
+        if (state.value!!.isRefreshing) {
+            featuredScreenStateManager.dispatch(FeaturedActions.FeaturedRefreshError)
             emitter.emit(ShowUserToastMessage(msg))
         } else {
-            featuredScreenStateManager.showUserErrorScreen(msg)
+            featuredScreenStateManager.dispatch(FeaturedActions.FeaturedError(msg))
         }
     }
 

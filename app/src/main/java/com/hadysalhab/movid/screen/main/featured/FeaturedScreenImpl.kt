@@ -21,12 +21,12 @@ import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.PowerMenu
 import com.skydoves.powermenu.PowerMenuItem
 
-class FeaturedViewImpl(
+class FeaturedScreenImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
 ) :
-    FeaturedView(), MovieGroupAdapter.Listener, MenuToolbarLayout.Listener, ErrorScreen.Listener,
+    FeaturedScreen(), MovieGroupAdapter.Listener, MenuToolbarLayout.Listener, ErrorScreen.Listener,
     SwipeRefreshLayout.OnRefreshListener {
     private val recyclerView: RecyclerView
     private val adapter: MovieGroupAdapter
@@ -98,59 +98,92 @@ class FeaturedViewImpl(
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
-            adapter = this@FeaturedViewImpl.adapter
+            adapter = this@FeaturedScreenImpl.adapter
         }
     }
 
 
-    override fun showLoadingIndicator() {
+    override fun handleState(featuredState: FeaturedScreenState) {
+        val sortedMovies = sortMoviesAndReturn(featuredState.data)
+        displayMovieGroups(sortedMovies)
+        if (featuredState.isLoading) {
+            showLoadingIndicator()
+        } else {
+            hideLoadingIndicator()
+        }
+
+        if (featuredState.errorMessage != null) {
+            showErrorScreen(featuredState.errorMessage)
+        } else hideErrorScreen()
+        setPowerMenuItem(featuredState.powerMenuItem)
+        if (featuredState.isPowerMenuOpen) showPowerMenu() else hidePowerMenu()
+        if (featuredState.isRefreshing) {
+            showRefreshIndicator()
+        } else {
+            hideRefreshIndicator()
+        }
+        if (!featuredState.isRefreshing) {
+            if (featuredState.isLoading || featuredState.errorMessage != null) {
+                disablePullToRefresh()
+            } else {
+                enablePullToRefresh()
+            }
+        }
+
+    }
+
+    private fun sortMoviesAndReturn(movieGroups: List<MoviesResponse>) =
+        movieGroups.sortedBy { item -> item.tag.ordinal }
+            .filter { !it.movies.isNullOrEmpty() }
+
+    private fun displayMovieGroups(movieGroups: List<MoviesResponse>) {
+        adapter.submitList(movieGroups)
+    }
+
+    private fun showLoadingIndicator() {
         circularProgress.visibility = View.VISIBLE
     }
 
-    override fun hideLoadingIndicator() {
+    private fun hideLoadingIndicator() {
         circularProgress.visibility = View.GONE
     }
 
-    override fun showPowerMenu() {
+    private fun showPowerMenu() {
         powerMenu.showAsAnchorRightTop(menuToolbarLayout.getOverflowMenuIconPlaceHolder())
     }
 
-    override fun hidePowerMenu() {
+    private fun hidePowerMenu() {
         powerMenu.dismiss()
     }
 
-    override fun setPowerMenuItem(powerMenuItem: ToolbarCountryItems) {
+    private fun setPowerMenuItem(powerMenuItem: ToolbarCountryItems) {
         powerMenu.selectedPosition = powerMenuItem.ordinal
         menuToolbarLayout.setOverflowMenuIcon(powerMenuItem.countryIcon)
     }
 
-    override fun showErrorScreen(errorMessage: String) {
+    private fun showErrorScreen(errorMessage: String) {
         errorScreen.displayErrorMessage(errorMessage)
         errorScreenPlaceHolder.visibility = View.VISIBLE
     }
 
-    override fun hideErrorScreen() {
+    private fun hideErrorScreen() {
         errorScreenPlaceHolder.visibility = View.GONE
     }
 
-    override fun hideRefreshIndicator() {
+    private fun hideRefreshIndicator() {
         pullToRefresh.isRefreshing = false
     }
 
-    override fun showRefreshIndicator() {
+    private fun showRefreshIndicator() {
         pullToRefresh.isRefreshing = true
     }
 
-    override fun enablePullToRefresh() {
+    private fun enablePullToRefresh() {
         pullToRefresh.isEnabled = true
     }
 
-    override fun disablePullToRefresh() {
+    private fun disablePullToRefresh() {
         pullToRefresh.isEnabled = false
-    }
-
-    override fun displayMovieGroups(movieGroups: List<MoviesResponse>) {
-        adapter.submitList(movieGroups)
     }
 
 
