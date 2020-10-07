@@ -11,7 +11,6 @@ import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
-import com.zhuinden.livedatacombinetuplekt.combineTuple
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -32,19 +31,8 @@ class MovieDetailViewModel @Inject constructor(
     private val emitter: EventEmitter<MovieDetailScreenEvents> = EventEmitter()
     val screenEvents: EventSource<MovieDetailScreenEvents> get() = emitter
 
-    val data: LiveData<MovieDetail>
-        get() = movieDetailScreenStateManager.data
+    val state: LiveData<MovieDetailScreenState> = movieDetailScreenStateManager.stateLiveData
 
-    val isLoading: LiveData<Boolean>
-        get() = movieDetailScreenStateManager.isLoading
-
-    val errorMessage: LiveData<String?>
-        get() = movieDetailScreenStateManager.errorMessage
-
-    val refresh: LiveData<Boolean>
-        get() = movieDetailScreenStateManager.isRefreshing
-
-    val combinedState = combineTuple(data, isLoading, errorMessage, refresh)
 
     init {
         fetchMovieDetailUseCase.registerListener(this)
@@ -59,9 +47,13 @@ class MovieDetailViewModel @Inject constructor(
             this.movieID = movieID
             isFirstRender = false
             if (dataValidator.isMovieDetailValid(movieDetailStored)) {
-                movieDetailScreenStateManager.showMovieDetail(movieDetailStored)
+                movieDetailScreenStateManager.dispatch(
+                    MovieDetailActions.MovieDetailSuccess(
+                        movieDetailStored!!
+                    )
+                )
             } else {
-                movieDetailScreenStateManager.showUserLoadingScreen()
+                movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRequest)
                 fetchApiForMovieDetail()
             }
         }
@@ -76,7 +68,7 @@ class MovieDetailViewModel @Inject constructor(
         if (fetchMovieDetailUseCase.isBusy) {
             return
         }
-        movieDetailScreenStateManager.showUserRefresh()
+        movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRefresh)
         fetchApiForMovieDetail()
     }
 
@@ -85,7 +77,7 @@ class MovieDetailViewModel @Inject constructor(
         if (fetchMovieDetailUseCase.isBusy) {
             return
         }
-        movieDetailScreenStateManager.showUserLoadingScreen()
+        movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRequest)
         fetchApiForMovieDetail()
     }
 
@@ -97,10 +89,10 @@ class MovieDetailViewModel @Inject constructor(
         if (areAddRemoveWatchListOrFavoriteUseCaseBusy()) {
             emitter.emit(ShowUserToastMessage("Please Wait"))
         } else {
-            movieDetailScreenStateManager.showUserLoadingScreen()
+            movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRequest)
             addRemoveWatchlistMovieUseCase.addRemoveWatchlistUseCase(
-                data.value!!.details.id,
-                !data.value!!.accountStates.watchlist
+                state.value!!.data!!.details.id,
+                !state.value!!.data!!.accountStates.watchlist
             )
         }
     }
@@ -113,10 +105,10 @@ class MovieDetailViewModel @Inject constructor(
         if (areAddRemoveWatchListOrFavoriteUseCaseBusy()) {
             emitter.emit(ShowUserToastMessage("Please Wait"))
         } else {
-            movieDetailScreenStateManager.showUserLoadingScreen()
+            movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRequest)
             addRemoveFavMovieUseCase.addRemoveFavUseCase(
-                data.value!!.details.id,
-                !data.value!!.accountStates.favorite
+                state.value!!.data!!.details.id,
+                !state.value!!.data!!.accountStates.favorite
             )
         }
     }
@@ -154,20 +146,20 @@ class MovieDetailViewModel @Inject constructor(
     //Failure
     override fun onAddRemoveFavoritesFailure(err: String) {
         emitter.emit(ShowUserToastMessage(err))
-        movieDetailScreenStateManager.showAddRemoveFavoritesFailure()
+        movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailFavoriteWatchlistError)
     }
 
     override fun onAddRemoveWatchlistFailure(err: String) {
         emitter.emit(ShowUserToastMessage(err))
-        movieDetailScreenStateManager.showAddRemoveWatchListFailure()
+        movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailFavoriteWatchlistError)
     }
 
     override fun onFetchMovieDetailFailed(msg: String) {
-        if (movieDetailScreenStateManager.isRefreshing()) {
-            movieDetailScreenStateManager.showUserRefreshError()
+        if (state.value!!.isRefreshing) {
+            movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRefreshError)
             emitter.emit(ShowUserToastMessage(msg))
         } else {
-            movieDetailScreenStateManager.showUserErrorScreen(msg)
+            movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailError(msg))
         }
     }
 
@@ -185,12 +177,11 @@ class MovieDetailViewModel @Inject constructor(
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onMovieDetailEvent(event: MovieDetailEvents) {
         if (event.movieDetail.details.id == this.movieID) {
-            if (movieDetailScreenStateManager.isRefreshing()) {
-                movieDetailScreenStateManager.showUserRefreshSuccess(event.movieDetail)
+            if (state.value!!.isRefreshing) {
+                movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailSuccess(event.movieDetail))
                 emitter.emit(ShowUserToastMessage("Movie Updated"))
             } else {
-                movieDetailScreenStateManager.showMovieDetail(event.movieDetail)
-
+                movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailSuccess(event.movieDetail))
             }
         }
     }

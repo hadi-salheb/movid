@@ -1,62 +1,84 @@
 package com.hadysalhab.movid.screen.main.moviedetail
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hadysalhab.movid.movies.MovieDetail
 
+
+data class MovieDetailScreenState(
+    val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
+    val data: MovieDetail? = null,
+    val error: String? = null
+)
+
+sealed class MovieDetailActions {
+    object MovieDetailRequest : MovieDetailActions()
+    object MovieDetailRefresh : MovieDetailActions()
+    data class MovieDetailSuccess(val data: MovieDetail) : MovieDetailActions()
+    object MovieDetailRefreshError : MovieDetailActions()
+    object MovieDetailFavoriteWatchlistError : MovieDetailActions()
+    data class MovieDetailError(val errorMessage: String) : MovieDetailActions()
+    object Reset : MovieDetailActions()
+}
+
 class MovieDetailScreenStateManager {
-    private val _isLoading = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
 
-    private val _errorMessage = MutableLiveData<String?>(null)
-    val errorMessage: LiveData<String?>
-        get() = _errorMessage
+    val stateLiveData = MutableLiveData<MovieDetailScreenState>(MovieDetailScreenState())
+    private var state: MovieDetailScreenState
+        get() {
+            return stateLiveData.value!!
+        }
+        set(value) {
+            stateLiveData.value = value
+        }
 
-    private val _data = MutableLiveData<MovieDetail>(null)
-    val data: LiveData<MovieDetail>
-        get() = _data
+    fun dispatch(movieDetailActions: MovieDetailActions) {
+        when (movieDetailActions) {
+            is MovieDetailActions.MovieDetailRequest -> {
+                state = state.copy(
+                    isLoading = true,
+                    isRefreshing = false,
+                    error = null
+                )
+            }
+            is MovieDetailActions.MovieDetailRefresh -> {
+                state = state.copy(
+                    isLoading = false,
+                    isRefreshing = true,
+                    error = null
+                )
+            }
+            is MovieDetailActions.MovieDetailSuccess -> {
+                state = state.copy(
+                    isLoading = false,
+                    isRefreshing = false,
+                    error = null,
+                    data = movieDetailActions.data
+                )
+            }
 
-    private val _isRefreshing = MutableLiveData<Boolean>(false)
-    val isRefreshing: LiveData<Boolean>
-        get() = _isRefreshing
+            is MovieDetailActions.MovieDetailError -> {
+                state = state.copy(
+                    isLoading = false,
+                    isRefreshing = false,
+                    error = movieDetailActions.errorMessage
+                )
+            }
+            is MovieDetailActions.Reset -> {
+                state = MovieDetailScreenState()
+            }
+            is MovieDetailActions.MovieDetailRefreshError -> {
+                state = state.copy(
+                    isRefreshing = false
+                )
+            }
+            is MovieDetailActions.MovieDetailFavoriteWatchlistError -> {
+                state = state.copy(
+                    isLoading = false
+                )
+            }
 
-    fun showUserLoadingScreen() {
-        _isLoading.value = true
-        _errorMessage.value = null
+        }
     }
 
-    fun showUserErrorScreen(errorMessage: String) {
-        _isLoading.value = false
-        _errorMessage.value = errorMessage
-    }
-
-    fun showMovieDetail(movieDetail: MovieDetail?) {
-        _errorMessage.value = null
-        _isLoading.value = false
-        _data.value = movieDetail
-    }
-
-    fun showAddRemoveFavoritesFailure() {
-        _isLoading.value = false
-    }
-
-    fun showAddRemoveWatchListFailure() {
-        _isLoading.value = false
-    }
-
-    fun showUserRefresh() {
-        _isRefreshing.value = true
-    }
-
-    fun showUserRefreshSuccess(movieDetail: MovieDetail) {
-        _isRefreshing.value = false
-        _data.value = movieDetail
-    }
-
-    fun showUserRefreshError() {
-        _isRefreshing.value = false
-    }
-
-    fun isRefreshing(): Boolean = isRefreshing.value!!
 }

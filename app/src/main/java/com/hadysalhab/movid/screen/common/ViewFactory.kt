@@ -9,6 +9,7 @@ import com.hadysalhab.movid.screen.common.cast.CastCardImpl
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreenImpl
 import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
 import com.hadysalhab.movid.screen.common.listheader.ListHeader
+import com.hadysalhab.movid.screen.common.loading.LoadingView
 import com.hadysalhab.movid.screen.common.movielist.MovieListViewImpl
 import com.hadysalhab.movid.screen.common.movies.MovieCardImpl
 import com.hadysalhab.movid.screen.common.movies.MovieListItemImpl
@@ -22,8 +23,8 @@ import com.hadysalhab.movid.screen.main.discover.DiscoverView
 import com.hadysalhab.movid.screen.main.discover.DiscoverViewImpl
 import com.hadysalhab.movid.screen.main.featured.FeaturedViewImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
-import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailView
-import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewImpl
+import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreen
+import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenImpl
 import com.hadysalhab.movid.screen.main.reviews.ReviewListView
 import com.hadysalhab.movid.screen.main.reviews.ReviewListViewImpl
 import com.hadysalhab.movid.screen.main.search.*
@@ -66,8 +67,8 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
             this
         )
 
-    fun getMovieDetailView(container: ViewGroup?): MovieDetailView =
-        MovieDetailViewImpl(layoutInflater, container, this)
+    fun getMovieDetailView(container: ViewGroup?): MovieDetailScreen =
+        MovieDetailScreenImpl(layoutInflater, container, this)
 
     fun getFactView(parent: ViewGroup?) = FactView(layoutInflater, parent)
     fun getCastCard(parent: ViewGroup?) = CastCardImpl(layoutInflater, parent)
@@ -89,4 +90,5 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
         DiscoverViewImpl(layoutInflater, parent, this)
 
     fun getErrorScreen(parent: ViewGroup?) = ErrorScreenImpl(layoutInflater, parent)
+    fun getLoadingView(parent: ViewGroup?) = LoadingView(layoutInflater, parent)
 }
