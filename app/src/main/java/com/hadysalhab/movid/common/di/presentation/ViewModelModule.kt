@@ -3,9 +3,9 @@ package com.hadysalhab.movid.common.di.presentation
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.screen.main.discover.DiscoverViewModel
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesViewModel
-import com.hadysalhab.movid.screen.main.featured.FeaturedViewModel
+import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupViewModel
+import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListViewModel
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewModel
-import com.hadysalhab.movid.screen.main.movielist.MovieListViewModel
 import com.hadysalhab.movid.screen.main.reviews.ReviewsViewModel
 import com.hadysalhab.movid.screen.main.search.SearchViewModel
 import com.hadysalhab.movid.screen.main.watchlist.WatchlistMoviesViewModel
@@ -18,8 +18,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(FeaturedViewModel::class)
-    abstract fun featuredViewModel(myViewModel: FeaturedViewModel): ViewModel
+    @ViewModelKey(FeaturedGroupViewModel::class)
+    abstract fun featuredViewModel(myGroupViewModel: FeaturedGroupViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -29,8 +29,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(MovieListViewModel::class)
-    abstract fun movieListViewModel(myViewModel: MovieListViewModel): ViewModel
+    @ViewModelKey(FeaturedListViewModel::class)
+    abstract fun movieListViewModel(myViewModel: FeaturedListViewModel): ViewModel
 
     @Binds
     @IntoMap

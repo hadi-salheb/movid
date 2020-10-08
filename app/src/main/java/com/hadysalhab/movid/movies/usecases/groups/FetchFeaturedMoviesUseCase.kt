@@ -120,8 +120,8 @@ class FetchFeaturedMoviesUseCase(
             listeners.forEach {
                 it.onFetchMovieGroupsFailed(errorMessage)
             }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 
     // notify controller
@@ -130,7 +130,7 @@ class FetchFeaturedMoviesUseCase(
             listeners.forEach {
                 it.onFetchMovieGroupsSucceeded(movieGroups)
             }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 }

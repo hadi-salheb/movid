@@ -1,16 +1,8 @@
-package com.hadysalhab.movid.screen.main.featured
+package com.hadysalhab.movid.screen.main.featuredgroups
 
 import androidx.lifecycle.MutableLiveData
 import com.hadysalhab.movid.movies.MoviesResponse
 
-data class FeaturedScreenState(
-    val isLoading: Boolean = false,
-    val isPowerMenuOpen: Boolean = false,
-    val powerMenuItem: ToolbarCountryItems = ToolbarCountryItems.AUSTRALIA,
-    val isRefreshing: Boolean = false,
-    val data: List<MoviesResponse> = emptyList(),
-    val errorMessage: String? = null
-)
 
 sealed class FeaturedActions {
     data class FeaturedRequest(val toolbarCountryItems: ToolbarCountryItems) : FeaturedActions()

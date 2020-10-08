@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.featured
+package com.hadysalhab.movid.screen.main.featuredgroups
 
 import androidx.annotation.DrawableRes
 import com.hadysalhab.movid.R

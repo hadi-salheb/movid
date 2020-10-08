@@ -71,8 +71,8 @@ class SearchMovieUseCase(
             listeners.forEach {
                 it.onSearchMovieFailure(error, this.query)
             }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 
     // notify controller
@@ -81,8 +81,8 @@ class SearchMovieUseCase(
             listeners.forEach {
                 it.onSearchMovieSuccess(movies, this.query)
             }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 
 }

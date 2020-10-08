@@ -10,7 +10,7 @@ import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreenImpl
 import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
 import com.hadysalhab.movid.screen.common.listheader.ListHeader
 import com.hadysalhab.movid.screen.common.loading.LoadingView
-import com.hadysalhab.movid.screen.common.movielist.MovieListViewImpl
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreenImpl
 import com.hadysalhab.movid.screen.common.movies.MovieCardImpl
 import com.hadysalhab.movid.screen.common.movies.MovieListItemImpl
 import com.hadysalhab.movid.screen.common.rating.Rating
@@ -18,10 +18,12 @@ import com.hadysalhab.movid.screen.common.reviews.ReviewListItem
 import com.hadysalhab.movid.screen.common.reviews.ReviewListItemImpl
 import com.hadysalhab.movid.screen.common.seeall.SeeAllImpl
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
+import com.hadysalhab.movid.screen.common.toolbar.TitleToolbarLayout
 import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.discover.DiscoverView
 import com.hadysalhab.movid.screen.main.discover.DiscoverViewImpl
-import com.hadysalhab.movid.screen.main.featured.FeaturedScreenImpl
+import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupScreenImpl
+import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListScreenImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreen
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenImpl
@@ -34,7 +36,9 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getLauncherView(parent: ViewGroup?) = OnBoardingViewImpl(layoutInflater, parent)
     fun getMainView(parent: ViewGroup?) = MainViewImpl(layoutInflater, parent)
 
-    fun getFeaturedView(container: ViewGroup?) = FeaturedScreenImpl(layoutInflater, container, this)
+    fun getFeaturedView(container: ViewGroup?) =
+        FeaturedGroupScreenImpl(layoutInflater, container, this)
+
     fun getMovieCard(parent: ViewGroup?) =
         MovieCardImpl(
             layoutInflater,
@@ -58,7 +62,9 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getMovieListItemView(parent: ViewGroup?) =
         MovieListItemImpl(layoutInflater, parent, this)
 
-    fun getMovieListView(parent: ViewGroup?) = MovieListViewImpl(layoutInflater, parent, this)
+    fun getMovieScreen(parent: ViewGroup?) = MovieListScreenImpl(layoutInflater, parent, this)
+    fun getFeaturedListScreen(parent: ViewGroup?) =
+        FeaturedListScreenImpl(layoutInflater, parent, this)
 
     fun getCastsView(parent: ViewGroup?) =
         CastsView(
@@ -91,4 +97,6 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
 
     fun getErrorScreen(parent: ViewGroup?) = ErrorScreenImpl(layoutInflater, parent)
     fun getLoadingView(parent: ViewGroup?) = LoadingView(layoutInflater, parent)
+    fun getTitleToolbarLayout(parent: ViewGroup?): TitleToolbarLayout =
+        TitleToolbarLayout(layoutInflater, parent)
 }

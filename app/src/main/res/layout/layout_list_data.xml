@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screen.main.movielist.MovieListFragment">
+    tools:context=".screen.main.featuredlist.FeaturedListFragment">
 
     <include
-        android:visibility="gone"
         android:id="@+id/rv_movies"
         layout="@layout/recyclerview"
         android:layout_width="0dp"
@@ -34,7 +33,7 @@
         tools:text="No Available Results" />
 
     <ProgressBar
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/loading_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,9 +43,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        android:visibility="gone"
         android:id="@+id/pagination_loading_indicator"
         android:layout_width="0dp"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

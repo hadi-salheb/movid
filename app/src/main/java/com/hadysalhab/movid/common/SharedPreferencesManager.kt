@@ -1,7 +1,7 @@
 package com.hadysalhab.movid.common
 
 import android.content.Context
-import com.hadysalhab.movid.screen.main.featured.ToolbarCountryItems
+import com.hadysalhab.movid.screen.main.featuredgroups.ToolbarCountryItems
 
 private const val PREF_SESSION_ID = "SESSION_ID"
 private const val PREF_FEATURED_POWER_MENU_ITEM = "FEATURED_POWER_MENU_ITEM"

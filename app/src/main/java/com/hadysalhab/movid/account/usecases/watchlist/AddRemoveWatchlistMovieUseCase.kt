@@ -80,16 +80,15 @@ class AddRemoveWatchlistMovieUseCase(
     }
 
     private fun notifySuccess(movieDetail: MovieDetail) {
-        becomeNotBusy()
         uiThreadPoster.post {
             listeners.forEach {
                 it.onAddRemoveWatchlistSuccess(movieDetail)
             }
+            becomeNotBusy()
         }
     }
 
     private fun notifyFailure(err: String) {
-        becomeNotBusy()
         uiThreadPoster.post {
             listeners.forEach {
                 it.onAddRemoveWatchlistFailure(err)

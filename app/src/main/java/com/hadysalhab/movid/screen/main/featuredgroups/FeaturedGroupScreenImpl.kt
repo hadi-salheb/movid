@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.featured
+package com.hadysalhab.movid.screen.main.featuredgroups
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -21,15 +21,16 @@ import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.PowerMenu
 import com.skydoves.powermenu.PowerMenuItem
 
-class FeaturedScreenImpl(
+class FeaturedGroupScreenImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
 ) :
-    FeaturedScreen(), MovieGroupAdapter.Listener, MenuToolbarLayout.Listener, ErrorScreen.Listener,
+    FeaturedGroupScreen(), FeaturedGroupAdapter.Listener, MenuToolbarLayout.Listener,
+    ErrorScreen.Listener,
     SwipeRefreshLayout.OnRefreshListener {
     private val recyclerView: RecyclerView
-    private val adapter: MovieGroupAdapter
+    private val adapter: FeaturedGroupAdapter
     private val circularProgress: ProgressBar
     private val toolbar: Toolbar
     private val powerMenu: PowerMenu
@@ -41,7 +42,7 @@ class FeaturedScreenImpl(
     init {
         setRootView(inflater.inflate(R.layout.layout_featured, parent, false))
         recyclerView = findViewById(R.id.rv_movies)
-        adapter = MovieGroupAdapter(this, viewFactory)
+        adapter = FeaturedGroupAdapter(this, viewFactory)
         circularProgress = findViewById(R.id.progress_circular)
         toolbar = findViewById(R.id.toolbar)
         powerMenu = getPowerMenu()
@@ -98,7 +99,7 @@ class FeaturedScreenImpl(
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
-            adapter = this@FeaturedScreenImpl.adapter
+            adapter = this@FeaturedGroupScreenImpl.adapter
         }
     }
 
@@ -179,5 +180,41 @@ class FeaturedScreenImpl(
             it.onRefresh()
         }
     }
+
+    override fun handleScreenState(featuredScreenState: FeaturedScreenState) {
+        val sortedMovies = sortMoviesAndReturn(featuredScreenState.data)
+        displayFeaturedMovies(sortedMovies)
+        if (featuredScreenState.isLoading) {
+            showLoadingIndicator()
+        } else {
+            hideLoadingIndicator()
+        }
+
+        if (featuredScreenState.errorMessage != null) {
+            showErrorScreen(featuredScreenState.errorMessage)
+        } else hideErrorScreen()
+        setPowerMenuItem(featuredScreenState.powerMenuItem)
+        if (featuredScreenState.isPowerMenuOpen) {
+            showPowerMenu()
+        } else {
+            hidePowerMenu()
+        }
+        if (featuredScreenState.isRefreshing) {
+            showRefreshIndicator()
+        } else {
+            hideRefreshIndicator()
+        }
+        if (!featuredScreenState.isRefreshing) {
+            if (featuredScreenState.isLoading || featuredScreenState.errorMessage != null) {
+                disablePullRefresh()
+            } else {
+                enablePullRefresh()
+            }
+        }
+    }
+
+    private fun sortMoviesAndReturn(movieGroups: List<MoviesResponse>) =
+        movieGroups.sortedBy { item -> item.tag.ordinal }
+            .filter { !it.movies.isNullOrEmpty() }
 
 }

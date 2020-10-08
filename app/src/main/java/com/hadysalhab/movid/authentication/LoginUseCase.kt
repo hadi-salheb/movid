@@ -108,8 +108,8 @@ class LoginUseCase(
             listeners.forEach {
                 it.onLoggedIn()
             }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 
     private fun notifyFailure(msg: String) {
@@ -117,8 +117,8 @@ class LoginUseCase(
             listeners.forEach {
                 it.onLoginFailed(msg)
             }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 
 }

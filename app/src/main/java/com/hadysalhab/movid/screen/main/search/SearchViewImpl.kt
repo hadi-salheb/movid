@@ -6,16 +6,16 @@ import android.widget.FrameLayout
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
-import com.hadysalhab.movid.screen.common.movielist.MovieListView
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreen
 import com.mancj.materialsearchbar.MaterialSearchBar
 
 
 class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFactory: ViewFactory) :
-    SearchView(), MaterialSearchBar.OnSearchActionListener, MovieListView.Listener,
+    SearchView(), MaterialSearchBar.OnSearchActionListener, MovieListScreen.Listener,
     GenreList.Listener {
     private val materialSearchBar: MaterialSearchBar
     private val framePlaceHolder: FrameLayout
-    private val movieListView: MovieListView
+    private val movieListScreen: MovieListScreen
     private val genreView: GenreList
 
     init {
@@ -23,7 +23,7 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
         framePlaceHolder = findViewById(R.id.frame_placeholder)
         materialSearchBar = findViewById(R.id.searchBar)
         materialSearchBar.setOnSearchActionListener(this)
-        movieListView = viewFactory.getMovieListView(framePlaceHolder)
+        movieListScreen = viewFactory.getMovieScreen(framePlaceHolder)
         genreView = viewFactory.getGenreList(framePlaceHolder)
         renderMovies()
     }
@@ -64,33 +64,33 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
     }
 
     override fun displayLoadingIndicator() {
-        movieListView.displayLoadingIndicator()
+        movieListScreen.showLoadingIndicator()
     }
 
     override fun displayPaginationLoading() {
-        movieListView.displayPaginationLoading()
+        movieListScreen.hidePaginationIndicator()
     }
 
     override fun displayMovies(movies: List<Movie>) {
-        movieListView.displayMovies(movies)
+        movieListScreen.displayMovies(movies)
     }
 
     override fun renderGenres() {
         framePlaceHolder.removeAllViews()
-        movieListView.unregisterListener(this)
+        movieListScreen.unregisterListener(this)
         framePlaceHolder.addView(genreView.getRootView())
         genreView.registerListener(this)
     }
 
     override fun renderMovies() {
         framePlaceHolder.removeAllViews()
-        framePlaceHolder.addView(movieListView.getRootView())
-        movieListView.registerListener(this)
+        framePlaceHolder.addView(movieListScreen.getRootView())
+        movieListScreen.registerListener(this)
         genreView.unregisterListener(this)
     }
 
     override fun displayEmptyListIndicator(msg: String) {
-        movieListView.displayEmptyListIndicator(msg)
+        movieListScreen.displayEmptyListIndicator(msg)
     }
 
     override fun onGenreListItemClick(genre: Genre) {

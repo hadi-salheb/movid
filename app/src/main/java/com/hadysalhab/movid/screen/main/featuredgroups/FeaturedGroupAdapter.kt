@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.featured
+package com.hadysalhab.movid.screen.main.featuredgroups
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,8 +9,8 @@ import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 
-class MovieGroupAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
-    ListAdapter<MoviesResponse, MovieGroupViewHolder>(DIFF_CALLBACK), MoviesView.Listener {
+class FeaturedGroupAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
+    ListAdapter<MoviesResponse, FeaturedGroupViewHolder>(DIFF_CALLBACK), MoviesView.Listener {
     interface Listener {
         fun onMovieCardClicked(movieID: Int)
         fun onSeeMoreClicked(groupType: GroupType)
@@ -36,16 +36,16 @@ class MovieGroupAdapter(private val listener: Listener, private val viewFactory:
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieGroupViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeaturedGroupViewHolder {
         val view = viewFactory.getMoviesView(parent)
         view.registerListener(this)
         val padding = convertDpToPixel(8, parent.context)
         view.getRootView().setPadding(0, padding, 0, padding)
-        return MovieGroupViewHolder(view)
+        return FeaturedGroupViewHolder(view)
     }
 
     // only called if areContentsTheSame = false
-    override fun onBindViewHolder(holder: MovieGroupViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FeaturedGroupViewHolder, position: Int) {
         val movieGroup = getItem(position)
         holder.bind(movieGroup)
     }

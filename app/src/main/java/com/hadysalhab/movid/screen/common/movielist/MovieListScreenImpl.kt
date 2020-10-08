@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.screen.common.movielist
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,11 @@ import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.scrolllistener.OnVerticalScrollListener
 
 
-class MovieListViewImpl(
+class MovieListScreenImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     viewFactory: ViewFactory
-) : MovieListView(), MovieListAdapter.Listener {
+) : MovieListScreen(), MovieListAdapter.Listener {
     private val recyclerView: RecyclerView
     private val adapter: MovieListAdapter
     private val progressBar: ProgressBar
@@ -33,9 +34,9 @@ class MovieListViewImpl(
         progressBar = findViewById(R.id.loading_indicator)
         paginationProgressBar = findViewById(R.id.pagination_loading_indicator)
         recyclerView.apply {
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = CustomGridLayoutManager(context, 2)
             setHasFixedSize(true)
-            adapter = this@MovieListViewImpl.adapter
+            adapter = this@MovieListScreenImpl.adapter
         }
         recyclerView.apply {
             addOnScrollListener(object : OnVerticalScrollListener() {
@@ -59,38 +60,36 @@ class MovieListViewImpl(
         }
     }
 
+    inner class CustomGridLayoutManager(val context: Context, spanCount: Int) :
+        GridLayoutManager(context, spanCount) {
+        override fun canScrollVertically(): Boolean {
+            return paginationProgressBar.visibility == View.GONE && super.canScrollVertically()
+        }
+    }
+
     override fun displayMovies(movies: List<Movie>) {
         if (movies.size <= 20) {
             adapter.notifyDataSetChanged()
         }
         adapter.submitList(movies)
-        emptyResultIndicator.visibility = View.GONE
-        progressBar.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
-        if (paginationProgressBar.visibility == View.VISIBLE) {
-            android.os.Handler().postDelayed({
-                paginationProgressBar.visibility = View.GONE
-                recyclerView.suppressLayout(false)
-                recyclerView.post {
-                    recyclerView.smoothScrollBy(0, convertDpToPixel(16, getContext()))
-                }
-            }, 300)
-        }
     }
 
-    override fun displayPaginationLoading() {
-        emptyResultIndicator.visibility = View.GONE
+    override fun showPaginationIndicator() {
         paginationProgressBar.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
-        recyclerView.suppressLayout(true)
     }
 
-    override fun displayLoadingIndicator() {
-        emptyResultIndicator.visibility = View.GONE
+    override fun hidePaginationIndicator() {
         paginationProgressBar.visibility = View.GONE
-        recyclerView.visibility = View.GONE
+    }
+
+    override fun showLoadingIndicator() {
         progressBar.visibility = View.VISIBLE
     }
+
+    override fun hideLoadingIndicator() {
+        progressBar.visibility = View.GONE
+    }
+
 
     override fun displayEmptyListIndicator(msg: String) {
         emptyResultIndicator.text = msg
@@ -98,6 +97,38 @@ class MovieListViewImpl(
         paginationProgressBar.visibility = View.GONE
         recyclerView.visibility = View.GONE
         progressBar.visibility = View.GONE
+    }
+
+    override fun handleState(movieListScreenState: MovieListScreenState) {
+        val isLoading = movieListScreenState.isLoading
+        val isPaginationLoading = movieListScreenState.isPaginationLoading
+        val movies = movieListScreenState.data
+        if (isLoading) {
+            showLoadingIndicator()
+        } else {
+            hideLoadingIndicator()
+        }
+        if (isPaginationLoading) {
+
+            showPaginationIndicator()
+        } else {
+            if (paginationProgressBar.visibility == View.VISIBLE) {
+                android.os.Handler().postDelayed({
+                    hidePaginationIndicator()
+                    animateRecyclerViewScroll()
+                }, 300)
+            } else {
+                hidePaginationIndicator()
+            }
+        }
+        displayMovies(movies)
+    }
+
+    private fun animateRecyclerViewScroll() {
+        recyclerView.suppressLayout(false)
+        recyclerView.post {
+            recyclerView.smoothScrollBy(0, convertDpToPixel(16, getContext()))
+        }
     }
 
     override fun onMovieItemClicked(movieID: Int) {

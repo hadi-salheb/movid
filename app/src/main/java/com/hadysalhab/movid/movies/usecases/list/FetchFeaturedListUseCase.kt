@@ -1,10 +1,8 @@
 package com.hadysalhab.movid.movies.usecases.list
 
-import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.usecases.factory.BaseFeaturedMoviesUseCaseFactory
-import com.hadysalhab.movid.common.usecases.factory.BaseSimilarRecommendedMoviesUseCaseFactory
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MoviesResponse
@@ -18,24 +16,24 @@ import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
-class FetchMoviesResponseUseCase(
-    private val baseSimilarRecommendedMoviesUseCaseFactory: BaseSimilarRecommendedMoviesUseCaseFactory,
+class FetchFeaturedListUseCase(
+//    private val baseSimilarRecommendedMoviesUseCaseFactory: BaseSimilarRecommendedMoviesUseCaseFactory,
     private val baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
     private val schemaToModelHelper: SchemaToModelHelper,
     private val errorMessageHandler: ErrorMessageHandler,
     private val moviesStateManager: MoviesStateManager,
-    private val timeProvider: TimeProvider,
-    private val dataValidator: DataValidator
+    private val timeProvider: TimeProvider
+//    private val dataValidator: DataValidator
 ) :
-    BaseBusyObservable<FetchMoviesResponseUseCase.Listener>() {
+    BaseBusyObservable<FetchFeaturedListUseCase.Listener>() {
     interface Listener {
         fun onFetchMoviesResponseSuccess(movies: MoviesResponse)
         fun onFetchMoviesResponseFailure(msg: String)
     }
 
-    private var movieId: Int? = null
+    //    private var movieId: Int? = null
     private var page = 1
     private lateinit var region: String
     private lateinit var groupType: GroupType
@@ -44,48 +42,48 @@ class FetchMoviesResponseUseCase(
     fun fetchMoviesResponseUseCase(
         groupType: GroupType,
         page: Int,
-        movieId: Int?,
-        region: String?
+//        movieId: Int?,
+        region: String
     ) {
         assertNotBusyAndBecomeBusy()
         synchronized(LOCK) {
-            this.movieId = movieId
+//            this.movieId = movieId
             this.page = page
             this.groupType = groupType
+            this.region = region
         }
-        if (groupType == GroupType.SIMILAR_MOVIES || groupType == GroupType.RECOMMENDED_MOVIES) {
-            if (movieId == null) {
-                throw RuntimeException("Cannot fetch similar movies or recommended movies with null movie id")
-            }
-            fetchSimilarRecommendedMovies()
-        } else {
-            if (region == null) {
-                throw RuntimeException("Cannot fetch featured movies without region")
-            }
-            if (page == 1) {
-                this.region = region
-                val store = moviesStateManager.getMoviesResponseByGroupType(groupType)
-                if (dataValidator.isMoviesResponseValid(store, region)) {
-                    notifySuccess(store)
-                } else {
-                    fetchFeaturedMovies()
-                }
-            } else {
-                fetchFeaturedMovies()
-            }
-        }
+//        if (groupType == GroupType.SIMILAR_MOVIES || groupType == GroupType.RECOMMENDED_MOVIES) {
+//            if (movieId == null) {
+//                throw RuntimeException("Cannot fetch similar movies or recommended movies with null movie id")
+//            }
+//            fetchSimilarRecommendedMovies()
+//        } else {
+//            if (region == null) {
+//                throw RuntimeException("Cannot fetch featured movies without region")
+//            }
+//            if (page == 1) {
+//                this.region = region
+//                val store = moviesStateManager.getMoviesResponseByGroupType(groupType)
+//                if (dataValidator.isMoviesResponseValid(store, region)) {
+//                    notifySuccess(store)
+//                } else {
+//                    fetchFeaturedMovies()
+//                }
+//            } else {
+        fetchFeaturedMovies()
+//            }
     }
 
-    private fun fetchSimilarRecommendedMovies() {
-        val useCase =
-            baseSimilarRecommendedMoviesUseCaseFactory.createSimilarRecommendedMoviesUseCase(
-                groupType
-            )
-        backgroundThreadPoster.post {
-            val result = useCase.fetchSimilarRecommendedMoviesUseCase(page, movieId!!)
-            handleResult(groupType, result)
-        }
-    }
+//    private fun fetchSimilarRecommendedMovies() {
+//        val useCase =
+//            baseSimilarRecommendedMoviesUseCaseFactory.createSimilarRecommendedMoviesUseCase(
+//                groupType
+//            )
+//        backgroundThreadPoster.post {
+//            val result = useCase.fetchSimilarRecommendedMoviesUseCase(page, movieId!!)
+//            handleResult(groupType, result)
+//        }
+//    }
 
     private fun fetchFeaturedMovies() {
         val useCase =
@@ -108,11 +106,11 @@ class FetchMoviesResponseUseCase(
                     groupType,
                     response.body
                 )
-                if (groupType != GroupType.SIMILAR_MOVIES && groupType != GroupType.RECOMMENDED_MOVIES) {
-                    result.timeStamp = timeProvider.currentTimestamp
-                    result.region = this.region
-                    moviesStateManager.updateMoviesResponse(result)
-                }
+//                if (groupType != GroupType.SIMILAR_MOVIES && groupType != GroupType.RECOMMENDED_MOVIES) {
+                result.timeStamp = timeProvider.currentTimestamp
+                result.region = this.region
+                moviesStateManager.updateMoviesResponse(result)
+//                }
                 notifySuccess(
                     result
                 )
@@ -129,8 +127,8 @@ class FetchMoviesResponseUseCase(
             listeners.forEach {
                 it.onFetchMoviesResponseFailure(error)
             }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 
     // notify controller
@@ -139,7 +137,7 @@ class FetchMoviesResponseUseCase(
             listeners.forEach {
                 it.onFetchMoviesResponseSuccess(movies)
             }
+            becomeNotBusy()
         }
-        becomeNotBusy()
     }
 }

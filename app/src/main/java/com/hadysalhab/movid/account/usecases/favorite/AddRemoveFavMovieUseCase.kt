@@ -80,20 +80,20 @@ class AddRemoveFavMovieUseCase(
     }
 
     private fun notifySuccess(movieDetail: MovieDetail) {
-        becomeNotBusy()
         uiThreadPoster.post {
             listeners.forEach {
                 it.onAddRemoveFavoritesSuccess(movieDetail)
             }
+            becomeNotBusy()
         }
     }
 
     private fun notifyFailure(err: String) {
-        becomeNotBusy()
         uiThreadPoster.post {
             listeners.forEach {
                 it.onAddRemoveFavoritesFailure(err)
             }
+            becomeNotBusy()
         }
     }
 }

@@ -13,6 +13,7 @@ import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_185
 import com.hadysalhab.movid.common.utils.convertDpToPixel
+import com.hadysalhab.movid.common.utils.getYoutubeTrailerFromResponse
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.movies.Collection
 import com.hadysalhab.movid.screen.common.ViewFactory
@@ -173,6 +174,39 @@ class MovieDetailScreenImpl(
         btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
     }
 
+    override fun handleScreenState(movieDetailScreenState: MovieDetailScreenState) {
+        if (movieDetailScreenState.isLoading) {
+            showLoadingIndicator()
+        } else {
+            hideLoadingIndicator()
+        }
+        if (movieDetailScreenState.isRefreshing) {
+            showRefreshIndicator()
+        } else {
+            hideRefreshIndicator()
+        }
+        if (movieDetailScreenState.data != null) {
+            displayMovieDetail(movieDetailScreenState.data)
+            if (getYoutubeTrailerFromResponse(movieDetailScreenState.data.videosResponse) != null) {
+                showTrailerIndicator()
+            } else {
+                hideTrailerIndicator()
+            }
+        } else {
+            hideMovieDetail()
+        }
+        if (movieDetailScreenState.error != null) {
+            showErrorScreen(movieDetailScreenState.error)
+        } else {
+            hideErrorScreen()
+        }
+        if (movieDetailScreenState.isLoading || movieDetailScreenState.error != null) {
+            disablePullRefresh()
+        } else {
+            enablePullRefresh()
+        }
+    }
+
 
     override fun showRefreshIndicator() {
         pullToRefresh.isRefreshing = true
@@ -245,8 +279,6 @@ class MovieDetailScreenImpl(
             this.movieDetail = movieDetail
         }
     }
-
-
 
 
     //Helper Functions------------------------------------------------------------------------------

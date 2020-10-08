@@ -9,12 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
-import com.hadysalhab.movid.screen.common.movielist.MovieListView
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreen
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
-class WatchlistMoviesFragment : BaseFragment(), MovieListView.Listener {
+class WatchlistMoviesFragment : BaseFragment(), MovieListScreen.Listener {
     @Inject
     lateinit var viewFactory: ViewFactory
 
@@ -23,7 +23,7 @@ class WatchlistMoviesFragment : BaseFragment(), MovieListView.Listener {
 
     @Inject
     lateinit var mainNavigator: MainNavigator
-    private lateinit var view: MovieListView
+    private lateinit var screen: MovieListScreen
 
     private lateinit var watchlistMoviesViewModel: WatchlistMoviesViewModel
 
@@ -42,16 +42,16 @@ class WatchlistMoviesFragment : BaseFragment(), MovieListView.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::view.isInitialized) {
-            view = viewFactory.getMovieListView(container)
+        if (!this::screen.isInitialized) {
+            screen = viewFactory.getMovieScreen(container)
         }
         // Inflate the layout for this fragment
-        return view.getRootView()
+        return screen.getRootView()
     }
 
     override fun onStart() {
         super.onStart()
-        view.registerListener(this)
+        screen.registerListener(this)
         watchlistMoviesViewModel.onStart()
         watchlistMoviesViewModel.viewState.observe(viewLifecycleOwner, Observer {
             render(it)
@@ -60,7 +60,7 @@ class WatchlistMoviesFragment : BaseFragment(), MovieListView.Listener {
 
     override fun onStop() {
         super.onStop()
-        view.unregisterListener(this)
+        screen.unregisterListener(this)
     }
 
     companion object {
@@ -79,15 +79,15 @@ class WatchlistMoviesFragment : BaseFragment(), MovieListView.Listener {
 
     private fun render(viewState: WishlistMoviesViewState) {
         when (viewState) {
-            Loading -> view.displayLoadingIndicator()
-            PaginationLoading -> view.displayPaginationLoading()
+            Loading -> screen.showLoadingIndicator()
+            PaginationLoading -> screen.showPaginationIndicator()
             is Error -> {
             }
             is WatchlistMoviesLoaded -> {
                 if (viewState.movies.isEmpty()) {
-                    view.displayEmptyListIndicator("No Watchlist Movies")
+                    screen.displayEmptyListIndicator("No Watchlist Movies")
                 } else {
-                    view.displayMovies(viewState.movies)
+                    screen.displayMovies(viewState.movies)
                 }
             }
         }

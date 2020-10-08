@@ -7,7 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
-import com.hadysalhab.movid.screen.common.movielist.MovieListView
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreen
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 import com.hadysalhab.movid.screen.main.search.Genre
 
@@ -16,39 +16,39 @@ class DiscoverViewImpl(
     parent: ViewGroup?,
     viewFactory: ViewFactory
 ) : DiscoverView(),
-    MovieListView.Listener {
+    MovieListScreen.Listener {
     private val toolbar: Toolbar
     private val movieListFramePlaceholder: FrameLayout
-    private val movieListView: MovieListView
+    private val movieListScreen: MovieListScreen
     private val menuToolbarLayout: MenuToolbarLayout
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_discover, parent, false))
         toolbar = findViewById(R.id.toolbar)
         movieListFramePlaceholder = findViewById(R.id.discover_movie_list_placeholder)
-        movieListView = viewFactory.getMovieListView(movieListFramePlaceholder)
+        movieListScreen = viewFactory.getMovieScreen(movieListFramePlaceholder)
         menuToolbarLayout = viewFactory.getMenuToolbarLayout(toolbar)
         menuToolbarLayout.setOverflowMenuIcon(R.drawable.ic_filter)
         toolbar.addView(menuToolbarLayout.getRootView())
-        movieListFramePlaceholder.addView(movieListView.getRootView())
-        movieListView.registerListener(this)
+        movieListFramePlaceholder.addView(movieListScreen.getRootView())
+        movieListScreen.registerListener(this)
     }
 
 
     override fun displayLoadingIndicator() {
-        movieListView.displayLoadingIndicator()
+        movieListScreen.showLoadingIndicator()
     }
 
     override fun displayPaginationLoading() {
-        movieListView.displayPaginationLoading()
+        movieListScreen.showPaginationIndicator()
     }
 
     override fun displayMovies(movies: List<Movie>) {
-        movieListView.displayMovies(movies)
+        movieListScreen.displayMovies(movies)
     }
 
     override fun displayEmptyListIndicator(msg: String) {
-        movieListView.displayEmptyListIndicator(msg)
+        movieListScreen.displayEmptyListIndicator(msg)
     }
 
     override fun setGenreDetail(genre: Genre) {

@@ -9,9 +9,9 @@ import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.main.BottomNavigationItems
 import com.hadysalhab.movid.screen.main.discover.DiscoverFragment
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
-import com.hadysalhab.movid.screen.main.featured.FeaturedFragment
+import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupFragment
+import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
-import com.hadysalhab.movid.screen.main.movielist.MovieListFragment
 import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
 import com.hadysalhab.movid.screen.main.search.Genre
 import com.hadysalhab.movid.screen.main.search.SearchFragment
@@ -34,7 +34,7 @@ class MainNavigator(
 
         override fun getRootFragment(index: Int): Fragment {
             return when (index) {
-                FragNavController.TAB1 -> FeaturedFragment.newInstance()
+                FragNavController.TAB1 -> FeaturedGroupFragment.newInstance()
                 FragNavController.TAB2 -> SearchFragment.newInstance()
                 FragNavController.TAB3 -> FavoriteMoviesFragment.newInstance()
                 FragNavController.TAB4 -> WatchlistMoviesFragment.newInstance()
@@ -62,8 +62,8 @@ class MainNavigator(
     fun toDetailFragment(movieID: Int) =
         fragNavController.pushFragment(MovieDetailFragment.newInstance(movieID))
 
-    fun toMovieListFragment(groupType: GroupType, movieID: Int?, region: String?) =
-        fragNavController.pushFragment(MovieListFragment.newInstance(groupType, movieID, region))
+    fun toFeaturedListFragment(groupType: GroupType, movieID: Int?, region: String?) =
+        fragNavController.pushFragment(FeaturedListFragment.newInstance(groupType, movieID, region))
 
     fun toReviewsFragment(movieID: Int) {
         fragNavController.pushFragment(ReviewsFragment.newInstance(movieID))

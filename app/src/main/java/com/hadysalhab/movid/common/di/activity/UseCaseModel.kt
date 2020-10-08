@@ -25,7 +25,7 @@ import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import com.hadysalhab.movid.movies.usecases.discover.DiscoverMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.favorites.FetchFavoriteMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.groups.FetchFeaturedMoviesUseCase
-import com.hadysalhab.movid.movies.usecases.list.FetchMoviesResponseUseCase
+import com.hadysalhab.movid.movies.usecases.list.FetchFeaturedListUseCase
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
@@ -132,16 +132,16 @@ class UseCaseModel {
         moviesStateManager: MoviesStateManager,
         timeProvider: TimeProvider,
         dataValidator: DataValidator
-    ) = FetchMoviesResponseUseCase(
-        baseSimilarRecommendedMoviesUseCaseFactory,
+    ) = FetchFeaturedListUseCase(
+//        baseSimilarRecommendedMoviesUseCaseFactory,
         baseFeaturedMoviesUseCaseFactory,
         backgroundThreadPoster,
         uiThreadPoster,
         schemaToModelHelper,
         errorMessageHandler,
         moviesStateManager,
-        timeProvider,
-        dataValidator
+        timeProvider
+//        dataValidator
     )
 
     @Provides

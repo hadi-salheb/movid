@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.main.featured
+package com.hadysalhab.movid.screen.main.featuredgroups
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +9,7 @@ import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
 import javax.inject.Inject
 
-class FeaturedViewModel @Inject constructor(
+class FeaturedGroupViewModel @Inject constructor(
     private val fetchFeaturedMoviesUseCase: FetchFeaturedMoviesUseCase,
     private val sharedPreferencesManager: SharedPreferencesManager,
     private val featuredScreenStateManager: FeaturedScreenStateManager

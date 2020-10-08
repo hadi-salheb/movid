@@ -4,12 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.hadysalhab.movid.movies.MovieDetail
 
 
-data class MovieDetailScreenState(
-    val isLoading: Boolean = false,
-    val isRefreshing: Boolean = false,
-    val data: MovieDetail? = null,
-    val error: String? = null
-)
 
 sealed class MovieDetailActions {
     object MovieDetailRequest : MovieDetailActions()
