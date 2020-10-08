@@ -16,6 +16,7 @@ abstract class FeaturedListScreen : BaseObservableViewMvc<FeaturedListScreen.Lis
     interface Listener {
         fun onMovieItemClicked(movieID: Int)
         fun loadMoreItems()
+        fun onRetryClicked()
     }
 
     abstract fun handleScreenState(screenState: FeaturedListScreenState)

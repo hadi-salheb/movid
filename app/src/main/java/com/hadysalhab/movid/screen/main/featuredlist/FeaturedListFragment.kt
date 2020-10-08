@@ -100,6 +100,10 @@ class FeaturedListFragment : BaseFragment(), FeaturedListScreen.Listener {
     override fun loadMoreItems() {
         featuredListViewModel.loadMore()
     }
+
+    override fun onRetryClicked() {
+        featuredListViewModel.onRetryClicked()
+    }
     //----------------------------------------------------------------------------------------------
 
 

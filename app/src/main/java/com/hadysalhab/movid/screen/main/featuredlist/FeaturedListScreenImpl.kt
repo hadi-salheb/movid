@@ -18,7 +18,7 @@ class FeaturedListScreenImpl(
     parent: ViewGroup?,
     viewFactory: ViewFactory
 ) :
-    FeaturedListScreen(), MovieListScreen.Listener {
+    FeaturedListScreen(), MovieListScreen.Listener, ErrorScreen.Listener {
 
     private val errorScreenPlaceholder: FrameLayout
     private val featuredListPlaceHolder: FrameLayout
@@ -39,6 +39,7 @@ class FeaturedListScreenImpl(
         featuredListPlaceHolder.addView(movieListScreen.getRootView())
         errorScreen = viewFactory.getErrorScreen(errorScreenPlaceholder)
         errorScreenPlaceholder.addView(errorScreen.getRootView())
+        errorScreen.registerListener(this)
     }
 
     override fun handleScreenState(screenState: FeaturedListScreenState) {
@@ -50,6 +51,7 @@ class FeaturedListScreenImpl(
             )
         )
         if (screenState.error != null) {
+            errorScreen.displayErrorMessage(screenState.error)
             showErrorScreen(screenState.error)
         } else {
             hideErrorScreen()
@@ -86,6 +88,12 @@ class FeaturedListScreenImpl(
     override fun loadMoreItems() {
         listeners.forEach {
             it.loadMoreItems()
+        }
+    }
+
+    override fun onRetryClicked() {
+        listeners.forEach {
+            it.onRetryClicked()
         }
     }
 }

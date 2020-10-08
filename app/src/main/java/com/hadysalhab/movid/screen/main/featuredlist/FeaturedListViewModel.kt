@@ -71,6 +71,11 @@ class FeaturedListViewModel @Inject constructor(
 
     //User Interactions-----------------------------------------------------------------------------
 
+    fun onRetryClicked() {
+        movieListScreenStateManager.dispatch(FeaturedListActions.FeaturedListRequest)
+        fetchApi(1)
+    }
+
     fun loadMore() {
         if (fetchFeaturedListUseCase.isBusy || this.moviesResponse.page + 1 > this.moviesResponse.total_pages) {
             return
