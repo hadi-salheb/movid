@@ -56,7 +56,7 @@ class FeaturedListScreenImpl(
         } else {
             hideErrorScreen()
         }
-        displayGroupType(
+        setToolbarTitle(
             screenState.groupType.toUpperCase(Locale.ROOT).split("_").joinToString(" ")
         )
     }
@@ -75,7 +75,7 @@ class FeaturedListScreenImpl(
         )
     }
 
-    override fun displayGroupType(groupType: String) {
+    override fun setToolbarTitle(groupType: String) {
         titleToolbarLayout.setToolbarTitle(groupType)
     }
 

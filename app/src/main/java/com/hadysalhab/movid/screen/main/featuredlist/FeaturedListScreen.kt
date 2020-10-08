@@ -23,5 +23,5 @@ abstract class FeaturedListScreen : BaseObservableViewMvc<FeaturedListScreen.Lis
     protected abstract fun showErrorScreen(errorMessage: String)
     protected abstract fun hideErrorScreen()
     protected abstract fun movieListScreenHandleState(movieListScreenState: MovieListScreenState)
-    protected abstract fun displayGroupType(groupType: String)
+    protected abstract fun setToolbarTitle(groupType: String)
 }
