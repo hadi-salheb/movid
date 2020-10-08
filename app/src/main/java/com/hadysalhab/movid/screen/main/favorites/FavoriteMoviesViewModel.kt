@@ -77,7 +77,7 @@ class FavoriteMoviesViewModel @Inject constructor(
             isFirstRender = false
             favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
             fetchApi(1)
-        } else if (state.value!!.data.isNotEmpty()) {
+        } else if (this::favoriteMovies.isInitialized) {
             val numberOfDisplayedMovies = state.value!!.data.size
             if ((numberOfDisplayedMovies < MAX_NUMBER_OF_DATA_PER_PAGE * this.favoriteMovies.page) && (this.favoriteMovies.page < this.favoriteMovies.total_pages)) {
                 favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
@@ -121,7 +121,11 @@ class FavoriteMoviesViewModel @Inject constructor(
     }
 
     override fun onFetchFavoriteMoviesFailure(msg: String) {
-        favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesError(msg))
+        if (state.value!!.isPaginationLoading) {
+            favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesPaginationError)
+        } else {
+            favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesError(msg))
+        }
     }
 
     override fun onCleared() {
