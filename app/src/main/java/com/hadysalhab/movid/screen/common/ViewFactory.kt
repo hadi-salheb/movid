@@ -22,6 +22,7 @@ import com.hadysalhab.movid.screen.common.toolbar.TitleToolbarLayout
 import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.discover.DiscoverView
 import com.hadysalhab.movid.screen.main.discover.DiscoverViewImpl
+import com.hadysalhab.movid.screen.main.favorites.FavoritesScreenImpl
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupScreenImpl
 import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListScreenImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
@@ -65,6 +66,8 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getMovieScreen(parent: ViewGroup?) = MovieListScreenImpl(layoutInflater, parent, this)
     fun getFeaturedListScreen(parent: ViewGroup?) =
         FeaturedListScreenImpl(layoutInflater, parent, this)
+
+    fun getFavoritesScreen(parent: ViewGroup?) = FavoritesScreenImpl(layoutInflater, parent, this)
 
     fun getCastsView(parent: ViewGroup?) =
         CastsView(

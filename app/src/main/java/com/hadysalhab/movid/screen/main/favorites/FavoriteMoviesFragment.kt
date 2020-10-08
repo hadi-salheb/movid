@@ -9,12 +9,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
-import com.hadysalhab.movid.screen.common.movielist.MovieListScreen
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
-class FavoriteMoviesFragment : BaseFragment(), MovieListScreen.Listener {
+class FavoriteMoviesFragment : BaseFragment(), FavoritesScreen.Listener {
     @Inject
     lateinit var viewFactory: ViewFactory
 
@@ -23,7 +22,7 @@ class FavoriteMoviesFragment : BaseFragment(), MovieListScreen.Listener {
 
     @Inject
     lateinit var mainNavigator: MainNavigator
-    private lateinit var screen: MovieListScreen
+    private lateinit var favoritesScreen: FavoritesScreen
 
     private lateinit var favoriteMoviesViewModel: FavoriteMoviesViewModel
 
@@ -43,25 +42,22 @@ class FavoriteMoviesFragment : BaseFragment(), MovieListScreen.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::screen.isInitialized) {
-            screen = viewFactory.getMovieScreen(container)
+        if (!this::favoritesScreen.isInitialized) {
+            favoritesScreen = viewFactory.getFavoritesScreen(container)
         }
         // Inflate the layout for this fragment
-        return screen.getRootView()
+        return favoritesScreen.getRootView()
     }
 
     override fun onStart() {
         super.onStart()
-        screen.registerListener(this)
         favoriteMoviesViewModel.onStart()
-        favoriteMoviesViewModel.viewState.observe(viewLifecycleOwner, Observer {
-            render(it)
-        })
+        registerObservers()
     }
 
     override fun onStop() {
         super.onStop()
-        screen.unregisterListener(this)
+        unregisterObservers()
     }
 
     companion object {
@@ -70,6 +66,7 @@ class FavoriteMoviesFragment : BaseFragment(), MovieListScreen.Listener {
             FavoriteMoviesFragment()
     }
 
+    //----------------------------------------------------------------------------------------------
     override fun onMovieItemClicked(movieID: Int) {
         mainNavigator.toDetailFragment(movieID)
     }
@@ -78,19 +75,25 @@ class FavoriteMoviesFragment : BaseFragment(), MovieListScreen.Listener {
         favoriteMoviesViewModel.loadMore()
     }
 
-    private fun render(viewState: FavoriteMoviesViewState) {
-        when (viewState) {
-            Loading -> screen.showLoadingIndicator()
-            PaginationLoading -> screen.showPaginationIndicator()
-            is Error -> {
-            }
-            is FavoriteMoviesLoaded -> {
-                if (viewState.movies.isEmpty()) {
-                    screen.displayEmptyListIndicator("No Favorite Movies")
-                } else {
-                    screen.displayMovies(viewState.movies)
-                }
-            }
+    override fun onRetryClicked() {
+        favoriteMoviesViewModel.onRetry()
+    }
+
+    //----------------------------------------------------------------------------------------------
+
+    private val favoritesScreenStateObserver =
+        Observer<FavoritesScreenState> { favoritesScreenState ->
+            favoritesScreen.handleScreenState(favoritesScreenState)
         }
+
+
+    private fun registerObservers() {
+        favoriteMoviesViewModel.state.observe(this, favoritesScreenStateObserver)
+        favoritesScreen.registerListener(this)
+    }
+
+    private fun unregisterObservers() {
+        favoriteMoviesViewModel.state.removeObserver(favoritesScreenStateObserver)
+        favoritesScreen.unregisterListener(this)
     }
 }

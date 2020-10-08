@@ -1,7 +1,6 @@
 package com.hadysalhab.movid.screen.main.favorites
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.common.constants.MAX_NUMBER_OF_DATA_PER_PAGE
 import com.hadysalhab.movid.movies.Movie
@@ -16,14 +15,21 @@ import javax.inject.Inject
 
 class FavoriteMoviesViewModel @Inject constructor(
     private val fetchFavoriteMoviesUseCase: FetchFavoriteMoviesUseCase,
+    private val favoritesScreenStateManager: FavoritesScreenStateManager,
     private val schemaToModelHelper: SchemaToModelHelper
 ) : ViewModel(), FetchFavoriteMoviesUseCase.Listener {
-    private val _viewState = MutableLiveData<FavoriteMoviesViewState>()
+
     private lateinit var favoriteMovies: MoviesResponse
     private var moviesList = setOf<Movie>()
     private var numberOfAddedMovies = 0
-    val viewState: LiveData<FavoriteMoviesViewState>
-        get() = _viewState
+    val state: LiveData<FavoritesScreenState>
+        get() = favoritesScreenStateManager.stateLiveData
+    private var isFirstRender = true
+
+    init {
+        EventBus.getDefault().register(this)
+        fetchFavoriteMoviesUseCase.registerListener(this)
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
     fun onFavoriteEvent(event: MovieDetailEvents) {
@@ -48,61 +54,74 @@ class FavoriteMoviesViewModel @Inject constructor(
                     numberOfAddedMovies = 0
                 }
                 moviesList = newMovieSet
-                _viewState.value = FavoriteMoviesLoaded(moviesList.toList())
+                favoritesScreenStateManager.dispatch(
+                    FavoritesScreenActions.FavoritesSuccess(
+                        moviesList.toList()
+                    )
+                )
             }
             is MovieDetailEvents.RemoveMovieFromFav -> {
                 moviesList = moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
-                _viewState.value = FavoriteMoviesLoaded(moviesList.toList())
+                favoritesScreenStateManager.dispatch(
+                    FavoritesScreenActions.FavoritesSuccess(
+                        moviesList.toList()
+                    )
+                )
             }
         }
     }
 
 
     fun onStart() {
-        when (_viewState.value) {
-            null -> {
-                EventBus.getDefault().register(this)
-                fetchFavoriteMoviesUseCase.registerListener(this)
-                _viewState.value = Loading
-                fetchFavoriteMoviesUseCase.fetchFavoriteMoviesUseCase(
-                    page = 1
-                )
-            }
-            is Loading, is Error -> {
-
-            }
-            is FavoriteMoviesLoaded -> {
-                val numberOfDisplayedMovies = moviesList.size
-                if ((numberOfDisplayedMovies < MAX_NUMBER_OF_DATA_PER_PAGE * this.favoriteMovies.page) && (this.favoriteMovies.page < this.favoriteMovies.total_pages)) {
-                    _viewState.value = Loading
-                    fetchFavoriteMoviesUseCase.fetchFavoriteMoviesUseCase(
-                        this.favoriteMovies.page
-                    )
-                }
+        if (isFirstRender) {
+            isFirstRender = false
+            favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
+            fetchApi(1)
+        } else if (state.value!!.data.isNotEmpty()) {
+            val numberOfDisplayedMovies = state.value!!.data.size
+            if ((numberOfDisplayedMovies < MAX_NUMBER_OF_DATA_PER_PAGE * this.favoriteMovies.page) && (this.favoriteMovies.page < this.favoriteMovies.total_pages)) {
+                favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
+                fetchApi(this.favoriteMovies.page)
             }
         }
     }
+
+    private fun fetchApi(page: Int) {
+        fetchFavoriteMoviesUseCase.fetchFavoriteMoviesUseCase(
+            page = page
+        )
+    }
+
+    //UserInteractions------------------------------------------------------------------------------
 
     fun loadMore() {
         if (fetchFavoriteMoviesUseCase.isBusy || this.favoriteMovies.page + 1 > this.favoriteMovies.total_pages) {
             return
         }
-        _viewState.value = PaginationLoading
-        fetchFavoriteMoviesUseCase.fetchFavoriteMoviesUseCase(
-            page = this.favoriteMovies.page + 1
-        )
+        favoritesScreenStateManager.dispatch(FavoritesScreenActions.Pagination)
+        fetchApi(this.favoriteMovies.page + 1)
     }
+
+    fun onRetry() {
+        favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
+        if (this::favoriteMovies.isInitialized) {
+            fetchApi(this.favoriteMovies.page)
+        } else {
+            fetchApi(1)
+        }
+    }
+    //----------------------------------------------------------------------------------------------
 
     override fun onFetchFavoriteMoviesSuccess(apiMoviesResponse: MoviesResponse) {
         this.favoriteMovies = apiMoviesResponse
         moviesList = moviesList.toMutableSet().apply {
             addAll(apiMoviesResponse.movies ?: emptySet())
         }
-        _viewState.value = FavoriteMoviesLoaded(moviesList.toList())
+        favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesSuccess(moviesList.toList()))
     }
 
     override fun onFetchFavoriteMoviesFailure(msg: String) {
-        _viewState.value = Error(msg)
+        favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesError(msg))
     }
 
     override fun onCleared() {
