@@ -12,6 +12,8 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
+import kotlin.math.ceil
+import kotlin.math.floor
 
 class FavoriteMoviesViewModel @Inject constructor(
     private val fetchFavoriteMoviesUseCase: FetchFavoriteMoviesUseCase,
@@ -45,14 +47,8 @@ class FavoriteMoviesViewModel @Inject constructor(
                         event.movieDetail
                     )
                 )
-                newMovieSet.addAll(oldMovieSet)
-                if (numberOfAddedMovies == MAX_NUMBER_OF_DATA_PER_PAGE) {
-                    favoriteMovies = favoriteMovies.copy(
-                        page = (newMovieSet.size + MAX_NUMBER_OF_DATA_PER_PAGE - 1) / MAX_NUMBER_OF_DATA_PER_PAGE,
-                        total_pages = favoriteMovies.total_pages + 1
-                    )
-                    numberOfAddedMovies = 0
-                }
+                newMovieSet.addAll(oldMovieSet) // newSet = [...newAddedMovies + ... oldMovies]
+                updateFavoriteMovies()
                 moviesList = newMovieSet
                 favoritesScreenStateManager.dispatch(
                     FavoritesScreenActions.FavoritesSuccess(
@@ -61,7 +57,9 @@ class FavoriteMoviesViewModel @Inject constructor(
                 )
             }
             is MovieDetailEvents.RemoveMovieFromFav -> {
+                numberOfAddedMovies--
                 moviesList = moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
+                updateFavoriteMovies()
                 favoritesScreenStateManager.dispatch(
                     FavoritesScreenActions.FavoritesSuccess(
                         moviesList.toList()
@@ -69,8 +67,15 @@ class FavoriteMoviesViewModel @Inject constructor(
                 )
             }
         }
+
     }
 
+    private fun updateFavoriteMovies() {
+        favoriteMovies = favoriteMovies.copy(
+            page = floor((moviesList.size * 1.0) / MAX_NUMBER_OF_DATA_PER_PAGE).toInt(),
+            total_pages = ceil(((favoriteMovies.totalResults) + numberOfAddedMovies) * 1.0 / MAX_NUMBER_OF_DATA_PER_PAGE).toInt()
+        )
+    }
 
     fun onStart() {
         if (isFirstRender) {
@@ -78,10 +83,10 @@ class FavoriteMoviesViewModel @Inject constructor(
             favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
             fetchApi(1)
         } else if (this::favoriteMovies.isInitialized) {
-            val numberOfDisplayedMovies = state.value!!.data.size
-            if ((numberOfDisplayedMovies < MAX_NUMBER_OF_DATA_PER_PAGE * this.favoriteMovies.page) && (this.favoriteMovies.page < this.favoriteMovies.total_pages)) {
+            val numberOfDisplayedMovies = moviesList.size
+            if (favoriteMovies.page + 1 <= favoriteMovies.total_pages && ((favoriteMovies.page == 0 && numberOfDisplayedMovies < 10) || (favoriteMovies.page > 0 && ((numberOfDisplayedMovies * 1.0 / MAX_NUMBER_OF_DATA_PER_PAGE) > favoriteMovies.page) && (favoriteMovies.page * MAX_NUMBER_OF_DATA_PER_PAGE - numberOfDisplayedMovies) > 10))) {
                 favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
-                fetchApi(this.favoriteMovies.page)
+                fetchApi(this.favoriteMovies.page + 1)
             }
         }
     }
