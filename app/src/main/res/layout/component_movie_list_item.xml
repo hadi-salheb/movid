@@ -36,15 +36,13 @@
 
     <TextView
         android:id="@+id/tv_movie_title"
-        style="?attr/textAppearanceBody1"
+        style="?attr/textAppearanceBody2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="2"
-        android:visibility="gone"
-        android:textColor="@color/gray_900"
         app:layout_constraintEnd_toEndOf="@id/card_movie_image"
         app:layout_constraintStart_toStartOf="@id/card_movie_image"
         app:layout_constraintTop_toBottomOf="@+id/card_movie_image"
@@ -56,7 +54,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@id/card_movie_image"
         app:layout_constraintStart_toStartOf="@id/card_movie_image"
-        app:layout_constraintTop_toBottomOf="@+id/card_movie_image">
+        app:layout_constraintTop_toBottomOf="@+id/tv_movie_title">
 
         <include layout="@layout/component_rating" />
     </FrameLayout>
