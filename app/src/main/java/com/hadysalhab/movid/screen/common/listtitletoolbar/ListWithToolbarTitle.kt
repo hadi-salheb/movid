@@ -11,6 +11,7 @@ data class ListWithToolbarTitleState(
     val data: List<Movie> = emptyList(),
     val error: String? = null,
     val title: String = "",
+    @DrawableRes val menuIcon: Int? = null,
     @DrawableRes val emptyResultsIconDrawable: Int,
     val emptyResultsMessage: String
 )

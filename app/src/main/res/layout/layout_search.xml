@@ -21,15 +21,15 @@
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:elevation="1dp"
         app:mt_hint="Harry Potter"
         app:mt_placeholder="Search Movies"
-        app:mt_placeholderColor="@color/gray_700"
+        app:layout_constraintEnd_toEndOf="parent"
         app:mt_roundedSearchBarEnabled="false"
-        app:mt_searchIconTint="@color/gray_700" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:mt_placeholderColor="@color/black"
+        app:mt_searchIconTint="@color/black" />
 
     <FrameLayout
         android:id="@+id/frame_placeholder"

@@ -1,86 +1,96 @@
 package com.hadysalhab.movid.screen.main.discover
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hadysalhab.movid.R
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
-import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.discover.DiscoverMoviesUseCase
-import com.hadysalhab.movid.screen.common.events.DiscoverEvents
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleActions
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
+import com.hadysalhab.movid.screen.main.search.Genre
 import javax.inject.Inject
 
 class DiscoverViewModel @Inject constructor(
-    private val schemaToModelHelper: SchemaToModelHelper,
-    private val discoverMoviesUseCase: DiscoverMoviesUseCase
+    private val discoverMoviesUseCase: DiscoverMoviesUseCase,
+    private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager
 ) : ViewModel(), DiscoverMoviesUseCase.Listener {
-    private val _viewState = MutableLiveData<DiscoverMoviesViewState>()
-    private lateinit var discoveredMovies: MoviesResponse
-    private var moviesList = listOf<Movie>()
-    private lateinit var genreIds: String
-    val viewState: LiveData<DiscoverMoviesViewState>
-        get() = _viewState
-    private var filtersModified = false
+    private var isFirstRender: Boolean = true
+    private lateinit var genre: Genre
+    private lateinit var moviesResponse: MoviesResponse
+    private val moviesList = mutableListOf<Movie>()
+    private val dispatch = listWithToolbarTitleStateManager::dispatch
 
-    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onFilterChangeEvent(event: DiscoverEvents) {
+    val state: LiveData<ListWithToolbarTitleState> =
+        listWithToolbarTitleStateManager.setInitialStateAndReturn(
+            ListWithToolbarTitleState(
+                title = "",
+                emptyResultsIconDrawable = R.drawable.ic_sad,
+                emptyResultsMessage = "No Results Found",
+                menuIcon = R.drawable.ic_filter
+            )
+        )
 
+
+    init {
+        discoverMoviesUseCase.registerListener(this)
     }
 
-
-    fun onStart(genreIds: String) {
-        if (!this::genreIds.isInitialized) {
-            this.genreIds = genreIds
-        }
-        when (_viewState.value) {
-            null -> {
-                discoverMoviesUseCase.registerListener(this)
-                _viewState.value = Loading
-                discoverMoviesUseCase.discoverMoviesUseCase(
-                    page = 1,
-                    genreIds = genreIds
+    fun onStart(genre: Genre) {
+        if (isFirstRender) {
+            this.genre = genre
+            dispatch(
+                ListWithToolbarTitleActions.SetTitle(
+                    genre.getFormattedName()
                 )
-            }
-            is Loading, is Error -> {
-
-            }
-            is DiscoverMoviesLoaded -> {
-
-            }
+            )
+            isFirstRender = false
+            dispatch(ListWithToolbarTitleActions.Request)
+            fetchApi(1)
         }
     }
 
-    fun loadMore() {
-        if (discoverMoviesUseCase.isBusy || this.discoveredMovies.page + 1 > this.discoveredMovies.total_pages) {
-            return
-        }
-        _viewState.value = PaginationLoading
+    private fun fetchApi(page: Int) {
         discoverMoviesUseCase.discoverMoviesUseCase(
-            page = this.discoveredMovies.page + 1,
-            genreIds = this.genreIds
+            page,
+            genreIds = this.genre.id.toString()
         )
     }
 
-    override fun onFetchDiscoverMoviesSuccess(movies: MoviesResponse) {
-        this.discoveredMovies = movies
-        moviesList = moviesList.toMutableList().apply {
-            addAll(movies.movies ?: emptyList())
+    //User Interactions-----------------------------------------------------------------------------
+    fun onRetryClicked() {
+        dispatch(ListWithToolbarTitleActions.Request)
+        fetchApi(1)
+    }
+
+    fun loadMore() {
+        if (discoverMoviesUseCase.isBusy || this.moviesResponse.page + 1 > this.moviesResponse.total_pages) {
+            return
         }
-        _viewState.value = DiscoverMoviesLoaded(moviesList.toList())
+        dispatch(ListWithToolbarTitleActions.Pagination)
+        fetchApi(this.moviesResponse.page + 1)
+    }
+
+    //UseCaseResults--------------------------------------------------------------------------------
+    override fun onFetchDiscoverMoviesSuccess(movies: MoviesResponse) {
+        this.moviesResponse = movies
+        moviesList.addAll(movies.movies ?: emptyList())
+        dispatch(ListWithToolbarTitleActions.Success(this.moviesList))
     }
 
     override fun onFetchDiscoverMoviesFailure(msg: String) {
-        _viewState.value = Error(msg)
+        if (state.value!!.isPaginationLoading) {
+            dispatch(ListWithToolbarTitleActions.PaginationError)
+        } else {
+            dispatch(ListWithToolbarTitleActions.Error(msg))
+        }
     }
+    //----------------------------------------------------------------------------------------------
 
     override fun onCleared() {
         super.onCleared()
         discoverMoviesUseCase.unregisterListener(this)
-        EventBus.getDefault().unregister(this)
     }
-
 
 }

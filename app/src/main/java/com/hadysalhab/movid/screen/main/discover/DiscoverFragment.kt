@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitle
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import com.hadysalhab.movid.screen.main.search.Genre
@@ -16,7 +18,16 @@ import javax.inject.Inject
 
 private const val ARG_GENRE_ID = "genre_id"
 
-class DiscoverFragment : BaseFragment(), DiscoverView.Listener {
+class DiscoverFragment : BaseFragment(), ListWithToolbarTitle.Listener {
+    companion object {
+        @JvmStatic
+        fun newInstance(genre: Genre) =
+            DiscoverFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_GENRE_ID, genre)
+                }
+            }
+    }
 
     private lateinit var genre: Genre
 
@@ -28,7 +39,8 @@ class DiscoverFragment : BaseFragment(), DiscoverView.Listener {
 
     @Inject
     lateinit var mainNavigator: MainNavigator
-    private lateinit var discoverView: DiscoverView
+
+    private lateinit var listWithToolbarTitle: ListWithToolbarTitle
 
     private lateinit var discoverViewModel: DiscoverViewModel
 
@@ -50,38 +62,25 @@ class DiscoverFragment : BaseFragment(), DiscoverView.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::discoverView.isInitialized) {
-            discoverView = viewFactory.getDiscoverView(container)
+        if (!this::listWithToolbarTitle.isInitialized) {
+            listWithToolbarTitle = viewFactory.getListWithToolbarTitle(container)
         }
         // Inflate the layout for this fragment
-        return discoverView.getRootView()
+        return listWithToolbarTitle.getRootView()
     }
 
     override fun onStart() {
         super.onStart()
-        discoverView.setGenreDetail(this.genre)
-        discoverViewModel.onStart(this.genre.id.toString())
-        discoverViewModel.viewState.observe(viewLifecycleOwner, Observer {
-            render(it)
-        })
-        discoverView.registerListener(this)
+        discoverViewModel.onStart(this.genre)
+        registerObservers()
     }
 
     override fun onStop() {
         super.onStop()
-        discoverView.unregisterListener(this)
+        unregisterObservers()
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(genre: Genre) =
-            DiscoverFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(ARG_GENRE_ID, genre)
-                }
-            }
-    }
-
+    //User Interactions-----------------------------------------------------------------------------
     override fun onMovieItemClicked(movieID: Int) {
         mainNavigator.toDetailFragment(movieID)
     }
@@ -90,19 +89,30 @@ class DiscoverFragment : BaseFragment(), DiscoverView.Listener {
         discoverViewModel.loadMore()
     }
 
-    private fun render(viewState: DiscoverMoviesViewState) {
-        when (viewState) {
-            Loading -> discoverView.displayLoadingIndicator()
-            PaginationLoading -> discoverView.displayPaginationLoading()
-            is Error -> {
-            }
-            is DiscoverMoviesLoaded -> {
-                if (viewState.movies.isEmpty()) {
-                    discoverView.displayEmptyListIndicator("No Movies Found")
-                } else {
-                    discoverView.displayMovies(viewState.movies)
-                }
-            }
-        }
+    override fun onRetryClicked() {
+        discoverViewModel.onRetryClicked()
     }
+
+    override fun onPaginationErrorClicked() {
+        discoverViewModel.loadMore()
+    }
+    //----------------------------------------------------------------------------------------------
+
+
+    private val featuredListScreenStateObserver =
+        Observer<ListWithToolbarTitleState> { listWithToolbarState ->
+            listWithToolbarTitle.handleScreenState(listWithToolbarState)
+        }
+
+
+    private fun registerObservers() {
+        discoverViewModel.state.observeForever(featuredListScreenStateObserver)
+        listWithToolbarTitle.registerListener(this)
+    }
+
+    private fun unregisterObservers() {
+        discoverViewModel.state.removeObserver(featuredListScreenStateObserver)
+        listWithToolbarTitle.unregisterListener(this)
+    }
+
 }

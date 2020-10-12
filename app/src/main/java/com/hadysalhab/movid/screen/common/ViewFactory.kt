@@ -21,10 +21,7 @@ import com.hadysalhab.movid.screen.common.reviews.ReviewListItem
 import com.hadysalhab.movid.screen.common.reviews.ReviewListItemImpl
 import com.hadysalhab.movid.screen.common.seeall.SeeAllImpl
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
-import com.hadysalhab.movid.screen.common.toolbar.TitleToolbarLayout
 import com.hadysalhab.movid.screen.main.MainViewImpl
-import com.hadysalhab.movid.screen.main.discover.DiscoverView
-import com.hadysalhab.movid.screen.main.discover.DiscoverViewImpl
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupScreenImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreen
@@ -96,13 +93,9 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
 
     fun getGenreList(parent: ViewGroup?): GenreList = GenreList(layoutInflater, parent, this)
     fun getListHeader(parent: ViewGroup?): ListHeader = ListHeader(layoutInflater, parent)
-    fun getDiscoverView(parent: ViewGroup?): DiscoverView =
-        DiscoverViewImpl(layoutInflater, parent, this)
 
     fun getErrorScreen(parent: ViewGroup?) = ErrorScreenImpl(layoutInflater, parent)
     fun getLoadingView(parent: ViewGroup?) = LoadingView(layoutInflater, parent)
-    fun getTitleToolbarLayout(parent: ViewGroup?): TitleToolbarLayout =
-        TitleToolbarLayout(layoutInflater, parent)
 
     fun getEmptyResults(container: ViewGroup?) = EmptyResults(layoutInflater, container)
     fun getPaginationErrorView(parent: ViewGroup?) = PaginationError(layoutInflater, parent)

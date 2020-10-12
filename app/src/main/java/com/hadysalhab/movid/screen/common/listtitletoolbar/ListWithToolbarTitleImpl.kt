@@ -8,26 +8,27 @@ import com.hadysalhab.movid.R
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.movielist.MovieListScreen
 import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
-import com.hadysalhab.movid.screen.common.toolbar.TitleToolbarLayout
+import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 
 class ListWithToolbarTitleImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     viewFactory: ViewFactory
 ) :
-    ListWithToolbarTitle(), MovieListScreen.Listener {
+    ListWithToolbarTitle(), MovieListScreen.Listener, MenuToolbarLayout.Listener {
 
     private val favoritesPlaceHolder: FrameLayout
     private val toolbar: Toolbar
-    private val titleToolbarLayout: TitleToolbarLayout
+    private val menuToolbarLayout: MenuToolbarLayout
     private val movieListScreen: MovieListScreen
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_list_title_toolbar, parent, false))
         favoritesPlaceHolder = findViewById(R.id.favorites_placeholder)
         toolbar = findViewById(R.id.toolbar)
-        titleToolbarLayout = viewFactory.getTitleToolbarLayout(toolbar)
-        toolbar.addView(titleToolbarLayout.getRootView())
+        menuToolbarLayout = viewFactory.getMenuToolbarLayout(toolbar)
+        menuToolbarLayout.registerListener(this)
+        toolbar.addView(menuToolbarLayout.getRootView())
         movieListScreen = viewFactory.getMovieScreen(favoritesPlaceHolder)
         movieListScreen.registerListener(this)
         favoritesPlaceHolder.addView(movieListScreen.getRootView())
@@ -48,9 +49,15 @@ class ListWithToolbarTitleImpl(
             )
         )
 
-        setToolbarTitle(
-            screenState.title
-        )
+
+        with(menuToolbarLayout) {
+            setToolbarTitle(
+                screenState.title
+            )
+            setOverflowMenuIcon(
+                screenState.menuIcon
+            )
+        }
     }
 
     private fun movieListScreenHandleState(movieListScreenState: MovieListScreenState) {
@@ -60,7 +67,6 @@ class ListWithToolbarTitleImpl(
     }
 
     private fun setToolbarTitle(groupType: String) {
-        titleToolbarLayout.setToolbarTitle(groupType)
     }
 
     override fun onMovieItemClicked(movieID: Int) {
@@ -85,5 +91,9 @@ class ListWithToolbarTitleImpl(
         listeners.forEach {
             it.onPaginationErrorClicked()
         }
+    }
+
+    override fun onOverflowMenuIconClick() {
+
     }
 }

@@ -1,6 +1,7 @@
 package com.hadysalhab.movid.screen.common.toolbar
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -31,8 +32,13 @@ class MenuToolbarLayout(layoutInflater: LayoutInflater, parent: ViewGroup?) :
 
     fun getOverflowMenuIconPlaceHolder() = overflowMenuIcon
 
-    fun setOverflowMenuIcon(@DrawableRes icon: Int) {
-        overflowMenuIcon.setImageResource(icon)
+    fun setOverflowMenuIcon(@DrawableRes icon: Int?) {
+        if (icon == null) {
+            overflowMenuIcon.visibility = View.GONE
+        } else {
+            overflowMenuIcon.setImageResource(icon)
+            overflowMenuIcon.visibility = View.VISIBLE
+        }
     }
 
     fun setToolbarTitle(title: String) {

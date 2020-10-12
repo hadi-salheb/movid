@@ -4,9 +4,10 @@ import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import com.hadysalhab.movid.R
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
-enum class Genre(val id: Int, val genre: String, @DrawableRes val icon: Int) : Parcelable {
+enum class Genre(val id: Int, val genreName: String, @DrawableRes val icon: Int) : Parcelable {
     ACTION(28, "Action", R.drawable.ic_action),
     ADVENTURE(12, "Adventure", R.drawable.ic_adventure),
     ANIMATION(16, "Animation", R.drawable.ic_animation),
@@ -21,7 +22,9 @@ enum class Genre(val id: Int, val genre: String, @DrawableRes val icon: Int) : P
     MUSIC(10402, "Music", R.drawable.ic_music),
     MYSTERY(9648, "Mystery", R.drawable.ic_mystery),
     ROMANCE(10749, "Romance", R.drawable.ic_romance),
-    SCIENCE_FICTION(878, "SCIENCE FICTION", R.drawable.ic_science_fiction),
+    SCIENCE_FICTION(878, "Science Fiction", R.drawable.ic_science_fiction),
     THRILLER(53, "Thriller", R.drawable.ic_thriller),
-    WAR(10752, "War", R.drawable.ic_war)
+    WAR(10752, "War", R.drawable.ic_war);
+
+    fun getFormattedName(): String = genreName.toUpperCase(Locale.ROOT)
 }

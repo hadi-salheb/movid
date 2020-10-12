@@ -27,7 +27,7 @@ class GenreListItemImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : Ge
     override fun displayGenre(genre: Genre) {
         this.genre = genre
         genreIcon.setImageResource(genre.icon)
-        genreText.text = genre.genre
+        genreText.text = genre.genreName
     }
 
 
