@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.screen.common.movielist
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.hadysalhab.movid.movies.Movie
@@ -28,12 +27,6 @@ class MovieListAdapter(private val listener: Listener, private val viewFactory: 
             }
 
             override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-                if (oldItem.id == 769) {
-                    Log.d(
-                        "CHECK BUG",
-                        "old: ${oldItem.title}, new:${newItem.title} == ? ->:${oldItem == newItem} "
-                    )
-                }
                 return oldItem == newItem
             }
         }
