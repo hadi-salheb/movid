@@ -48,12 +48,12 @@ class MovieDetailViewModel @Inject constructor(
             isFirstRender = false
             if (dataValidator.isMovieDetailValid(movieDetailStored)) {
                 movieDetailScreenStateManager.dispatch(
-                    MovieDetailActions.MovieDetailSuccess(
+                    MovieDetailActions.Success(
                         movieDetailStored!!
                     )
                 )
             } else {
-                movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRequest)
+                movieDetailScreenStateManager.dispatch(MovieDetailActions.Request)
                 fetchApiForMovieDetail()
             }
         }
@@ -68,7 +68,7 @@ class MovieDetailViewModel @Inject constructor(
         if (fetchMovieDetailUseCase.isBusy) {
             return
         }
-        movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRefresh)
+        movieDetailScreenStateManager.dispatch(MovieDetailActions.Refresh)
         fetchApiForMovieDetail()
     }
 
@@ -77,7 +77,7 @@ class MovieDetailViewModel @Inject constructor(
         if (fetchMovieDetailUseCase.isBusy) {
             return
         }
-        movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRequest)
+        movieDetailScreenStateManager.dispatch(MovieDetailActions.Request)
         fetchApiForMovieDetail()
     }
 
@@ -89,7 +89,7 @@ class MovieDetailViewModel @Inject constructor(
         if (areAddRemoveWatchListOrFavoriteUseCaseBusy()) {
             emitter.emit(ShowUserToastMessage("Please Wait"))
         } else {
-            movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRequest)
+            movieDetailScreenStateManager.dispatch(MovieDetailActions.Request)
             addRemoveWatchlistMovieUseCase.addRemoveWatchlistUseCase(
                 state.value!!.data!!.details.id,
                 !state.value!!.data!!.accountStates.watchlist
@@ -105,7 +105,7 @@ class MovieDetailViewModel @Inject constructor(
         if (areAddRemoveWatchListOrFavoriteUseCaseBusy()) {
             emitter.emit(ShowUserToastMessage("Please Wait"))
         } else {
-            movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRequest)
+            movieDetailScreenStateManager.dispatch(MovieDetailActions.Request)
             addRemoveFavMovieUseCase.addRemoveFavUseCase(
                 state.value!!.data!!.details.id,
                 !state.value!!.data!!.accountStates.favorite
@@ -146,20 +146,20 @@ class MovieDetailViewModel @Inject constructor(
     //Failure
     override fun onAddRemoveFavoritesFailure(err: String) {
         emitter.emit(ShowUserToastMessage(err))
-        movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailFavoriteWatchlistError)
+        movieDetailScreenStateManager.dispatch(MovieDetailActions.WatchlistFavoriteError)
     }
 
     override fun onAddRemoveWatchlistFailure(err: String) {
         emitter.emit(ShowUserToastMessage(err))
-        movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailFavoriteWatchlistError)
+        movieDetailScreenStateManager.dispatch(MovieDetailActions.WatchlistFavoriteError)
     }
 
     override fun onFetchMovieDetailFailed(msg: String) {
         if (state.value!!.isRefreshing) {
-            movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailRefreshError)
+            movieDetailScreenStateManager.dispatch(MovieDetailActions.RefreshError)
             emitter.emit(ShowUserToastMessage(msg))
         } else {
-            movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailError(msg))
+            movieDetailScreenStateManager.dispatch(MovieDetailActions.Error(msg))
         }
     }
 
@@ -178,10 +178,10 @@ class MovieDetailViewModel @Inject constructor(
     fun onMovieDetailEvent(event: MovieDetailEvents) {
         if (event.movieDetail.details.id == this.movieID) {
             if (state.value!!.isRefreshing) {
-                movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailSuccess(event.movieDetail))
+                movieDetailScreenStateManager.dispatch(MovieDetailActions.Success(event.movieDetail))
                 emitter.emit(ShowUserToastMessage("Movie Updated"))
             } else {
-                movieDetailScreenStateManager.dispatch(MovieDetailActions.MovieDetailSuccess(event.movieDetail))
+                movieDetailScreenStateManager.dispatch(MovieDetailActions.Success(event.movieDetail))
             }
         }
     }

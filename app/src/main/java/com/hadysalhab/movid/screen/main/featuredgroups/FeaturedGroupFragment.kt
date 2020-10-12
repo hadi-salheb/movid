@@ -82,7 +82,6 @@ class FeaturedGroupFragment : BaseFragment(), FeaturedGroupScreen.Listener {
         }
         mainNavigator.toFeaturedListFragment(
             groupType,
-            null,
             featuredGroupViewModel.state.value!!.powerMenuItem.region
         )
     }
@@ -124,7 +123,7 @@ class FeaturedGroupFragment : BaseFragment(), FeaturedGroupScreen.Listener {
         subscription = featuredGroupViewModel.screenEvents.startListening { event ->
             handleFeaturedEvents(event)
         }
-        featuredGroupViewModel.state.observe(this, featuredStateObserver)
+        featuredGroupViewModel.state.observeForever(featuredStateObserver)
     }
 
     private fun unregisterObservers() {

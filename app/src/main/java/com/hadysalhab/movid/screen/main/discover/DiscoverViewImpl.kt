@@ -48,7 +48,6 @@ class DiscoverViewImpl(
     }
 
     override fun displayEmptyListIndicator(msg: String) {
-        movieListScreen.displayEmptyListIndicator(msg)
     }
 
     override fun setGenreDetail(genre: Genre) {
@@ -65,6 +64,14 @@ class DiscoverViewImpl(
         listeners.forEach {
             it.loadMoreItems()
         }
+    }
+
+    override fun onRetryClicked() {
+
+    }
+
+    override fun onPaginationErrorClicked() {
+
     }
 
 }

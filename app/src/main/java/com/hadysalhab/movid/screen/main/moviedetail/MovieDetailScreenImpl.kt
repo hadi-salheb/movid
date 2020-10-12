@@ -497,15 +497,28 @@ class MovieDetailScreenImpl(
         }
     }
 
+    override fun onMovieSeeAllClicked(groupType: GroupType) {
+        listeners.forEach {
+            it.onSeeAllRecommendedSimilarMoviesClicked(
+                groupType,
+                this.movieDetail.details.id,
+                this.movieDetail.details.title
+            )
+        }
+    }
+
     override fun onCastCardClicked(castID: Int) {
         listeners.forEach {
             it.onCastClicked(castID)
         }
     }
 
-    override fun onSeeAllClicked(groupType: GroupType) {
+    override fun onCastSeeAllClicked(groupType: GroupType) {
         listeners.forEach {
-            it.onSeeAllClicked(groupType)
+            it.onSeeAllCastClicked(
+                this.movieDetail.details.id,
+                this.movieDetail.details.title
+            )
         }
     }
 

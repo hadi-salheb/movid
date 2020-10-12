@@ -29,7 +29,7 @@ class FeaturedGroupViewModel @Inject constructor(
         if (isFirstRender) {
             isFirstRender = false
             featuredScreenStateManager.dispatch(
-                FeaturedActions.FeaturedRequest(
+                FeaturedActions.Request(
                     sharedPreferencesManager.getStoredFeaturedPowerMenuItem()
                 )
             )
@@ -52,7 +52,7 @@ class FeaturedGroupViewModel @Inject constructor(
 
     fun onCountryToolbarItemClicked(toolbarCountryItem: ToolbarCountryItems) {
         sharedPreferencesManager.setStoredFeaturedPowerMenuItem(toolbarCountryItem)
-        featuredScreenStateManager.dispatch(FeaturedActions.FeaturedRequest(toolbarCountryItem))
+        featuredScreenStateManager.dispatch(FeaturedActions.Request(toolbarCountryItem))
         fetchApiForFeaturedMovies()
     }
 
@@ -60,7 +60,7 @@ class FeaturedGroupViewModel @Inject constructor(
         if (fetchFeaturedMoviesUseCase.isBusy) {
             return
         }
-        featuredScreenStateManager.dispatch(FeaturedActions.FeaturedRequest(state.value!!.powerMenuItem))
+        featuredScreenStateManager.dispatch(FeaturedActions.Request(state.value!!.powerMenuItem))
         fetchApiForFeaturedMovies()
     }
 
@@ -68,7 +68,7 @@ class FeaturedGroupViewModel @Inject constructor(
         if (fetchFeaturedMoviesUseCase.isBusy) {
             return
         }
-        featuredScreenStateManager.dispatch(FeaturedActions.FeaturedRefresh)
+        featuredScreenStateManager.dispatch(FeaturedActions.Refresh)
         fetchApiForFeaturedMovies()
     }
 
@@ -80,19 +80,19 @@ class FeaturedGroupViewModel @Inject constructor(
 
     override fun onFetchMovieGroupsSucceeded(movieGroups: List<MoviesResponse>) {
         if (state.value!!.isRefreshing) {
-            featuredScreenStateManager.dispatch(FeaturedActions.FeaturedSuccess(movieGroups))
+            featuredScreenStateManager.dispatch(FeaturedActions.Success(movieGroups))
             emitter.emit(ShowUserToastMessage("Movies Updated"))
         } else {
-            featuredScreenStateManager.dispatch(FeaturedActions.FeaturedSuccess(movieGroups))
+            featuredScreenStateManager.dispatch(FeaturedActions.Success(movieGroups))
         }
     }
 
     override fun onFetchMovieGroupsFailed(msg: String) {
         if (state.value!!.isRefreshing) {
-            featuredScreenStateManager.dispatch(FeaturedActions.FeaturedRefreshError)
+            featuredScreenStateManager.dispatch(FeaturedActions.RefreshError)
             emitter.emit(ShowUserToastMessage(msg))
         } else {
-            featuredScreenStateManager.dispatch(FeaturedActions.FeaturedError(msg))
+            featuredScreenStateManager.dispatch(FeaturedActions.Error(msg))
         }
     }
 

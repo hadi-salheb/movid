@@ -9,11 +9,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitle
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
-class FavoriteMoviesFragment : BaseFragment(), FavoritesScreen.Listener {
+class FavoriteMoviesFragment : BaseFragment(), ListWithToolbarTitle.Listener {
     @Inject
     lateinit var viewFactory: ViewFactory
 
@@ -22,7 +24,8 @@ class FavoriteMoviesFragment : BaseFragment(), FavoritesScreen.Listener {
 
     @Inject
     lateinit var mainNavigator: MainNavigator
-    private lateinit var favoritesScreen: FavoritesScreen
+
+    private lateinit var listWithToolbarTitle: ListWithToolbarTitle
 
     private lateinit var favoriteMoviesViewModel: FavoriteMoviesViewModel
 
@@ -42,11 +45,11 @@ class FavoriteMoviesFragment : BaseFragment(), FavoritesScreen.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::favoritesScreen.isInitialized) {
-            favoritesScreen = viewFactory.getFavoritesScreen(container)
+        if (!this::listWithToolbarTitle.isInitialized) {
+            listWithToolbarTitle = viewFactory.getListWithToolbarTitle(container)
         }
         // Inflate the layout for this fragment
-        return favoritesScreen.getRootView()
+        return listWithToolbarTitle.getRootView()
     }
 
     override fun onStart() {
@@ -79,21 +82,25 @@ class FavoriteMoviesFragment : BaseFragment(), FavoritesScreen.Listener {
         favoriteMoviesViewModel.onRetry()
     }
 
+    override fun onPaginationErrorClicked() {
+        favoriteMoviesViewModel.loadMore()
+    }
+
     //----------------------------------------------------------------------------------------------
 
-    private val favoritesScreenStateObserver =
-        Observer<FavoritesScreenState> { favoritesScreenState ->
-            favoritesScreen.handleScreenState(favoritesScreenState)
+    private val listWithToolbarTitleStateObserver =
+        Observer<ListWithToolbarTitleState> { listWithToolbarTitleState ->
+            listWithToolbarTitle.handleScreenState(listWithToolbarTitleState)
         }
 
 
     private fun registerObservers() {
-        favoriteMoviesViewModel.state.observe(this, favoritesScreenStateObserver)
-        favoritesScreen.registerListener(this)
+        favoriteMoviesViewModel.state.observeForever(listWithToolbarTitleStateObserver)
+        listWithToolbarTitle.registerListener(this)
     }
 
     private fun unregisterObservers() {
-        favoriteMoviesViewModel.state.removeObserver(favoritesScreenStateObserver)
-        favoritesScreen.unregisterListener(this)
+        favoriteMoviesViewModel.state.removeObserver(listWithToolbarTitleStateObserver)
+        listWithToolbarTitle.unregisterListener(this)
     }
 }

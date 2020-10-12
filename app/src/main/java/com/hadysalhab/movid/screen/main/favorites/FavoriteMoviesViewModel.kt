@@ -2,31 +2,42 @@ package com.hadysalhab.movid.screen.main.favorites
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.MAX_NUMBER_OF_DATA_PER_PAGE
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.favorites.FetchFavoriteMoviesUseCase
 import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleActions
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.max
 
 class FavoriteMoviesViewModel @Inject constructor(
     private val fetchFavoriteMoviesUseCase: FetchFavoriteMoviesUseCase,
-    private val favoritesScreenStateManager: FavoritesScreenStateManager,
+    private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
     private val schemaToModelHelper: SchemaToModelHelper
 ) : ViewModel(), FetchFavoriteMoviesUseCase.Listener {
 
     private lateinit var favoriteMovies: MoviesResponse
     private var moviesList = setOf<Movie>()
-    private var numberOfAddedMovies = 0
-    val state: LiveData<FavoritesScreenState>
-        get() = favoritesScreenStateManager.stateLiveData
+    val state: LiveData<ListWithToolbarTitleState> =
+        listWithToolbarTitleStateManager.setInitialStateAndReturn(
+            ListWithToolbarTitleState(
+                title = "FAVORITES",
+                emptyResultsIconDrawable = R.drawable.ic_favorite,
+                emptyResultsMessage = "No Movies Added To Favorites"
+            )
+        )
     private var isFirstRender = true
+    private val dispatch = listWithToolbarTitleStateManager::dispatch
 
     init {
         EventBus.getDefault().register(this)
@@ -40,7 +51,7 @@ class FavoriteMoviesViewModel @Inject constructor(
         }
         when (event) {
             is MovieDetailEvents.AddMovieToFav -> {
-                numberOfAddedMovies++
+                favoriteMovies = favoriteMovies.copy(favoriteMovies.totalResults + 1)
                 val oldMovieSet = this.moviesList
                 val newMovieSet = mutableSetOf(
                     schemaToModelHelper.getMovieFromMovieDetail(
@@ -50,18 +61,18 @@ class FavoriteMoviesViewModel @Inject constructor(
                 newMovieSet.addAll(oldMovieSet) // newSet = [...newAddedMovies + ... oldMovies]
                 updateFavoriteMovies()
                 moviesList = newMovieSet
-                favoritesScreenStateManager.dispatch(
-                    FavoritesScreenActions.FavoritesSuccess(
+                dispatch(
+                    ListWithToolbarTitleActions.Success(
                         moviesList.toList()
                     )
                 )
             }
             is MovieDetailEvents.RemoveMovieFromFav -> {
-                numberOfAddedMovies--
+                favoriteMovies = favoriteMovies.copy(page = favoriteMovies.totalResults - 1)
                 moviesList = moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
                 updateFavoriteMovies()
-                favoritesScreenStateManager.dispatch(
-                    FavoritesScreenActions.FavoritesSuccess(
+                dispatch(
+                    ListWithToolbarTitleActions.Success(
                         moviesList.toList()
                     )
                 )
@@ -72,20 +83,23 @@ class FavoriteMoviesViewModel @Inject constructor(
 
     private fun updateFavoriteMovies() {
         favoriteMovies = favoriteMovies.copy(
-            page = floor((moviesList.size * 1.0) / MAX_NUMBER_OF_DATA_PER_PAGE).toInt(),
-            total_pages = ceil(((favoriteMovies.totalResults) + numberOfAddedMovies) * 1.0 / MAX_NUMBER_OF_DATA_PER_PAGE).toInt()
+            page = max(floor((moviesList.size * 1.0) / MAX_NUMBER_OF_DATA_PER_PAGE), 1.0).toInt(),
+            total_pages = ceil(((favoriteMovies.totalResults)) * 1.0 / MAX_NUMBER_OF_DATA_PER_PAGE).toInt()
         )
     }
 
     fun onStart() {
         if (isFirstRender) {
             isFirstRender = false
-            favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
+            dispatch(ListWithToolbarTitleActions.Request)
             fetchApi(1)
         } else if (this::favoriteMovies.isInitialized) {
             val numberOfDisplayedMovies = moviesList.size
-            if (favoriteMovies.page + 1 <= favoriteMovies.total_pages && ((favoriteMovies.page == 0 && numberOfDisplayedMovies < 10) || (favoriteMovies.page > 0 && ((numberOfDisplayedMovies * 1.0 / MAX_NUMBER_OF_DATA_PER_PAGE) > favoriteMovies.page) && (favoriteMovies.page * MAX_NUMBER_OF_DATA_PER_PAGE - numberOfDisplayedMovies) > 10))) {
-                favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
+            if (favoriteMovies.page + 1 <= favoriteMovies.total_pages && (numberOfDisplayedMovies < (MAX_NUMBER_OF_DATA_PER_PAGE * (favoriteMovies.page + 1)))) {
+                dispatch(ListWithToolbarTitleActions.Request)
+                if (favoriteMovies.page == 1) {
+                    fetchApi(1)
+                }
                 fetchApi(this.favoriteMovies.page + 1)
             }
         }
@@ -103,12 +117,12 @@ class FavoriteMoviesViewModel @Inject constructor(
         if (fetchFavoriteMoviesUseCase.isBusy || this.favoriteMovies.page + 1 > this.favoriteMovies.total_pages) {
             return
         }
-        favoritesScreenStateManager.dispatch(FavoritesScreenActions.Pagination)
+        dispatch(ListWithToolbarTitleActions.Pagination)
         fetchApi(this.favoriteMovies.page + 1)
     }
 
     fun onRetry() {
-        favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesRequest)
+        dispatch(ListWithToolbarTitleActions.Request)
         if (this::favoriteMovies.isInitialized) {
             fetchApi(this.favoriteMovies.page)
         } else {
@@ -117,19 +131,19 @@ class FavoriteMoviesViewModel @Inject constructor(
     }
     //----------------------------------------------------------------------------------------------
 
-    override fun onFetchFavoriteMoviesSuccess(apiMoviesResponse: MoviesResponse) {
-        this.favoriteMovies = apiMoviesResponse
+    override fun onFetchFavoriteMoviesSuccess(movies: MoviesResponse) {
+        this.favoriteMovies = movies
         moviesList = moviesList.toMutableSet().apply {
-            addAll(apiMoviesResponse.movies ?: emptySet())
+            addAll(movies.movies ?: emptySet())
         }
-        favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesSuccess(moviesList.toList()))
+        dispatch(ListWithToolbarTitleActions.Success(moviesList.toList()))
     }
 
     override fun onFetchFavoriteMoviesFailure(msg: String) {
         if (state.value!!.isPaginationLoading) {
-            favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesPaginationError)
+            dispatch(ListWithToolbarTitleActions.PaginationError)
         } else {
-            favoritesScreenStateManager.dispatch(FavoritesScreenActions.FavoritesError(msg))
+            dispatch(ListWithToolbarTitleActions.Error(msg))
         }
     }
 

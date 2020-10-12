@@ -13,18 +13,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--Error-->
-    <FrameLayout
-        android:id="@+id/favorites_error_placeholder"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:elevation="1dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favorites_appbar" />
-
     <!--Data-->
     <FrameLayout
         android:id="@+id/favorites_placeholder"

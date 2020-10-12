@@ -7,7 +7,6 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.common.utils.convertDpToPixel
 import com.hadysalhab.movid.movies.Review
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.scrolllistener.OnVerticalScrollListener
@@ -21,14 +20,13 @@ class ReviewListViewImpl(
     private val recyclerView: RecyclerView
     private val adapter: ReviewListAdapter
     private val progressBar: ProgressBar
-    private val paginationProgressBar: ProgressBar
+//    private val paginationProgressBar: ProgressBar
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_list_data, parent, false))
         recyclerView = findViewById(R.id.rv_movies)
         adapter = ReviewListAdapter(viewFactory)
         progressBar = findViewById(R.id.loading_indicator)
-        paginationProgressBar = findViewById(R.id.pagination_loading_indicator)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
@@ -59,25 +57,15 @@ class ReviewListViewImpl(
         adapter.submitList(reviews)
         progressBar.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
-        if (paginationProgressBar.visibility == View.VISIBLE) {
-            android.os.Handler().postDelayed({
-                paginationProgressBar.visibility = View.GONE
-                recyclerView.suppressLayout(false)
-                recyclerView.post {
-                    recyclerView.smoothScrollBy(0, convertDpToPixel(16, getContext()))
-                }
-            }, 300)
-        }
+
     }
 
     override fun displayPaginationLoading() {
-        paginationProgressBar.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
         recyclerView.suppressLayout(true)
     }
 
     override fun displayLoadingIndicator() {
-        paginationProgressBar.visibility = View.GONE
         recyclerView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
     }

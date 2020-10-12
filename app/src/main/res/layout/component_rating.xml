@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:flexWrap="wrap_reverse"
     android:orientation="horizontal">
 
 
@@ -21,5 +23,6 @@
         android:id="@+id/tv_rating_movie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_flexGrow="1"
         tools:text="4.5 (413)" />
-</LinearLayout>
+</com.google.android.flexbox.FlexboxLayout>

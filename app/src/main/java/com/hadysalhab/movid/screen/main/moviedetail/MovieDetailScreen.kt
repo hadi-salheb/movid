@@ -14,7 +14,13 @@ data class MovieDetailScreenState(
 
 abstract class MovieDetailScreen : BaseObservableViewMvc<MovieDetailScreen.Listener>() {
     interface Listener {
-        fun onSeeAllClicked(groupType: GroupType)
+        fun onSeeAllCastClicked(movieID: Int, movieName: String)
+        fun onSeeAllRecommendedSimilarMoviesClicked(
+            groupType: GroupType,
+            movieID: Int,
+            movieName: String
+        )
+
         fun onCastClicked(castId: Int)
         fun onMovieClicked(movieId: Int)
         fun onSeeReviewsClicked(movieID: Int)

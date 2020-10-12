@@ -10,25 +10,23 @@ import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitle
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
 private const val ARG_GROUP_KEY = "arg_group_key"
-private const val ARG_MOVIE_ID = "arg_movie_id"
 private const val ARG_REGION = "arg_region"
 
-class FeaturedListFragment : BaseFragment(), FeaturedListScreen.Listener {
+class FeaturedListFragment : BaseFragment(), ListWithToolbarTitle.Listener {
 
     companion object {
         @JvmStatic
-        fun newInstance(groupType: GroupType, movieID: Int?, region: String?) =
+        fun newInstance(groupType: GroupType, region: String) =
             FeaturedListFragment().apply {
                 arguments = Bundle().apply {
-                    movieID?.let {
-                        putInt(ARG_MOVIE_ID, it)
-                    }
-                    region?.let {
+                    region.let {
                         putString(ARG_REGION, it)
                     }
                     putParcelable(ARG_GROUP_KEY, groupType)
@@ -48,7 +46,7 @@ class FeaturedListFragment : BaseFragment(), FeaturedListScreen.Listener {
     @Inject
     lateinit var mainNavigator: MainNavigator
 
-    private lateinit var featuredListScreen: FeaturedListScreen
+    private lateinit var listWithToolbarTitle: ListWithToolbarTitle
 
     private lateinit var featuredListViewModel: FeaturedListViewModel
 
@@ -61,10 +59,8 @@ class FeaturedListFragment : BaseFragment(), FeaturedListScreen.Listener {
         injector.inject(this)
 
         arguments?.let {
-            groupType = it.getParcelable(ARG_GROUP_KEY)
-                ?: throw RuntimeException("Cannot Start FeaturedListFragment without GroupType key")
-            region = it.getString(ARG_REGION)
-                ?: throw java.lang.RuntimeException("Cannot Start FeaturedListFragment without region")
+            groupType = it.getParcelable(ARG_GROUP_KEY)!!
+            region = it.getString(ARG_REGION)!!
         }
         featuredListViewModel =
             ViewModelProvider(this, myViewModelFactory).get(FeaturedListViewModel::class.java)
@@ -74,11 +70,11 @@ class FeaturedListFragment : BaseFragment(), FeaturedListScreen.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::featuredListScreen.isInitialized) {
-            featuredListScreen = viewFactory.getFeaturedListScreen(container)
+        if (!this::listWithToolbarTitle.isInitialized) {
+            listWithToolbarTitle = viewFactory.getListWithToolbarTitle(container)
         }
         // Inflate the layout for this fragment
-        return featuredListScreen.getRootView()
+        return listWithToolbarTitle.getRootView()
     }
 
     override fun onStart() {
@@ -104,23 +100,27 @@ class FeaturedListFragment : BaseFragment(), FeaturedListScreen.Listener {
     override fun onRetryClicked() {
         featuredListViewModel.onRetryClicked()
     }
+
+    override fun onPaginationErrorClicked() {
+        featuredListViewModel.loadMore()
+    }
     //----------------------------------------------------------------------------------------------
 
 
     private val featuredListScreenStateObserver =
-        Observer<FeaturedListScreenState> { featuredListScreenState ->
-            featuredListScreen.handleScreenState(featuredListScreenState)
+        Observer<ListWithToolbarTitleState> { listWithToolbarState ->
+            listWithToolbarTitle.handleScreenState(listWithToolbarState)
         }
 
 
     private fun registerObservers() {
         featuredListViewModel.state.observe(this, featuredListScreenStateObserver)
-        featuredListScreen.registerListener(this)
+        listWithToolbarTitle.registerListener(this)
     }
 
     private fun unregisterObservers() {
         featuredListViewModel.state.removeObserver(featuredListScreenStateObserver)
-        featuredListScreen.unregisterListener(this)
+        listWithToolbarTitle.unregisterListener(this)
     }
 
 

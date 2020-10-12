@@ -55,9 +55,7 @@ class FeaturedGroupAdapter(private val listener: Listener, private val viewFacto
         listener.onMovieCardClicked(movieID)
     }
 
-    override fun onSeeAllClicked(groupType: GroupType) {
+    override fun onMovieSeeAllClicked(groupType: GroupType) {
         listener.onSeeMoreClicked(groupType)
     }
-
-
 }

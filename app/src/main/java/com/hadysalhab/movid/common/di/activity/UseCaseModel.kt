@@ -26,6 +26,7 @@ import com.hadysalhab.movid.movies.usecases.discover.DiscoverMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.favorites.FetchFavoriteMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.groups.FetchFeaturedMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.list.FetchFeaturedListUseCase
+import com.hadysalhab.movid.movies.usecases.list.FetchRecommendedSimilarListUseCase
 import com.hadysalhab.movid.movies.usecases.nowplaying.FetchNowPlayingMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.popular.FetchPopularMoviesUseCaseSync
 import com.hadysalhab.movid.movies.usecases.recommended.FetchRecommendedMoviesUseCaseSync
@@ -370,6 +371,21 @@ class UseCaseModel {
         schemaToModelHelper,
         uiThreadPoster,
         discoverMoviesFilterStateStore, tmdbApi
+    )
+
+    @Provides
+    fun getRecommendedSimilarMoviesUseCase(
+        baseSimilarRecommendedMoviesUseCaseFactory: BaseSimilarRecommendedMoviesUseCaseFactory,
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        schemaToModelHelper: SchemaToModelHelper,
+        errorMessageHandler: ErrorMessageHandler
+    ) = FetchRecommendedSimilarListUseCase(
+        baseSimilarRecommendedMoviesUseCaseFactory,
+        backgroundThreadPoster,
+        uiThreadPoster,
+        schemaToModelHelper,
+        errorMessageHandler
     )
 
 }

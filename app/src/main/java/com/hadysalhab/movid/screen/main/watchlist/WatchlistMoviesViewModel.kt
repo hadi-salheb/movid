@@ -1,110 +1,135 @@
 package com.hadysalhab.movid.screen.main.watchlist
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.MAX_NUMBER_OF_DATA_PER_PAGE
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.movies.usecases.watchlist.FetchWatchlistMoviesUseCase
 import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleActions
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.max
 
 class WatchlistMoviesViewModel @Inject constructor(
     private val fetchWatchlistMoviesUseCase: FetchWatchlistMoviesUseCase,
+    private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
     private val schemaToModelHelper: SchemaToModelHelper
 ) : ViewModel(), FetchWatchlistMoviesUseCase.Listener {
-    private val _viewState = MutableLiveData<WishlistMoviesViewState>()
+
     private lateinit var watchlistMovies: MoviesResponse
-    private var numberOfAddedMovies = 0
     private var moviesList = setOf<Movie>()
-    val viewState: LiveData<WishlistMoviesViewState>
-        get() = _viewState
+    val state: LiveData<ListWithToolbarTitleState> =
+        listWithToolbarTitleStateManager.setInitialStateAndReturn(
+            ListWithToolbarTitleState(
+                title = "WATCHLIST",
+                emptyResultsIconDrawable = R.drawable.ic_watchlist,
+                emptyResultsMessage = "No Movies Added To Watchlist"
+            )
+        )
+    private var isFirstRender = true
+    private val dispatch = listWithToolbarTitleStateManager::dispatch
+
+    init {
+        EventBus.getDefault().register(this)
+        fetchWatchlistMoviesUseCase.registerListener(this)
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
-    fun onWishlistEvent(event: MovieDetailEvents) {
+    fun onWatchlistEvent(event: MovieDetailEvents) {
         if (!this::watchlistMovies.isInitialized) {
             return
         }
         when (event) {
             is MovieDetailEvents.AddToWatchlist -> {
-                numberOfAddedMovies++
+                watchlistMovies =
+                    watchlistMovies.copy(totalResults = watchlistMovies.totalResults + 1)
                 val oldMovieSet = this.moviesList
                 val newMovieSet = mutableSetOf(
                     schemaToModelHelper.getMovieFromMovieDetail(
                         event.movieDetail
                     )
                 )
-                newMovieSet.addAll(oldMovieSet)
-                if (numberOfAddedMovies == MAX_NUMBER_OF_DATA_PER_PAGE) {
-                    watchlistMovies = watchlistMovies.copy(
-                        page = (newMovieSet.size + MAX_NUMBER_OF_DATA_PER_PAGE - 1) / MAX_NUMBER_OF_DATA_PER_PAGE,
-                        total_pages = watchlistMovies.total_pages + 1
-                    )
-                    numberOfAddedMovies = 0
-                }
+                newMovieSet.addAll(oldMovieSet) // newSet = [...newAddedMovies + ... oldMovies]
+                updateWatchlistMovies()
                 moviesList = newMovieSet
-                _viewState.value = WatchlistMoviesLoaded(moviesList.toList())
-            }
-            is MovieDetailEvents.RemoveFromWatchlist -> {
-                moviesList = moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
-                _viewState.value = WatchlistMoviesLoaded(moviesList.toList())
-            }
-        }
-
-    }
-
-
-    fun onStart() {
-        when (_viewState.value) {
-            null -> {
-                EventBus.getDefault().register(this)
-                fetchWatchlistMoviesUseCase.registerListener(this)
-                _viewState.value = Loading
-                fetchWatchlistMoviesUseCase.fetchWatchlistUseCase(
-                    page = 1
+                dispatch(
+                    ListWithToolbarTitleActions.Success(
+                        moviesList.toList()
+                    )
                 )
             }
-            is Loading, is Error -> {
-
-            }
-            is WatchlistMoviesLoaded -> {
-                val numberOfDisplayedMovies = moviesList.size
-                if ((numberOfDisplayedMovies < MAX_NUMBER_OF_DATA_PER_PAGE * this.watchlistMovies.page) && (this.watchlistMovies.page < this.watchlistMovies.total_pages)) {
-                    _viewState.value = Loading
-                    fetchWatchlistMoviesUseCase.fetchWatchlistUseCase(
-                        this.watchlistMovies.page
+            is MovieDetailEvents.RemoveFromWatchlist -> {
+                watchlistMovies =
+                    watchlistMovies.copy(totalResults = watchlistMovies.totalResults - 1)
+                moviesList = moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
+                updateWatchlistMovies()
+                dispatch(
+                    ListWithToolbarTitleActions.Success(
+                        moviesList.toList()
                     )
+                )
+            }
+        }
+
+    }
+
+    private fun updateWatchlistMovies() {
+        watchlistMovies = watchlistMovies.copy(
+            page = max(floor((moviesList.size * 1.0) / MAX_NUMBER_OF_DATA_PER_PAGE), 1.0).toInt(),
+            total_pages = ceil(((watchlistMovies.totalResults)) * 1.0 / MAX_NUMBER_OF_DATA_PER_PAGE).toInt()
+        )
+    }
+
+    fun onStart() {
+        if (isFirstRender) {
+            isFirstRender = false
+            dispatch(ListWithToolbarTitleActions.Request)
+            fetchApi(1)
+        } else if (this::watchlistMovies.isInitialized) {
+            val numberOfDisplayedMovies = moviesList.size
+            if (watchlistMovies.page + 1 <= watchlistMovies.total_pages && (numberOfDisplayedMovies < (MAX_NUMBER_OF_DATA_PER_PAGE * (watchlistMovies.page + 1)))) {
+                dispatch(ListWithToolbarTitleActions.Request)
+                if (watchlistMovies.page == 1) {
+                    fetchApi(1)
                 }
+                fetchApi(this.watchlistMovies.page + 1)
             }
         }
     }
+
+    private fun fetchApi(page: Int) {
+        fetchWatchlistMoviesUseCase.fetchWatchlistUseCase(
+            page = page
+        )
+    }
+
+    //UserInteractions------------------------------------------------------------------------------
 
     fun loadMore() {
         if (fetchWatchlistMoviesUseCase.isBusy || this.watchlistMovies.page + 1 > this.watchlistMovies.total_pages) {
             return
         }
-        _viewState.value = PaginationLoading
-        fetchWatchlistMoviesUseCase.fetchWatchlistUseCase(
-            page = this.watchlistMovies.page + 1
-        )
+        dispatch(ListWithToolbarTitleActions.Pagination)
+        fetchApi(this.watchlistMovies.page + 1)
     }
 
-    //----------------------------------------------------------------------------------------------
-    override fun onFetchWatchlistMoviesSuccess(apiMoviesResponse: MoviesResponse) {
-        this.watchlistMovies = apiMoviesResponse
-        moviesList = moviesList.toMutableSet().apply {
-            addAll(apiMoviesResponse.movies ?: emptySet())
+    fun onRetry() {
+        dispatch(ListWithToolbarTitleActions.Request)
+        if (this::watchlistMovies.isInitialized) {
+            fetchApi(this.watchlistMovies.page)
+        } else {
+            fetchApi(1)
         }
-        _viewState.value = WatchlistMoviesLoaded(moviesList.toList())
-    }
-
-    override fun onFetchWatchlistMoviesFailure(msg: String) {
-        _viewState.value = Error(msg)
     }
     //----------------------------------------------------------------------------------------------
 
@@ -114,5 +139,22 @@ class WatchlistMoviesViewModel @Inject constructor(
         EventBus.getDefault().unregister(this)
     }
 
+    //UseCaseResults--------------------------------------------------------------------------------
 
+    override fun onFetchWatchlistMoviesSuccess(movies: MoviesResponse) {
+        this.watchlistMovies = movies
+        moviesList = moviesList.toMutableSet().apply {
+            addAll(movies.movies ?: emptySet())
+        }
+        dispatch(ListWithToolbarTitleActions.Success(moviesList.toList()))
+    }
+
+    override fun onFetchWatchlistMoviesFailure(msg: String) {
+        if (state.value!!.isPaginationLoading) {
+            dispatch(ListWithToolbarTitleActions.PaginationError)
+        } else {
+            dispatch(ListWithToolbarTitleActions.Error(msg))
+        }
+    }
+    //----------------------------------------------------------------------------------------------
 }

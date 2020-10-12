@@ -1,17 +1,25 @@
 package com.hadysalhab.movid.screen.common.movielist
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.movies.MovieListItem
+import com.hadysalhab.movid.screen.common.paginationerror.PaginationError
+
 
 class MovieListAdapter(private val listener: Listener, private val viewFactory: ViewFactory) :
-    androidx.recyclerview.widget.ListAdapter<Movie, MovieListItemViewHolder>(DIFF_CALLBACK),
-    MovieListItem.Listener {
+    androidx.recyclerview.widget.ListAdapter<Movie, MovieListViewHolder>(DIFF_CALLBACK),
+    MovieListItem.Listener, PaginationError.Listener {
     interface Listener {
         fun onMovieItemClicked(movieID: Int)
+        fun onPaginationErrorClicked()
     }
+
+    val LOADING = 0
+    val MOVIE = 1
+    val ERROR = 2
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
@@ -20,22 +28,53 @@ class MovieListAdapter(private val listener: Listener, private val viewFactory: 
             }
 
             override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+                if (oldItem.id == 769) {
+                    Log.d(
+                        "CHECK BUG",
+                        "old: ${oldItem.title}, new:${newItem.title} == ? ->:${oldItem == newItem} "
+                    )
+                }
                 return oldItem == newItem
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieListItemViewHolder {
-        val view = viewFactory.getMovieListItemView(parent)
-        view.registerListener(this)
-        return MovieListItemViewHolder(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieListViewHolder =
+        when (viewType) {
+            MOVIE -> {
+                val view = viewFactory.getMovieListItemView(parent)
+                view.registerListener(this)
+                MovieListViewHolder.MovieViewHolder(view)
+            }
+            LOADING -> {
+                val view = viewFactory.getLoadingView(parent)
+                MovieListViewHolder.LoadingViewHolder(view)
+            }
+            ERROR -> {
+                val view = viewFactory.getPaginationErrorView(parent)
+                view.registerListener(this)
+                MovieListViewHolder.PaginationErrorViewHolder(view)
+            }
+            else -> {
+                throw RuntimeException("Unsupported viewType $viewType")
+            }
+        }
 
-    override fun onBindViewHolder(holderItem: MovieListItemViewHolder, position: Int) {
-        holderItem.bind(getItem(position))
+    override fun getItemViewType(position: Int): Int = when (getItem(position).title) {
+        "LOADING" -> LOADING
+        "ERROR" -> ERROR
+        else -> MOVIE
     }
 
     override fun onMovieItemClicked(movieID: Int) {
         listener.onMovieItemClicked(movieID)
+    }
+
+    override fun onBindViewHolder(holder: MovieListViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    override fun onPaginationErrorClick() {
+        listener.onPaginationErrorClicked()
     }
 }

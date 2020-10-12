@@ -5,9 +5,14 @@
     android:layout_height="70dp"
     android:padding="8dp">
 
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+    <ImageButton
+        android:id="@+id/pagination_error_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:indeterminate="true" />
+        android:background="@drawable/circle_shape"
+        android:src="@drawable/ic_refresh"
+        android:tint="@color/grey_800" />
 </FrameLayout>
+
+

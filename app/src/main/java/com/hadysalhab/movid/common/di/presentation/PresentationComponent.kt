@@ -10,6 +10,7 @@ import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupFragment
 import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
+import com.hadysalhab.movid.screen.main.recommendedsimilar.RecommendedSimilarFragment
 import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
 import com.hadysalhab.movid.screen.main.search.SearchFragment
 import com.hadysalhab.movid.screen.main.watchlist.WatchlistMoviesFragment
@@ -34,4 +35,5 @@ interface PresentationComponent {
     fun inject(watchlistMoviesFragment: WatchlistMoviesFragment)
     fun inject(searchFragment: SearchFragment)
     fun inject(discoverFragment: DiscoverFragment)
+    fun inject(recommendedSimilarFragment: RecommendedSimilarFragment)
 }

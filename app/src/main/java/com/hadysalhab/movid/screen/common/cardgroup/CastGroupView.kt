@@ -17,7 +17,7 @@ class CastsView(
 
     interface Listener {
         fun onCastCardClicked(castID: Int)
-        fun onSeeAllClicked(groupType: GroupType)
+        fun onCastSeeAllClicked(groupType: GroupType)
     }
 
 
@@ -62,7 +62,7 @@ class CastsView(
 
     override fun onSeeAllClicked() {
         listeners.forEach {
-            it.onSeeAllClicked(this.groupType)
+            it.onCastSeeAllClicked(this.groupType)
         }
     }
 

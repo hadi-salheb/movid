@@ -4,14 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import com.hadysalhab.movid.movies.MovieDetail
 
 
-
 sealed class MovieDetailActions {
-    object MovieDetailRequest : MovieDetailActions()
-    object MovieDetailRefresh : MovieDetailActions()
-    data class MovieDetailSuccess(val data: MovieDetail) : MovieDetailActions()
-    object MovieDetailRefreshError : MovieDetailActions()
-    object MovieDetailFavoriteWatchlistError : MovieDetailActions()
-    data class MovieDetailError(val errorMessage: String) : MovieDetailActions()
+    object Request : MovieDetailActions()
+    object Refresh : MovieDetailActions()
+    data class Success(val data: MovieDetail) : MovieDetailActions()
+    object RefreshError : MovieDetailActions()
+    object WatchlistFavoriteError : MovieDetailActions()
+    data class Error(val errorMessage: String) : MovieDetailActions()
     object Reset : MovieDetailActions()
 }
 
@@ -28,21 +27,21 @@ class MovieDetailScreenStateManager {
 
     fun dispatch(movieDetailActions: MovieDetailActions) {
         when (movieDetailActions) {
-            is MovieDetailActions.MovieDetailRequest -> {
+            is MovieDetailActions.Request -> {
                 state = state.copy(
                     isLoading = true,
                     isRefreshing = false,
                     error = null
                 )
             }
-            is MovieDetailActions.MovieDetailRefresh -> {
+            is MovieDetailActions.Refresh -> {
                 state = state.copy(
                     isLoading = false,
                     isRefreshing = true,
                     error = null
                 )
             }
-            is MovieDetailActions.MovieDetailSuccess -> {
+            is MovieDetailActions.Success -> {
                 state = state.copy(
                     isLoading = false,
                     isRefreshing = false,
@@ -51,7 +50,7 @@ class MovieDetailScreenStateManager {
                 )
             }
 
-            is MovieDetailActions.MovieDetailError -> {
+            is MovieDetailActions.Error -> {
                 state = state.copy(
                     isLoading = false,
                     isRefreshing = false,
@@ -61,12 +60,12 @@ class MovieDetailScreenStateManager {
             is MovieDetailActions.Reset -> {
                 state = MovieDetailScreenState()
             }
-            is MovieDetailActions.MovieDetailRefreshError -> {
+            is MovieDetailActions.RefreshError -> {
                 state = state.copy(
                     isRefreshing = false
                 )
             }
-            is MovieDetailActions.MovieDetailFavoriteWatchlistError -> {
+            is MovieDetailActions.WatchlistFavoriteError -> {
                 state = state.copy(
                     isLoading = false
                 )

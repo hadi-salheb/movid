@@ -5,11 +5,11 @@ import com.hadysalhab.movid.movies.MoviesResponse
 
 
 sealed class FeaturedActions {
-    data class FeaturedRequest(val toolbarCountryItems: ToolbarCountryItems) : FeaturedActions()
-    object FeaturedRefresh : FeaturedActions()
-    data class FeaturedSuccess(val data: List<MoviesResponse>) : FeaturedActions()
-    object FeaturedRefreshError : FeaturedActions()
-    data class FeaturedError(val errorMessage: String) : FeaturedActions()
+    data class Request(val toolbarCountryItems: ToolbarCountryItems) : FeaturedActions()
+    object Refresh : FeaturedActions()
+    data class Success(val data: List<MoviesResponse>) : FeaturedActions()
+    object RefreshError : FeaturedActions()
+    data class Error(val errorMessage: String) : FeaturedActions()
     object Reset : FeaturedActions()
     object OpenPowerMenu : FeaturedActions()
     object ClosePowerMenu : FeaturedActions()
@@ -32,7 +32,7 @@ class FeaturedScreenStateManager {
                 state = state.copy(isPowerMenuOpen = !state.isPowerMenuOpen)
             }
 
-            is FeaturedActions.FeaturedRequest -> {
+            is FeaturedActions.Request -> {
                 state = state.copy(
                     isLoading = true,
                     isRefreshing = false,
@@ -42,7 +42,7 @@ class FeaturedScreenStateManager {
                     powerMenuItem = featuredActions.toolbarCountryItems
                 )
             }
-            is FeaturedActions.FeaturedRefresh -> {
+            is FeaturedActions.Refresh -> {
                 state = state.copy(
                     isLoading = false,
                     isRefreshing = true,
@@ -50,7 +50,7 @@ class FeaturedScreenStateManager {
                     isPowerMenuOpen = false
                 )
             }
-            is FeaturedActions.FeaturedSuccess -> {
+            is FeaturedActions.Success -> {
                 state = state.copy(
                     isLoading = false,
                     isRefreshing = false,
@@ -58,12 +58,12 @@ class FeaturedScreenStateManager {
                     errorMessage = null
                 )
             }
-            is FeaturedActions.FeaturedRefreshError -> {
+            is FeaturedActions.RefreshError -> {
                 state = state.copy(
                     isRefreshing = false
                 )
             }
-            is FeaturedActions.FeaturedError -> {
+            is FeaturedActions.Error -> {
                 state = state.copy(
                     errorMessage = featuredActions.errorMessage,
                     isRefreshing = false,

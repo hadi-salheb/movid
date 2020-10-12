@@ -12,6 +12,7 @@ import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupFragment
 import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
+import com.hadysalhab.movid.screen.main.recommendedsimilar.RecommendedSimilarFragment
 import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
 import com.hadysalhab.movid.screen.main.search.Genre
 import com.hadysalhab.movid.screen.main.search.SearchFragment
@@ -62,8 +63,8 @@ class MainNavigator(
     fun toDetailFragment(movieID: Int) =
         fragNavController.pushFragment(MovieDetailFragment.newInstance(movieID))
 
-    fun toFeaturedListFragment(groupType: GroupType, movieID: Int?, region: String?) =
-        fragNavController.pushFragment(FeaturedListFragment.newInstance(groupType, movieID, region))
+    fun toFeaturedListFragment(groupType: GroupType, region: String) =
+        fragNavController.pushFragment(FeaturedListFragment.newInstance(groupType, region))
 
     fun toReviewsFragment(movieID: Int) {
         fragNavController.pushFragment(ReviewsFragment.newInstance(movieID))
@@ -86,5 +87,13 @@ class MainNavigator(
 
     fun toDiscoverFragment(genre: Genre) =
         fragNavController.pushFragment(DiscoverFragment.newInstance(genre))
+
+    fun toRecommendedSimilarMoviesFragment(groupType: GroupType, movieName: String, movieID: Int) {
+        fragNavController.pushFragment(
+            RecommendedSimilarFragment.newInstance(
+                groupType, movieID, movieName
+            )
+        )
+    }
 
 }

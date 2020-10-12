@@ -1,29 +1,28 @@
-package com.hadysalhab.movid.screen.main.featuredlist
+package com.hadysalhab.movid.screen.main.recommendedsimilar
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
-import com.hadysalhab.movid.movies.MoviesStateManager
-import com.hadysalhab.movid.movies.usecases.list.FetchFeaturedListUseCase
+import com.hadysalhab.movid.movies.usecases.list.FetchRecommendedSimilarListUseCase
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleActions
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
+import java.util.*
 import javax.inject.Inject
 
-class FeaturedListViewModel @Inject constructor(
-    private val fetchFeaturedListUseCase: FetchFeaturedListUseCase,
-    private val moviesStateManager: MoviesStateManager,
-    private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
-    private val dataValidator: DataValidator
-) : ViewModel(), FetchFeaturedListUseCase.Listener {
+class RecommendedSimilarViewModel
+@Inject
+constructor(
+    private val fetchRecommendedSimilarListUseCase: FetchRecommendedSimilarListUseCase,
+    private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager
+) : ViewModel(), FetchRecommendedSimilarListUseCase.Listener {
     private var isFirstRender: Boolean = true
-
     private lateinit var groupType: GroupType
-    private lateinit var region: String
+    private lateinit var movieName: String
+    private var movieId: Int = 0
     private lateinit var moviesResponse: MoviesResponse
     private val moviesList = mutableListOf<Movie>()
     private val dispatch = listWithToolbarTitleStateManager::dispatch
@@ -37,42 +36,35 @@ class FeaturedListViewModel @Inject constructor(
             )
         )
 
+
     init {
-        fetchFeaturedListUseCase.registerListener(this)
+        fetchRecommendedSimilarListUseCase.registerListener(this)
     }
 
-    fun onStart(groupType: GroupType, region: String) {
+    fun onStart(groupType: GroupType, movieName: String, movieID: Int) {
         if (isFirstRender) {
-            dispatch(ListWithToolbarTitleActions.SetTitle(groupType.getFormattedValue()))
+            dispatch(
+                ListWithToolbarTitleActions.SetTitle(
+                    "$movieName (${
+                        groupType.getFormattedValue()
+
+                    })".toUpperCase(Locale.ROOT)
+                )
+            )
             isFirstRender = false
             this.groupType = groupType
-            this.region = region
-            val storedMoviesResponse =
-                moviesStateManager.getMoviesResponseByGroupType(groupType)
-            if (dataValidator.isMoviesResponseValid(
-                    storedMoviesResponse,
-                    region
-                ) && storedMoviesResponse.movies != null
-            ) {
-                this.moviesResponse = storedMoviesResponse
-                this.moviesList.addAll(storedMoviesResponse.movies)
-                dispatch(
-                    ListWithToolbarTitleActions.Success(
-                        this.moviesList
-                    )
-                )
-            } else {
-                dispatch(ListWithToolbarTitleActions.Request)
-                fetchApi(1)
-            }
+            this.movieName = movieName
+            this.movieId = movieID
+            dispatch(ListWithToolbarTitleActions.Request)
+            fetchApi(1)
         }
     }
 
     private fun fetchApi(page: Int) {
-        fetchFeaturedListUseCase.fetchMoviesResponseUseCase(
+        fetchRecommendedSimilarListUseCase.fetchRecommendedSimilarMoviesUseCase(
             groupType = groupType,
             page = page,
-            region = this.region
+            movieId = this.movieId
         )
     }
 
@@ -84,7 +76,7 @@ class FeaturedListViewModel @Inject constructor(
     }
 
     fun loadMore() {
-        if (fetchFeaturedListUseCase.isBusy || this.moviesResponse.page + 1 > this.moviesResponse.total_pages) {
+        if (fetchRecommendedSimilarListUseCase.isBusy || this.moviesResponse.page + 1 > this.moviesResponse.total_pages) {
             return
         }
         dispatch(ListWithToolbarTitleActions.Pagination)
@@ -92,14 +84,13 @@ class FeaturedListViewModel @Inject constructor(
     }
 
     //UseCaseResults--------------------------------------------------------------------------------
-
-    override fun onFetchMoviesResponseSuccess(movies: MoviesResponse) {
+    override fun onRecommendedSimilarMoviesSuccess(movies: MoviesResponse) {
         this.moviesResponse = movies
         moviesList.addAll(movies.movies ?: emptyList())
         dispatch(ListWithToolbarTitleActions.Success(this.moviesList))
     }
 
-    override fun onFetchMoviesResponseFailure(msg: String) {
+    override fun onRecommendedSimilarMoviesFailure(msg: String) {
         if (state.value!!.isPaginationLoading) {
             dispatch(ListWithToolbarTitleActions.PaginationError)
         } else {
@@ -110,7 +101,7 @@ class FeaturedListViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        fetchFeaturedListUseCase.unregisterListener(this)
+        fetchRecommendedSimilarListUseCase.unregisterListener(this)
     }
 
 }

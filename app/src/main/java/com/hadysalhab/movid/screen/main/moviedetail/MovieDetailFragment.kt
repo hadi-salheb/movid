@@ -89,11 +89,16 @@ class MovieDetailFragment : BaseFragment(),
     }
 
     //UserActions-----------------------------------------------------------------------------------
-    //SeeAll can be for cast or movies!!
-    override fun onSeeAllClicked(groupType: GroupType) {
-        if (groupType != GroupType.CAST) {
-            mainNavigator.toFeaturedListFragment(groupType, movieID, null)
-        }
+    override fun onSeeAllCastClicked(movieID: Int, movieName: String) {
+
+    }
+
+    override fun onSeeAllRecommendedSimilarMoviesClicked(
+        groupType: GroupType,
+        movieID: Int,
+        movieName: String
+    ) {
+        mainNavigator.toRecommendedSimilarMoviesFragment(groupType, movieName, movieID)
     }
 
     override fun onCastClicked(castId: Int) {
@@ -147,7 +152,7 @@ class MovieDetailFragment : BaseFragment(),
         subscription = movieDetailViewModel.screenEvents.startListening { event ->
             handleFeaturedEvents(event)
         }
-        movieDetailViewModel.state.observe(this, movieDetailScreenStateObserver)
+        movieDetailViewModel.state.observeForever(movieDetailScreenStateObserver)
 
     }
 

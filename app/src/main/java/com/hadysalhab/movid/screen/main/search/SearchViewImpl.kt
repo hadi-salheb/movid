@@ -63,6 +63,14 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
         }
     }
 
+    override fun onRetryClicked() {
+
+    }
+
+    override fun onPaginationErrorClicked() {
+
+    }
+
     override fun displayLoadingIndicator() {
         movieListScreen.showLoadingIndicator()
     }
@@ -90,7 +98,6 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
     }
 
     override fun displayEmptyListIndicator(msg: String) {
-        movieListScreen.displayEmptyListIndicator(msg)
     }
 
     override fun onGenreListItemClick(genre: Genre) {

@@ -17,7 +17,7 @@ class MoviesView(
     MovieCard.Listener, SeeAll.Listener {
     interface Listener {
         fun onMovieCardClicked(movieID: Int)
-        fun onSeeAllClicked(groupType: GroupType)
+        fun onMovieSeeAllClicked(groupType: GroupType)
     }
 
     override fun displayCardGroup(data: DataGroup<Movie>, maxNum: Int?) {
@@ -62,7 +62,7 @@ class MoviesView(
 
     override fun onSeeAllClicked() {
         listeners.forEach {
-            it.onSeeAllClicked(this.groupType)
+            it.onMovieSeeAllClicked(this.groupType)
         }
     }
 

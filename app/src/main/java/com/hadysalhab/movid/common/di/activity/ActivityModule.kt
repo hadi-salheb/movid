@@ -13,13 +13,12 @@ import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
+import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
 import com.hadysalhab.movid.screen.common.screensnavigator.AppNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
-import com.hadysalhab.movid.screen.main.favorites.FavoritesScreenStateManager
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedScreenStateManager
-import com.hadysalhab.movid.screen.main.featuredlist.MovieListScreenStateManager
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenStateManager
 import dagger.Module
 import dagger.Provides
@@ -99,9 +98,5 @@ class ActivityModule(private val activity: FragmentActivity) {
     fun getMovieDetailScreenStateManager() = MovieDetailScreenStateManager()
 
     @Provides
-    fun getMovieListScreenStateManager() = MovieListScreenStateManager()
-
-    @Provides
-    fun getFavoritesScreenStateManager() = FavoritesScreenStateManager()
-
+    fun getListWithToolbarScreenStateManager() = ListWithToolbarTitleStateManager()
 }

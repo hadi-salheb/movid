@@ -2,6 +2,7 @@ package com.hadysalhab.movid.movies
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
 enum class GroupType(var value: String) : Parcelable {
@@ -15,5 +16,9 @@ enum class GroupType(var value: String) : Parcelable {
     FAVORITES("favorites"),
     WATCHLIST("watchlist"),
     COLLECTION("collection"),
-    SEARCH("search")
+    SEARCH("search");
+
+    fun getFormattedValue(): String =
+        this.value.split('_').joinToString(" ").toUpperCase(Locale.ROOT)
+
 }
