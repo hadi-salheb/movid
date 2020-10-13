@@ -17,7 +17,6 @@ import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
 class FetchFeaturedListUseCase(
-//    private val baseSimilarRecommendedMoviesUseCaseFactory: BaseSimilarRecommendedMoviesUseCaseFactory,
     private val baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
@@ -25,7 +24,6 @@ class FetchFeaturedListUseCase(
     private val errorMessageHandler: ErrorMessageHandler,
     private val moviesStateManager: MoviesStateManager,
     private val timeProvider: TimeProvider
-//    private val dataValidator: DataValidator
 ) :
     BaseBusyObservable<FetchFeaturedListUseCase.Listener>() {
     interface Listener {
@@ -33,7 +31,6 @@ class FetchFeaturedListUseCase(
         fun onFetchMoviesResponseFailure(msg: String)
     }
 
-    //    private var movieId: Int? = null
     private var page = 1
     private lateinit var region: String
     private lateinit var groupType: GroupType
@@ -42,48 +39,17 @@ class FetchFeaturedListUseCase(
     fun fetchMoviesResponseUseCase(
         groupType: GroupType,
         page: Int,
-//        movieId: Int?,
         region: String
     ) {
         assertNotBusyAndBecomeBusy()
         synchronized(LOCK) {
-//            this.movieId = movieId
             this.page = page
             this.groupType = groupType
             this.region = region
         }
-//        if (groupType == GroupType.SIMILAR_MOVIES || groupType == GroupType.RECOMMENDED_MOVIES) {
-//            if (movieId == null) {
-//                throw RuntimeException("Cannot fetch similar movies or recommended movies with null movie id")
-//            }
-//            fetchSimilarRecommendedMovies()
-//        } else {
-//            if (region == null) {
-//                throw RuntimeException("Cannot fetch featured movies without region")
-//            }
-//            if (page == 1) {
-//                this.region = region
-//                val store = moviesStateManager.getMoviesResponseByGroupType(groupType)
-//                if (dataValidator.isMoviesResponseValid(store, region)) {
-//                    notifySuccess(store)
-//                } else {
-//                    fetchFeaturedMovies()
-//                }
-//            } else {
-        fetchFeaturedMovies()
-//            }
-    }
 
-//    private fun fetchSimilarRecommendedMovies() {
-//        val useCase =
-//            baseSimilarRecommendedMoviesUseCaseFactory.createSimilarRecommendedMoviesUseCase(
-//                groupType
-//            )
-//        backgroundThreadPoster.post {
-//            val result = useCase.fetchSimilarRecommendedMoviesUseCase(page, movieId!!)
-//            handleResult(groupType, result)
-//        }
-//    }
+        fetchFeaturedMovies()
+    }
 
     private fun fetchFeaturedMovies() {
         val useCase =
@@ -106,11 +72,9 @@ class FetchFeaturedListUseCase(
                     groupType,
                     response.body
                 )
-//                if (groupType != GroupType.SIMILAR_MOVIES && groupType != GroupType.RECOMMENDED_MOVIES) {
                 result.timeStamp = timeProvider.currentTimestamp
                 result.region = this.region
                 moviesStateManager.updateMoviesResponse(result)
-//                }
                 notifySuccess(
                     result
                 )
