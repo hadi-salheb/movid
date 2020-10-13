@@ -20,6 +20,7 @@ import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedScreenStateManager
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenStateManager
+import com.hadysalhab.movid.screen.main.search.SearchScreenStateManager
 import dagger.Module
 import dagger.Provides
 
@@ -99,4 +100,7 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getListWithToolbarScreenStateManager() = ListWithToolbarTitleStateManager()
+
+    @Provides
+    fun getSearchScreenStateManager() = SearchScreenStateManager()
 }
