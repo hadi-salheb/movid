@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
+import com.hadysalhab.movid.screen.common.controllers.backpress.BackPressDispatcher
+import com.hadysalhab.movid.screen.common.controllers.backpress.BackPressListener
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost {
+class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackPressDispatcher {
+
     @Inject
     lateinit var viewFactory: ViewFactory
 
@@ -16,6 +19,9 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost {
     lateinit var mainNavigator: MainNavigator
 
     private lateinit var view: MainView
+
+    private val backPressedListeners: MutableSet<BackPressListener> = HashSet()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector.inject(this)
@@ -55,11 +61,31 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost {
     }
 
     override fun onBackPressed() {
-        if (mainNavigator.isRootFragment()) {
-            super.onBackPressed()
-        } else {
-            mainNavigator.navigateUp()
+        var isBackPressConsumedByAnyListener = false
+        for (backPressedListener in backPressedListeners) {
+            val isConsumed = backPressedListener.onBackPress()
+            if (isConsumed) {
+                isBackPressConsumedByAnyListener = true
+                break
+            }
         }
+        if (isBackPressConsumedByAnyListener) {
+            return
+        } else {
+            if (mainNavigator.isRootFragment()) {
+                super.onBackPressed()
+            } else {
+                mainNavigator.navigateUp()
+            }
+        }
+    }
+
+    override fun registerListener(backPressListener: BackPressListener) {
+        backPressedListeners.add(backPressListener)
+    }
+
+    override fun unregisterListener(backPressListener: BackPressListener) {
+        backPressedListeners.remove(backPressListener)
     }
 
 }
