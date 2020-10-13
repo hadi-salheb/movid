@@ -22,10 +22,14 @@ abstract class MovieListScreen : BaseObservableViewMvc<MovieListScreen.Listener>
         fun onPaginationErrorClicked()
     }
 
-    abstract fun displayMovies(movies: List<Movie>)
-    abstract fun showPaginationIndicator()
-    abstract fun hidePaginationIndicator()
-    abstract fun showLoadingIndicator()
-    abstract fun hideLoadingIndicator()
+    protected abstract fun hideLoadingIndicator()
+    protected abstract fun showLoadingIndicator()
+    protected abstract fun showErrorScreen(msg: String)
+    protected abstract fun hideErrorScreen()
+    protected abstract fun showEmptyDataScreen(@DrawableRes icon: Int, msg: String)
+    protected abstract fun hideEmptyDataScreen()
+    protected abstract fun showPagination(data: List<Movie>)
+    protected abstract fun showPaginationError(data: List<Movie>)
+    protected abstract fun showData(data: List<Movie>)
     abstract fun handleState(movieListScreenState: MovieListScreenState)
 }

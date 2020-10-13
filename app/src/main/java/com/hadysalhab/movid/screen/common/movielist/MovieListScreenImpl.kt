@@ -88,18 +88,103 @@ class MovieListScreenImpl(
         }
     }
 
-    override fun displayMovies(movies: List<Movie>) {
-        adapter.submitList(movies)
+    override fun handleState(movieListScreenState: MovieListScreenState) {
+        with(movieListScreenState) {
+            if (isLoading) {
+                showLoadingIndicator()
+            } else {
+                hideLoadingIndicator()
+            }
+            if (!isLoading && errorMessage == null && data.isEmpty()) {
+                showEmptyDataScreen(emptyResultsIconDrawable, emptyResultsMessage)
+            } else {
+                hideEmptyDataScreen()
+            }
+            if (errorMessage != null) {
+                showErrorScreen(errorMessage)
+            } else {
+                hideErrorScreen()
+            }
+            when {
+                isPaginationLoading -> {
+                    showPagination(data)
+                }
+                paginationError -> {
+                    showPaginationError(data)
+                }
+                else -> {
+                    showData(data)
+                }
+            }
+        }
     }
 
-    override fun showPaginationIndicator() {
-        recyclerView.clipToPadding = false
-        recyclerView.setPadding(0, 0, 0, convertDpToPixel(150, getContext()))
+    //Helper Functions------------------------------------------------------------------------------
+
+    override fun showEmptyDataScreen(icon: Int, msg: String) {
+        emptyResultPlaceholder.visibility = View.VISIBLE
+        emptyResults.render(
+            EmptyResultsState(
+                icon,
+                msg
+            )
+        )
     }
 
-    override fun hidePaginationIndicator() {
-        recyclerView.setPadding(0, 0, 0, 0)
+    override fun showData(data: List<Movie>) {
+        adapter.submitList(data)
+        this@MovieListScreenImpl.isError = false
+        this@MovieListScreenImpl.isLoading = false
     }
+
+    override fun showPagination(data: List<Movie>) {
+        adapter.submitList(
+            data + Movie(
+                -1000,
+                "LOADING",
+                "LOADING",
+                "LOADING",
+                -1000.0,
+                -1000,
+                "LOADING",
+                "LOADING"
+            )
+        )
+        animateRecyclerViewScroll()
+        this@MovieListScreenImpl.isLoading = true
+        this@MovieListScreenImpl.isError = false
+    }
+
+    override fun showPaginationError(data: List<Movie>) {
+        adapter.submitList(
+            data + Movie(
+                -1000,
+                "ERROR",
+                "ERROR",
+                "ERROR",
+                -1000.0,
+                -1000,
+                "ERROR",
+                "ERROR"
+            )
+        )
+        this@MovieListScreenImpl.isError = true
+        this@MovieListScreenImpl.isLoading = false
+    }
+
+    override fun hideEmptyDataScreen() {
+        emptyResultPlaceholder.visibility = View.GONE
+    }
+
+    override fun showErrorScreen(msg: String) {
+        errorScreen.displayErrorMessage(msg)
+        errorScreenPlaceholder.visibility = View.VISIBLE
+    }
+
+    override fun hideErrorScreen() {
+        errorScreenPlaceholder.visibility = View.GONE
+    }
+
 
     override fun showLoadingIndicator() {
         progressBar.visibility = View.VISIBLE
@@ -109,82 +194,6 @@ class MovieListScreenImpl(
         progressBar.visibility = View.GONE
     }
 
-
-    override fun handleState(movieListScreenState: MovieListScreenState) {
-        with(movieListScreenState) {
-            if (isLoading) {
-                showLoadingIndicator()
-            } else {
-                hideLoadingIndicator()
-            }
-            if (!isLoading && errorMessage == null && data.isEmpty()) {
-                emptyResultPlaceholder.visibility = View.VISIBLE
-                emptyResults.render(
-                    EmptyResultsState(
-                        emptyResultsIconDrawable,
-                        emptyResultsMessage
-                    )
-                )
-            } else {
-                emptyResultPlaceholder.visibility = View.GONE
-            }
-            if (errorMessage != null) {
-                errorScreen.displayErrorMessage(errorMessage)
-                showErrorScreen(errorMessage)
-            } else {
-                hideErrorScreen()
-            }
-            when {
-                isPaginationLoading -> {
-                    adapter.submitList(
-                        data + Movie(
-                            -1000,
-                            "LOADING",
-                            "LOADING",
-                            "LOADING",
-                            -1000.0,
-                            -1000,
-                            "LOADING",
-                            "LOADING"
-                        )
-                    )
-                    animateRecyclerViewScroll()
-                    this@MovieListScreenImpl.isLoading = true
-                    this@MovieListScreenImpl.isError = false
-                }
-                paginationError -> {
-                    adapter.submitList(
-                        data + Movie(
-                            -1000,
-                            "ERROR",
-                            "ERROR",
-                            "ERROR",
-                            -1000.0,
-                            -1000,
-                            "ERROR",
-                            "ERROR"
-                        )
-                    )
-                    this@MovieListScreenImpl.isError = true
-                    this@MovieListScreenImpl.isLoading = false
-                }
-                else -> {
-                    adapter.submitList(data)
-                    this@MovieListScreenImpl.isError = false
-                    this@MovieListScreenImpl.isLoading = false
-                }
-            }
-        }
-    }
-
-    private fun showErrorScreen(errorMessage: String) {
-        errorScreenPlaceholder.visibility = View.VISIBLE
-    }
-
-    private fun hideErrorScreen() {
-        errorScreenPlaceholder.visibility = View.GONE
-    }
-
     private fun animateRecyclerViewScroll() {
         recyclerView.suppressLayout(false)
         recyclerView.post {
@@ -192,6 +201,8 @@ class MovieListScreenImpl(
         }
     }
 
+
+    //Callbacks-------------------------------------------------------------------------------------
     override fun onMovieItemClicked(movieID: Int) {
         listeners.forEach {
             it.onMovieItemClicked(movieID)
