@@ -124,17 +124,14 @@ class UseCaseModel {
 
     @Provides
     fun getFetchMoviesResponseUseCase(
-        baseSimilarRecommendedMoviesUseCaseFactory: BaseSimilarRecommendedMoviesUseCaseFactory,
         baseFeaturedMoviesUseCaseFactory: BaseFeaturedMoviesUseCaseFactory,
         backgroundThreadPoster: BackgroundThreadPoster,
         uiThreadPoster: UiThreadPoster,
         errorMessageHandler: ErrorMessageHandler,
         schemaToModelHelper: SchemaToModelHelper,
         moviesStateManager: MoviesStateManager,
-        timeProvider: TimeProvider,
-        dataValidator: DataValidator
+        timeProvider: TimeProvider
     ) = FetchFeaturedListUseCase(
-//        baseSimilarRecommendedMoviesUseCaseFactory,
         baseFeaturedMoviesUseCaseFactory,
         backgroundThreadPoster,
         uiThreadPoster,
@@ -142,7 +139,6 @@ class UseCaseModel {
         errorMessageHandler,
         moviesStateManager,
         timeProvider
-//        dataValidator
     )
 
     @Provides
