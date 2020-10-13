@@ -93,6 +93,7 @@ class AddRemoveWatchlistMovieUseCase(
             listeners.forEach {
                 it.onAddRemoveWatchlistFailure(err)
             }
+            becomeNotBusy()
         }
     }
 }
