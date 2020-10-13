@@ -1,21 +1,22 @@
 package com.hadysalhab.movid.screen.main.search
 
-import com.hadysalhab.movid.movies.Movie
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
-abstract class SearchView : BaseObservableViewMvc<SearchView.Listener>() {
-    abstract fun displayLoadingIndicator()
-    abstract fun displayPaginationLoading()
-    abstract fun displayMovies(movies: List<Movie>)
-    abstract fun renderGenres()
-    abstract fun renderMovies()
-    abstract fun displayEmptyListIndicator(msg: String)
+data class SearchScreenState(
+    val movieListScreenState: MovieListScreenState?
+)
 
+abstract class SearchView : BaseObservableViewMvc<SearchView.Listener>() {
     interface Listener {
-        fun onSearchConfirmed(text: CharSequence)
+        fun onSearchConfirmed(query: String)
         fun onSearchBackBtnClick()
         fun loadMoreItems()
         fun onMovieItemClicked(movieID: Int)
         fun onGenreListItemClick(genre: Genre)
+        fun onRetryClicked()
+        fun onPaginationErrorClicked()
     }
+
+    abstract fun handleState(searchScreenState: SearchScreenState)
 }

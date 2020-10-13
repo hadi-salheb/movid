@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 
 class SearchFragment : BaseFragment(), SearchView.Listener {
-    lateinit var viewMvc: SearchView
+    lateinit var searchView: SearchView
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -42,23 +42,20 @@ class SearchFragment : BaseFragment(), SearchView.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::viewMvc.isInitialized) {
-            viewMvc = viewFactory.getSearchView(container)
+        if (!this::searchView.isInitialized) {
+            searchView = viewFactory.getSearchView(container)
         }
-        return viewMvc.getRootView()
+        return searchView.getRootView()
     }
 
     override fun onStart() {
         super.onStart()
-        viewMvc.registerListener(this)
-        searchViewModel.viewState.observe(viewLifecycleOwner, Observer {
-            render(it)
-        })
+        registerObservers()
     }
 
     override fun onStop() {
         super.onStop()
-        viewMvc.unregisterListener(this)
+        unregisterObservers()
     }
 
     companion object {
@@ -67,15 +64,13 @@ class SearchFragment : BaseFragment(), SearchView.Listener {
             SearchFragment()
     }
 
-    override fun onSearchConfirmed(text: CharSequence) {
-        if (text.isEmpty()) {
-            return
-        }
-        searchViewModel.searchMovie(text)
+    //Callbacks-------------------------------------------------------------------------------------
+    override fun onSearchConfirmed(query: String) {
+        searchViewModel.onSearchConfirmed(query)
     }
 
     override fun onSearchBackBtnClick() {
-        searchViewModel.setGenresState()
+        searchViewModel.onSearchBackBtnClick()
     }
 
     override fun loadMoreItems() {
@@ -91,23 +86,30 @@ class SearchFragment : BaseFragment(), SearchView.Listener {
         mainNavigator.toDiscoverFragment(genre)
     }
 
-    private fun render(viewState: SearchViewState) {
-        when (viewState) {
-            Loading -> viewMvc.displayLoadingIndicator()
-            PaginationLoading -> viewMvc.displayPaginationLoading()
-            is Error -> {
-            }
-            is SearchLoaded -> {
-                if (viewState.movies.isEmpty()) {
-                    viewMvc.displayEmptyListIndicator("No Results Found")
-                } else {
-                    viewMvc.displayMovies(viewState.movies)
-                }
-            }
-            is Genres -> {
-                viewMvc.renderGenres()
-            }
-        }
+    override fun onRetryClicked() {
+        searchViewModel.onErrorRetryClicked()
     }
+
+    override fun onPaginationErrorClicked() {
+        searchViewModel.onPaginationErrorClicked()
+    }
+    //----------------------------------------------------------------------------------------------
+
+    private val searchScreenStateObserver =
+        Observer<SearchScreenState> { searchScreenState ->
+            searchView.handleState(searchScreenState)
+        }
+
+
+    private fun registerObservers() {
+        searchViewModel.state.observeForever(searchScreenStateObserver)
+        searchView.registerListener(this)
+    }
+
+    private fun unregisterObservers() {
+        searchViewModel.state.removeObserver(searchScreenStateObserver)
+        searchView.unregisterListener(this)
+    }
+
 
 }

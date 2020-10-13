@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.movielist.MovieListScreen
 import com.mancj.materialsearchbar.MaterialSearchBar
@@ -17,27 +16,25 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
     private val framePlaceHolder: FrameLayout
     private val movieListScreen: MovieListScreen
     private val genreView: GenreList
+    private lateinit var screenState: SearchScreenState
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_search, parent, false))
-        framePlaceHolder = findViewById(R.id.frame_placeholder)
+        framePlaceHolder = findViewById(R.id.search_data_placeholder)
         materialSearchBar = findViewById(R.id.searchBar)
         materialSearchBar.setOnSearchActionListener(this)
         movieListScreen = viewFactory.getMovieScreen(framePlaceHolder)
         genreView = viewFactory.getGenreList(framePlaceHolder)
-        renderMovies()
     }
 
+    //Callbacks-------------------------------------------------------------------------------------
     override fun onSearchStateChanged(enabled: Boolean) {
 
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
-        renderMovies()
-        text?.let { text ->
-            listeners.forEach { listener ->
-                listener.onSearchConfirmed(text)
-            }
+        listeners.forEach {
+            it.onSearchConfirmed(text.toString())
         }
     }
 
@@ -64,45 +61,57 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
     }
 
     override fun onRetryClicked() {
-
+        listeners.forEach {
+            it.onRetryClicked()
+        }
     }
 
     override fun onPaginationErrorClicked() {
-
-    }
-
-    override fun displayLoadingIndicator() {
-        movieListScreen.showLoadingIndicator()
-    }
-
-    override fun displayPaginationLoading() {
-        movieListScreen.hidePaginationIndicator()
-    }
-
-    override fun displayMovies(movies: List<Movie>) {
-        movieListScreen.displayMovies(movies)
-    }
-
-    override fun renderGenres() {
-        framePlaceHolder.removeAllViews()
-        movieListScreen.unregisterListener(this)
-        framePlaceHolder.addView(genreView.getRootView())
-        genreView.registerListener(this)
-    }
-
-    override fun renderMovies() {
-        framePlaceHolder.removeAllViews()
-        framePlaceHolder.addView(movieListScreen.getRootView())
-        movieListScreen.registerListener(this)
-        genreView.unregisterListener(this)
-    }
-
-    override fun displayEmptyListIndicator(msg: String) {
+        listeners.forEach {
+            it.onPaginationErrorClicked()
+        }
     }
 
     override fun onGenreListItemClick(genre: Genre) {
         listeners.forEach {
             it.onGenreListItemClick(genre)
         }
+    }
+    //----------------------------------------------------------------------------------------------
+
+    override fun handleState(searchScreenState: SearchScreenState) {
+        if (this::screenState.isInitialized) {
+            if (this.screenState.movieListScreenState != null && searchScreenState.movieListScreenState == null) {
+                showGenreList()
+            } else if (this.screenState.movieListScreenState == null && searchScreenState.movieListScreenState != null) {
+                showMovieListScreen()
+            }
+        } else {
+            with(searchScreenState) {
+                if (movieListScreenState == null) {
+                    showGenreList()
+                } else {
+                    showMovieListScreen()
+                }
+            }
+        }
+        searchScreenState.movieListScreenState?.let {
+            movieListScreen.handleState(it)
+        }
+        this.screenState = searchScreenState
+    }
+
+    private fun showGenreList() {
+        framePlaceHolder.removeAllViews()
+        movieListScreen.unregisterListener(this@SearchViewImpl)
+        genreView.registerListener(this@SearchViewImpl)
+        framePlaceHolder.addView(genreView.getRootView())
+    }
+
+    private fun showMovieListScreen() {
+        framePlaceHolder.removeAllViews()
+        framePlaceHolder.addView(movieListScreen.getRootView())
+        movieListScreen.registerListener(this@SearchViewImpl)
+        genreView.unregisterListener(this@SearchViewImpl)
     }
 }
