@@ -1,19 +1,14 @@
 package com.hadysalhab.movid.screen.common.listtitletoolbar
 
 import androidx.annotation.DrawableRes
-import com.hadysalhab.movid.movies.Movie
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
 data class ListWithToolbarTitleState(
-    val isLoading: Boolean = false,
-    val isPaginationLoading: Boolean = false,
-    val isPaginationError: Boolean = false,
-    val data: List<Movie> = emptyList(),
-    val error: String? = null,
+    val movieListScreenState: MovieListScreenState,
     val title: String = "",
-    @DrawableRes val menuIcon: Int? = null,
-    @DrawableRes val emptyResultsIconDrawable: Int,
-    val emptyResultsMessage: String
+    @DrawableRes val menuIcon: Int? = null
+
 )
 
 abstract class ListWithToolbarTitle : BaseObservableViewMvc<ListWithToolbarTitle.Listener>() {

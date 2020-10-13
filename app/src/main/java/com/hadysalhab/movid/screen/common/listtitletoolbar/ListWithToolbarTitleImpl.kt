@@ -38,18 +38,8 @@ class ListWithToolbarTitleImpl(
 
     override fun handleScreenState(screenState: ListWithToolbarTitleState) {
         movieListScreenHandleState(
-            MovieListScreenState(
-                isLoading = screenState.isLoading,
-                isPaginationLoading = screenState.isPaginationLoading,
-                data = screenState.data,
-                emptyResultsIconDrawable = screenState.emptyResultsIconDrawable,
-                emptyResultsMessage = screenState.emptyResultsMessage,
-                errorMessage = screenState.error,
-                paginationError = screenState.isPaginationError
-            )
+            screenState.movieListScreenState
         )
-
-
         with(menuToolbarLayout) {
             setToolbarTitle(
                 screenState.title

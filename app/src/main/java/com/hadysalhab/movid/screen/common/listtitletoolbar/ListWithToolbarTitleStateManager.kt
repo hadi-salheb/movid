@@ -44,38 +44,48 @@ class ListWithToolbarTitleStateManager {
             }
             is ListWithToolbarTitleActions.Request -> {
                 state.copy(
-                    data = emptyList(),
-                    isLoading = true,
-                    error = null
+                    movieListScreenState = state.movieListScreenState.copy(
+                        data = emptyList(),
+                        isLoading = true,
+                        errorMessage = null
+                    )
                 )
             }
             is ListWithToolbarTitleActions.Success -> {
                 val movies = mutableListOf<Movie>()
                 movies.addAll(listWithToolbarTitleActions.movies)
                 state.copy(
-                    isLoading = false,
-                    isPaginationLoading = false,
-                    error = null,
-                    data = movies
+                    movieListScreenState = state.movieListScreenState.copy(
+                        isLoading = false,
+                        isPaginationLoading = false,
+                        errorMessage = null,
+                        data = movies
+                    )
                 )
             }
             is ListWithToolbarTitleActions.Pagination -> {
                 state.copy(
-                    isPaginationLoading = true,
-                    isPaginationError = false
+                    movieListScreenState = state.movieListScreenState.copy(
+                        isPaginationLoading = true,
+                        paginationError = false
+                    )
                 )
             }
             is ListWithToolbarTitleActions.Error -> {
                 state.copy(
-                    data = emptyList(),
-                    isLoading = false,
-                    error = listWithToolbarTitleActions.msg
+                    movieListScreenState = state.movieListScreenState.copy(
+                        data = emptyList(),
+                        isLoading = false,
+                        errorMessage = listWithToolbarTitleActions.msg
+                    )
                 )
             }
             is ListWithToolbarTitleActions.PaginationError -> {
                 state.copy(
-                    isPaginationLoading = false,
-                    isPaginationError = true
+                    movieListScreenState = state.movieListScreenState.copy(
+                        isPaginationLoading = false,
+                        paginationError = true
+                    )
                 )
             }
         }
