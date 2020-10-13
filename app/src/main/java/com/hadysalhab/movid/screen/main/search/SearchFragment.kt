@@ -50,6 +50,7 @@ class SearchFragment : BaseFragment(), SearchView.Listener {
 
     override fun onStart() {
         super.onStart()
+        searchViewModel.onStart()
         registerObservers()
     }
 
