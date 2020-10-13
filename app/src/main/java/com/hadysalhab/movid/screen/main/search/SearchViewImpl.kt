@@ -29,7 +29,11 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
 
     //Callbacks-------------------------------------------------------------------------------------
     override fun onSearchStateChanged(enabled: Boolean) {
-
+        if (!enabled) {
+            listeners.forEach {
+                it.onSearchBackBtnClick()
+            }
+        }
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
@@ -39,13 +43,7 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
     }
 
     override fun onButtonClicked(buttonCode: Int) {
-        when (buttonCode) {
-            MaterialSearchBar.BUTTON_BACK -> {
-                listeners.forEach {
-                    it.onSearchBackBtnClick()
-                }
-            }
-        }
+
     }
 
     override fun onMovieItemClicked(movieID: Int) {
