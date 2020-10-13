@@ -12,6 +12,7 @@ import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleActions
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -32,8 +33,10 @@ class WatchlistMoviesViewModel @Inject constructor(
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
             ListWithToolbarTitleState(
                 title = "WATCHLIST",
-                emptyResultsIconDrawable = R.drawable.ic_watchlist,
-                emptyResultsMessage = "No Movies Added To Watchlist"
+                movieListScreenState = MovieListScreenState(
+                    emptyResultsIconDrawable = R.drawable.ic_watchlist,
+                    emptyResultsMessage = "No Movies Added To Watchlist"
+                )
             )
         )
     private var isFirstRender = true
@@ -150,7 +153,7 @@ class WatchlistMoviesViewModel @Inject constructor(
     }
 
     override fun onFetchWatchlistMoviesFailure(msg: String) {
-        if (state.value!!.isPaginationLoading) {
+        if (state.value!!.movieListScreenState.isPaginationLoading) {
             dispatch(ListWithToolbarTitleActions.PaginationError)
         } else {
             dispatch(ListWithToolbarTitleActions.Error(msg))

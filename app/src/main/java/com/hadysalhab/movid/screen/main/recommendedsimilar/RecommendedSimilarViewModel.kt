@@ -10,6 +10,7 @@ import com.hadysalhab.movid.movies.usecases.list.FetchRecommendedSimilarListUseC
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleActions
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
 import java.util.*
 import javax.inject.Inject
 
@@ -31,8 +32,10 @@ constructor(
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
             ListWithToolbarTitleState(
                 title = "",
-                emptyResultsIconDrawable = R.drawable.ic_sad,
-                emptyResultsMessage = "No Results Found"
+                movieListScreenState = MovieListScreenState(
+                    emptyResultsIconDrawable = R.drawable.ic_sad,
+                    emptyResultsMessage = "No Results Found"
+                )
             )
         )
 
@@ -91,7 +94,7 @@ constructor(
     }
 
     override fun onRecommendedSimilarMoviesFailure(msg: String) {
-        if (state.value!!.isPaginationLoading) {
+        if (state.value!!.movieListScreenState.isPaginationLoading) {
             dispatch(ListWithToolbarTitleActions.PaginationError)
         } else {
             dispatch(ListWithToolbarTitleActions.Error(msg))

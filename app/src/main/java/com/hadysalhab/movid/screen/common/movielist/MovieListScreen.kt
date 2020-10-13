@@ -7,10 +7,10 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 data class MovieListScreenState(
     val isLoading: Boolean = false,
     val isPaginationLoading: Boolean = false,
-    val data: List<Movie>,
+    val data: List<Movie> = emptyList(),
     @DrawableRes val emptyResultsIconDrawable: Int,
     val emptyResultsMessage: String,
-    val errorMessage: String?,
+    val errorMessage: String? = null,
     val paginationError: Boolean = false
 )
 

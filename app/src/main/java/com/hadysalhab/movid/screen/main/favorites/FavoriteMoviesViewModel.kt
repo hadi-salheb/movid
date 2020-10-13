@@ -12,6 +12,7 @@ import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleActions
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -32,8 +33,10 @@ class FavoriteMoviesViewModel @Inject constructor(
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
             ListWithToolbarTitleState(
                 title = "FAVORITES",
-                emptyResultsIconDrawable = R.drawable.ic_favorite,
-                emptyResultsMessage = "No Movies Added To Favorites"
+                movieListScreenState = MovieListScreenState(
+                    emptyResultsIconDrawable = R.drawable.ic_favorite,
+                    emptyResultsMessage = "No Movies Added To Favorites"
+                )
             )
         )
     private var isFirstRender = true
@@ -140,7 +143,7 @@ class FavoriteMoviesViewModel @Inject constructor(
     }
 
     override fun onFetchFavoriteMoviesFailure(msg: String) {
-        if (state.value!!.isPaginationLoading) {
+        if (state.value!!.movieListScreenState.isPaginationLoading) {
             dispatch(ListWithToolbarTitleActions.PaginationError)
         } else {
             dispatch(ListWithToolbarTitleActions.Error(msg))

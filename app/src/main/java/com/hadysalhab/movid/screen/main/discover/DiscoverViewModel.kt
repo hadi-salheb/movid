@@ -9,6 +9,7 @@ import com.hadysalhab.movid.movies.usecases.discover.DiscoverMoviesUseCase
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleActions
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
 import com.hadysalhab.movid.screen.main.search.Genre
 import javax.inject.Inject
 
@@ -25,9 +26,11 @@ class DiscoverViewModel @Inject constructor(
     val state: LiveData<ListWithToolbarTitleState> =
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
             ListWithToolbarTitleState(
+                movieListScreenState = MovieListScreenState(
+                    emptyResultsIconDrawable = R.drawable.ic_sad,
+                    emptyResultsMessage = "No Results Found"
+                ),
                 title = "",
-                emptyResultsIconDrawable = R.drawable.ic_sad,
-                emptyResultsMessage = "No Results Found",
                 menuIcon = R.drawable.ic_filter
             )
         )
@@ -80,7 +83,7 @@ class DiscoverViewModel @Inject constructor(
     }
 
     override fun onFetchDiscoverMoviesFailure(msg: String) {
-        if (state.value!!.isPaginationLoading) {
+        if (state.value!!.movieListScreenState.isPaginationLoading) {
             dispatch(ListWithToolbarTitleActions.PaginationError)
         } else {
             dispatch(ListWithToolbarTitleActions.Error(msg))

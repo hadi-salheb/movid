@@ -12,6 +12,7 @@ import com.hadysalhab.movid.movies.usecases.list.FetchFeaturedListUseCase
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleActions
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
+import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
 import javax.inject.Inject
 
 class FeaturedListViewModel @Inject constructor(
@@ -32,8 +33,10 @@ class FeaturedListViewModel @Inject constructor(
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
             ListWithToolbarTitleState(
                 title = "",
-                emptyResultsIconDrawable = R.drawable.ic_sad,
-                emptyResultsMessage = "No Results Found"
+                movieListScreenState = MovieListScreenState(
+                    emptyResultsIconDrawable = R.drawable.ic_sad,
+                    emptyResultsMessage = "No Results Found"
+                )
             )
         )
 
@@ -100,7 +103,7 @@ class FeaturedListViewModel @Inject constructor(
     }
 
     override fun onFetchMoviesResponseFailure(msg: String) {
-        if (state.value!!.isPaginationLoading) {
+        if (state.value!!.movieListScreenState.isPaginationLoading) {
             dispatch(ListWithToolbarTitleActions.PaginationError)
         } else {
             dispatch(ListWithToolbarTitleActions.Error(msg))
