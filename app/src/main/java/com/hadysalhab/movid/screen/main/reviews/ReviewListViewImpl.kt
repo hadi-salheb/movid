@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
@@ -15,6 +16,7 @@ import com.hadysalhab.movid.screen.common.emptyresults.EmptyResults
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResultsState
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreen
 import com.hadysalhab.movid.screen.common.scrolllistener.OnVerticalScrollListener
+import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 
 
 class ReviewListViewImpl(
@@ -22,6 +24,10 @@ class ReviewListViewImpl(
     parent: ViewGroup?,
     viewFactory: ViewFactory
 ) : ReviewListView(), ErrorScreen.Listener, ReviewListAdapter.Listener {
+    private val dataPlaceHolder: FrameLayout
+    private val toolbar: Toolbar
+    private val menuToolbarLayout: MenuToolbarLayout
+
     private val errorScreenPlaceholder: FrameLayout
     private val errorScreen: ErrorScreen
     private val recyclerView: RecyclerView
@@ -34,23 +40,28 @@ class ReviewListViewImpl(
     private var isError = false
 
     init {
-        setRootView(layoutInflater.inflate(R.layout.layout_list_data, parent, false))
+        setRootView(layoutInflater.inflate(R.layout.layout_list_title_toolbar, parent, false))
+        dataPlaceHolder = findViewById(R.id.data_placeholder)
+        val dataLayout = layoutInflater.inflate(R.layout.layout_list_data, dataPlaceHolder, true)
+        toolbar = findViewById(R.id.toolbar)
+        menuToolbarLayout = viewFactory.getMenuToolbarLayout(toolbar)
+        toolbar.addView(menuToolbarLayout.getRootView())
 
         //error screen
-        errorScreenPlaceholder = findViewById(R.id.error_screen_placeholder)
+        errorScreenPlaceholder = dataLayout.findViewById(R.id.error_screen_placeholder)
         errorScreen = viewFactory.getErrorScreen(errorScreenPlaceholder)
         errorScreenPlaceholder.addView(errorScreen.getRootView())
         errorScreen.registerListener(this)
 
 
         //empty results
-        emptyResultPlaceholder = findViewById(R.id.empty_result_placeholder)
+        emptyResultPlaceholder = dataLayout.findViewById(R.id.empty_result_placeholder)
         emptyResults = viewFactory.getEmptyResults(emptyResultPlaceholder)
         emptyResultPlaceholder.addView(emptyResults.getRootView())
 
         //data
         adapter = ReviewListAdapter(this, viewFactory)
-        recyclerView = findViewById(R.id.rv_data)
+        recyclerView = dataLayout.findViewById(R.id.rv_data)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
@@ -77,11 +88,13 @@ class ReviewListViewImpl(
             )
         }
         //loading
-        progressBar = findViewById(R.id.loading_indicator)
+        progressBar = dataLayout.findViewById(R.id.loading_indicator)
     }
 
     override fun handleState(reviewListState: ReviewListState) {
         with(reviewListState) {
+            menuToolbarLayout.setOverflowMenuIcon(null)
+            menuToolbarLayout.setToolbarTitle(title)
             if (isLoading) {
                 showLoadingIndicator()
             } else {
