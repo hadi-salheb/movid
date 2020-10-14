@@ -18,9 +18,18 @@ data class ReviewListState(
 abstract class ReviewListView : BaseObservableViewMvc<ReviewListView.Listener>() {
     interface Listener {
         fun loadMoreItems()
+        fun onRetryClicked()
+        fun onPaginationErrorClicked()
     }
 
-    abstract fun displayReviews(reviews: List<Review>)
-    abstract fun displayPaginationLoading()
-    abstract fun displayLoadingIndicator()
+    protected abstract fun hideLoadingIndicator()
+    protected abstract fun showLoadingIndicator()
+    protected abstract fun showErrorScreen(msg: String)
+    protected abstract fun hideErrorScreen()
+    protected abstract fun showEmptyDataScreen(@DrawableRes icon: Int, msg: String)
+    protected abstract fun hideEmptyDataScreen()
+    protected abstract fun showPagination(data: List<Review>)
+    protected abstract fun showPaginationError(data: List<Review>)
+    protected abstract fun showData(data: List<Review>)
+    abstract fun handleState(reviewListState: ReviewListState)
 }
