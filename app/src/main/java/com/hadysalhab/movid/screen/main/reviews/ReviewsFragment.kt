@@ -28,7 +28,8 @@ class ReviewsFragment : BaseFragment(), ReviewListView.Listener {
             }
     }
 
-    private var movieID: Int? = null
+    private var movieID: Int = 0
+    private lateinit var movieName: String
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -36,7 +37,7 @@ class ReviewsFragment : BaseFragment(), ReviewListView.Listener {
     @Inject
     lateinit var activityContext: Context
 
-    private lateinit var view: ReviewListView
+    private lateinit var reviewListView: ReviewListView
 
     private lateinit var reviewsViewModel: ReviewsViewModel
 
@@ -48,9 +49,8 @@ class ReviewsFragment : BaseFragment(), ReviewListView.Listener {
         injector.inject(this)
         arguments?.let {
             movieID = it.getInt(ARG_MOVIE_ID)
-        }
-        if (movieID == null) {
-            throw RuntimeException("Cannot retrieve reviews without movieID")
+            movieName = it.getString(ARG_MOVIE_NAME)
+                ?: throw java.lang.RuntimeException("Movie Title should not be empty in ReviewFragment")
         }
         reviewsViewModel =
             ViewModelProvider(this, myViewModelFactory).get(ReviewsViewModel::class.java)
@@ -60,36 +60,51 @@ class ReviewsFragment : BaseFragment(), ReviewListView.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::view.isInitialized) {
-            view = viewFactory.getReviewsView(container)
+        if (!this::reviewListView.isInitialized) {
+            reviewListView = viewFactory.getReviewsView(container)
         }
         // Inflate the layout for this fragment
-        return view.getRootView()
+        return reviewListView.getRootView()
     }
 
     override fun onStart() {
         super.onStart()
-        view.registerListener(this)
-        reviewsViewModel.init(movieID!!)
-        reviewsViewModel.viewState.observe(viewLifecycleOwner, Observer {
-            render(it)
-        })
+        registerObservers()
+        reviewsViewModel.onStart(movieID, movieName)
+
     }
 
     override fun onStop() {
         super.onStop()
-        view.unregisterListener(this)
+        unregisterObservers()
     }
 
+    //UserInteractions------------------------------------------------------------------------------
     override fun loadMoreItems() {
         reviewsViewModel.loadMore()
     }
 
     override fun onRetryClicked() {
-        TODO("Not yet implemented")
+        reviewsViewModel.onRetryClicked()
     }
 
     override fun onPaginationErrorClicked() {
+        reviewsViewModel.onPaginationErrorClick()
+    }
 
+    //----------------------------------------------------------------------------------------------
+    private val reviewListStateObserver =
+        Observer<ReviewListState> { reviewListState ->
+            reviewListView.handleState(reviewListState)
+        }
+
+    private fun registerObservers() {
+        reviewListView.registerListener(this)
+        reviewsViewModel.state.observeForever(reviewListStateObserver)
+    }
+
+    private fun unregisterObservers() {
+        reviewsViewModel.state.removeObserver(reviewListStateObserver)
+        reviewListView.unregisterListener(this)
     }
 }
