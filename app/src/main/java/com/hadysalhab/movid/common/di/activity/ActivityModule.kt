@@ -21,6 +21,7 @@ import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedScreenStateManager
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenStateManager
+import com.hadysalhab.movid.screen.main.reviews.ReviewScreenStateManager
 import com.hadysalhab.movid.screen.main.search.SearchScreenStateManager
 import dagger.Module
 import dagger.Provides
@@ -104,6 +105,9 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getSearchScreenStateManager() = SearchScreenStateManager()
+
+    @Provides
+    fun getReviewScreenStateManager() = ReviewScreenStateManager()
 
     @Provides
     fun getBackPressDispatcher() = activity as BackPressDispatcher
