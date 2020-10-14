@@ -1,9 +1,7 @@
 package com.hadysalhab.movid.movies.usecases.reviews
 
-import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
-import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.ReviewResponse
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.networking.*
@@ -16,8 +14,6 @@ class FetchReviewsUseCase(
     private val uiThreadPoster: UiThreadPoster,
     private val schemaToModelHelper: SchemaToModelHelper,
     private val errorMessageHandler: ErrorMessageHandler,
-    private val moviesStateManager: MoviesStateManager,
-    private val dataValidator: DataValidator,
     private val tmdbApi: TmdbApi
 ) : BaseBusyObservable<FetchReviewsUseCase.Listener>() {
     interface Listener {
@@ -27,16 +23,7 @@ class FetchReviewsUseCase(
 
     fun fetchReviewsUseCase(pageToFetch: Int, movieID: Int) {
         assertNotBusyAndBecomeBusy()
-        if (pageToFetch == 1) {
-            val store = moviesStateManager.getMovieDetailById(movieID)
-            if (dataValidator.isMovieDetailValid(store)) {
-                notifySuccess(store!!.reviewResponse)
-            } else {
-                fireNetworkRequest(pageToFetch, movieID)
-            }
-        } else {
-            fireNetworkRequest(pageToFetch, movieID)
-        }
+        fireNetworkRequest(pageToFetch, movieID)
     }
 
     private fun fireNetworkRequest(page: Int, movieID: Int) {

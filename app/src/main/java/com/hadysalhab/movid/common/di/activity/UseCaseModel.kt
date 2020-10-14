@@ -221,15 +221,13 @@ class UseCaseModel {
         uiThreadPoster: UiThreadPoster,
         schemaToModelHelper: SchemaToModelHelper,
         errorMessageHandler: ErrorMessageHandler,
-        tmdbApi: TmdbApi,
-        moviesStateManager: MoviesStateManager,
-        dataValidator: DataValidator
+        tmdbApi: TmdbApi
     ) = FetchReviewsUseCase(
         backgroundThreadPoster,
         uiThreadPoster,
         schemaToModelHelper,
         errorMessageHandler,
-        moviesStateManager, dataValidator, tmdbApi
+        tmdbApi
     )
 
     @Provides
