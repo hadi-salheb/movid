@@ -101,5 +101,5 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
 
     fun getEmptyResults(container: ViewGroup?) = EmptyResults(layoutInflater, container)
     fun getPaginationErrorView(parent: ViewGroup?) = PaginationError(layoutInflater, parent)
-    fun getFilterView(parent: ViewGroup?): FilterView = FilterViewImpl(layoutInflater, parent)
+    fun getFilterView(parent: ViewGroup?): FilterView = FilterViewImpl(layoutInflater, parent, this)
 }
