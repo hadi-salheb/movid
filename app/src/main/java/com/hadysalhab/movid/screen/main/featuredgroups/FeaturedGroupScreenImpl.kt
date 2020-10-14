@@ -41,7 +41,7 @@ class FeaturedGroupScreenImpl(
 
     init {
         setRootView(inflater.inflate(R.layout.layout_featured, parent, false))
-        recyclerView = findViewById(R.id.rv_movies)
+        recyclerView = findViewById(R.id.rv_data)
         adapter = FeaturedGroupAdapter(this, viewFactory)
         circularProgress = findViewById(R.id.progress_circular)
         toolbar = findViewById(R.id.toolbar)

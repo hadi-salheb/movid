@@ -39,7 +39,7 @@ class MovieListScreenImpl(
         errorScreen = viewFactory.getErrorScreen(errorScreenPlaceholder)
         errorScreenPlaceholder.addView(errorScreen.getRootView())
         errorScreen.registerListener(this)
-        recyclerView = findViewById(R.id.rv_movies)
+        recyclerView = findViewById(R.id.rv_data)
         emptyResultPlaceholder = findViewById(R.id.empty_result_placeholder)
         emptyResults = viewFactory.getEmptyResults(emptyResultPlaceholder)
         emptyResultPlaceholder.addView(emptyResults.getRootView())

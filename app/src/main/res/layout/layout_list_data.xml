@@ -7,7 +7,7 @@
     tools:context=".screen.main.featuredlist.FeaturedListFragment">
 
     <include
-        android:id="@+id/rv_movies"
+        android:id="@+id/rv_data"
         layout="@layout/recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
