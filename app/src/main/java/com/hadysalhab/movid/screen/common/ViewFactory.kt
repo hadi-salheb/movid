@@ -23,6 +23,8 @@ import com.hadysalhab.movid.screen.common.seeall.SeeAllImpl
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupScreenImpl
+import com.hadysalhab.movid.screen.main.filter.FilterView
+import com.hadysalhab.movid.screen.main.filter.FilterViewImpl
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreen
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenImpl
@@ -99,4 +101,5 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
 
     fun getEmptyResults(container: ViewGroup?) = EmptyResults(layoutInflater, container)
     fun getPaginationErrorView(parent: ViewGroup?) = PaginationError(layoutInflater, parent)
+    fun getFilterView(parent: ViewGroup?): FilterView = FilterViewImpl(layoutInflater, parent)
 }

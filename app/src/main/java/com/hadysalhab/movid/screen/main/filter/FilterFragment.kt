@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.hadysalhab.movid.R
+import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
@@ -19,6 +19,11 @@ class FilterFragment : BaseFragment() {
 
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var viewFactory: ViewFactory
+
+    private lateinit var filterView: FilterView
 
     private lateinit var filterViewModel: FilterViewModel
 
@@ -34,6 +39,10 @@ class FilterFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.layout_filter, container, false)
+        if (!this::filterView.isInitialized) {
+            filterView = viewFactory.getFilterView(container)
+        }
+        // Inflate the layout for this fragment
+        return filterView.getRootView()
     }
 }
