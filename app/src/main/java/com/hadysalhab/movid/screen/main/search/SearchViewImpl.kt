@@ -99,6 +99,10 @@ class SearchViewImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFac
         this.screenState = searchScreenState
     }
 
+    override fun closeSearchBar() {
+        materialSearchBar.closeSearch()
+    }
+
     private fun showGenreList() {
         framePlaceHolder.removeAllViews()
         movieListScreen.unregisterListener(this@SearchViewImpl)

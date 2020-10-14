@@ -9,12 +9,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.controllers.backpress.BackPressDispatcher
+import com.hadysalhab.movid.screen.common.controllers.backpress.BackPressListener
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
 
-class SearchFragment : BaseFragment(), SearchView.Listener {
+class SearchFragment : BaseFragment(), SearchView.Listener, BackPressListener {
     lateinit var searchView: SearchView
 
     @Inject
@@ -30,6 +32,9 @@ class SearchFragment : BaseFragment(), SearchView.Listener {
 
     @Inject
     lateinit var discoverMoviesFilterStateStore: DiscoverMoviesFilterStateStore
+
+    @Inject
+    lateinit var backPressDispatcher: BackPressDispatcher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,11 +110,23 @@ class SearchFragment : BaseFragment(), SearchView.Listener {
     private fun registerObservers() {
         searchViewModel.state.observeForever(searchScreenStateObserver)
         searchView.registerListener(this)
+        backPressDispatcher.registerListener(this)
     }
 
     private fun unregisterObservers() {
         searchViewModel.state.removeObserver(searchScreenStateObserver)
         searchView.unregisterListener(this)
+        backPressDispatcher.unregisterListener(this)
+    }
+
+    override fun onBackPress(): Boolean {
+        val currentSearchState = searchViewModel.state.value
+        return if (currentSearchState?.movieListScreenState != null) {
+            searchView.closeSearchBar()
+            true
+        } else {
+            false
+        }
     }
 
 

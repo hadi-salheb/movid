@@ -19,4 +19,5 @@ abstract class SearchView : BaseObservableViewMvc<SearchView.Listener>() {
     }
 
     abstract fun handleState(searchScreenState: SearchScreenState)
+    abstract fun closeSearchBar()
 }
