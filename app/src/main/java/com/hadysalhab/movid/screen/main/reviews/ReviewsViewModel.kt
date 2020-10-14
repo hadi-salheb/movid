@@ -8,6 +8,7 @@ import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.Review
 import com.hadysalhab.movid.movies.ReviewResponse
 import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
+import java.util.*
 import javax.inject.Inject
 
 class ReviewsViewModel @Inject constructor(
@@ -41,7 +42,7 @@ class ReviewsViewModel @Inject constructor(
             isFirstRender = false
             this.movieID = movieID
             this.movieName = movieName
-            dispatch(ReviewsAction.SetTitle("$movieName (REVIEWS)"))
+            dispatch(ReviewsAction.SetTitle(movieName.toUpperCase(Locale.ROOT)))
             val storedMovie = moviesStateManager.getMovieDetailById(movieID)
             if (dataValidator.isMovieDetailValid(storedMovie)) {
                 this.reviewsResponse = storedMovie!!.reviewResponse
