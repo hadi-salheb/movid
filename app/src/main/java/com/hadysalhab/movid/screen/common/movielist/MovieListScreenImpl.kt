@@ -14,7 +14,6 @@ import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResults
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResultsState
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreen
-import com.hadysalhab.movid.screen.common.scrolllistener.OnVerticalScrollListener
 
 
 class MovieListScreenImpl(
@@ -33,6 +32,8 @@ class MovieListScreenImpl(
     private var isLoading = false
     private var isError = false
 
+    private val gridLayoutManager: GridLayoutManager
+
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_list_data, parent, false))
         errorScreenPlaceholder = findViewById(R.id.error_screen_placeholder)
@@ -45,9 +46,9 @@ class MovieListScreenImpl(
         emptyResultPlaceholder.addView(emptyResults.getRootView())
         adapter = MovieListAdapter(this, viewFactory)
         progressBar = findViewById(R.id.loading_indicator)
+        gridLayoutManager = GridLayoutManager(getContext(), 3)
         recyclerView.apply {
-            val gridManager = GridLayoutManager(context, 3)
-            gridManager.spanSizeLookup = (object : GridLayoutManager.SpanSizeLookup() {
+            gridLayoutManager.spanSizeLookup = (object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return if (this@MovieListScreenImpl.adapter.getItemViewType(position) == this@MovieListScreenImpl.adapter.LOADING || this@MovieListScreenImpl.adapter.getItemViewType(
                             position
@@ -60,31 +61,24 @@ class MovieListScreenImpl(
                 }
 
             })
-            layoutManager = gridManager
+            layoutManager = gridLayoutManager
             setHasFixedSize(true)
             adapter = this@MovieListScreenImpl.adapter
-        }
-        recyclerView.apply {
-            addOnScrollListener(object : OnVerticalScrollListener() {
-                override fun onScrolledUp() {
-
-                }
-
-                override fun onScrolledDown() {
-                }
-
-                override fun onScrolledToTop() {
-                }
-
-                override fun onScrolledToBottom() {
-                    listeners.forEach {
-                        if (!this@MovieListScreenImpl.isLoading && !this@MovieListScreenImpl.isError) {
-                            it.loadMoreItems()
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 0) {
+                        val visibleItemCount = gridLayoutManager.childCount
+                        val totalItemCount = gridLayoutManager.itemCount
+                        val pastVisibleItems = gridLayoutManager.findFirstVisibleItemPosition()
+                        if (!this@MovieListScreenImpl.isLoading && !this@MovieListScreenImpl.isError && ((visibleItemCount + pastVisibleItems) >= totalItemCount)) {
+                            listeners.forEach {
+                                it.loadMoreItems()
+                            }
                         }
                     }
                 }
             })
-            setPadding(0, 0, 0, 0)
         }
     }
 
@@ -150,7 +144,6 @@ class MovieListScreenImpl(
                 "LOADING"
             )
         )
-        animateRecyclerViewScroll()
         this@MovieListScreenImpl.isLoading = true
         this@MovieListScreenImpl.isError = false
     }

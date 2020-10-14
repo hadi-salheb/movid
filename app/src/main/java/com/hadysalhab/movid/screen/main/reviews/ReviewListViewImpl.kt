@@ -15,7 +15,6 @@ import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResults
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResultsState
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreen
-import com.hadysalhab.movid.screen.common.scrolllistener.OnVerticalScrollListener
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 
 
@@ -39,8 +38,13 @@ class ReviewListViewImpl(
     private var isLoading = false
     private var isError = false
 
+    private val linearLayoutManager: LinearLayoutManager
+
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_list_title_toolbar, parent, false))
+        linearLayoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false)
+
+
         dataPlaceHolder = findViewById(R.id.data_placeholder)
         val dataLayout = layoutInflater.inflate(R.layout.layout_list_data, dataPlaceHolder, true)
         toolbar = findViewById(R.id.toolbar)
@@ -63,24 +67,20 @@ class ReviewListViewImpl(
         adapter = ReviewListAdapter(this, viewFactory)
         recyclerView = dataLayout.findViewById(R.id.rv_data)
         recyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = linearLayoutManager
             setHasFixedSize(true)
             adapter = this@ReviewListViewImpl.adapter
-            addOnScrollListener(object : OnVerticalScrollListener() {
-                override fun onScrolledUp() {
-
-                }
-
-                override fun onScrolledDown() {
-                }
-
-                override fun onScrolledToTop() {
-                }
-
-                override fun onScrolledToBottom() {
-                    listeners.forEach {
-                        if (!this@ReviewListViewImpl.isLoading && !this@ReviewListViewImpl.isError) {
-                            it.loadMoreItems()
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 0) {
+                        val visibleItemCount = linearLayoutManager.childCount
+                        val totalItemCount = linearLayoutManager.itemCount
+                        val pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition()
+                        if (!this@ReviewListViewImpl.isLoading && !this@ReviewListViewImpl.isError && ((visibleItemCount + pastVisibleItems) >= totalItemCount)) {
+                            listeners.forEach {
+                                it.loadMoreItems()
+                            }
                         }
                     }
                 }
@@ -150,7 +150,6 @@ class ReviewListViewImpl(
                 "LOADING"
             )
         )
-        animateRecyclerViewScroll()
         this@ReviewListViewImpl.isLoading = true
         this@ReviewListViewImpl.isError = false
     }
