@@ -5,6 +5,7 @@ import com.hadysalhab.movid.screen.main.discover.DiscoverViewModel
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesViewModel
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupViewModel
 import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListViewModel
+import com.hadysalhab.movid.screen.main.filter.FilterViewModel
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailViewModel
 import com.hadysalhab.movid.screen.main.recommendedsimilar.RecommendedSimilarViewModel
 import com.hadysalhab.movid.screen.main.reviews.ReviewsViewModel
@@ -62,4 +63,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RecommendedSimilarViewModel::class)
     abstract fun recommendedSimilarViewModel(myViewModel: RecommendedSimilarViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FilterViewModel::class)
+    abstract fun filterViewModel(myViewModel: FilterViewModel): ViewModel
 }
