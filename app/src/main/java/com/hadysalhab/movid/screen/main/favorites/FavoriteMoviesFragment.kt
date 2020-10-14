@@ -86,6 +86,10 @@ class FavoriteMoviesFragment : BaseFragment(), ListWithToolbarTitle.Listener {
         favoriteMoviesViewModel.loadMore()
     }
 
+    override fun onMenuIconClicked() {
+
+    }
+
     //----------------------------------------------------------------------------------------------
 
     private val listWithToolbarTitleStateObserver =

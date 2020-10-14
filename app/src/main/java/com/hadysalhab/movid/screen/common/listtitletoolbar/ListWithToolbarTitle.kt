@@ -17,6 +17,7 @@ abstract class ListWithToolbarTitle : BaseObservableViewMvc<ListWithToolbarTitle
         fun loadMoreItems()
         fun onRetryClicked()
         fun onPaginationErrorClicked()
+        fun onMenuIconClicked()
     }
 
     abstract fun handleScreenState(screenState: ListWithToolbarTitleState)

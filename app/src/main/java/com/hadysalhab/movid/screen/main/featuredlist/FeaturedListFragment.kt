@@ -104,6 +104,10 @@ class FeaturedListFragment : BaseFragment(), ListWithToolbarTitle.Listener {
     override fun onPaginationErrorClicked() {
         featuredListViewModel.loadMore()
     }
+
+    override fun onMenuIconClicked() {
+
+    }
     //----------------------------------------------------------------------------------------------
 
 

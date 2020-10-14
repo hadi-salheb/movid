@@ -107,6 +107,10 @@ class RecommendedSimilarFragment : BaseFragment(), ListWithToolbarTitle.Listener
     override fun onPaginationErrorClicked() {
         recommendedSimilarViewModel.loadMore()
     }
+
+    override fun onMenuIconClicked() {
+
+    }
     //----------------------------------------------------------------------------------------------
 
 

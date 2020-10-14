@@ -11,6 +11,7 @@ import com.hadysalhab.movid.screen.main.discover.DiscoverFragment
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupFragment
 import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListFragment
+import com.hadysalhab.movid.screen.main.filter.FilterFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
 import com.hadysalhab.movid.screen.main.recommendedsimilar.RecommendedSimilarFragment
 import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
@@ -93,6 +94,12 @@ class MainNavigator(
             RecommendedSimilarFragment.newInstance(
                 groupType, movieID, movieName
             )
+        )
+    }
+
+    fun toFilterFragment() {
+        fragNavController.pushFragment(
+            FilterFragment.newInstance()
         )
     }
 

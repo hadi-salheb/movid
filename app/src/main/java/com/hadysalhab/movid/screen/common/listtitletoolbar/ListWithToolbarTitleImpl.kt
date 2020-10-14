@@ -84,6 +84,8 @@ class ListWithToolbarTitleImpl(
     }
 
     override fun onOverflowMenuIconClick() {
-
+        listeners.forEach {
+            it.onMenuIconClicked()
+        }
     }
 }

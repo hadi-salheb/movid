@@ -96,6 +96,10 @@ class DiscoverFragment : BaseFragment(), ListWithToolbarTitle.Listener {
     override fun onPaginationErrorClicked() {
         discoverViewModel.loadMore()
     }
+
+    override fun onMenuIconClicked() {
+        mainNavigator.toFilterFragment()
+    }
     //----------------------------------------------------------------------------------------------
 
 

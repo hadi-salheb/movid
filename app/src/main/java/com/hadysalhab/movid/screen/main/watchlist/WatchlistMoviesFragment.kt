@@ -88,6 +88,10 @@ class WatchlistMoviesFragment : BaseFragment(), MovieListScreen.Listener,
         watchlistMoviesViewModel.loadMore()
     }
 
+    override fun onMenuIconClicked() {
+
+    }
+
     //----------------------------------------------------------------------------------------------
 
     private val listWithToolbarTitleStateObserver =
