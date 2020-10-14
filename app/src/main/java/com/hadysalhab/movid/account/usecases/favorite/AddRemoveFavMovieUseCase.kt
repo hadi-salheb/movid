@@ -8,8 +8,10 @@ import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.networking.*
 import com.hadysalhab.movid.networking.responses.WatchlistFavoriteResponse
+import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
+import org.greenrobot.eventbus.EventBus
 
 
 class AddRemoveFavMovieUseCase(
@@ -22,7 +24,6 @@ class AddRemoveFavMovieUseCase(
     private val moviesStateManager: MoviesStateManager
 ) : BaseBusyObservable<AddRemoveFavMovieUseCase.Listener>() {
     interface Listener {
-        fun onAddRemoveFavoritesSuccess(movieDetail: MovieDetail)
         fun onAddRemoveFavoritesFailure(err: String)
     }
 
@@ -81,8 +82,10 @@ class AddRemoveFavMovieUseCase(
 
     private fun notifySuccess(movieDetail: MovieDetail) {
         uiThreadPoster.post {
-            listeners.forEach {
-                it.onAddRemoveFavoritesSuccess(movieDetail)
+            if (movieDetail.accountStates.favorite) {
+                EventBus.getDefault().post(MovieDetailEvents.AddMovieToFav(movieDetail))
+            } else {
+                EventBus.getDefault().post(MovieDetailEvents.RemoveMovieFromFav(movieDetail))
             }
             becomeNotBusy()
         }

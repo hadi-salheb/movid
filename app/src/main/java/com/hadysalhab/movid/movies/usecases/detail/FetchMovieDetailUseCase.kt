@@ -10,8 +10,10 @@ import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.networking.*
 import com.hadysalhab.movid.networking.responses.CollectionSchema
 import com.hadysalhab.movid.networking.responses.MovieDetailSchema
+import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
+import org.greenrobot.eventbus.EventBus
 
 /**
  * UseCase that fetch popular,top-rated,upcoming movies
@@ -30,7 +32,6 @@ class FetchMovieDetailUseCase(
 ) :
     BaseBusyObservable<FetchMovieDetailUseCase.Listener>() {
     interface Listener {
-        fun onFetchMovieDetailSuccess(movieDetail: MovieDetail)
         fun onFetchMovieDetailFailed(msg: String)
     }
 
@@ -111,9 +112,7 @@ class FetchMovieDetailUseCase(
     private fun notifySuccess(movieDetail: MovieDetail) {
         uiThreadPoster.post {
             // notify controller
-            listeners.forEach {
-                it.onFetchMovieDetailSuccess(movieDetail)
-            }
+            EventBus.getDefault().post(MovieDetailEvents.MovieDetailFetched(movieDetail))
             becomeNotBusy()
         }
     }

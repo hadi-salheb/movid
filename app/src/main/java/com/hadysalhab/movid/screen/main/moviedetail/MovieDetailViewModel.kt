@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.account.usecases.favorite.AddRemoveFavMovieUseCase
 import com.hadysalhab.movid.account.usecases.watchlist.AddRemoveWatchlistMovieUseCase
 import com.hadysalhab.movid.common.datavalidator.DataValidator
-import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
@@ -120,29 +119,6 @@ class MovieDetailViewModel @Inject constructor(
         isAddRemoveFavMovieUseCaseBusy() || isAddRemoveWatchlistMovieUseCaseBusy()
 
     //UseCaseResults--------------------------------------------------------------------------------
-
-    //SUCCESS
-    override fun onAddRemoveFavoritesSuccess(movieDetail: MovieDetail) {
-        if (movieDetail.accountStates.favorite) {
-            EventBus.getDefault().post(MovieDetailEvents.AddMovieToFav(movieDetail))
-        } else {
-            EventBus.getDefault().post(MovieDetailEvents.RemoveMovieFromFav(movieDetail))
-        }
-    }
-
-    override fun onAddRemoveWatchlistSuccess(movieDetail: MovieDetail) {
-        if (movieDetail.accountStates.watchlist) {
-            EventBus.getDefault().post(MovieDetailEvents.AddToWatchlist(movieDetail))
-        } else {
-            EventBus.getDefault().post(MovieDetailEvents.RemoveFromWatchlist(movieDetail))
-        }
-    }
-
-    override fun onFetchMovieDetailSuccess(movieDetail: MovieDetail) {
-        EventBus.getDefault().post(MovieDetailEvents.MovieDetailFetched(movieDetail))
-    }
-
-
     //Failure
     override fun onAddRemoveFavoritesFailure(err: String) {
         emitter.emit(ShowUserToastMessage(err))

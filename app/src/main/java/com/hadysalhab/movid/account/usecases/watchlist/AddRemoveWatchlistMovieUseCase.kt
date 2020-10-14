@@ -8,8 +8,10 @@ import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.networking.*
 import com.hadysalhab.movid.networking.responses.WatchlistFavoriteResponse
+import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
+import org.greenrobot.eventbus.EventBus
 
 
 class AddRemoveWatchlistMovieUseCase(
@@ -22,7 +24,6 @@ class AddRemoveWatchlistMovieUseCase(
     private val moviesStateManager: MoviesStateManager
 ) : BaseBusyObservable<AddRemoveWatchlistMovieUseCase.Listener>() {
     interface Listener {
-        fun onAddRemoveWatchlistSuccess(movieDetail: MovieDetail)
         fun onAddRemoveWatchlistFailure(err: String)
     }
 
@@ -81,8 +82,10 @@ class AddRemoveWatchlistMovieUseCase(
 
     private fun notifySuccess(movieDetail: MovieDetail) {
         uiThreadPoster.post {
-            listeners.forEach {
-                it.onAddRemoveWatchlistSuccess(movieDetail)
+            if (movieDetail.accountStates.watchlist) {
+                EventBus.getDefault().post(MovieDetailEvents.AddToWatchlist(movieDetail))
+            } else {
+                EventBus.getDefault().post(MovieDetailEvents.RemoveFromWatchlist(movieDetail))
             }
             becomeNotBusy()
         }
