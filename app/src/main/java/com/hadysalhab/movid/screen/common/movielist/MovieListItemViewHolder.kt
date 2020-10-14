@@ -8,7 +8,7 @@ import com.hadysalhab.movid.screen.common.movies.MovieListItem
 import com.hadysalhab.movid.screen.common.paginationerror.PaginationError
 
 
-sealed class MovieListViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+sealed class MovieListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     open fun bind(movie: Movie) {}
     class MovieViewHolder(private val movieListItem: MovieListItem) :
