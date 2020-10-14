@@ -235,7 +235,11 @@ class MovieDetailScreenImpl(
             displayOverview(movieDetail.details.overview)
             displayFacts(movieDetail.details)
             displayCasts(movieDetail.credits.cast)
-            displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
+            displayReviews(
+                movieDetail.reviewResponse,
+                movieDetail.details.id,
+                movieDetail.details.title
+            )
             displayCollection(movieDetail.collection)
             displayRecommendedMovies(movieDetail.recommendations)
             displaySimilarMovies(movieDetail.similar)
@@ -265,7 +269,11 @@ class MovieDetailScreenImpl(
                 displayFacts(movieDetail.details)
             }
             if (this.movieDetail.reviewResponse != movieDetail.reviewResponse) {
-                displayReviews(movieDetail.reviewResponse, movieDetail.details.id)
+                displayReviews(
+                    movieDetail.reviewResponse,
+                    movieDetail.details.id,
+                    movieDetail.details.title
+                )
             }
             if (this.movieDetail.collection != movieDetail.collection) {
                 displayCollection(movieDetail.collection)
@@ -416,7 +424,7 @@ class MovieDetailScreenImpl(
         ratingFL.addView(rating.getRootView())
     }
 
-    private fun displayReviews(reviewResponse: ReviewResponse, movieID: Int) {
+    private fun displayReviews(reviewResponse: ReviewResponse, movieID: Int, movieName: String) {
         if (reviewResponse.reviews.size > 1) {
             val review = reviewResponse.reviews[0]
             movieReviewReviewTV.text = review.content
@@ -426,7 +434,7 @@ class MovieDetailScreenImpl(
                 visibility = View.VISIBLE
                 setOnClickListener {
                     listeners.forEach {
-                        it.onSeeReviewsClicked(movieID)
+                        it.onSeeReviewsClicked(movieID, movieName)
                     }
                 }
             }

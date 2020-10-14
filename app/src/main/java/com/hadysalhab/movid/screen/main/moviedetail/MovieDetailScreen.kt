@@ -23,7 +23,7 @@ abstract class MovieDetailScreen : BaseObservableViewMvc<MovieDetailScreen.Liste
 
         fun onCastClicked(castId: Int)
         fun onMovieClicked(movieId: Int)
-        fun onSeeReviewsClicked(movieID: Int)
+        fun onSeeReviewsClicked(movieID: Int, movieName: String)
         fun onSeeTrailerClicked(videosResponse: VideosResponse)
         fun onFavBtnClick()
         fun onWatchlistBtnClick()

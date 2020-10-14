@@ -66,8 +66,8 @@ class MainNavigator(
     fun toFeaturedListFragment(groupType: GroupType, region: String) =
         fragNavController.pushFragment(FeaturedListFragment.newInstance(groupType, region))
 
-    fun toReviewsFragment(movieID: Int) {
-        fragNavController.pushFragment(ReviewsFragment.newInstance(movieID))
+    fun toReviewsFragment(movieID: Int, movieName: String) {
+        fragNavController.pushFragment(ReviewsFragment.newInstance(movieID, movieName))
     }
 
     fun switchTab(bottomNavigationItems: BottomNavigationItems) {

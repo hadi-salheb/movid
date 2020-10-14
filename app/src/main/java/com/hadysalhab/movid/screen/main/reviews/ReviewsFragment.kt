@@ -13,8 +13,21 @@ import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
 private const val ARG_MOVIE_ID = "movie_id"
+private const val ARG_MOVIE_NAME = "movie_name"
 
 class ReviewsFragment : BaseFragment(), ReviewListView.Listener {
+
+    companion object {
+        @JvmStatic
+        fun newInstance(movieID: Int, movieName: String) =
+            ReviewsFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_MOVIE_ID, movieID)
+                    putString(ARG_MOVIE_NAME, movieName)
+                }
+            }
+    }
+
     private var movieID: Int? = null
 
     @Inject
@@ -68,27 +81,15 @@ class ReviewsFragment : BaseFragment(), ReviewListView.Listener {
         view.unregisterListener(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(movieID: Int) =
-            ReviewsFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_MOVIE_ID, movieID)
-                }
-            }
-    }
-
-    private fun render(viewState: ReviewListViewState) {
-        when (viewState) {
-            Loading -> view.displayLoadingIndicator()
-            PaginationLoading -> view.displayPaginationLoading()
-            is Error -> {
-            }
-            is ReviewListLoaded -> view.displayReviews(viewState.reviews)
-        }
-    }
-
     override fun loadMoreItems() {
         reviewsViewModel.loadMore()
+    }
+
+    override fun onRetryClicked() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPaginationErrorClicked() {
+
     }
 }
