@@ -24,7 +24,7 @@ class ListWithToolbarTitleImpl(
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_list_title_toolbar, parent, false))
-        favoritesPlaceHolder = findViewById(R.id.favorites_placeholder)
+        favoritesPlaceHolder = findViewById(R.id.data_placeholder)
         toolbar = findViewById(R.id.toolbar)
         menuToolbarLayout = viewFactory.getMenuToolbarLayout(toolbar)
         menuToolbarLayout.registerListener(this)
