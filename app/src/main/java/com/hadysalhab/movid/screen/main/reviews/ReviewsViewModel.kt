@@ -1,60 +1,103 @@
 package com.hadysalhab.movid.screen.main.reviews
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hadysalhab.movid.R
+import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.Review
 import com.hadysalhab.movid.movies.ReviewResponse
 import com.hadysalhab.movid.movies.usecases.reviews.FetchReviewsUseCase
 import javax.inject.Inject
 
 class ReviewsViewModel @Inject constructor(
-    private val fetchReviewsUseCase: FetchReviewsUseCase
+    private val fetchReviewsUseCase: FetchReviewsUseCase,
+    private val reviewScreenStateManager: ReviewScreenStateManager,
+    private val moviesStateManager: MoviesStateManager,
+    private val dataValidator: DataValidator
 ) : ViewModel(), FetchReviewsUseCase.Listener {
-    private val _viewState = MutableLiveData<ReviewListViewState>()
-    private var movieID: Int? = null
+    private var movieID: Int = 0
+    private var isFirstRender = true
+    private lateinit var movieName: String
     private lateinit var reviewsResponse: ReviewResponse
     private val reviews: MutableList<Review> = mutableListOf()
-    val viewState: LiveData<ReviewListViewState>
-        get() = _viewState
+    private val dispatch = reviewScreenStateManager::dispatch
 
-    fun init(movieID: Int) {
-        if (this.movieID == null) {
+    val state: LiveData<ReviewListState> = reviewScreenStateManager.setInitialStateAndReturn(
+        ReviewListState(
+            emptyResultsIconDrawable = R.drawable.ic_sad,
+            emptyResultsMessage = "No Results Found"
+        )
+    )
+    private val stateValue: ReviewListState
+        get() = state.value!!
+
+    init {
+        fetchReviewsUseCase.registerListener(this)
+    }
+
+    fun onStart(movieID: Int, movieName: String) {
+        if (isFirstRender) {
+            isFirstRender = false
             this.movieID = movieID
-            fetchReviewsUseCase.registerListener(this)
-        }
-        when (viewState.value) {
-            null -> {
-                _viewState.value = Loading
-                fetchReviewsUseCase.fetchReviewsUseCase(
-                    1,
-                    movieID
+            this.movieName = movieName
+            dispatch(ReviewsAction.SetTitle("$movieName (REVIEWS)"))
+            val storedMovie = moviesStateManager.getMovieDetailById(movieID)
+            if (dataValidator.isMovieDetailValid(storedMovie)) {
+                this.reviewsResponse = storedMovie!!.reviewResponse
+                this.reviews.addAll(reviewsResponse.reviews)
+                dispatch(
+                    ReviewsAction.Success(
+                        this.reviews
+                    )
                 )
+            } else {
+                dispatch(ReviewsAction.Request)
+                fetchApi(1)
             }
         }
+    }
+
+    private fun fetchApi(page: Int) {
+        fetchReviewsUseCase.fetchReviewsUseCase(
+            page,
+            this.movieID
+        )
+    }
+
+    //User Interactions-----------------------------------------------------------------------------
+    fun onRetryClicked() {
+        dispatch(ReviewsAction.Request)
+        fetchApi(1)
     }
 
     fun loadMore() {
         if (fetchReviewsUseCase.isBusy || this.reviewsResponse.page + 1 > this.reviewsResponse.totalPages) {
             return
         }
-        _viewState.value = PaginationLoading
-        fetchReviewsUseCase.fetchReviewsUseCase(
-            this.reviewsResponse.page + 1,
-            movieID!!
-        )
+        dispatch(ReviewsAction.Pagination)
+        fetchApi(this.reviewsResponse.page + 1)
     }
 
-    //UseCaseResults--------------------------------------------------------------------------------
+    fun onPaginationErrorClick() {
+        dispatch(ReviewsAction.Pagination)
+        fetchApi(this.reviewsResponse.page + 1)
+    }
 
-    override fun onFetchReviewSuccess(apiReviewResponse: ReviewResponse) {
-        this.reviewsResponse = apiReviewResponse
-        this.reviews.addAll(apiReviewResponse.reviews)
-        _viewState.value = ReviewListLoaded(this.reviews)
+
+    //UseCaseResults--------------------------------------------------------------------------------
+    override fun onFetchReviewSuccess(reviews: ReviewResponse) {
+        this.reviewsResponse = reviews
+        this.reviews.addAll(reviews.reviews)
+        dispatch(ReviewsAction.Success(this.reviews))
     }
 
     override fun onFetchReviewError(err: String) {
-        _viewState.value = Error(err)
+        if (stateValue.isPaginationLoading) {
+            dispatch(ReviewsAction.PaginationError)
+        } else {
+            dispatch(ReviewsAction.Error(err))
+        }
     }
     //----------------------------------------------------------------------------------------------
 
@@ -62,6 +105,5 @@ class ReviewsViewModel @Inject constructor(
         super.onCleared()
         fetchReviewsUseCase.unregisterListener(this)
     }
-
 
 }
