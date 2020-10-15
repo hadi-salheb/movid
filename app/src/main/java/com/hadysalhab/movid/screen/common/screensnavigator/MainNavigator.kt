@@ -103,4 +103,8 @@ class MainNavigator(
         )
     }
 
+    fun popFragment() {
+        fragNavController.popFragment()
+    }
+
 }

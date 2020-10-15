@@ -80,16 +80,19 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:text="From: "
+                android:gravity="center_vertical"
                 android:textAppearance="?attr/textAppearanceBody1"
                 app:layout_constraintBottom_toBottomOf="@+id/released_from_spinner"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/released_year_textView" />
 
+
             <Spinner
                 android:id="@+id/released_from_spinner"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_marginTop="8dp"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/released_from_textView"
                 app:layout_constraintTop_toBottomOf="@+id/released_year_textView" />
@@ -98,8 +101,9 @@
                 android:id="@+id/released_to_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="To: "
+                android:gravity="center_vertical"
                 android:textAppearance="?attr/textAppearanceBody1"
                 app:layout_constraintBottom_toBottomOf="@+id/released_to_spinner"
                 app:layout_constraintStart_toStartOf="parent"
@@ -108,8 +112,9 @@
             <Spinner
                 android:id="@+id/released_to_spinner"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/released_to_textView"
                 app:layout_constraintTop_toBottomOf="@+id/released_from_spinner" />
@@ -132,14 +137,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
                 android:text="From: "
                 android:textAppearance="?attr/textAppearanceBody1"
-                app:layout_constraintBottom_toBottomOf="@+id/vote_count_from_spinner"
+                app:layout_constraintBottom_toBottomOf="@+id/vote_count_from_editText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vote_count_textView" />
 
-            <Spinner
-                android:id="@+id/vote_count_from_spinner"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/vote_count_from_editText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -152,20 +158,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
                 android:text="To: "
                 android:textAppearance="?attr/textAppearanceBody1"
-                app:layout_constraintBottom_toBottomOf="@+id/vote_count_to_spinner"
+                app:layout_constraintBottom_toBottomOf="@+id/vote_count_to_editText"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/vote_count_from_spinner" />
+                app:layout_constraintTop_toBottomOf="@+id/vote_count_from_editText" />
 
-            <Spinner
-                android:id="@+id/vote_count_to_spinner"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/vote_count_to_editText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vote_count_to_textView"
-                app:layout_constraintTop_toBottomOf="@+id/vote_count_from_spinner" />
+                app:layout_constraintTop_toBottomOf="@+id/vote_count_from_editText" />
 
             <!--        -->
             <TextView
@@ -178,7 +185,7 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/vote_count_to_spinner" />
+                app:layout_constraintTop_toBottomOf="@+id/vote_count_to_editText" />
 
             <TextView
                 android:id="@+id/vote_average_from_textView"
@@ -186,16 +193,18 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:text="From: "
+                android:gravity="center_vertical"
                 android:textAppearance="?attr/textAppearanceBody1"
                 app:layout_constraintBottom_toBottomOf="@+id/vote_average_from_spinner"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vote_average_textView" />
 
-            <Spinner
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/vote_average_from_spinner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vote_average_from_textView"
                 app:layout_constraintTop_toBottomOf="@+id/vote_average_textView" />
@@ -206,16 +215,18 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:text="To: "
+                android:gravity="center_vertical"
                 android:textAppearance="?attr/textAppearanceBody1"
                 app:layout_constraintBottom_toBottomOf="@+id/vote_average_to_spinner"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vote_average_from_spinner" />
 
-            <Spinner
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/vote_average_to_spinner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vote_average_to_textView"
                 app:layout_constraintTop_toBottomOf="@+id/vote_average_from_spinner" />
@@ -238,16 +249,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
                 android:text="From: "
                 android:textAppearance="?attr/textAppearanceBody1"
-                app:layout_constraintBottom_toBottomOf="@+id/runtime_from_spinner"
+                app:layout_constraintBottom_toBottomOf="@+id/runtime_from_editText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/runtime_textView" />
 
-            <Spinner
-                android:id="@+id/runtime_from_spinner"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/runtime_from_editText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/runtime_from_textView"
@@ -259,19 +272,20 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:text="To: "
+                android:gravity="center_vertical"
                 android:textAppearance="?attr/textAppearanceBody1"
-                app:layout_constraintBottom_toBottomOf="@+id/runtime_to_spinner"
+                app:layout_constraintBottom_toBottomOf="@+id/runtime_to_editText"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/runtime_from_spinner" />
+                app:layout_constraintTop_toBottomOf="@+id/runtime_from_editText" />
 
-            <Spinner
-                android:id="@+id/runtime_to_spinner"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/runtime_to_editText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/runtime_to_textView"
-                app:layout_constraintTop_toBottomOf="@+id/runtime_from_spinner" />
+                app:layout_constraintTop_toBottomOf="@+id/runtime_from_editText" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/submit_button"
@@ -281,7 +295,7 @@
                 android:text="submit"
                 app:backgroundTint="@color/teal_600"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/runtime_to_spinner" />
+                app:layout_constraintTop_toBottomOf="@+id/runtime_to_editText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

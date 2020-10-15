@@ -2,9 +2,13 @@ package com.hadysalhab.movid.movies.usecases.discover
 
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
-import com.hadysalhab.movid.movies.*
+import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
+import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.movies.MoviesResponse
+import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.networking.*
 import com.hadysalhab.movid.networking.responses.MoviesResponseSchema
+import com.hadysalhab.movid.screen.main.filter.FilterState
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
 
@@ -51,8 +55,8 @@ class DiscoverMoviesUseCase(
                 page = page,
                 sortBy = sortBy,
                 includeAdult = includeAdult,
-                primaryReleaseYearGte = primaryReleaseYearGte,
-                primaryReleaseYearLte = primaryReleaseYearLte,
+                primaryReleaseDateGte = if (primaryReleaseYearGte == null) null else "$primaryReleaseYearGte-01-01",
+                primaryReleaseDateLte = if (primaryReleaseYearLte == null) null else "$primaryReleaseYearLte-12-31",
                 voteCountGte = voteCountGte,
                 voteCountLte = voteCountLte,
                 voteAverageGte = voteAverageGte,

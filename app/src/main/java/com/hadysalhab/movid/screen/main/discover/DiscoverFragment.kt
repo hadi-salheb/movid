@@ -80,6 +80,11 @@ class DiscoverFragment : BaseFragment(), ListWithToolbarTitle.Listener {
         unregisterObservers()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        discoverViewModel.onSavedInstanceState()
+    }
+
     //User Interactions-----------------------------------------------------------------------------
     override fun onMovieItemClicked(movieID: Int) {
         mainNavigator.toDetailFragment(movieID)

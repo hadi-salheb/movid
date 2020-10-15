@@ -1,8 +1,9 @@
 package com.hadysalhab.movid.screen.main.discover
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.usecases.discover.DiscoverMoviesUseCase
@@ -10,18 +11,26 @@ import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleA
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleState
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
 import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
+import com.hadysalhab.movid.screen.common.viewmodels.SavedStateViewModel
+import com.hadysalhab.movid.screen.main.filter.FilterState
 import com.hadysalhab.movid.screen.main.search.Genre
 import javax.inject.Inject
 
+private const val STORE_FILTER_STATE = "com.hadysalhab.movid.screen.main.discover.store.key"
+
 class DiscoverViewModel @Inject constructor(
     private val discoverMoviesUseCase: DiscoverMoviesUseCase,
+    private val discoverMoviesFilterStateStore: DiscoverMoviesFilterStateStore,
     private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager
-) : ViewModel(), DiscoverMoviesUseCase.Listener {
+) : SavedStateViewModel(), DiscoverMoviesUseCase.Listener {
     private var isFirstRender: Boolean = true
     private lateinit var genre: Genre
     private lateinit var moviesResponse: MoviesResponse
     private val moviesList = mutableListOf<Movie>()
     private val dispatch = listWithToolbarTitleStateManager::dispatch
+
+    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var currentStoreFilterState: FilterState
 
     val state: LiveData<ListWithToolbarTitleState> =
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
@@ -35,9 +44,21 @@ class DiscoverViewModel @Inject constructor(
             )
         )
 
-
-    init {
+    override fun init(savedStateHandle: SavedStateHandle) {
         discoverMoviesUseCase.registerListener(this)
+        this.savedStateHandle = savedStateHandle
+        checkStoreFilterState()
+    }
+
+    //Process Death Check
+    private fun checkStoreFilterState() {
+        this.currentStoreFilterState = if (savedStateHandle.contains(STORE_FILTER_STATE)) {
+            val savedStoreState = savedStateHandle.get<FilterState>(STORE_FILTER_STATE)!!
+            discoverMoviesFilterStateStore.updateStoreState(savedStoreState)
+            savedStoreState
+        } else {
+            discoverMoviesFilterStateStore.currentFilterState
+        }
     }
 
     fun onStart(genre: Genre) {
@@ -51,6 +72,14 @@ class DiscoverViewModel @Inject constructor(
             isFirstRender = false
             dispatch(ListWithToolbarTitleActions.Request)
             fetchApi(1)
+        } else {
+            val storeFilterState = discoverMoviesFilterStateStore.currentFilterState
+            if (storeFilterState != currentStoreFilterState) {
+                currentStoreFilterState = storeFilterState
+                this.moviesList.clear()
+                dispatch(ListWithToolbarTitleActions.Request)
+                fetchApi(1)
+            }
         }
     }
 
@@ -89,11 +118,17 @@ class DiscoverViewModel @Inject constructor(
             dispatch(ListWithToolbarTitleActions.Error(msg))
         }
     }
+
+
     //----------------------------------------------------------------------------------------------
 
     override fun onCleared() {
         super.onCleared()
         discoverMoviesUseCase.unregisterListener(this)
+    }
+
+    fun onSavedInstanceState() {
+        savedStateHandle.set(STORE_FILTER_STATE, this.currentStoreFilterState)
     }
 
 }

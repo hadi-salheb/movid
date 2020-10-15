@@ -20,6 +20,7 @@ import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedScreenStateManager
+import com.hadysalhab.movid.screen.main.filter.FilterScreenStateManager
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenStateManager
 import com.hadysalhab.movid.screen.main.reviews.ReviewScreenStateManager
 import com.hadysalhab.movid.screen.main.search.SearchScreenStateManager
@@ -111,4 +112,7 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getBackPressDispatcher() = activity as BackPressDispatcher
+
+    @Provides
+    fun getFilterScreenStateManager() = FilterScreenStateManager()
 }

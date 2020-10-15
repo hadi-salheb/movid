@@ -147,10 +147,10 @@ interface TmdbApi {
     fun discover(
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("page") page: Int,
-        @Query("sort_by") sortBy: String?,
+        @Query("sort_by") sortBy: String,
         @Query("include_adult") includeAdult: Boolean,
-        @Query("primary_release_date.gte") primaryReleaseYearGte: String?,
-        @Query("primary_release_date.lte") primaryReleaseYearLte: String?,
+        @Query("primary_release_date.gte") primaryReleaseDateGte: String?,
+        @Query("primary_release_date.lte") primaryReleaseDateLte: String?,
         @Query("vote_count.gte") voteCountGte: Int?,
         @Query("vote_count.lte") voteCountLte: Int?,
         @Query("vote_average.gte") voteAverageGte: Double?,
