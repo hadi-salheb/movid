@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.common.utils.getVoteAverageNumbers
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 import java.util.*
@@ -41,7 +42,7 @@ class FilterViewImpl(
     //includeAdult
     private val includeAdultSwitch: Switch
 
-    //VoteCount
+    //ReleasedDate
     private val releasedDateFromSpinner: Spinner
     private val releasedDateToSpinner: Spinner
     private val releasedDateSpinnerAdapter: ArrayAdapter<String>
@@ -50,6 +51,14 @@ class FilterViewImpl(
             .toList().map { it.toString() }
     private var releasedDateFromPosition = 0
     private var releasedDateToPosition = 0
+
+    //VoteAverage
+    private val voteAverageFromSpinner: Spinner
+    private val voteAverageToSpinner: Spinner
+    private val voteAverageSpinnerAdapter: ArrayAdapter<String>
+    private val voteAverage = mutableListOf("") + getVoteAverageNumbers()
+    private var voteAverageFromPosition = 0
+    private var voteAverageToPosition = 0
 
 
     init {
@@ -167,6 +176,71 @@ class FilterViewImpl(
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
+
+        voteAverageFromSpinner = findViewById(R.id.vote_average_from_spinner)
+        voteAverageToSpinner = findViewById(R.id.vote_average_to_spinner)
+        voteAverageSpinnerAdapter = ArrayAdapter(
+            getContext(),
+            android.R.layout.simple_spinner_item,
+            voteAverage
+        )
+        voteAverageSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        voteAverageFromSpinner.adapter = voteAverageSpinnerAdapter
+        voteAverageToSpinner.adapter = voteAverageSpinnerAdapter
+
+        voteAverageFromSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    voteAverageFromPosition = position
+                    listeners.forEach {
+                        it.onVoteAverageGteChanged(
+                            if (position == 0) null else voteAverageSpinnerAdapter.getItem(
+                                voteAverageFromPosition
+                            )!!.toFloat()
+                        )
+                    }
+                    if (voteAverageFromPosition != 0 && voteAverageToPosition != 0) {
+                        if (voteAverageFromPosition > voteAverageToPosition) {
+                            voteAverageToPosition = voteAverageFromPosition
+                            voteAverageToSpinner.setSelection(voteAverageToPosition)
+                        }
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+            }
+        voteAverageToSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                voteAverageToPosition = position
+                listeners.forEach {
+                    it.onVoteAverageLteChanged(
+                        if (position == 0) null else voteAverageSpinnerAdapter.getItem(
+                            voteAverageToPosition
+                        )!!.toFloat()
+                    )
+                }
+                if (voteAverageToPosition != 0 && voteAverageFromPosition != 0) {
+                    if (voteAverageFromPosition > voteAverageToPosition) {
+                        voteAverageFromPosition = voteAverageToPosition
+                        voteAverageFromSpinner.setSelection(voteAverageFromPosition)
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
     }
 
     override fun handleState(filterState: FilterState) {
@@ -175,6 +249,8 @@ class FilterViewImpl(
             handleSortByState(sortBy)
             handleReleaseYearFrom(primaryReleaseYearGte)
             handleReleaseYearTo(primaryReleaseYearLte)
+            handleVoteAverageFrom(voteAverageGte)
+            handleVoteAverageTo(voteAverageLte)
         }
     }
 
@@ -207,6 +283,24 @@ class FilterViewImpl(
         if (currentReleaseYearTo != releaseYearToArg) {
             val positionToBe = releasedDateSpinnerAdapter.getPosition(releaseYearToArg)
             releasedDateToSpinner.setSelection(positionToBe)
+        }
+    }
+
+    private fun handleVoteAverageFrom(voteAverageFrom: Float?) {
+        val currentVoteAverageFrom = voteAverageSpinnerAdapter.getItem(voteAverageFromPosition)
+        val voteAverageFromArg = voteAverageFrom?.toString() ?: ""
+        if (currentVoteAverageFrom != voteAverageFromArg) {
+            val positionToBe = voteAverageSpinnerAdapter.getPosition(voteAverageFromArg)
+            voteAverageFromSpinner.setSelection(positionToBe)
+        }
+    }
+
+    private fun handleVoteAverageTo(voteAverageTo: Float?) {
+        val currentVoteAverageTo = voteAverageSpinnerAdapter.getItem(voteAverageToPosition)
+        val voteAverageToArg = voteAverageTo?.toString() ?: ""
+        if (currentVoteAverageTo != voteAverageToArg) {
+            val positionToBe = voteAverageSpinnerAdapter.getPosition(voteAverageToArg)
+            voteAverageToSpinner.setSelection(positionToBe)
         }
     }
 }

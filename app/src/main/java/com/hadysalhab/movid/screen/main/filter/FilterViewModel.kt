@@ -40,6 +40,14 @@ class FilterViewModel @Inject constructor(
         dispatch(FilterActions.UpdateReleasedYearTo(primaryReleaseYearLte))
     }
 
+    fun onVoteAverageGteChanged(voteAverageGte: Float?) {
+        dispatch(FilterActions.UpdateVoteAverageGte(voteAverageGte))
+    }
+
+    fun onVoteAverageLteChanged(voteAverageLte: Float?) {
+        dispatch(FilterActions.UpdateVoteAverageLte(voteAverageLte))
+    }
+
 
     //Process Death checks
     private fun checkCurrentScreenState() {

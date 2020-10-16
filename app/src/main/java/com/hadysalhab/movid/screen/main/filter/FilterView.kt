@@ -12,8 +12,8 @@ data class FilterState(
     val primaryReleaseYearLte: String? = null,
     val voteCountGte: Int? = null,
     val voteCountLte: Int? = null,
-    val voteAverageGte: Double? = null,
-    val voteAverageLte: Double? = null,
+    val voteAverageGte: Float? = null,
+    val voteAverageLte: Float? = null,
     val withRuntimeGte: Int? = null,
     val withRuntimeLte: Int? = null
 ) : Parcelable
@@ -25,6 +25,8 @@ abstract class FilterView : BaseObservableViewMvc<FilterView.Listener>() {
         fun onPrimaryReleaseYearGteChanged(primaryReleaseYearGte: String?)
         fun onPrimaryReleaseYearLteChanged(primaryReleaseYearLte: String?)
         fun onFilterSubmit()
+        fun onVoteAverageGteChanged(voteAverageGte: Float?)
+        fun onVoteAverageLteChanged(voteAverageLte: Float?)
     }
 
     abstract fun handleState(filterState: FilterState)

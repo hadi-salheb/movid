@@ -199,12 +199,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vote_average_textView" />
 
-            <com.google.android.material.textfield.TextInputEditText
+            <Spinner
                 android:id="@+id/vote_average_from_spinner"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_marginTop="8dp"
-                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vote_average_from_textView"
                 app:layout_constraintTop_toBottomOf="@+id/vote_average_textView" />
@@ -221,10 +220,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vote_average_from_spinner" />
 
-            <com.google.android.material.textfield.TextInputEditText
+            <Spinner
                 android:id="@+id/vote_average_to_spinner"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_marginTop="8dp"
                 android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"

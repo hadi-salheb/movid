@@ -13,3 +13,12 @@ fun getYoutubeTrailerFromResponse(videoResponse: VideosResponse) =
     videoResponse.videos.find {
         it.site == "YouTube" && it.type == "Trailer"
     }
+
+fun getVoteAverageNumbers(): List<String> {
+    var number: Float = 0.0f
+    val numbers: MutableList<String> = mutableListOf()
+    for (i in 0..20) {
+        numbers.add((i / 2.0).toString())
+    }
+    return numbers
+}

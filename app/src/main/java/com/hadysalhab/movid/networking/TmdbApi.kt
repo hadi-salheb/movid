@@ -153,8 +153,8 @@ interface TmdbApi {
         @Query("primary_release_date.lte") primaryReleaseDateLte: String?,
         @Query("vote_count.gte") voteCountGte: Int?,
         @Query("vote_count.lte") voteCountLte: Int?,
-        @Query("vote_average.gte") voteAverageGte: Double?,
-        @Query("vote_average.lte") voteAverageLte: Double?,
+        @Query("vote_average.gte") voteAverageGte: Float?,
+        @Query("vote_average.lte") voteAverageLte: Float?,
         @Query("with_genres") withGenres: String,
         @Query("with_runtime.gte") withRuntimeGte: Int?,
         @Query("with_runtime.lte") withRuntimeLte: Int?

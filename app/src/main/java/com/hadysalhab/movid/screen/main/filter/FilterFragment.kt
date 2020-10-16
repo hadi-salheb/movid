@@ -102,4 +102,12 @@ class FilterFragment : BaseFragment(), FilterView.Listener {
         filterViewModel.onFilterSubmit()
         mainNavigator.popFragment()
     }
+
+    override fun onVoteAverageGteChanged(voteAverageGte: Float?) {
+        filterViewModel.onVoteAverageGteChanged(voteAverageGte)
+    }
+
+    override fun onVoteAverageLteChanged(voteAverageLte: Float?) {
+        filterViewModel.onVoteAverageLteChanged(voteAverageLte)
+    }
 }
