@@ -11,7 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
-import com.hadysalhab.movid.common.constants.POSTER_SIZE_185
+import com.hadysalhab.movid.common.constants.POSTER_SIZE_500
 import com.hadysalhab.movid.common.utils.convertDpToPixel
 import com.hadysalhab.movid.common.utils.getYoutubeTrailerFromResponse
 import com.hadysalhab.movid.movies.*
@@ -300,9 +300,14 @@ class MovieDetailScreenImpl(
     }
 
     private fun displayPosterImage(posterPath: String?) {
-        posterPath?.let {
+        if (posterPath == null) {
             Glide.with(getContext())
-                .load(IMAGES_BASE_URL + POSTER_SIZE_185 + it)
+                .load(R.drawable.image_not_found)
+                .centerCrop()
+                .into(posterImageView)
+        } else {
+            Glide.with(getContext())
+                .load(IMAGES_BASE_URL + POSTER_SIZE_500 + posterPath)
                 .into(posterImageView)
         }
     }

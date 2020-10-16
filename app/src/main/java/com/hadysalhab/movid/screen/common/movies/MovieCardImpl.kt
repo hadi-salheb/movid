@@ -41,9 +41,13 @@ class MovieCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?, viewFact
     override fun displayMovie(movie: Movie) {
         this.movie = movie
         movieTitle.text = movie.title
-        movie.posterPath?.let {
+        if (movie.posterPath == null) {
             Glide.with(getContext())
-                .load(IMAGES_BASE_URL + POSTER_SIZE_500 + it)
+                .load(R.drawable.image_not_found)
+                .into(movieImage)
+        } else {
+            Glide.with(getContext())
+                .load(IMAGES_BASE_URL + POSTER_SIZE_500 + movie.posterPath)
                 .into(movieImage)
         }
         movieReleaseDate.text = movie.releaseDate

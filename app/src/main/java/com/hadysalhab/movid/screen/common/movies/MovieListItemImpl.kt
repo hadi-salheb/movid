@@ -38,9 +38,13 @@ class MovieListItemImpl(
                 it.onMovieItemClicked(movie.id)
             }
         }
-        movie.posterPath?.let {
+        if (movie.posterPath == null) {
             Glide.with(getContext())
-                .load(IMAGES_BASE_URL + POSTER_SIZE_500 + it)
+                .load(R.drawable.image_not_found)
+                .into(movieImageIV)
+        } else {
+            Glide.with(getContext())
+                .load(IMAGES_BASE_URL + POSTER_SIZE_500 + movie.posterPath)
                 .into(movieImageIV)
         }
         movieTitleTV.text = movie.title
