@@ -27,7 +27,7 @@ class Rating(layoutInflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc()
             val number2digits: Double = String.format("%.2f", number3digits).toDouble()
             val result: Double = String.format("%.1f", number2digits).toDouble()
             movieRating.rating = result.toFloat()
-            movieRatingText.text = "${movieRating.rating} (${voteCount})"
+            movieRatingText.text = "$voteAvg (${voteCount})"
         }
     }
 }

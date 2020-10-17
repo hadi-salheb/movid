@@ -149,6 +149,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vote_count_from_textView"
                 app:layout_constraintTop_toBottomOf="@+id/vote_count_textView" />
@@ -170,6 +171,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vote_count_to_textView"
                 app:layout_constraintTop_toBottomOf="@+id/vote_count_from_editText" />
@@ -212,7 +214,7 @@
                 android:id="@+id/vote_average_to_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="To: "
                 android:gravity="center_vertical"
                 android:textAppearance="?attr/textAppearanceBody1"
@@ -224,7 +226,7 @@
                 android:id="@+id/vote_average_to_spinner"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vote_average_to_textView"
@@ -236,7 +238,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Runtime"
+                android:text="Runtime (mins)"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -259,6 +261,7 @@
                 android:id="@+id/runtime_from_editText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:gravity="center_vertical"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -282,6 +285,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:inputType="number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/runtime_to_textView"
                 app:layout_constraintTop_toBottomOf="@+id/runtime_from_editText" />
@@ -292,8 +296,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="submit"
+                android:inputType="number"
                 app:backgroundTint="@color/teal_600"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/runtime_to_editText" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/reset_button"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="reset"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/runtime_to_editText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

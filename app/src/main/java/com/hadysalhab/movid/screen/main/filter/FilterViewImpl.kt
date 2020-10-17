@@ -1,5 +1,8 @@
 package com.hadysalhab.movid.screen.main.filter
 
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.utils.getVoteAverageNumbers
 import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.inputfilter.InputFilterMinMax
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 import java.util.*
 
@@ -19,6 +23,7 @@ class FilterViewImpl(
     private val toolbar: Toolbar
     private val menuToolbarLayout: MenuToolbarLayout
     private val submitButton: Button
+    private val resetButton: Button
 
     //SortBy
     private val sortBySpinner: Spinner
@@ -60,6 +65,13 @@ class FilterViewImpl(
     private var voteAverageFromPosition = 0
     private var voteAverageToPosition = 0
 
+    //VoteCount
+    private val voteCountFromEditText: EditText
+    private val voteCountToEditText: EditText
+
+    //Runtime
+    private val runtimeFromEditText: EditText
+    private val runtimeToEditText: EditText
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_filter, viewGroup, false))
@@ -73,6 +85,14 @@ class FilterViewImpl(
         submitButton.setOnClickListener {
             listeners.forEach {
                 it.onFilterSubmit()
+            }
+        }
+
+        //Reset
+        resetButton = findViewById(R.id.reset_button)
+        resetButton.setOnClickListener {
+            listeners.forEach {
+                it.onResetClick()
             }
         }
 
@@ -241,6 +261,100 @@ class FilterViewImpl(
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
+
+        //VoteCount
+        voteCountFromEditText = findViewById(R.id.vote_count_from_editText)
+        voteCountToEditText = findViewById(R.id.vote_count_to_editText)
+        voteCountFromEditText.filters = arrayOf<InputFilter>(
+            InputFilterMinMax("1", "${Int.MAX_VALUE}")
+        )
+        voteCountToEditText.filters = arrayOf<InputFilter>(
+            InputFilterMinMax("1", "${Int.MAX_VALUE}")
+        )
+        voteCountFromEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                listeners.forEach {
+                    if (s.isNullOrEmpty()) {
+                        it.onVoteCountGteChanged(null)
+                    } else {
+                        it.onVoteCountGteChanged(s.toString().toInt())
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
+        voteCountToEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                listeners.forEach {
+                    if (s.isNullOrEmpty()) {
+                        it.onVoteCountLteChanged(null)
+                    } else {
+                        it.onVoteCountLteChanged(s.toString().toInt())
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
+        runtimeFromEditText = findViewById(R.id.runtime_from_editText)
+        runtimeToEditText = findViewById(R.id.runtime_to_editText)
+        runtimeFromEditText.filters = arrayOf<InputFilter>(
+            InputFilterMinMax("1", "${Int.MAX_VALUE}")
+        )
+        runtimeToEditText.filters = arrayOf<InputFilter>(
+            InputFilterMinMax("1", "${Int.MAX_VALUE}")
+        )
+        runtimeFromEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                listeners.forEach {
+                    if (s.isNullOrEmpty()) {
+                        it.onRuntimeGteChanged(null)
+                    } else {
+                        it.onRuntimeGteChanged(s.toString().toInt())
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
+        runtimeToEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                listeners.forEach {
+                    if (s.isNullOrEmpty()) {
+                        it.onRuntimeLteChanged(null)
+                    } else {
+                        it.onRuntimeLteChanged(s.toString().toInt())
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
     }
 
     override fun handleState(filterState: FilterState) {
@@ -251,6 +365,10 @@ class FilterViewImpl(
             handleReleaseYearTo(primaryReleaseYearLte)
             handleVoteAverageFrom(voteAverageGte)
             handleVoteAverageTo(voteAverageLte)
+            handleVoteCountFrom(voteCountGte)
+            handleVoteCountTo(voteCountLte)
+            handleRuntimeFrom(withRuntimeGte)
+            handleRuntimeTo(withRuntimeLte)
         }
     }
 
@@ -301,6 +419,38 @@ class FilterViewImpl(
         if (currentVoteAverageTo != voteAverageToArg) {
             val positionToBe = voteAverageSpinnerAdapter.getPosition(voteAverageToArg)
             voteAverageToSpinner.setSelection(positionToBe)
+        }
+    }
+
+    private fun handleVoteCountFrom(voteCountFrom: Int?) {
+        val currentVote = voteCountFromEditText.text.toString()
+        val voteCountFromArg = voteCountFrom?.toString() ?: ""
+        if (currentVote != voteCountFromArg) {
+            voteCountFromEditText.setText(voteCountFromArg)
+        }
+    }
+
+    private fun handleVoteCountTo(voteCountTo: Int?) {
+        val currentVote = voteCountToEditText.text.toString()
+        val voteCountToArg = voteCountTo?.toString() ?: ""
+        if (currentVote != voteCountToArg) {
+            voteCountToEditText.setText(voteCountToArg)
+        }
+    }
+
+    private fun handleRuntimeFrom(withRuntimeGte: Int?) {
+        val currentVote = runtimeFromEditText.text.toString()
+        val runtimeFromArgs = withRuntimeGte?.toString() ?: ""
+        if (currentVote != runtimeFromArgs) {
+            runtimeFromEditText.setText(runtimeFromArgs)
+        }
+    }
+
+    private fun handleRuntimeTo(withRuntimeLte: Int?) {
+        val currentVote = runtimeToEditText.text.toString()
+        val runtimeToArgs = withRuntimeLte?.toString() ?: ""
+        if (currentVote != runtimeToArgs) {
+            runtimeToEditText.setText(runtimeToArgs)
         }
     }
 }

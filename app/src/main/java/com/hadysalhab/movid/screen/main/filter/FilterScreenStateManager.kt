@@ -10,6 +10,11 @@ sealed class FilterActions {
     data class UpdateReleasedYearTo(val releasedYearTo: String?) : FilterActions()
     data class UpdateVoteAverageGte(val voteAverageGte: Float?) : FilterActions()
     data class UpdateVoteAverageLte(val voteAverageLte: Float?) : FilterActions()
+    data class UpdateVoteCountGte(val voteCountGte: Int?) : FilterActions()
+    data class UpdateVoteCountLte(val voteCountLte: Int?) : FilterActions()
+    data class UpdateRuntimeGte(val runtimeGte: Int?) : FilterActions()
+    data class UpdateRuntimeLte(val runtimeLte: Int?) : FilterActions()
+    object ResetState : FilterActions()
 }
 
 class FilterScreenStateManager {
@@ -39,5 +44,10 @@ class FilterScreenStateManager {
             is FilterActions.UpdateReleasedYearTo -> state.copy(primaryReleaseYearLte = filterActions.releasedYearTo)
             is FilterActions.UpdateVoteAverageGte -> state.copy(voteAverageGte = filterActions.voteAverageGte)
             is FilterActions.UpdateVoteAverageLte -> state.copy(voteAverageLte = filterActions.voteAverageLte)
+            is FilterActions.UpdateVoteCountGte -> state.copy(voteCountGte = filterActions.voteCountGte)
+            is FilterActions.UpdateVoteCountLte -> state.copy(voteCountLte = filterActions.voteCountLte)
+            is FilterActions.UpdateRuntimeGte -> state.copy(withRuntimeGte = filterActions.runtimeGte)
+            is FilterActions.UpdateRuntimeLte -> state.copy(withRuntimeLte = filterActions.runtimeLte)
+            FilterActions.ResetState -> FilterState()
         }
 }

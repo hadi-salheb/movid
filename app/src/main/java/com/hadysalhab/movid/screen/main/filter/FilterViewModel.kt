@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.screen.common.viewmodels.SavedStateViewModel
+import com.zhuinden.eventemitter.EventEmitter
+import com.zhuinden.eventemitter.EventSource
 import javax.inject.Inject
 
 private const val FILTER_SCREEN_STATE_KEY = "com.hadysalhab.movid.screen.main.filter.key"
@@ -17,6 +19,9 @@ class FilterViewModel @Inject constructor(
     private val dispatch = filterScreenStateManager::dispatch
     private lateinit var currentStoreState: FilterState
     lateinit var currentScreenState: LiveData<FilterState>
+
+    private val emitter: EventEmitter<FilterScreenEvents> = EventEmitter()
+    val screenEvents: EventSource<FilterScreenEvents> get() = emitter
 
     override fun init(savedStateHandle: SavedStateHandle) {
         this.savedStateHandle = savedStateHandle
@@ -46,6 +51,26 @@ class FilterViewModel @Inject constructor(
 
     fun onVoteAverageLteChanged(voteAverageLte: Float?) {
         dispatch(FilterActions.UpdateVoteAverageLte(voteAverageLte))
+    }
+
+    fun onVoteCountLteChanged(voteCountLte: Int?) {
+        dispatch(FilterActions.UpdateVoteCountLte(voteCountLte))
+    }
+
+    fun onVoteCountGteChanged(voteCountGte: Int?) {
+        dispatch(FilterActions.UpdateVoteCountGte(voteCountGte))
+    }
+
+    fun onRuntimeGteChanged(withRuntimeGte: Int?) {
+        dispatch(FilterActions.UpdateRuntimeGte(withRuntimeGte))
+    }
+
+    fun onRuntimeLteChanged(withRuntimeLte: Int?) {
+        dispatch(FilterActions.UpdateRuntimeLte(withRuntimeLte))
+    }
+
+    fun onResetClick() {
+        dispatch(FilterActions.ResetState)
     }
 
 
@@ -80,7 +105,15 @@ class FilterViewModel @Inject constructor(
     }
 
     fun onFilterSubmit() {
-        filterStateStore.updateStoreState(this.currentScreenState.value!!)
+        val stateValue = currentScreenState.value!!
+        if (stateValue.voteCountGte != null && stateValue.voteCountLte != null && stateValue.voteCountGte > stateValue.voteCountLte) {
+            emitter.emit(FilterScreenEvents.ShowToast("Please check your vote count inputs"))
+        } else if (stateValue.withRuntimeGte != null && stateValue.withRuntimeLte != null && stateValue.withRuntimeGte > stateValue.withRuntimeLte) {
+            emitter.emit(FilterScreenEvents.ShowToast("Please check your runtime inputs"))
+        } else {
+            filterStateStore.updateStoreState(stateValue)
+            emitter.emit(FilterScreenEvents.PopFragment)
+        }
     }
 }
 

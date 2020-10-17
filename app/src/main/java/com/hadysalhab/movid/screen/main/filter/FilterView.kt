@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class FilterState(
     val sortBy: String = "popularity.desc",
-    val includeAdult: Boolean = true,
+    val includeAdult: Boolean = false,
     val primaryReleaseYearGte: String? = null,
     val primaryReleaseYearLte: String? = null,
     val voteCountGte: Int? = null,
@@ -27,6 +27,11 @@ abstract class FilterView : BaseObservableViewMvc<FilterView.Listener>() {
         fun onFilterSubmit()
         fun onVoteAverageGteChanged(voteAverageGte: Float?)
         fun onVoteAverageLteChanged(voteAverageLte: Float?)
+        fun onVoteCountGteChanged(voteCountGte: Int?)
+        fun onVoteCountLteChanged(voteCountLte: Int?)
+        fun onRuntimeGteChanged(withRuntimeGte: Int?)
+        fun onRuntimeLteChanged(withRuntimeLte: Int?)
+        fun onResetClick()
     }
 
     abstract fun handleState(filterState: FilterState)
