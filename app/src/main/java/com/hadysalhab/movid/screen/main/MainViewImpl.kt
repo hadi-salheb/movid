@@ -36,17 +36,18 @@ class MainViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : MainView() {
         R.id.bottom_nav_featured -> {
             BottomNavigationItems.FEATURED
         }
-        R.id.bottom_nav_account -> {
-            BottomNavigationItems.ACCOUNT
+        R.id.bottom_nav_search -> {
+            BottomNavigationItems.SEARCH
         }
         R.id.bottom_nav_favorites -> {
             BottomNavigationItems.FAVORITES
         }
-        R.id.bottom_nav_search -> {
-            BottomNavigationItems.SEARCH
-        }
+
         R.id.bottom_nav_watchList -> {
             BottomNavigationItems.WATCHLIST
+        }
+        R.id.bottom_nav_account -> {
+            BottomNavigationItems.ACCOUNT
         }
         else -> {
             throw RuntimeException("BottomNavigationItem id ${id} not supported")

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.main.BottomNavigationItems
+import com.hadysalhab.movid.screen.main.account.AccountFragment
 import com.hadysalhab.movid.screen.main.discover.DiscoverFragment
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupFragment
@@ -40,6 +41,7 @@ class MainNavigator(
                 FragNavController.TAB2 -> SearchFragment.newInstance()
                 FragNavController.TAB3 -> FavoriteMoviesFragment.newInstance()
                 FragNavController.TAB4 -> WatchlistMoviesFragment.newInstance()
+                FragNavController.TAB5 -> AccountFragment.newInstance()
                 else -> throw IllegalStateException("unsupported tab index: $index")
             }
         }
@@ -72,7 +74,7 @@ class MainNavigator(
     }
 
     fun switchTab(bottomNavigationItems: BottomNavigationItems) {
-        var tabIndex: Int = when (bottomNavigationItems) {
+        val tabIndex: Int = when (bottomNavigationItems) {
             BottomNavigationItems.FEATURED -> FragNavController.TAB1
             BottomNavigationItems.SEARCH -> FragNavController.TAB2
             BottomNavigationItems.FAVORITES -> FragNavController.TAB3

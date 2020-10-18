@@ -44,14 +44,9 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
         val currentSelectedItem = view.getCurrentNavigationItem()
         if (currentSelectedItem == item) {
             mainNavigator.clearCurrentStack()
-            return
-        }
-
-        if (currentSelectedItem != item && (item == BottomNavigationItems.FEATURED || item == BottomNavigationItems.FAVORITES || item == BottomNavigationItems.WATCHLIST || item == BottomNavigationItems.SEARCH)) {
+        } else {
             mainNavigator.switchTab(item)
         }
-
-
     }
 
     override fun getFragmentFrame(): FrameLayout = view.getFragmentFrame()
