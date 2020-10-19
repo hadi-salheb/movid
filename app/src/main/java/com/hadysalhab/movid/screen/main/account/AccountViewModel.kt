@@ -17,7 +17,7 @@ constructor(
     val screenState: LiveData<AccountViewState>
     private val dispatch = accountScreenStateManager::dispatch
     private lateinit var accountDetail: AccountResponse
-
+    private var isSigninOut = false
     init {
         getAccountDetailsUseCase.registerListener(this)
         screenState =
@@ -39,6 +39,10 @@ constructor(
     }
 
     fun signOutClick() {
-        signOutUseCase.signOutUser(accountDetail)
+        //prevent double tap bug
+        if (!isSigninOut) {
+            isSigninOut = true
+            signOutUseCase.signOutUser(accountDetail)
+        }
     }
 }
