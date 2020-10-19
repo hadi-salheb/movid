@@ -5,6 +5,7 @@ import com.android.roam.wheelycool.dependencyinjection.presentation.Presentation
 import com.hadysalhab.movid.screen.authentication.AuthActivity
 import com.hadysalhab.movid.screen.authentication.onboarding.OnBoardingFragment
 import com.hadysalhab.movid.screen.main.MainActivity
+import com.hadysalhab.movid.screen.main.account.AccountFragment
 import com.hadysalhab.movid.screen.main.discover.DiscoverFragment
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupFragment
@@ -38,4 +39,5 @@ interface PresentationComponent {
     fun inject(discoverFragment: DiscoverFragment)
     fun inject(recommendedSimilarFragment: RecommendedSimilarFragment)
     fun inject(filterFragment: FilterFragment)
+    fun inject(accountFragment: AccountFragment)
 }
