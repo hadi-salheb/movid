@@ -3,6 +3,7 @@ package com.hadysalhab.movid.common.di.activity
 import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.account.usecases.details.FetchAccountDetailsUseCaseSync
+import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCase
 import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.details.UpdateAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.favorite.AddRemoveFavMovieUseCase
@@ -382,4 +383,14 @@ class UseCaseModel {
         errorMessageHandler
     )
 
+    @Provides
+    fun getAccountDetailUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        getGetAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync
+    ) = GetAccountDetailsUseCase(
+        backgroundThreadPoster,
+        uiThreadPoster,
+        getGetAccountDetailsUseCaseSync
+    )
 }
