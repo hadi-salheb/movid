@@ -22,6 +22,8 @@ import com.hadysalhab.movid.screen.common.reviews.ReviewListItemImpl
 import com.hadysalhab.movid.screen.common.seeall.SeeAllImpl
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 import com.hadysalhab.movid.screen.main.MainViewImpl
+import com.hadysalhab.movid.screen.main.account.AccountView
+import com.hadysalhab.movid.screen.main.account.AccountViewImpl
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupScreenImpl
 import com.hadysalhab.movid.screen.main.filter.FilterView
 import com.hadysalhab.movid.screen.main.filter.FilterViewImpl
@@ -102,4 +104,6 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getEmptyResults(container: ViewGroup?) = EmptyResults(layoutInflater, container)
     fun getPaginationErrorView(parent: ViewGroup?) = PaginationError(layoutInflater, parent)
     fun getFilterView(parent: ViewGroup?): FilterView = FilterViewImpl(layoutInflater, parent, this)
+    fun getAccountView(container: ViewGroup?): AccountView =
+        AccountViewImpl(layoutInflater, container, this)
 }
