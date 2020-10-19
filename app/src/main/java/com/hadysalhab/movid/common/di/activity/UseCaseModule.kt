@@ -10,6 +10,7 @@ import com.hadysalhab.movid.account.usecases.favorite.AddRemoveFavMovieUseCase
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.account.usecases.watchlist.AddRemoveWatchlistMovieUseCase
 import com.hadysalhab.movid.authentication.LoginUseCase
+import com.hadysalhab.movid.authentication.SignOutUseCase
 import com.hadysalhab.movid.authentication.createsession.CreateSessionUseCaseSync
 import com.hadysalhab.movid.authentication.createtoken.CreateRequestTokenUseCaseSync
 import com.hadysalhab.movid.authentication.signtoken.SignTokenUseCaseSync
@@ -45,7 +46,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class UseCaseModel {
+class UseCaseModule {
 
     // Factory -------------------------------------------------------------------------------------
     @Provides
@@ -393,4 +394,23 @@ class UseCaseModel {
         uiThreadPoster,
         getGetAccountDetailsUseCaseSync
     )
+
+    @Provides
+    fun getSignOutUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        sharedPreferencesManager: SharedPreferencesManager,
+        dao: AccountDao,
+        userStateManager: UserStateManager,
+        moviesStateManager: MoviesStateManager,
+        filterStateStore: DiscoverMoviesFilterStateStore
+    ) = SignOutUseCase(
+        backgroundThreadPoster,
+        sharedPreferencesManager,
+        dao,
+        moviesStateManager,
+        userStateManager,
+        filterStateStore
+    )
+
+
 }

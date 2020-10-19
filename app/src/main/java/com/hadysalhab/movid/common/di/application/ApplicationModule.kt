@@ -3,7 +3,6 @@ package com.hadysalhab.movid.common.di.application
 import android.app.Application
 import androidx.room.Room
 import com.google.gson.Gson
-import com.hadysalhab.movid.account.UserState
 import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
@@ -11,7 +10,6 @@ import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
-import com.hadysalhab.movid.movies.MoviesState
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.networking.TmdbApi
 import com.hadysalhab.movid.persistence.MovidDB
@@ -93,26 +91,17 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun getUserStateManager(
-        userState: UserState,
         gson: Gson
     ) =
-        UserStateManager(userState, gson)
+        UserStateManager(gson)
 
     @Provides
     fun getTimeProvider() = TimeProvider()
 
-    @Provides
-    @Singleton
-    fun getMoviesState() = MoviesState()
-
-    @Provides
-    @Singleton
-    fun getUserState() = UserState()
-
     @Singleton
     @Provides
-    fun getMoviesStateManager(moviesState: MoviesState, gson: Gson) =
-        MoviesStateManager(moviesState, gson)
+    fun getMoviesStateManager(gson: Gson) =
+        MoviesStateManager(gson)
 
     @Provides
     fun dataValidator(timeProvider: TimeProvider): DataValidator = DataValidator(timeProvider)

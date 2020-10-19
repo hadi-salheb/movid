@@ -4,9 +4,10 @@ import com.google.gson.Gson
 
 
 class MoviesStateManager(
-    private var moviesState: MoviesState,
     private val gson: Gson
 ) {
+    private var moviesState: MoviesState = MoviesState()
+
 
     private val LOCK = Object()
 
@@ -86,6 +87,12 @@ class MoviesStateManager(
                 getPopularMovies()
             )
         }
+
+    fun clearMovies() {
+        synchronized(LOCK) {
+            moviesState = MoviesState()
+        }
+    }
 }
 
 

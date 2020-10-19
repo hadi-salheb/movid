@@ -1,6 +1,8 @@
 package com.hadysalhab.movid.common
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.hadysalhab.movid.screen.main.featuredgroups.ToolbarCountryItems
 
 private const val PREF_SESSION_ID = "SESSION_ID"
@@ -10,6 +12,10 @@ private const val PREF_FEATURED_POWER_MENU_ITEM = "FEATURED_POWER_MENU_ITEM"
  * Class that controls access to/from shared preferences
  */
 class SharedPreferencesManager(val context: Context) {
+    private val _sessionId = MutableLiveData(getStoredSessionId())
+    val sessionId: LiveData<String>
+        get() = _sessionId
+
     fun getStoredSessionId(): String {
         val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getString(PREF_SESSION_ID, "")!!
@@ -20,6 +26,7 @@ class SharedPreferencesManager(val context: Context) {
             .edit()
             .putString(PREF_SESSION_ID, sessionId)
             .apply()
+        _sessionId.postValue(sessionId)
     }
 
     fun getStoredFeaturedPowerMenuItem(): ToolbarCountryItems {

@@ -2,6 +2,7 @@ package com.hadysalhab.movid.screen.main.account
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -20,6 +21,7 @@ class AccountViewImpl(
     private val toolbar: Toolbar
     private val menuToolbarLayout: MenuToolbarLayout
     private val usernameTextView: TextView
+    private val signOutButton: Button
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_account, parent, false))
@@ -30,6 +32,12 @@ class AccountViewImpl(
         menuToolbarLayout.setToolbarTitle("ACCOUNT")
         usernameTextView = findViewById(R.id.account_username)
 
+        signOutButton = findViewById(R.id.signOut_btn)
+        signOutButton.setOnClickListener {
+            listeners.forEach {
+                it.onSignOutClick()
+            }
+        }
     }
 
     override fun handleState(state: AccountViewState) {

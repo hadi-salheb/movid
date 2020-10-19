@@ -11,7 +11,7 @@ import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
-class AccountFragment : BaseFragment() {
+class AccountFragment : BaseFragment(), AccountView.Listener {
 
     companion object {
         @JvmStatic
@@ -63,11 +63,17 @@ class AccountFragment : BaseFragment() {
     }
 
     private fun registerObservers() {
+        accountView.registerListener(this)
         accountViewModel.screenState.observeForever(accountViewStateObserver)
     }
 
     private fun unregisterObservers() {
+        accountView.unregisterListener(this)
         accountViewModel.screenState.removeObserver(accountViewStateObserver)
+    }
+
+    override fun onSignOutClick() {
+        accountViewModel.signOutClick()
     }
 
 }

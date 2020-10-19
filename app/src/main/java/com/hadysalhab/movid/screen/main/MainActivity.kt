@@ -2,6 +2,8 @@ package com.hadysalhab.movid.screen.main
 
 import android.os.Bundle
 import android.widget.FrameLayout
+import androidx.lifecycle.Observer
+import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
 import com.hadysalhab.movid.screen.common.controllers.backpress.BackPressDispatcher
@@ -18,9 +20,19 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
     @Inject
     lateinit var mainNavigator: MainNavigator
 
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
+
     private lateinit var view: MainView
 
     private val backPressedListeners: MutableSet<BackPressListener> = HashSet()
+
+    private val sessionIdObserver = Observer<String> { sessionID ->
+        if (sessionID.isNullOrEmpty()) {
+            mainNavigator.toAuthActivity()
+            this.finish()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +45,13 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
+        sharedPreferencesManager.sessionId.observeForever(sessionIdObserver)
     }
 
     override fun onStop() {
         super.onStop()
         view.unregisterListener(this)
+        sharedPreferencesManager.sessionId.removeObserver(sessionIdObserver)
     }
 
     override fun onBottomNavigationItemClicked(item: BottomNavigationItems) {

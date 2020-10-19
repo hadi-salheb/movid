@@ -1,10 +1,12 @@
 package com.hadysalhab.movid.screen.common.screensnavigator
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.movies.GroupType
+import com.hadysalhab.movid.screen.authentication.AuthActivity
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.main.BottomNavigationItems
 import com.hadysalhab.movid.screen.main.account.AccountFragment
@@ -107,6 +109,11 @@ class MainNavigator(
 
     fun popFragment() {
         fragNavController.popFragment()
+    }
+
+    fun toAuthActivity() {
+        val intent = Intent(context, AuthActivity::class.java)
+        context.startActivity(intent)
     }
 
 }

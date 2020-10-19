@@ -4,9 +4,9 @@ import com.google.gson.Gson
 
 
 class UserStateManager(
-    private var userState: UserState,
     private val gson: Gson
 ) {
+    private var userState: UserState = UserState()
     private val LOCK = Object()
     fun getSessionId() = userState.sessionID
     fun updateSessionId(sessionId: String) {
@@ -30,5 +30,9 @@ class UserStateManager(
         synchronized(LOCK) {
             userState = userState.copy(accountResponse = accountResponse?.deepCopy(gson))
         }
+    }
+
+    fun clearData() {
+        userState = UserState()
     }
 }

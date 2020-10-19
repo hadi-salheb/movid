@@ -10,5 +10,7 @@ data class AccountViewState(
 
 abstract class AccountView : BaseObservableViewMvc<AccountView.Listener>() {
     abstract fun handleState(state: AccountViewState)
-    interface Listener
+    interface Listener {
+        fun onSignOutClick()
+    }
 }
