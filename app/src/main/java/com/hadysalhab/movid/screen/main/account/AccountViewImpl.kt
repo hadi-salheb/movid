@@ -3,6 +3,7 @@ package com.hadysalhab.movid.screen.main.account
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.amulyakhare.textdrawable.TextDrawable
@@ -18,6 +19,7 @@ class AccountViewImpl(
     private val profileImageView: ImageView
     private val toolbar: Toolbar
     private val menuToolbarLayout: MenuToolbarLayout
+    private val usernameTextView: TextView
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_account, parent, false))
@@ -26,6 +28,8 @@ class AccountViewImpl(
         menuToolbarLayout = viewFactory.getMenuToolbarLayout(toolbar)
         toolbar.addView(menuToolbarLayout.getRootView())
         menuToolbarLayout.setToolbarTitle("ACCOUNT")
+        usernameTextView = findViewById(R.id.account_username)
+
     }
 
     override fun handleState(state: AccountViewState) {
@@ -35,6 +39,8 @@ class AccountViewImpl(
                 ContextCompat.getColor(getContext(), R.color.colorPrimaryDark)
             )
             profileImageView.setImageDrawable(drawable)
+
+            usernameTextView.text = accountResponse.username
         }
     }
 }
