@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
@@ -45,6 +46,28 @@ class AccountFragment : BaseFragment() {
             accountView = viewFactory.getAccountView(container)
         }
         return accountView.getRootView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        registerObservers()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterObservers()
+    }
+
+    private val accountViewStateObserver = Observer<AccountViewState> { state ->
+        accountView.handleState(state)
+    }
+
+    private fun registerObservers() {
+        accountViewModel.screenState.observeForever(accountViewStateObserver)
+    }
+
+    private fun unregisterObservers() {
+        accountViewModel.screenState.removeObserver(accountViewStateObserver)
     }
 
 }

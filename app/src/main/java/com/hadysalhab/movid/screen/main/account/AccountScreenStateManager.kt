@@ -7,7 +7,7 @@ import com.hadysalhab.movid.account.AccountResponse
 
 sealed class AccountActions {
     object Request : AccountActions()
-    data class Success(val accountResponse: AccountResponse? = null) : AccountActions()
+    data class Success(val accountResponse: AccountResponse) : AccountActions()
 }
 
 
