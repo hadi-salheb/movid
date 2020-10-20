@@ -6,16 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import javax.inject.Inject
 
 private const val MOVIE_ID = "MOVIE_ID"
 private const val MOVIE_NAME = "MOVIE_NAME"
 
-class CastListFragment : BaseFragment() {
+class CastListFragment : BaseFragment(), CastListView.Listener {
     @Inject
     lateinit var viewFactory: ViewFactory
 
     lateinit var castListView: CastListView
+
+    @Inject
+    lateinit var mainNavigator: MainNavigator
 
     private var movieID: Int? = null
     lateinit var movieName: String
@@ -54,4 +58,30 @@ class CastListFragment : BaseFragment() {
         }
         return this.castListView.getRootView()
     }
+
+    override fun onStart() {
+        super.onStart()
+        registerObservers()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterObservers()
+    }
+
+
+    private fun registerObservers() {
+        castListView.registerListener(this)
+    }
+
+    private fun unregisterObservers() {
+        castListView.unregisterListener(this)
+    }
+
+    override fun onBackArrowClicked() {
+        mainNavigator.popFragment()
+    }
+
+
 }
+
