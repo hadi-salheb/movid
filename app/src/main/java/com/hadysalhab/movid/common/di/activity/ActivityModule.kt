@@ -20,6 +20,7 @@ import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.main.account.AccountScreenStateManager
+import com.hadysalhab.movid.screen.main.castlist.CastListScreenStateManager
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedScreenStateManager
 import com.hadysalhab.movid.screen.main.filter.FilterScreenStateManager
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenStateManager
@@ -119,4 +120,7 @@ class ActivityModule(private val activity: FragmentActivity) {
 
     @Provides
     fun getAccountScreenStateManager() = AccountScreenStateManager()
+
+    @Provides
+    fun getCastListScreenStateManager() = CastListScreenStateManager()
 }

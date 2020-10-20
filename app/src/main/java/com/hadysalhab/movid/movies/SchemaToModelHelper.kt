@@ -120,7 +120,7 @@ class SchemaToModelHelper {
         Genres(el.id, el.name)
     }
 
-    private fun getCredits(creditsSchema: CreditsSchema) = with(creditsSchema) {
+    fun getCredits(creditsSchema: CreditsSchema) = with(creditsSchema) {
         Credits(id, getCasts(cast), getCrews(crew))
     }
 

@@ -159,4 +159,10 @@ interface TmdbApi {
         @Query("with_runtime.gte") withRuntimeGte: Int?,
         @Query("with_runtime.lte") withRuntimeLte: Int?
     ): Call<MoviesResponseSchema>
+
+    @GET("/3/movie/{movie_id}/credits")
+    fun getCredits(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+    ): Call<CreditsSchema>
 }

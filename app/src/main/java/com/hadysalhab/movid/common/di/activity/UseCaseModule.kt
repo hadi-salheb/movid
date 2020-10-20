@@ -23,6 +23,7 @@ import com.hadysalhab.movid.common.usecases.factory.BaseSimilarRecommendedMovies
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.movies.SchemaToModelHelper
+import com.hadysalhab.movid.movies.usecases.credits.FetchCreditsUseCase
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import com.hadysalhab.movid.movies.usecases.discover.DiscoverMoviesUseCase
 import com.hadysalhab.movid.movies.usecases.favorites.FetchFavoriteMoviesUseCase
@@ -410,6 +411,21 @@ class UseCaseModule {
         moviesStateManager,
         userStateManager,
         filterStateStore
+    )
+
+    @Provides
+    fun getFetchCreditsUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        tmdbApi: TmdbApi,
+        schemaToModelHelper: SchemaToModelHelper,
+        errorMessageHandler: ErrorMessageHandler
+    ) = FetchCreditsUseCase(
+        backgroundThreadPoster,
+        uiThreadPoster,
+        tmdbApi,
+        schemaToModelHelper,
+        errorMessageHandler
     )
 
 
