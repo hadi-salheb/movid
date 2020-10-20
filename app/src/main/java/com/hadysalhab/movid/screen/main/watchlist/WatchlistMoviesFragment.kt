@@ -92,6 +92,10 @@ class WatchlistMoviesFragment : BaseFragment(), MovieListScreen.Listener,
 
     }
 
+    override fun onBackArrowClick() {
+
+    }
+
     //----------------------------------------------------------------------------------------------
 
     private val listWithToolbarTitleStateObserver =

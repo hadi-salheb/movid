@@ -105,6 +105,10 @@ class DiscoverFragment : BaseFragment(), ListWithToolbarTitle.Listener {
     override fun onMenuIconClicked() {
         mainNavigator.toFilterFragment()
     }
+
+    override fun onBackArrowClick() {
+        mainNavigator.popFragment()
+    }
     //----------------------------------------------------------------------------------------------
 
 

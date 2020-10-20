@@ -73,7 +73,7 @@ class MovieDetailScreenImpl(
     private val collectionFL: FrameLayout
     private val recommendedFL: FrameLayout
     private val similarFL: FrameLayout
-
+    private val backArrow: ImageView
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_movie_detail, parent, false))
@@ -93,6 +93,13 @@ class MovieDetailScreenImpl(
         pullToRefresh = findViewById(R.id.pull_to_refresh)
         pullToRefresh.setOnRefreshListener(this)
         pullToRefresh.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.teal_600))
+
+        backArrow = findViewById(R.id.back_arrow)
+        backArrow.setOnClickListener {
+            listeners.forEach {
+                it.onBackArrowClicked()
+            }
+        }
 
         detailSV = findViewById(R.id.movie_detail)
         carouselView = findViewById(R.id.carouselView)

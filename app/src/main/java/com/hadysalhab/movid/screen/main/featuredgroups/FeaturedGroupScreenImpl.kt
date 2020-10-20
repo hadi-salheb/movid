@@ -159,6 +159,10 @@ class FeaturedGroupScreenImpl(
         }
     }
 
+    override fun onBackArrowClicked() {
+
+    }
+
     override fun onMovieCardClicked(movieID: Int) {
         listeners.forEach {
             it.onMovieCardClicked(movieID)

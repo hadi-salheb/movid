@@ -40,6 +40,7 @@
                 android:paddingBottom="16dp"
                 tools:context=".screen.main.moviedetail.MovieDetailFragment">
 
+
                 <com.synnapps.carouselview.CarouselView
                     android:id="@+id/carouselView"
                     android:layout_width="0dp"
@@ -51,6 +52,17 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:slideInterval="5000" />
+
+                <ImageView
+                    android:id="@+id/back_arrow"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/white_circle"
+                    android:src="@drawable/ic_baseline_arrow_back"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/iv_poster"

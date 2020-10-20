@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
@@ -43,6 +44,9 @@ class ReviewsFragment : BaseFragment(), ReviewListView.Listener {
 
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var mainNavigator: MainNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +94,10 @@ class ReviewsFragment : BaseFragment(), ReviewListView.Listener {
 
     override fun onPaginationErrorClicked() {
         reviewsViewModel.onPaginationErrorClick()
+    }
+
+    override fun onBackArrowClicked() {
+        mainNavigator.popFragment()
     }
 
     //----------------------------------------------------------------------------------------------

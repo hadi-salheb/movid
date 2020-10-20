@@ -47,6 +47,9 @@ class ListWithToolbarTitleImpl(
             setOverflowMenuIcon(
                 screenState.menuIcon
             )
+            if (screenState.showBackArrow) {
+                showBackArrow()
+            }
         }
     }
 
@@ -54,9 +57,6 @@ class ListWithToolbarTitleImpl(
         movieListScreen.handleState(
             movieListScreenState
         )
-    }
-
-    private fun setToolbarTitle(groupType: String) {
     }
 
     override fun onMovieItemClicked(movieID: Int) {
@@ -86,6 +86,12 @@ class ListWithToolbarTitleImpl(
     override fun onOverflowMenuIconClick() {
         listeners.forEach {
             it.onMenuIconClicked()
+        }
+    }
+
+    override fun onBackArrowClicked() {
+        listeners.forEach {
+            it.onBackArrowClick()
         }
     }
 }

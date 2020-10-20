@@ -13,15 +13,18 @@ class MenuToolbarLayout(layoutInflater: LayoutInflater, parent: ViewGroup?) :
     BaseObservableViewMvc<MenuToolbarLayout.Listener>() {
     interface Listener {
         fun onOverflowMenuIconClick()
+        fun onBackArrowClicked()
     }
 
     private val overflowMenuIcon: ImageView
     private val menuToolbarTextView: TextView
+    private val backArrow: ImageView
 
     init {
         setRootView(layoutInflater.inflate(R.layout.component_menu_toolbar, parent, false))
         overflowMenuIcon = findViewById(R.id.overflow_menu_icon)
         menuToolbarTextView = findViewById(R.id.menu_toolbar_title)
+        backArrow = findViewById(R.id.back_arrow)
         overflowMenuIcon.setOnClickListener {
             listeners.forEach {
                 it.onOverflowMenuIconClick()
@@ -41,7 +44,17 @@ class MenuToolbarLayout(layoutInflater: LayoutInflater, parent: ViewGroup?) :
         }
     }
 
+    fun showBackArrow() {
+        backArrow.visibility = View.VISIBLE
+        backArrow.setOnClickListener {
+            listeners.forEach {
+                it.onBackArrowClicked()
+            }
+        }
+    }
+
     fun setToolbarTitle(title: String) {
         menuToolbarTextView.text = title
     }
+
 }

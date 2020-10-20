@@ -111,6 +111,10 @@ class RecommendedSimilarFragment : BaseFragment(), ListWithToolbarTitle.Listener
     override fun onMenuIconClicked() {
 
     }
+
+    override fun onBackArrowClick() {
+        mainNavigator.popFragment()
+    }
     //----------------------------------------------------------------------------------------------
 
 

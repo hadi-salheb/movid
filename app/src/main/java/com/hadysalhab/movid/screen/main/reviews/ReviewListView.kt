@@ -20,6 +20,7 @@ abstract class ReviewListView : BaseObservableViewMvc<ReviewListView.Listener>()
         fun loadMoreItems()
         fun onRetryClicked()
         fun onPaginationErrorClicked()
+        fun onBackArrowClicked()
     }
 
     protected abstract fun hideLoadingIndicator()

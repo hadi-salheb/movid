@@ -32,6 +32,7 @@ abstract class FilterView : BaseObservableViewMvc<FilterView.Listener>() {
         fun onRuntimeGteChanged(withRuntimeGte: Int?)
         fun onRuntimeLteChanged(withRuntimeLte: Int?)
         fun onResetClick()
+        fun onBackArrowClicked()
     }
 
     abstract fun handleState(filterState: FilterState)

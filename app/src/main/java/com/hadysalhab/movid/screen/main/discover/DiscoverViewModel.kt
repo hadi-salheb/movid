@@ -40,6 +40,7 @@ class DiscoverViewModel @Inject constructor(
                     emptyResultsMessage = "No Results Found"
                 ),
                 title = "",
+                showBackArrow = true,
                 menuIcon = R.drawable.ic_filter
             )
         )

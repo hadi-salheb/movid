@@ -19,7 +19,7 @@ class FilterViewImpl(
     layoutInflater: LayoutInflater,
     viewGroup: ViewGroup?,
     viewFactory: ViewFactory
-) : FilterView() {
+) : FilterView(), MenuToolbarLayout.Listener {
     private val toolbar: Toolbar
     private val menuToolbarLayout: MenuToolbarLayout
     private val submitButton: Button
@@ -79,6 +79,8 @@ class FilterViewImpl(
         menuToolbarLayout = viewFactory.getMenuToolbarLayout(toolbar)
         toolbar.addView(menuToolbarLayout.getRootView())
         menuToolbarLayout.setToolbarTitle("FILTER")
+        menuToolbarLayout.showBackArrow()
+        menuToolbarLayout.registerListener(this)
 
         //Submit
         submitButton = findViewById(R.id.submit_button)
@@ -451,6 +453,15 @@ class FilterViewImpl(
         val runtimeToArgs = withRuntimeLte?.toString() ?: ""
         if (currentVote != runtimeToArgs) {
             runtimeToEditText.setText(runtimeToArgs)
+        }
+    }
+
+    override fun onOverflowMenuIconClick() {
+    }
+
+    override fun onBackArrowClicked() {
+        listeners.forEach {
+            it.onBackArrowClicked()
         }
     }
 }

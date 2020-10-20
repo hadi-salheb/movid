@@ -133,6 +133,10 @@ class MovieDetailFragment : BaseFragment(),
         movieDetailViewModel.retry()
     }
 
+    override fun onBackArrowClicked() {
+        mainNavigator.popFragment()
+    }
+
     //----------------------------------------------------------------------------------------------
 
     private fun handleFeaturedEvents(event: MovieDetailScreenEvents) {

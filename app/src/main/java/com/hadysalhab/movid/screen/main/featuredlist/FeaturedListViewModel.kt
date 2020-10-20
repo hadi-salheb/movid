@@ -33,6 +33,7 @@ class FeaturedListViewModel @Inject constructor(
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
             ListWithToolbarTitleState(
                 title = "",
+                showBackArrow = true,
                 movieListScreenState = MovieListScreenState(
                     emptyResultsIconDrawable = R.drawable.ic_sad,
                     emptyResultsMessage = "No Results Found"

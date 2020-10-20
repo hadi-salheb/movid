@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?><!--Based on Android's popup_background_material.xml-->
+<!--This changes the background of the drop-down-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <corners android:radius="2dp" />
+    <size
+        android:width="20dp"
+        android:height="20dp" />
+    <solid android:color="@color/white_alpha" />
+</shape>

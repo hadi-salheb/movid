@@ -7,8 +7,8 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 data class ListWithToolbarTitleState(
     val movieListScreenState: MovieListScreenState,
     val title: String = "",
-    @DrawableRes val menuIcon: Int? = null
-
+    @DrawableRes val menuIcon: Int? = null,
+    val showBackArrow: Boolean = false
 )
 
 abstract class ListWithToolbarTitle : BaseObservableViewMvc<ListWithToolbarTitle.Listener>() {
@@ -18,6 +18,7 @@ abstract class ListWithToolbarTitle : BaseObservableViewMvc<ListWithToolbarTitle
         fun onRetryClicked()
         fun onPaginationErrorClicked()
         fun onMenuIconClicked()
+        fun onBackArrowClick()
     }
 
     abstract fun handleScreenState(screenState: ListWithToolbarTitleState)

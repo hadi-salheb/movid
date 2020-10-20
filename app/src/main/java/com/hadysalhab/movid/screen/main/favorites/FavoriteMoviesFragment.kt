@@ -90,6 +90,8 @@ class FavoriteMoviesFragment : BaseFragment(), ListWithToolbarTitle.Listener {
 
     }
 
+    override fun onBackArrowClick() {
+    }
     //----------------------------------------------------------------------------------------------
 
     private val listWithToolbarTitleStateObserver =

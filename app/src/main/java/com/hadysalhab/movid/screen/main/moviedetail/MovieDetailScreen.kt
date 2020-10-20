@@ -29,6 +29,7 @@ abstract class MovieDetailScreen : BaseObservableViewMvc<MovieDetailScreen.Liste
         fun onWatchlistBtnClick()
         fun onRefresh()
         fun onRetry()
+        fun onBackArrowClicked()
     }
 
     protected abstract fun showLoadingIndicator()

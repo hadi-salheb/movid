@@ -148,4 +148,8 @@ class FilterFragment : BaseFragment(), FilterView.Listener {
     override fun onResetClick() {
         filterViewModel.onResetClick()
     }
+
+    override fun onBackArrowClicked() {
+        mainNavigator.popFragment()
+    }
 }

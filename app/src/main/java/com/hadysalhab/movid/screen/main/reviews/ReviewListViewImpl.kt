@@ -22,7 +22,7 @@ class ReviewListViewImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     viewFactory: ViewFactory
-) : ReviewListView(), ErrorScreen.Listener, ReviewListAdapter.Listener {
+) : ReviewListView(), ErrorScreen.Listener, ReviewListAdapter.Listener, MenuToolbarLayout.Listener {
     private val dataPlaceHolder: FrameLayout
     private val toolbar: Toolbar
     private val menuToolbarLayout: MenuToolbarLayout
@@ -95,6 +95,8 @@ class ReviewListViewImpl(
         with(reviewListState) {
             menuToolbarLayout.setOverflowMenuIcon(null)
             menuToolbarLayout.setToolbarTitle(title)
+            menuToolbarLayout.showBackArrow()
+            menuToolbarLayout.registerListener(this@ReviewListViewImpl)
             if (isLoading) {
                 showLoadingIndicator()
             } else {
@@ -208,6 +210,16 @@ class ReviewListViewImpl(
     override fun onPaginationErrorClicked() {
         listeners.forEach {
             it.onPaginationErrorClicked()
+        }
+    }
+
+    override fun onOverflowMenuIconClick() {
+
+    }
+
+    override fun onBackArrowClicked() {
+        listeners.forEach {
+            it.onBackArrowClicked()
         }
     }
 
