@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
@@ -32,9 +33,13 @@ class CastCardImpl(layoutInflater: LayoutInflater, parent: ViewGroup?) : CastCar
         this.cast = cast
         castNameTV.text = cast.name
         castAsTV.text = cast.character
-        cast.profilePath?.let {
+        if (cast.profilePath == null) {
             Glide.with(getContext())
-                .load(IMAGES_BASE_URL + PROFILE_SIZE_h632 + it)
+                .load(ContextCompat.getDrawable(getContext(), R.drawable.user_default_profile))
+                .into(castIV)
+        } else {
+            Glide.with(getContext())
+                .load(IMAGES_BASE_URL + PROFILE_SIZE_h632 + cast.profilePath)
                 .into(castIV)
         }
     }

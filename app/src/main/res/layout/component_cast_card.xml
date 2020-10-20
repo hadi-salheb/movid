@@ -24,7 +24,8 @@
             android:layout_width="150dp"
             android:layout_height="225dp"
             android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             app:backgroundTint="@color/material_on_surface_emphasis_medium"
             app:backgroundTintMode="add" />
     </androidx.cardview.widget.CardView>
