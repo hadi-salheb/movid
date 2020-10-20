@@ -42,7 +42,7 @@ class ReviewsViewModel @Inject constructor(
             isFirstRender = false
             this.movieID = movieID
             this.movieName = movieName
-            dispatch(ReviewsAction.SetTitle(movieName.toUpperCase(Locale.ROOT)))
+            dispatch(ReviewsAction.SetTitle("$movieName (REVIEWS)".toUpperCase(Locale.ROOT)))
             val storedMovie = moviesStateManager.getMovieDetailById(movieID)
             if (dataValidator.isMovieDetailValid(storedMovie)) {
                 this.reviewsResponse = storedMovie!!.reviewResponse
