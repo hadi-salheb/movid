@@ -9,6 +9,7 @@ import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.authentication.AuthActivity
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.main.BottomNavigationItems
+import com.hadysalhab.movid.screen.main.about.AboutFragment
 import com.hadysalhab.movid.screen.main.account.AccountFragment
 import com.hadysalhab.movid.screen.main.discover.DiscoverFragment
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
@@ -114,6 +115,12 @@ class MainNavigator(
     fun toAuthActivity() {
         val intent = Intent(context, AuthActivity::class.java)
         context.startActivity(intent)
+    }
+
+    fun toAboutFragment() {
+        fragNavController.pushFragment(
+            AboutFragment.newInstance()
+        )
     }
 
 }

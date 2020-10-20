@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ class AccountViewImpl(
     private val menuToolbarLayout: MenuToolbarLayout
     private val usernameTextView: TextView
     private val signOutButton: Button
+    private val aboutLL: LinearLayout
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_account, parent, false))
@@ -36,6 +38,12 @@ class AccountViewImpl(
         signOutButton.setOnClickListener {
             listeners.forEach {
                 it.onSignOutClick()
+            }
+        }
+        aboutLL = findViewById(R.id.about_linearLayout)
+        aboutLL.setOnClickListener {
+            listeners.forEach {
+                it.onAboutClicked()
             }
         }
     }

@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
@@ -28,6 +29,9 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
     lateinit var viewFactory: ViewFactory
 
     private lateinit var accountView: AccountView
+
+    @Inject
+    lateinit var mainNavigator: MainNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +78,10 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
 
     override fun onSignOutClick() {
         accountViewModel.signOutClick()
+    }
+
+    override fun onAboutClicked() {
+        mainNavigator.toAboutFragment()
     }
 
 }
