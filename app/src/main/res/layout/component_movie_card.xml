@@ -25,8 +25,8 @@
 
         <ImageView
             android:id="@+id/iv_movie"
-            android:layout_width="170dp"
-            android:layout_height="255dp"
+            android:layout_width="150dp"
+            android:layout_height="225dp"
             android:background="@android:color/transparent"
             app:backgroundTint="@color/material_on_surface_emphasis_medium"
             app:backgroundTintMode="add"
