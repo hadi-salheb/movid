@@ -90,7 +90,7 @@ class MovieDetailFragment : BaseFragment(),
 
     //UserActions-----------------------------------------------------------------------------------
     override fun onSeeAllCastClicked(movieID: Int, movieName: String) {
-
+        mainNavigator.toCastListFragment(movieID, movieName)
     }
 
     override fun onSeeAllRecommendedSimilarMoviesClicked(

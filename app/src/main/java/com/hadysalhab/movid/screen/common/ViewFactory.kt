@@ -25,6 +25,8 @@ import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.about.AboutView
 import com.hadysalhab.movid.screen.main.account.AccountView
 import com.hadysalhab.movid.screen.main.account.AccountViewImpl
+import com.hadysalhab.movid.screen.main.castlist.CastListView
+import com.hadysalhab.movid.screen.main.castlist.CastListViewImpl
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupScreenImpl
 import com.hadysalhab.movid.screen.main.filter.FilterView
 import com.hadysalhab.movid.screen.main.filter.FilterViewImpl
@@ -109,4 +111,7 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
         AccountViewImpl(layoutInflater, container, this)
 
     fun getAboutView(container: ViewGroup?): AboutView = AboutView(layoutInflater, container, this)
+    fun getCastListView(container: ViewGroup?): CastListView = CastListViewImpl(
+        layoutInflater, container, this
+    )
 }

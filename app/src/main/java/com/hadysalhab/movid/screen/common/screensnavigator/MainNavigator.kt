@@ -11,6 +11,7 @@ import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.main.BottomNavigationItems
 import com.hadysalhab.movid.screen.main.about.AboutFragment
 import com.hadysalhab.movid.screen.main.account.AccountFragment
+import com.hadysalhab.movid.screen.main.castlist.CastListFragment
 import com.hadysalhab.movid.screen.main.discover.DiscoverFragment
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupFragment
@@ -120,6 +121,12 @@ class MainNavigator(
     fun toAboutFragment() {
         fragNavController.pushFragment(
             AboutFragment.newInstance()
+        )
+    }
+
+    fun toCastListFragment(movieID: Int, movieName: String) {
+        fragNavController.pushFragment(
+            CastListFragment.newInstance(movieID, movieName)
         )
     }
 
