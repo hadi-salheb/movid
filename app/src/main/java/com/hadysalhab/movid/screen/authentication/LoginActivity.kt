@@ -6,6 +6,7 @@ import com.hadysalhab.movid.authentication.AuthManager
 import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
+import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import javax.inject.Inject
 
@@ -40,6 +41,8 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
 
     private var errorMessage: String = ""
 
+    @Inject
+    lateinit var intentHandler: IntentHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +94,7 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
     }
 
     override fun onSignUpClicked() {
+        intentHandler.handleSignUpIntent()
     }
 
     override fun onLoggedIn() {

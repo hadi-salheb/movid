@@ -25,4 +25,10 @@ class IntentHandler(private val activityContext: Context) {
         }
     }
 
+    fun handleSignUpIntent() {
+        val browserIntent =
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://www.themoviedb.org/signup"))
+        activityContext.startActivity(browserIntent)
+    }
+
 }
