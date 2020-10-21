@@ -3,7 +3,9 @@ package com.hadysalhab.movid.screen.main
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.lifecycle.Observer
+import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.SharedPreferencesManager
+import com.hadysalhab.movid.common.processdeath.ProcessDeathFlagIndicator
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
 import com.hadysalhab.movid.screen.common.controllers.backpress.BackPressDispatcher
@@ -23,6 +25,9 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
 
+    @Inject
+    lateinit var processDeathFlagIndicator: ProcessDeathFlagIndicator
+
     private lateinit var view: MainView
 
     private val backPressedListeners: MutableSet<BackPressListener> = HashSet()
@@ -35,8 +40,13 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         injector.inject(this)
+        if (processDeathFlagIndicator.isKilled) {
+            mainNavigator.toSplashActivity()
+            finish()
+        }
+        setTheme(R.style.Theme_MyApp)
+        super.onCreate(savedInstanceState)
         view = viewFactory.getMainView(null)
         mainNavigator.init(savedInstanceState)
         setContentView(view.getRootView())

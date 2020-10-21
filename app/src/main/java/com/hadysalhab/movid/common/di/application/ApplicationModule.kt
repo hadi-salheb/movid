@@ -8,6 +8,7 @@ import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.processdeath.ProcessDeathFlagIndicator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.movies.MoviesStateManager
@@ -109,4 +110,8 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun getDiscoverMoviesFilterStateStore() = DiscoverMoviesFilterStateStore()
+
+    @Provides
+    @Singleton
+    fun getProcessDeathFlagIndicator() = ProcessDeathFlagIndicator()
 }

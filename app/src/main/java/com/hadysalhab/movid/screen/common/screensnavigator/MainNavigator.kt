@@ -23,6 +23,7 @@ import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
 import com.hadysalhab.movid.screen.main.search.Genre
 import com.hadysalhab.movid.screen.main.search.SearchFragment
 import com.hadysalhab.movid.screen.main.watchlist.WatchlistMoviesFragment
+import com.hadysalhab.movid.screen.splash.SplashActivity
 import com.ncapdevi.fragnav.FragNavController
 
 class MainNavigator(
@@ -128,6 +129,11 @@ class MainNavigator(
         fragNavController.pushFragment(
             CastListFragment.newInstance(movieID, movieName)
         )
+    }
+
+    fun toSplashActivity() {
+        val intent = Intent(context, SplashActivity::class.java)
+        context.startActivity(intent)
     }
 
 }

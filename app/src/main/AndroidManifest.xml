@@ -17,14 +17,16 @@
         android:theme="@style/Theme.MyApp">
         <activity
             android:name=".screen.splash.SplashActivity"
-            android:theme="@style/Theme.SplashScreen">
+            android:theme="@style/Base.Theme.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screen.main.MainActivity" />
+        <activity
+            android:name=".screen.main.MainActivity"
+            android:theme="@style/Base.Theme.SplashScreen" />
         <activity android:name=".screen.authentication.AuthActivity" />
     </application>
 
