@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hadysalhab.movid.R
@@ -16,7 +17,7 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
     private val passwordInputLayout: TextInputLayout
     private val circularProgress: ProgressBar
     private val loginBtn: Button
-    private val signUpBtn: Button
+    private val signUpBtn: TextView
 
     init {
         setRootView(inflater.inflate(R.layout.layout_authentication, parent, false))
