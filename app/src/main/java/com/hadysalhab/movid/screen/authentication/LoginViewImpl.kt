@@ -1,10 +1,8 @@
 package com.hadysalhab.movid.screen.authentication
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -15,7 +13,6 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
     private val usernameInputLayout: TextInputLayout
     private val passwordEditText: TextInputEditText
     private val passwordInputLayout: TextInputLayout
-    private val circularProgress: ProgressBar
     private val loginBtn: Button
     private val signUpBtn: TextView
 
@@ -25,7 +22,6 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
         usernameInputLayout = findViewById(R.id.username_input_layout)
         passwordEditText = findViewById(R.id.password_editText)
         passwordInputLayout = findViewById(R.id.password_input_layout)
-        circularProgress = findViewById(R.id.progress_circular)
         loginBtn = findViewById(R.id.login_btn)
         signUpBtn = findViewById(R.id.signUp_btn)
         setupListeners()
@@ -68,7 +64,6 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
     }
 
     override fun showProgressState() {
-        circularProgress.visibility = View.VISIBLE
         loginBtn.isEnabled = false
         signUpBtn.isEnabled = false
         usernameInputLayout.isEnabled = false
@@ -80,8 +75,6 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
     }
 
     override fun showIdleScreen() {
-        circularProgress.visibility = View.GONE
-        circularProgress.visibility = View.GONE
         loginBtn.isEnabled = true
         signUpBtn.isEnabled = true
         usernameInputLayout.isEnabled = true
