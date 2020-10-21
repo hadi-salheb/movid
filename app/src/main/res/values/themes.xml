@@ -3,6 +3,10 @@
 
     <style name="Theme.MyApp" parent="Base.Theme.MyApp" />
 
+    <style name="Base.Theme.SplashScreen" parent="Base.Theme.MyApp">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
     <style name="Base.Theme.MyApp" parent="Base.Theme.MaterialThemeBuilder">
         <item name="colorPrimary">@color/navy</item>
         <item name="colorPrimaryVariant">@color/navy_light</item>
@@ -20,9 +24,6 @@
         <item name="colorOnError">@color/white</item>
     </style>
 
-    <style name="Theme.SplashScreen" parent="Base.Theme.MaterialThemeBuilder">
-        <item name="android:windowBackground">@drawable/background_splash</item>
-    </style>
 
     <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">?attr/colorSurface</item>
