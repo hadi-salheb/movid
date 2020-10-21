@@ -2,7 +2,7 @@ package com.hadysalhab.movid.screen.common
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.hadysalhab.movid.screen.authentication.onboarding.OnBoardingViewImpl
+import com.hadysalhab.movid.screen.authentication.LoginViewImpl
 import com.hadysalhab.movid.screen.common.cardgroup.CastsView
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.hadysalhab.movid.screen.common.cast.CastCardImpl
@@ -40,7 +40,7 @@ import com.hadysalhab.movid.screen.main.search.*
 
 class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getFragmentFrameView(parent: ViewGroup?) = FragmentFrameView(layoutInflater, parent)
-    fun getLauncherView(parent: ViewGroup?) = OnBoardingViewImpl(layoutInflater, parent)
+    fun getLoginView(parent: ViewGroup?) = LoginViewImpl(layoutInflater, parent)
     fun getMainView(parent: ViewGroup?) = MainViewImpl(layoutInflater, parent)
 
     fun getFeaturedView(container: ViewGroup?) =

@@ -1,26 +1,23 @@
-package com.hadysalhab.movid.screen.authentication.onboarding
+package com.hadysalhab.movid.screen.authentication
 
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.FragmentActivity
 import com.hadysalhab.movid.authentication.AuthManager
 import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.screen.common.ViewFactory
-import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.controllers.BaseActivity
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import javax.inject.Inject
 
 /**
- * The LauncherFragment serves as the controller for the login screen. {@see [OnBoardingView] & [OnBoardingViewImpl]}
+ * The AuthActivity serves as fragments host for the authentication screens. {@see [LauncherFragment] }
  */
-class OnBoardingFragment : BaseFragment(),
-    OnBoardingView.Listener,
-    LoginUseCase.Listener {
 
+const val SCREEN_STATE = "SCREEN_STATE"
+
+
+class AuthActivity : BaseActivity(), LoginView.Listener,
+    LoginUseCase.Listener {
     private enum class ScreenState {
         IDLE, LOGIN_IN_PROGRESS, LOGIN_ERROR, LOGIN_SUCCESS
     }
@@ -31,9 +28,6 @@ class OnBoardingFragment : BaseFragment(),
     lateinit var viewFactory: ViewFactory
 
     @Inject
-    lateinit var activityContext: Context
-
-    @Inject
     lateinit var authNavigator: AuthNavigator
 
     @Inject
@@ -42,20 +36,10 @@ class OnBoardingFragment : BaseFragment(),
     @Inject
     lateinit var authManager: AuthManager
 
-    @Inject
-    lateinit var fragActivity: FragmentActivity
+    lateinit var view: LoginView
 
-    lateinit var view: OnBoardingView
     private var errorMessage: String = ""
 
-
-    companion object {
-        const val SCREEN_STATE = "SCREEN_STATE"
-        private const val TAG = "LauncherFragment"
-
-        @JvmStatic
-        fun newInstance() = OnBoardingFragment()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,14 +47,8 @@ class OnBoardingFragment : BaseFragment(),
         if (savedInstanceState != null) {
             screenState = savedInstanceState.getSerializable(SCREEN_STATE) as ScreenState
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        view = viewFactory.getLauncherView(container)
-        return view.getRootView()
+        view = viewFactory.getLoginView(null)
+        setContentView(view.getRootView())
     }
 
     override fun onStart() {
@@ -135,13 +113,14 @@ class OnBoardingFragment : BaseFragment(),
             }
             ScreenState.LOGIN_ERROR -> {
                 view.hideProgressState()
-                Toast.makeText(activityContext, errorMessage, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
             }
             ScreenState.LOGIN_SUCCESS -> {
                 view.hideProgressState()
                 authNavigator.toMainScreen()
-                fragActivity.finish()
+                finish()
             }
         }
     }
+
 }

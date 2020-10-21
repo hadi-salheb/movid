@@ -1,4 +1,4 @@
-package com.hadysalhab.movid.screen.authentication.onboarding
+package com.hadysalhab.movid.screen.authentication
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +9,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hadysalhab.movid.R
 
-/**
- * The LauncherViewImpl displays views for the launcher screen if the user is not authenticated
- */
-class OnBoardingViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : OnBoardingView() {
+class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() {
     private val usernameEditText: TextInputEditText
     private val usernameInputLayout: TextInputLayout
     private val passwordEditText: TextInputEditText
@@ -22,7 +19,7 @@ class OnBoardingViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : OnBoard
     private val signUpBtn: Button
 
     init {
-        setRootView(inflater.inflate(R.layout.layout_auth_launcher, parent, false))
+        setRootView(inflater.inflate(R.layout.layout_authentication, parent, false))
         usernameEditText = findViewById(R.id.username_editText)
         usernameInputLayout = findViewById(R.id.username_input_layout)
         passwordEditText = findViewById(R.id.password_editText)

@@ -3,7 +3,6 @@ package com.hadysalhab.movid.common.di.presentation
 import com.android.roam.wheelycool.dependencyinjection.presentation.PresentationModule
 import com.android.roam.wheelycool.dependencyinjection.presentation.PresentationScope
 import com.hadysalhab.movid.screen.authentication.AuthActivity
-import com.hadysalhab.movid.screen.authentication.onboarding.OnBoardingFragment
 import com.hadysalhab.movid.screen.main.MainActivity
 import com.hadysalhab.movid.screen.main.about.AboutFragment
 import com.hadysalhab.movid.screen.main.account.AccountFragment
@@ -28,7 +27,6 @@ import dagger.Subcomponent
 @Subcomponent(modules = [PresentationModule::class, ViewModelModule::class])
 interface PresentationComponent {
     fun inject(authActivity: AuthActivity)
-    fun inject(onBoardingFragment: OnBoardingFragment)
     fun inject(featuredGroupFragment: FeaturedGroupFragment)
     fun inject(mainActivity: MainActivity)
     fun inject(splashActivity: SplashActivity)

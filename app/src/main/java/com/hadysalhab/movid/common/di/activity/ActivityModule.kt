@@ -52,11 +52,9 @@ class ActivityModule(private val activity: FragmentActivity) {
     @Provides
     @ActivityScope
     fun getAuthNavigator(
-        fragmentManager: FragmentManager,
-        fragmentFrameHost: FragmentFrameHost,
         activityContext: Context
     ): AuthNavigator =
-        AuthNavigator(fragmentManager, fragmentFrameHost, activityContext)
+        AuthNavigator(activityContext)
 
     @Provides
     @ActivityScope
