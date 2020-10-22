@@ -14,5 +14,6 @@ abstract class AccountView : BaseObservableViewMvc<AccountView.Listener>() {
         fun onSignOutClick()
         fun onAboutClick()
         fun onContactDevClicked()
+        fun onLibrariesClicked()
     }
 }

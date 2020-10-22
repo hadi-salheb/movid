@@ -46,4 +46,12 @@ class IntentHandler(private val activityContext: Context) {
 
     private fun isActivityAvailable(intent: Intent) =
         intent.resolveActivity(activityContext.packageManager) != null
+
+    fun handleLibraryIntent(libraryUrl: String) {
+        val browserIntent =
+            Intent(Intent.ACTION_VIEW, Uri.parse(libraryUrl))
+        if (isActivityAvailable(browserIntent)) {
+            activityContext.startActivity(browserIntent)
+        }
+    }
 }

@@ -31,6 +31,8 @@ import com.hadysalhab.movid.screen.main.castlist.CastListViewImpl
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupScreenImpl
 import com.hadysalhab.movid.screen.main.filter.FilterView
 import com.hadysalhab.movid.screen.main.filter.FilterViewImpl
+import com.hadysalhab.movid.screen.main.libraries.LibrariesView
+import com.hadysalhab.movid.screen.main.libraries.LibraryListItem
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreen
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenImpl
@@ -99,6 +101,8 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getGenreListItem(parent: ViewGroup?): GenreListItem =
         GenreListItemImpl(layoutInflater, parent)
 
+    fun getLibraryListItem(parent: ViewGroup?) = LibraryListItem(layoutInflater, parent)
+
     fun getGenreList(parent: ViewGroup?): GenreList = GenreList(layoutInflater, parent, this)
     fun getListHeader(parent: ViewGroup?): ListHeader = ListHeader(layoutInflater, parent)
 
@@ -112,6 +116,9 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
         AccountViewImpl(layoutInflater, container, this)
 
     fun getAboutView(container: ViewGroup?): AboutView = AboutView(layoutInflater, container, this)
+    fun getLibrariesView(container: ViewGroup?): LibrariesView =
+        LibrariesView(layoutInflater, container, this)
+
     fun getCastListView(container: ViewGroup?): CastListView = CastListViewImpl(
         layoutInflater, container, this
     )

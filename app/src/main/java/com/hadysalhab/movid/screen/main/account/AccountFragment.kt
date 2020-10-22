@@ -92,4 +92,8 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
         intentHandler.handleContactDev()
     }
 
+    override fun onLibrariesClicked() {
+        mainNavigator.toLibrariesFragment()
+    }
+
 }
