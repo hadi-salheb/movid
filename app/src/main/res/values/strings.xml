@@ -11,4 +11,5 @@
     <string name="see_all"><u>See All</u></string>
     <string name="country_australia">Australia</string>
     <string name="sign_up">Sign up</string>
+    <string name="about">Movid is an app that allows you to explore through movies and view the rating, overview, cast, reviews, trailers and other facts. You can save movies that you’ve enjoyed to your Favourites or save movies you’re keen to watch to your Watchlist.\n\n The app is designed so that you can easily sift through the categories of Top Rated, Upcoming, Now Playing and Popular Movies. The app also allows you to Search directly for a movie or by movie category, which can be further filtered.\n\n If you’re interested to see what’s on in other countries, you can change the country by clicking the flag in the Featured section.</string>
 </resources>

@@ -6,9 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import javax.inject.Inject
 
-class AboutFragment : BaseFragment() {
+class AboutFragment : BaseFragment(), AboutView.Listener {
+
+    @Inject
+    lateinit var mainNavigator: MainNavigator
 
     companion object {
         @JvmStatic
@@ -35,5 +39,19 @@ class AboutFragment : BaseFragment() {
         }
 
         return aboutView.getRootView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        aboutView.registerListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        aboutView.unregisterListener(this)
+    }
+
+    override fun onBackArrowClicked() {
+        mainNavigator.popFragment()
     }
 }
