@@ -85,20 +85,11 @@ dependencies {
     //thread poster : https://github.com/techyourchance/thread-poster
     implementation 'com.techyourchance.threadposter:threadposter:0.8.3'
 
-    //https://github.com/zhanghai/MaterialProgressBar
-    implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
-    //https://github.com/ybq/Android-SpinKit
-    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
-
-
     // Carousel https://github.com/sayyam/carouselview
     implementation 'com.synnapps:carouselview:0.1.5'
 
     // https://github.com/Zhuinden/event-emitter
     implementation 'com.github.Zhuinden:event-emitter:1.1.0'
-
-    // https://github.com/Zhuinden/livedata-combinetuple-kt
-    implementation 'com.github.Zhuinden:livedata-combinetuple-kt:1.0.0'
 
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.7.2"
