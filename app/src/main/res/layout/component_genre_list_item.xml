@@ -21,12 +21,13 @@
 
     <TextView
         android:id="@+id/genre_text"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:textAppearance="?attr/textAppearanceSubtitle1"
         android:textColor="@color/grey_800"
+        android:textSize="18sp"
         android:textStyle="normal"
         tools:text="Adventure" />
 
