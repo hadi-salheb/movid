@@ -24,6 +24,7 @@ class AccountViewImpl(
     private val usernameTextView: TextView
     private val signOutButton: Button
     private val aboutLL: LinearLayout
+    private val contactDeveloperLL: LinearLayout
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_account, parent, false))
@@ -43,7 +44,13 @@ class AccountViewImpl(
         aboutLL = findViewById(R.id.about_linearLayout)
         aboutLL.setOnClickListener {
             listeners.forEach {
-                it.onAboutClicked()
+                it.onAboutClick()
+            }
+        }
+        contactDeveloperLL = findViewById(R.id.contact_developer)
+        contactDeveloperLL.setOnClickListener {
+            listeners.forEach {
+                it.onContactDevClicked()
             }
         }
     }
