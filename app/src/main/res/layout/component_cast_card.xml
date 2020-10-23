@@ -37,7 +37,6 @@
         android:layout_height="wrap_content"
         android:maxWidth="150dp"
         android:gravity="center_vertical"
-        android:textColor="@color/gray_900"
         tools:text="Michael Caine" />
 
     <TextView

@@ -43,7 +43,6 @@
         android:gravity="center_vertical"
         android:maxWidth="150dp"
         android:maxLines="2"
-        android:textColor="@color/gray_900"
         app:layout_constraintEnd_toEndOf="@id/card_cast_image"
         app:layout_constraintStart_toStartOf="@id/card_cast_image"
         app:layout_constraintTop_toBottomOf="@+id/card_cast_image"
