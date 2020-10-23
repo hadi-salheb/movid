@@ -1,12 +1,16 @@
 package com.hadysalhab.movid.common.usecases
 
 import com.google.gson.Gson
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.networking.ApiEmptyResponse
 import com.hadysalhab.movid.networking.ApiErrorResponse
 import com.hadysalhab.movid.networking.ApiResponse
 import com.hadysalhab.movid.networking.responses.TmdbErrorResponse
 
-class ErrorMessageHandler(private val gson: Gson) {
+class ErrorMessageHandler(
+    private val gson: Gson,
+    private val firebaseAnalyticsClient: FirebaseAnalyticsClient
+) {
 
     private fun createErrorMessage(errMessage: String?) = when {
         errMessage == null -> {
@@ -23,9 +27,19 @@ class ErrorMessageHandler(private val gson: Gson) {
         }
     }
 
-    fun getErrorMessageFromApiResponse(response: ApiResponse<*>): String = when (response) {
-        is ApiEmptyResponse -> createErrorMessage(null)
-        is ApiErrorResponse -> createErrorMessage(response.errorMessage)
-        else -> throw RuntimeException("Cannot retrieve error message from a successful response")
+    fun getErrorMessageFromApiResponse(response: ApiResponse<*>): String {
+        return when (response) {
+            is ApiEmptyResponse -> {
+                val message = createErrorMessage(null)
+                firebaseAnalyticsClient.logUseCaseError(message)
+                message
+            }
+            is ApiErrorResponse -> {
+                val message = createErrorMessage(response.errorMessage)
+                firebaseAnalyticsClient.logUseCaseError(message)
+                message
+            }
+            else -> throw RuntimeException("Cannot retrieve error message from a successful response")
+        }
     }
 }

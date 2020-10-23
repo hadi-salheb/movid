@@ -8,7 +8,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface TmdbApi {
-    @GET("/3/authentication/token/new?api_key=9a1a4d8d07b89f0c57458dbaf6d58a99")
+    @GET("/3/authentication/token/new?api_key=${BuildConfig.API_KEY}")
     fun createRequestToken(): Call<CreateAndSignTokenResponse>
 
     @GET("/3/account")

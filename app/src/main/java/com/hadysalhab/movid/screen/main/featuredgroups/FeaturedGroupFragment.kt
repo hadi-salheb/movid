@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
@@ -34,6 +35,9 @@ class FeaturedGroupFragment : BaseFragment(), FeaturedGroupScreen.Listener {
 
     @Inject
     lateinit var toastHelper: ToastHelper
+
+    @Inject
+    lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClient
 
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
@@ -88,6 +92,7 @@ class FeaturedGroupFragment : BaseFragment(), FeaturedGroupScreen.Listener {
 
     override fun onCountryToolbarItemClicked(toolbarCountryItem: ToolbarCountryItems) {
         featuredGroupViewModel.onCountryToolbarItemClicked(toolbarCountryItem)
+        firebaseAnalyticsClient.logFlagChange(toolbarCountryItem)
     }
 
     override fun onOverflowMenuIconClick() {

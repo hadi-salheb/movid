@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import com.hadysalhab.movid.authentication.AuthManager
 import com.hadysalhab.movid.authentication.LoginUseCase
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
@@ -24,6 +25,9 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
     }
 
     private var screenState = ScreenState.IDLE
+
+    @Inject
+    lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClient
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -120,6 +124,7 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
                 Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
             }
             ScreenState.LOGIN_SUCCESS -> {
+                firebaseAnalyticsClient.logLogin()
                 view.hideProgressState()
                 authNavigator.toMainScreen()
                 finish()

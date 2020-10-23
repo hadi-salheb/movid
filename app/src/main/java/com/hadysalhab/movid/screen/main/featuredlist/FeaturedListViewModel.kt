@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
@@ -19,7 +20,8 @@ class FeaturedListViewModel @Inject constructor(
     private val fetchFeaturedListUseCase: FetchFeaturedListUseCase,
     private val moviesStateManager: MoviesStateManager,
     private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
-    private val dataValidator: DataValidator
+    private val dataValidator: DataValidator,
+    private val firebaseAnalyticsClient: FirebaseAnalyticsClient
 ) : ViewModel(), FetchFeaturedListUseCase.Listener {
     private var isFirstRender: Boolean = true
 
@@ -92,6 +94,10 @@ class FeaturedListViewModel @Inject constructor(
             return
         }
         dispatch(ListWithToolbarTitleActions.Pagination)
+        firebaseAnalyticsClient.logPagination(
+            this.moviesResponse.tag.name,
+            this.moviesResponse.page + 1
+        )
         fetchApi(this.moviesResponse.page + 1)
     }
 

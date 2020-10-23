@@ -116,7 +116,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout2"
+                android:id="@+id/share_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
@@ -152,7 +152,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/rate"
+                android:id="@+id/rate_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
@@ -165,7 +165,7 @@
                 android:paddingBottom="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout2">
+                app:layout_constraintTop_toBottomOf="@id/share_ll">
 
                 <TextView
                     android:layout_width="0dp"
@@ -200,7 +200,7 @@
                 android:paddingBottom="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rate">
+                app:layout_constraintTop_toBottomOf="@id/rate_ll">
 
                 <TextView
                     android:id="@+id/contact_developer_textView"

@@ -1,5 +1,7 @@
 package com.hadysalhab.movid.screen.main.account
 
+import android.content.res.TypedArray
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
@@ -7,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import com.amulyakhare.textdrawable.TextDrawable
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.screen.common.ViewFactory
@@ -26,6 +27,8 @@ class AccountViewImpl(
     private val aboutLL: LinearLayout
     private val contactDeveloperLL: LinearLayout
     private val librariesLL: LinearLayout
+    private val shareLL: LinearLayout
+    private val rateLL: LinearLayout
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_account, parent, false))
@@ -60,13 +63,38 @@ class AccountViewImpl(
                 it.onLibrariesClicked()
             }
         }
+
+        shareLL = findViewById(R.id.share_ll)
+        shareLL.setOnClickListener {
+            listeners.forEach {
+                it.onShareClicked()
+            }
+        }
+
+        rateLL = findViewById(R.id.rate_ll)
+        rateLL.setOnClickListener {
+            listeners.forEach {
+                it.onRateClicked()
+            }
+        }
     }
 
     override fun handleState(state: AccountViewState) {
         state.accountResponse?.let { accountResponse ->
+            val typedValue = TypedValue()
+
+            val a: TypedArray =
+                getContext().obtainStyledAttributes(
+                    typedValue.data,
+                    intArrayOf(R.attr.colorSecondaryVariant)
+                )
+            val color: Int = a.getColor(0, 0)
+
+            a.recycle()
+
             val drawable = TextDrawable.builder().buildRound(
                 accountResponse.username[0].toString(),
-                ContextCompat.getColor(getContext(), R.color.colorPrimaryDark)
+                color
             )
             profileImageView.setImageDrawable(drawable)
 

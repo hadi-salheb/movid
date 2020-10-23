@@ -8,6 +8,7 @@ import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScop
 import com.google.gson.Gson
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.authentication.AuthManager
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.screen.common.ViewFactory
@@ -84,7 +85,8 @@ class ActivityModule(private val activity: FragmentActivity) {
     fun getSchemaToModelHelper() = SchemaToModelHelper()
 
     @Provides
-    fun getErrorMessageHandler(gson: Gson) = ErrorMessageHandler(gson)
+    fun getErrorMessageHandler(gson: Gson, firebaseAnalyticsClient: FirebaseAnalyticsClient) =
+        ErrorMessageHandler(gson, firebaseAnalyticsClient)
 
 
     @Provides

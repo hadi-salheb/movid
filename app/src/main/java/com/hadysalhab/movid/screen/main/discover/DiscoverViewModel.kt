@@ -3,6 +3,7 @@ package com.hadysalhab.movid.screen.main.discover
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
@@ -21,7 +22,8 @@ private const val STORE_FILTER_STATE = "com.hadysalhab.movid.screen.main.discove
 class DiscoverViewModel @Inject constructor(
     private val discoverMoviesUseCase: DiscoverMoviesUseCase,
     private val discoverMoviesFilterStateStore: DiscoverMoviesFilterStateStore,
-    private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager
+    private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
+    private val firebaseAnalyticsClient: FirebaseAnalyticsClient
 ) : SavedStateViewModel(), DiscoverMoviesUseCase.Listener {
     private var isFirstRender: Boolean = true
     private lateinit var genre: Genre
@@ -102,6 +104,7 @@ class DiscoverViewModel @Inject constructor(
             return
         }
         dispatch(ListWithToolbarTitleActions.Pagination)
+        firebaseAnalyticsClient.logPagination(this.genre.genreName, this.moviesResponse.page + 1)
         fetchApi(this.moviesResponse.page + 1)
     }
 

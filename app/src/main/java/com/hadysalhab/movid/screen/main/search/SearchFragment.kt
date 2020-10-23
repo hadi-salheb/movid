@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
@@ -18,6 +19,9 @@ import javax.inject.Inject
 
 class SearchFragment : BaseFragment(), SearchView.Listener, BackPressListener {
     lateinit var searchView: SearchView
+
+    @Inject
+    lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClient
 
     @Inject
     lateinit var viewFactory: ViewFactory
@@ -72,6 +76,7 @@ class SearchFragment : BaseFragment(), SearchView.Listener, BackPressListener {
 
     //Callbacks-------------------------------------------------------------------------------------
     override fun onSearchConfirmed(query: String) {
+        firebaseAnalyticsClient.logSearch(query)
         searchViewModel.onSearchConfirmed(query)
     }
 

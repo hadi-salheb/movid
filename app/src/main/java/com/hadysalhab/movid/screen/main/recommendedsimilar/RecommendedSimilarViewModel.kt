@@ -3,6 +3,7 @@ package com.hadysalhab.movid.screen.main.recommendedsimilar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
@@ -18,7 +19,8 @@ class RecommendedSimilarViewModel
 @Inject
 constructor(
     private val fetchRecommendedSimilarListUseCase: FetchRecommendedSimilarListUseCase,
-    private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager
+    private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
+    private val firebaseAnalyticsClient: FirebaseAnalyticsClient
 ) : ViewModel(), FetchRecommendedSimilarListUseCase.Listener {
     private var isFirstRender: Boolean = true
     private lateinit var groupType: GroupType
@@ -84,6 +86,10 @@ constructor(
             return
         }
         dispatch(ListWithToolbarTitleActions.Pagination)
+        firebaseAnalyticsClient.logPagination(
+            this.moviesResponse.tag.name,
+            this.moviesResponse.page + 1
+        )
         fetchApi(this.moviesResponse.page + 1)
     }
 

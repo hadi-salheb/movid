@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
@@ -36,6 +37,9 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
 
     @Inject
     lateinit var intentHandler: IntentHandler
+
+    @Inject
+    lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +85,7 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
     }
 
     override fun onSignOutClick() {
+        firebaseAnalyticsClient.logLogOut()
         accountViewModel.signOutClick()
     }
 
@@ -94,6 +99,16 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
 
     override fun onLibrariesClicked() {
         mainNavigator.toLibrariesFragment()
+    }
+
+    override fun onRateClicked() {
+        intentHandler.handleRateIntent()
+        firebaseAnalyticsClient.logRateMovid()
+    }
+
+    override fun onShareClicked() {
+        intentHandler.handleShareIntent()
+        firebaseAnalyticsClient.logShareMovid()
     }
 
 }

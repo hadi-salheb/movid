@@ -2,9 +2,11 @@ package com.hadysalhab.movid.screen.main
 
 import android.os.Bundle
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.SharedPreferencesManager
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.common.processdeath.ProcessDeathFlagIndicator
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
@@ -12,12 +14,17 @@ import com.hadysalhab.movid.screen.common.controllers.backpress.BackPressDispatc
 import com.hadysalhab.movid.screen.common.controllers.backpress.BackPressListener
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
+import com.ncapdevi.fragnav.FragNavController
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackPressDispatcher {
+class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackPressDispatcher,
+    FragNavController.TransactionListener {
 
     @Inject
     lateinit var viewFactory: ViewFactory
+
+    @Inject
+    lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClient
 
     @Inject
     lateinit var mainNavigator: MainNavigator
@@ -42,13 +49,14 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
     override fun onCreate(savedInstanceState: Bundle?) {
         injector.inject(this)
         if (processDeathFlagIndicator.isKilled) {
+            firebaseAnalyticsClient.logMainActivityProcessDeath()
             mainNavigator.toSplashActivity()
             finish()
         }
         setTheme(R.style.Theme_MyApp)
         super.onCreate(savedInstanceState)
         view = viewFactory.getMainView(null)
-        mainNavigator.init(savedInstanceState)
+        mainNavigator.init(savedInstanceState, this)
         setContentView(view.getRootView())
     }
 
@@ -105,6 +113,21 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
 
     override fun unregisterListener(backPressListener: BackPressListener) {
         backPressedListeners.remove(backPressListener)
+    }
+
+    override fun onFragmentTransaction(
+        fragment: Fragment?,
+        transactionType: FragNavController.TransactionType
+    ) {
+        fragment?.let {
+            fragment::class.simpleName?.let {
+                firebaseAnalyticsClient.logFragmentTransaction(it)
+            }
+        }
+    }
+
+    override fun onTabTransaction(fragment: Fragment?, index: Int) {
+        firebaseAnalyticsClient.logTabTransaction(BottomNavigationItems.values()[index])
     }
 
 }

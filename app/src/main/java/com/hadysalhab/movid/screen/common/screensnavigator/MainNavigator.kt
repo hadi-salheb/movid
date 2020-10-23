@@ -53,10 +53,17 @@ class MainNavigator(
         }
     }
 
-    fun init(savedInstanceState: Bundle?) {
+
+    fun init(
+        savedInstanceState: Bundle?,
+        fragTransactionListener: FragNavController.TransactionListener
+    ) {
         fragNavController =
             FragNavController(fragmentManager, fragmentFrameHost.getFragmentFrame().id)
-        fragNavController.rootFragmentListener = rootFragmentListener
+        fragNavController.apply {
+            rootFragmentListener = this@MainNavigator.rootFragmentListener
+            transactionListener = fragTransactionListener
+        }
         fragNavController.initialize(FragNavController.TAB1, savedInstanceState)
     }
 

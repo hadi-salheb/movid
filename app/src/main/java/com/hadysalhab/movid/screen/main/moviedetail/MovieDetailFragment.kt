@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.VideosResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
@@ -43,6 +44,9 @@ class MovieDetailFragment : BaseFragment(),
 
     @Inject
     lateinit var intentHandler: IntentHandler
+
+    @Inject
+    lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClient
 
     companion object {
         @JvmStatic
@@ -102,7 +106,7 @@ class MovieDetailFragment : BaseFragment(),
     }
 
     override fun onCastClicked(castId: Int) {
-        toastHelper.displayMessage("On Cast card clicked $castId")
+        firebaseAnalyticsClient.logCastClick()
     }
 
     override fun onMovieClicked(movieId: Int) {
@@ -118,10 +122,12 @@ class MovieDetailFragment : BaseFragment(),
     }
 
     override fun onFavBtnClick() {
+        firebaseAnalyticsClient.logFavorite()
         movieDetailViewModel.onAddRemoveFavoritesClicked()
     }
 
     override fun onWatchlistBtnClick() {
+        firebaseAnalyticsClient.logWatchlist()
         movieDetailViewModel.onAddRemoveWatchlistClicked()
     }
 

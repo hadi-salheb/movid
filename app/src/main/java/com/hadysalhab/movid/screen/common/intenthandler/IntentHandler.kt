@@ -3,6 +3,7 @@ package com.hadysalhab.movid.screen.common.intenthandler
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.hadysalhab.movid.BuildConfig
 import com.hadysalhab.movid.common.constants.YOUTUBE_BASE_URL
 import com.hadysalhab.movid.common.utils.getYoutubeTrailerFromResponse
 import com.hadysalhab.movid.movies.VideosResponse
@@ -52,6 +53,38 @@ class IntentHandler(private val activityContext: Context) {
             Intent(Intent.ACTION_VIEW, Uri.parse(libraryUrl))
         if (isActivityAvailable(browserIntent)) {
             activityContext.startActivity(browserIntent)
+        }
+    }
+
+    fun handleRateIntent() {
+        val appStoreRateIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("market://details?id=${activityContext.packageName}")
+        )
+        if (isActivityAvailable(appStoreRateIntent)) {
+            activityContext.startActivity(appStoreRateIntent)
+        } else {
+            val webStoreIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("http://play.google.com/store/apps/details?id=${activityContext.packageName}")
+            )
+            if (isActivityAvailable(webStoreIntent)) {
+                activityContext.startActivity(webStoreIntent)
+            }
+        }
+    }
+
+    fun handleShareIntent() {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.apply {
+            type = "text/plain"
+            putExtra(
+                Intent.EXTRA_TEXT,
+                "Hey check out Movid app at: https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID
+            )
+        }
+        if (isActivityAvailable(shareIntent)) {
+            activityContext.startActivity(Intent.createChooser(shareIntent, "Share Movid"))
         }
     }
 }

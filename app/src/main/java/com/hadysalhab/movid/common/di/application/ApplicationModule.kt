@@ -2,12 +2,16 @@ package com.hadysalhab.movid.common.di.application
 
 import android.app.Application
 import androidx.room.Room
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.common.datavalidator.DataValidator
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
+import com.hadysalhab.movid.common.firebase.FirebaseCrashlyticsClient
 import com.hadysalhab.movid.common.processdeath.ProcessDeathFlagIndicator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
@@ -114,4 +118,20 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun getProcessDeathFlagIndicator() = ProcessDeathFlagIndicator()
+
+    @Provides
+    fun getFirebaseAnalytics(application: Application) = FirebaseAnalytics.getInstance(application)
+
+    @Provides
+    fun getFirebaseCrashlytics() = FirebaseCrashlytics.getInstance()
+
+    @Provides
+    @Singleton
+    fun getFirebase(context: Application, firebaseAnalytics: FirebaseAnalytics) =
+        FirebaseAnalyticsClient(context, firebaseAnalytics)
+
+    @Provides
+    @Singleton
+    fun getFirebaseCrashlyticsClient(firebaseCrashlytics: FirebaseCrashlytics) =
+        FirebaseCrashlyticsClient(firebaseCrashlytics)
 }

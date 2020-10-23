@@ -2,6 +2,7 @@ package com.hadysalhab.movid.screen.main.filter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
 import com.hadysalhab.movid.screen.common.viewmodels.SavedStateViewModel
 import com.zhuinden.eventemitter.EventEmitter
@@ -13,7 +14,8 @@ private const val FILTER_STATE_STORE = "com.hadysalhab.movid.screen.main.filter.
 
 class FilterViewModel @Inject constructor(
     private val filterScreenStateManager: FilterScreenStateManager,
-    private val filterStateStore: DiscoverMoviesFilterStateStore
+    private val filterStateStore: DiscoverMoviesFilterStateStore,
+    private val firebaseAnalyticsClient: FirebaseAnalyticsClient
 ) : SavedStateViewModel() {
     private lateinit var savedStateHandle: SavedStateHandle
     private val dispatch = filterScreenStateManager::dispatch
@@ -108,10 +110,13 @@ class FilterViewModel @Inject constructor(
         val stateValue = currentScreenState.value!!
         if (stateValue.voteCountGte != null && stateValue.voteCountLte != null && stateValue.voteCountGte > stateValue.voteCountLte) {
             emitter.emit(FilterScreenEvents.ShowToast("Please check your vote count inputs"))
+            firebaseAnalyticsClient.logFilterFailure("VoteCount")
         } else if (stateValue.withRuntimeGte != null && stateValue.withRuntimeLte != null && stateValue.withRuntimeGte > stateValue.withRuntimeLte) {
             emitter.emit(FilterScreenEvents.ShowToast("Please check your runtime inputs"))
+            firebaseAnalyticsClient.logFilterFailure("Runtime")
         } else {
             filterStateStore.updateStoreState(stateValue)
+            firebaseAnalyticsClient.logFilterSuccess()
             emitter.emit(FilterScreenEvents.PopFragment)
         }
     }
