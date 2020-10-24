@@ -9,22 +9,22 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.movies.Cast
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResults
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResultsState
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreen
+import com.hadysalhab.movid.screen.common.people.People
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
 
-class CastListViewImpl(
+class PeopleListViewImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     viewFactory: ViewFactory
-) : CastListView(), MenuToolbarLayout.Listener, CastListAdapter.Listener, ErrorScreen.Listener {
+) : PeopleListView(), MenuToolbarLayout.Listener, PeopleListAdapter.Listener, ErrorScreen.Listener {
     private val toolbar: Toolbar
     private val menuToolbarLayout: MenuToolbarLayout
     private val recyclerView: RecyclerView
-    private val adapter: CastListAdapter
+    private val adapter: PeopleListAdapter
 
     //empty results
     private val emptyResultPlaceholder: FrameLayout
@@ -44,12 +44,12 @@ class CastListViewImpl(
         setupToolbar()
 
         //data
-        adapter = CastListAdapter(this, viewFactory)
+        adapter = PeopleListAdapter(this, viewFactory)
         recyclerView = findViewById(R.id.cast_recyclerview)
         recyclerView.apply {
             layoutManager = GridLayoutManager(context, 3)
             setHasFixedSize(true)
-            adapter = this@CastListViewImpl.adapter
+            adapter = this@PeopleListViewImpl.adapter
         }
 
         //empty results
@@ -87,8 +87,8 @@ class CastListViewImpl(
         }
     }
 
-    override fun handleState(castListViewState: CastListViewState) {
-        with(castListViewState) {
+    override fun handleState(peopleListViewState: PeopleListViewState) {
+        with(peopleListViewState) {
             menuToolbarLayout.setToolbarTitle(title)
             if (isLoading) {
                 showLoadingIndicator()
@@ -131,7 +131,7 @@ class CastListViewImpl(
         emptyResultPlaceholder.visibility = View.GONE
     }
 
-    override fun showData(data: List<Cast>) {
+    override fun showData(data: List<People>) {
         adapter.submitList(data)
     }
 

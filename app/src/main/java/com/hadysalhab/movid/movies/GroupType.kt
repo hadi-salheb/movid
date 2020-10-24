@@ -13,6 +13,7 @@ enum class GroupType(var value: String) : Parcelable {
     SIMILAR_MOVIES("similar"),
     RECOMMENDED_MOVIES("recommendations"),
     CAST("cast"),
+    CREW("crew"),
     FAVORITES("favorites"),
     WATCHLIST("watchlist"),
     COLLECTION("collection"),

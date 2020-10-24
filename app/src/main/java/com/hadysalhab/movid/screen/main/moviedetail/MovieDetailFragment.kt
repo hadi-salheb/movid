@@ -12,6 +12,7 @@ import com.hadysalhab.movid.movies.VideosResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
+import com.hadysalhab.movid.screen.common.people.PeopleType
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
@@ -93,8 +94,10 @@ class MovieDetailFragment : BaseFragment(),
     }
 
     //UserActions-----------------------------------------------------------------------------------
-    override fun onSeeAllCastClicked(movieID: Int, movieName: String) {
-        mainNavigator.toCastListFragment(movieID, movieName)
+
+
+    override fun onPeopleSeeAllClicked(movieID: Int, movieName: String, peopleType: PeopleType) {
+        mainNavigator.toPeopleListFragment(movieID, movieName, peopleType)
     }
 
     override fun onSeeAllRecommendedSimilarMoviesClicked(
@@ -105,9 +108,6 @@ class MovieDetailFragment : BaseFragment(),
         mainNavigator.toRecommendedSimilarMoviesFragment(groupType, movieName, movieID)
     }
 
-    override fun onCastClicked(castId: Int) {
-        firebaseAnalyticsClient.logCastClick()
-    }
 
     override fun onMovieClicked(movieId: Int) {
         mainNavigator.toDetailFragment(movieId)
@@ -141,6 +141,10 @@ class MovieDetailFragment : BaseFragment(),
 
     override fun onBackArrowClicked() {
         mainNavigator.popFragment()
+    }
+
+    override fun onPeopleCardClicked(peopleID: Int, peopleType: PeopleType) {
+        firebaseAnalyticsClient.logCastClick()
     }
 
     //----------------------------------------------------------------------------------------------

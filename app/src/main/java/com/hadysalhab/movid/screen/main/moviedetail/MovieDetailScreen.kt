@@ -3,6 +3,7 @@ package com.hadysalhab.movid.screen.main.moviedetail
 import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.VideosResponse
+import com.hadysalhab.movid.screen.common.people.PeopleType
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
 data class MovieDetailScreenState(
@@ -14,14 +15,13 @@ data class MovieDetailScreenState(
 
 abstract class MovieDetailScreen : BaseObservableViewMvc<MovieDetailScreen.Listener>() {
     interface Listener {
-        fun onSeeAllCastClicked(movieID: Int, movieName: String)
+        fun onPeopleSeeAllClicked(movieID: Int, movieName: String, peopleType: PeopleType)
         fun onSeeAllRecommendedSimilarMoviesClicked(
             groupType: GroupType,
             movieID: Int,
             movieName: String
         )
 
-        fun onCastClicked(castId: Int)
         fun onMovieClicked(movieId: Int)
         fun onSeeReviewsClicked(movieID: Int, movieName: String)
         fun onSeeTrailerClicked(videosResponse: VideosResponse)
@@ -30,6 +30,7 @@ abstract class MovieDetailScreen : BaseObservableViewMvc<MovieDetailScreen.Liste
         fun onRefresh()
         fun onRetry()
         fun onBackArrowClicked()
+        fun onPeopleCardClicked(peopleID: Int, peopleType: PeopleType)
     }
 
     protected abstract fun showLoadingIndicator()

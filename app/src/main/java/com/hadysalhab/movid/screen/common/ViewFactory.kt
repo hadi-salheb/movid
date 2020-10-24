@@ -3,9 +3,8 @@ package com.hadysalhab.movid.screen.common
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.hadysalhab.movid.screen.authentication.LoginViewImpl
-import com.hadysalhab.movid.screen.common.cardgroup.CastsView
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
-import com.hadysalhab.movid.screen.common.cast.CastCardImpl
+import com.hadysalhab.movid.screen.common.cardgroup.PeopleGroupView
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResults
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreenImpl
 import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
@@ -16,6 +15,7 @@ import com.hadysalhab.movid.screen.common.movielist.MovieListScreenImpl
 import com.hadysalhab.movid.screen.common.movies.MovieCardImpl
 import com.hadysalhab.movid.screen.common.movies.MovieListItemImpl
 import com.hadysalhab.movid.screen.common.paginationerror.PaginationError
+import com.hadysalhab.movid.screen.common.people.PeopleCardImpl
 import com.hadysalhab.movid.screen.common.rating.Rating
 import com.hadysalhab.movid.screen.common.reviews.ReviewListItem
 import com.hadysalhab.movid.screen.common.reviews.ReviewListItemImpl
@@ -25,9 +25,9 @@ import com.hadysalhab.movid.screen.main.MainViewImpl
 import com.hadysalhab.movid.screen.main.about.AboutView
 import com.hadysalhab.movid.screen.main.account.AccountView
 import com.hadysalhab.movid.screen.main.account.AccountViewImpl
-import com.hadysalhab.movid.screen.main.castlist.CastListItem
-import com.hadysalhab.movid.screen.main.castlist.CastListView
-import com.hadysalhab.movid.screen.main.castlist.CastListViewImpl
+import com.hadysalhab.movid.screen.main.castlist.PeopleListItem
+import com.hadysalhab.movid.screen.main.castlist.PeopleListView
+import com.hadysalhab.movid.screen.main.castlist.PeopleListViewImpl
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupScreenImpl
 import com.hadysalhab.movid.screen.main.filter.FilterView
 import com.hadysalhab.movid.screen.main.filter.FilterViewImpl
@@ -77,8 +77,8 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getListWithToolbarTitle(parent: ViewGroup?) =
         ListWithToolbarTitleImpl(layoutInflater, parent, this)
 
-    fun getCastsView(parent: ViewGroup?) =
-        CastsView(
+    fun getPeopleGroupView(parent: ViewGroup?) =
+        PeopleGroupView(
             layoutInflater,
             parent,
             this
@@ -88,7 +88,7 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
         MovieDetailScreenImpl(layoutInflater, container, this)
 
     fun getFactView(parent: ViewGroup?) = FactView(layoutInflater, parent)
-    fun getCastCard(parent: ViewGroup?) = CastCardImpl(layoutInflater, parent)
+    fun getPeopleCard(parent: ViewGroup?) = PeopleCardImpl(layoutInflater, parent)
     fun getRatingView(parent: ViewGroup?): Rating = Rating(layoutInflater, parent)
     fun getReviewListItem(parent: ViewGroup?): ReviewListItem =
         ReviewListItemImpl(layoutInflater, parent)
@@ -119,9 +119,9 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getLibrariesView(container: ViewGroup?): LibrariesView =
         LibrariesView(layoutInflater, container, this)
 
-    fun getCastListView(container: ViewGroup?): CastListView = CastListViewImpl(
+    fun getCastListView(container: ViewGroup?): PeopleListView = PeopleListViewImpl(
         layoutInflater, container, this
     )
 
-    fun getCastListItemView(parent: ViewGroup?) = CastListItem(layoutInflater, parent)
+    fun getPeopleListItem(parent: ViewGroup?) = PeopleListItem(layoutInflater, parent)
 }

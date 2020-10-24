@@ -2,7 +2,7 @@ package com.hadysalhab.movid.common.di.presentation
 
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.screen.main.account.AccountViewModel
-import com.hadysalhab.movid.screen.main.castlist.CastListViewModel
+import com.hadysalhab.movid.screen.main.castlist.PeopleListViewModel
 import com.hadysalhab.movid.screen.main.discover.DiscoverViewModel
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesViewModel
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupViewModel
@@ -78,6 +78,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CastListViewModel::class)
-    abstract fun castListViewModel(myViewModel: CastListViewModel): ViewModel
+    @ViewModelKey(PeopleListViewModel::class)
+    abstract fun castListViewModel(myViewModel: PeopleListViewModel): ViewModel
 }

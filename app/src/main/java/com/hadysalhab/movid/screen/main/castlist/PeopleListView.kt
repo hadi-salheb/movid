@@ -1,19 +1,19 @@
 package com.hadysalhab.movid.screen.main.castlist
 
 import androidx.annotation.DrawableRes
-import com.hadysalhab.movid.movies.Cast
+import com.hadysalhab.movid.screen.common.people.People
 import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 
-data class CastListViewState(
+data class PeopleListViewState(
     val title: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val data: List<Cast> = emptyList(),
+    val data: List<People> = emptyList(),
     @DrawableRes val emptyResultsIconDrawable: Int,
     val emptyResultsMessage: String
 )
 
-abstract class CastListView : BaseObservableViewMvc<CastListView.Listener>() {
+abstract class PeopleListView : BaseObservableViewMvc<PeopleListView.Listener>() {
     interface Listener {
         fun onBackArrowClicked()
         fun onErrorRetryClicked()
@@ -25,6 +25,6 @@ abstract class CastListView : BaseObservableViewMvc<CastListView.Listener>() {
     protected abstract fun hideErrorScreen()
     protected abstract fun showEmptyDataScreen(@DrawableRes icon: Int, msg: String)
     protected abstract fun hideEmptyDataScreen()
-    protected abstract fun showData(data: List<Cast>)
-    abstract fun handleState(castListViewState: CastListViewState)
+    protected abstract fun showData(data: List<People>)
+    abstract fun handleState(peopleListViewState: PeopleListViewState)
 }

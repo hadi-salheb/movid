@@ -8,18 +8,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.people.PeopleType
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import javax.inject.Inject
 
 private const val MOVIE_ID = "MOVIE_ID"
 private const val MOVIE_NAME = "MOVIE_NAME"
+private const val PEOPLE_TYPE = "PEOPLE_TYPE"
 
-class CastListFragment : BaseFragment(), CastListView.Listener {
+class PeopleListFragment : BaseFragment(), PeopleListView.Listener {
     @Inject
     lateinit var viewFactory: ViewFactory
 
-    private lateinit var castListView: CastListView
+    private lateinit var peopleListView: PeopleListView
 
     @Inject
     lateinit var mainNavigator: MainNavigator
@@ -27,18 +29,20 @@ class CastListFragment : BaseFragment(), CastListView.Listener {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var castListViewModel: CastListViewModel
+    private lateinit var peopleListViewModel: PeopleListViewModel
 
     private var movieID: Int? = null
+    lateinit var peopleType: PeopleType
     lateinit var movieName: String
 
     companion object {
         @JvmStatic
-        fun newInstance(movieID: Int, movieName: String) =
-            CastListFragment().apply {
+        fun newInstance(movieID: Int, movieName: String, peopleType: PeopleType) =
+            PeopleListFragment().apply {
                 arguments = Bundle().apply {
                     putInt(MOVIE_ID, movieID)
                     putString(MOVIE_NAME, movieName)
+                    putParcelable(PEOPLE_TYPE, peopleType)
                 }
             }
     }
@@ -53,9 +57,11 @@ class CastListFragment : BaseFragment(), CastListView.Listener {
             }
             movieName = it.getString(MOVIE_NAME)
                 ?: throw java.lang.RuntimeException("Cannot Start CastListFragment without a movie name")
+            peopleType = it.getParcelable<PeopleType>(PEOPLE_TYPE)
+                ?: throw  java.lang.RuntimeException("People type must be defined in PeopleListFragment")
         }
-        castListViewModel =
-            ViewModelProvider(this, viewModelFactory).get(CastListViewModel::class.java)
+        peopleListViewModel =
+            ViewModelProvider(this, viewModelFactory).get(PeopleListViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -63,16 +69,16 @@ class CastListFragment : BaseFragment(), CastListView.Listener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::castListView.isInitialized) {
-            castListView = viewFactory.getCastListView(container)
+        if (!this::peopleListView.isInitialized) {
+            peopleListView = viewFactory.getCastListView(container)
         }
-        return this.castListView.getRootView()
+        return this.peopleListView.getRootView()
     }
 
     override fun onStart() {
         super.onStart()
         registerObservers()
-        castListViewModel.onStart(movieID!!, movieName)
+        peopleListViewModel.onStart(movieID!!, movieName, peopleType)
     }
 
     override fun onStop() {
@@ -80,18 +86,18 @@ class CastListFragment : BaseFragment(), CastListView.Listener {
         unregisterObservers()
     }
 
-    private val castListViewStateObserver = Observer<CastListViewState> {
-        castListView.handleState(it)
+    private val castListViewStateObserver = Observer<PeopleListViewState> {
+        peopleListView.handleState(it)
     }
 
     private fun registerObservers() {
-        castListView.registerListener(this)
-        castListViewModel.state.observeForever(castListViewStateObserver)
+        peopleListView.registerListener(this)
+        peopleListViewModel.state.observeForever(castListViewStateObserver)
     }
 
     private fun unregisterObservers() {
-        castListView.unregisterListener(this)
-        castListViewModel.state.removeObserver(castListViewStateObserver)
+        peopleListView.unregisterListener(this)
+        peopleListViewModel.state.removeObserver(castListViewStateObserver)
     }
 
     override fun onBackArrowClicked() {
@@ -99,7 +105,7 @@ class CastListFragment : BaseFragment(), CastListView.Listener {
     }
 
     override fun onErrorRetryClicked() {
-        castListViewModel.onRetryClicked()
+        peopleListViewModel.onRetryClicked()
     }
 
 

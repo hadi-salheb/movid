@@ -6,7 +6,7 @@ import com.hadysalhab.movid.screen.authentication.AuthActivity
 import com.hadysalhab.movid.screen.main.MainActivity
 import com.hadysalhab.movid.screen.main.about.AboutFragment
 import com.hadysalhab.movid.screen.main.account.AccountFragment
-import com.hadysalhab.movid.screen.main.castlist.CastListFragment
+import com.hadysalhab.movid.screen.main.castlist.PeopleListFragment
 import com.hadysalhab.movid.screen.main.discover.DiscoverFragment
 import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupFragment
@@ -42,6 +42,6 @@ interface PresentationComponent {
     fun inject(filterFragment: FilterFragment)
     fun inject(accountFragment: AccountFragment)
     fun inject(aboutFragment: AboutFragment)
-    fun inject(castListFragment: CastListFragment)
+    fun inject(peopleListFragment: PeopleListFragment)
     fun inject(librariesFragment: LibrariesFragment)
 }

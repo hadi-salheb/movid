@@ -17,11 +17,13 @@ import com.hadysalhab.movid.common.utils.getYoutubeTrailerFromResponse
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.movies.Collection
 import com.hadysalhab.movid.screen.common.ViewFactory
-import com.hadysalhab.movid.screen.common.cardgroup.CastsView
 import com.hadysalhab.movid.screen.common.cardgroup.DataGroup
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
+import com.hadysalhab.movid.screen.common.cardgroup.PeopleGroupView
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreen
 import com.hadysalhab.movid.screen.common.loading.LoadingView
+import com.hadysalhab.movid.screen.common.people.People
+import com.hadysalhab.movid.screen.common.people.PeopleType
 import com.synnapps.carouselview.CarouselView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,7 +32,7 @@ class MovieDetailScreenImpl(
     layoutInflater: LayoutInflater,
     parent: ViewGroup?,
     private val viewFactory: ViewFactory
-) : MovieDetailScreen(), MoviesView.Listener, CastsView.Listener,
+) : MovieDetailScreen(), MoviesView.Listener, PeopleGroupView.Listener,
     SwipeRefreshLayout.OnRefreshListener, ErrorScreen.Listener {
 
     //loading
@@ -64,6 +66,7 @@ class MovieDetailScreenImpl(
     private val factsLL: LinearLayout
 
     private val castsFL: FrameLayout
+    private val crewsFL: FrameLayout
 
     private val reviewCV: CardView
     private val movieReviewReviewTV: TextView
@@ -113,6 +116,7 @@ class MovieDetailScreenImpl(
         recommendedFL = findViewById(R.id.fl_recommended)
         collectionFL = findViewById(R.id.fl_collection)
         castsFL = findViewById(R.id.fl_casts)
+        crewsFL = findViewById(R.id.fl_crews)
         reviewCV = findViewById(R.id.fact_review)
         movieReviewAuthorTV = findViewById(R.id.movie_review_author)
         movieReviewReviewTV = findViewById(R.id.movie_review_review)
@@ -242,6 +246,7 @@ class MovieDetailScreenImpl(
             displayOverview(movieDetail.details.overview)
             displayFacts(movieDetail.details)
             displayCasts(movieDetail.credits.cast)
+            displayCrews(movieDetail.credits.crew)
             displayReviews(
                 movieDetail.reviewResponse,
                 movieDetail.details.id,
@@ -427,15 +432,35 @@ class MovieDetailScreenImpl(
         }
     }
 
-    private fun displayCasts(casts: List<Cast>) {
+    private fun displayCasts(people: List<com.hadysalhab.movid.movies.Cast>) {
         castsFL.removeAllViews()
-        if (casts.isNotEmpty()) {
-            val castsViews = viewFactory.getCastsView(castsFL)
-            castsViews.registerListener(this)
-            castsViews.renderData(DataGroup(GroupType.CAST, casts), 5)
-            castsFL.addView(castsViews.getRootView())
+        if (people.isNotEmpty()) {
+            val peopleGroupView = viewFactory.getPeopleGroupView(castsFL)
+            peopleGroupView.registerListener(this)
+            peopleGroupView.renderData(DataGroup(GroupType.CAST, people.map {
+                People(it.id, it.name, it.character, it.profilePath, PeopleType.CAST)
+            }), 5)
+            castsFL.addView(peopleGroupView.getRootView())
         } else {
             castsFL.visibility = View.GONE
+        }
+    }
+
+    private fun displayCrews(crews: List<Crew>) {
+        crewsFL.removeAllViews()
+        if (crews.isNotEmpty()) {
+            val peopleGroupView = viewFactory.getPeopleGroupView(crewsFL)
+            peopleGroupView.registerListener(this)
+            peopleGroupView.renderData(
+                DataGroup(
+                    GroupType.CREW,
+                    crews.sortedBy { crew -> crew.profilePath == null }.map {
+                        People(it.id, it.name, it.job, it.profilePath, PeopleType.CREW)
+                    }), 5
+            )
+            crewsFL.addView(peopleGroupView.getRootView())
+        } else {
+            crewsFL.visibility = View.GONE
         }
     }
 
@@ -537,17 +562,18 @@ class MovieDetailScreenImpl(
         }
     }
 
-    override fun onCastCardClicked(castID: Int) {
+    override fun onPeopleCardClicked(peopleID: Int, peopleType: PeopleType) {
         listeners.forEach {
-            it.onCastClicked(castID)
+            it.onPeopleCardClicked(peopleID, peopleType)
         }
     }
 
-    override fun onCastSeeAllClicked(groupType: GroupType) {
+    override fun onPeopleSeeAllClicked(peopleType: PeopleType) {
         listeners.forEach {
-            it.onSeeAllCastClicked(
+            it.onPeopleSeeAllClicked(
                 this.movieDetail.details.id,
-                this.movieDetail.details.title
+                this.movieDetail.details.title,
+                peopleType
             )
         }
     }
