@@ -10,6 +10,8 @@ data class AccountViewState(
 
 abstract class AccountView : BaseObservableViewMvc<AccountView.Listener>() {
     abstract fun handleState(state: AccountViewState)
+    abstract fun toggleDarkModeSwitch(darkTheme: Boolean)
+
     interface Listener {
         fun onSignOutClick()
         fun onAboutClick()
@@ -17,5 +19,6 @@ abstract class AccountView : BaseObservableViewMvc<AccountView.Listener>() {
         fun onLibrariesClicked()
         fun onRateClicked()
         fun onShareClicked()
+        fun onDarkModeCheckedChanged(checked: Boolean)
     }
 }

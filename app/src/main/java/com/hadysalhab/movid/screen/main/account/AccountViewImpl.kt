@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.amulyakhare.textdrawable.TextDrawable
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
@@ -29,6 +30,7 @@ class AccountViewImpl(
     private val librariesLL: LinearLayout
     private val shareLL: LinearLayout
     private val rateLL: LinearLayout
+    private val darkModeSwitch: SwitchMaterial
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_account, parent, false))
@@ -77,6 +79,13 @@ class AccountViewImpl(
                 it.onRateClicked()
             }
         }
+
+        darkModeSwitch = findViewById(R.id.dark_mode_switch)
+        darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            listeners.forEach {
+                it.onDarkModeCheckedChanged(isChecked)
+            }
+        }
     }
 
     override fun handleState(state: AccountViewState) {
@@ -100,5 +109,9 @@ class AccountViewImpl(
 
             usernameTextView.text = accountResponse.username
         }
+    }
+
+    override fun toggleDarkModeSwitch(darkTheme: Boolean) {
+        darkModeSwitch.isChecked = darkTheme
     }
 }

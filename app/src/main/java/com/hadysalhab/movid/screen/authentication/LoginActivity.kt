@@ -2,8 +2,10 @@ package com.hadysalhab.movid.screen.authentication
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.hadysalhab.movid.authentication.AuthManager
 import com.hadysalhab.movid.authentication.LoginUseCase
+import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
@@ -48,6 +50,13 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
     @Inject
     lateinit var intentHandler: IntentHandler
 
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
+
+    private val nightModeObserver = Observer<Int> { nightMode ->
+        nightMode?.let { delegate.localNightMode = it }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector.inject(this)
@@ -78,12 +87,14 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
             }
             else -> setNewState(ScreenState.IDLE)
         }
+        sharedPreferencesManager.nightModeLiveData.observeForever(nightModeObserver)
     }
 
     override fun onStop() {
         super.onStop()
         view.unregisterListener(this)
         loginUseCase.unregisterListener(this)
+        sharedPreferencesManager.nightModeLiveData.removeObserver(nightModeObserver)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

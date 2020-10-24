@@ -46,6 +46,10 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
         }
     }
 
+    private val nightModeObserver = Observer<Int> { nightMode ->
+        nightMode?.let { delegate.localNightMode = it }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         injector.inject(this)
         if (processDeathFlagIndicator.isKilled) {
@@ -64,12 +68,14 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
         super.onStart()
         view.registerListener(this)
         sharedPreferencesManager.sessionId.observeForever(sessionIdObserver)
+        sharedPreferencesManager.nightModeLiveData.observeForever(nightModeObserver)
     }
 
     override fun onStop() {
         super.onStop()
         view.unregisterListener(this)
         sharedPreferencesManager.sessionId.removeObserver(sessionIdObserver)
+        sharedPreferencesManager.nightModeLiveData.removeObserver(nightModeObserver)
     }
 
     override fun onBottomNavigationItemClicked(item: BottomNavigationItems) {

@@ -43,12 +43,44 @@
                 app:layout_constraintTop_toBottomOf="@+id/profile_image"
                 tools:text="hadisalheb" />
 
+            <LinearLayout
+                android:id="@+id/dark_mode_linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="24dp"
+                android:paddingBottom="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/account_username">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Dark Mode"
+                    android:textAppearance="?attr/textAppearanceSubtitle1" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/dark_mode_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/about_linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
@@ -59,10 +91,9 @@
                 android:paddingBottom="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/account_username">
+                app:layout_constraintTop_toBottomOf="@+id/dark_mode_linearLayout">
 
                 <TextView
-                    android:id="@+id/about_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"

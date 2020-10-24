@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
@@ -41,6 +42,9 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
     @Inject
     lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClient
 
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector.inject(this)
@@ -74,14 +78,23 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
         accountView.handleState(state)
     }
 
+    private val darkThemeObserver = Observer<Boolean> { isDarkTheme ->
+        isDarkTheme?.let {
+            accountView.toggleDarkModeSwitch(isDarkTheme)
+        }
+
+    }
+
     private fun registerObservers() {
         accountView.registerListener(this)
         accountViewModel.screenState.observeForever(accountViewStateObserver)
+        sharedPreferencesManager.isDarkThemeLiveData.observeForever(darkThemeObserver)
     }
 
     private fun unregisterObservers() {
         accountView.unregisterListener(this)
         accountViewModel.screenState.removeObserver(accountViewStateObserver)
+        sharedPreferencesManager.isDarkThemeLiveData.removeObserver(darkThemeObserver)
     }
 
     override fun onSignOutClick() {
@@ -109,6 +122,10 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
     override fun onShareClicked() {
         intentHandler.handleShareIntent()
         firebaseAnalyticsClient.logShareMovid()
+    }
+
+    override fun onDarkModeCheckedChanged(checked: Boolean) {
+        sharedPreferencesManager.isDarkTheme = checked
     }
 
 }
