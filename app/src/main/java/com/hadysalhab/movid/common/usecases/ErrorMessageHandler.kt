@@ -14,7 +14,7 @@ class ErrorMessageHandler(
 
     private fun createErrorMessage(errMessage: String?) = when {
         errMessage == null -> {
-            "Internal Server Error. Please try again.!"
+            "Internal Server Error. Please try again!"
         }
         errMessage.contains("status_message") -> {
             gson.fromJson(errMessage, TmdbErrorResponse::class.java).statusMessage
@@ -23,7 +23,7 @@ class ErrorMessageHandler(
             "No Internet found. Check your connection and try again."
         }
         else -> {
-            "Unable to retrieve data. Please try again.!"
+            "Unable to retrieve data. Please try again!"
         }
     }
 
