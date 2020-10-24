@@ -18,10 +18,13 @@ class SignOutUseCase(
     private val userStateManager: UserStateManager,
     private val filterStateStore: DiscoverMoviesFilterStateStore
 ) {
-    fun signOutUser(accountResponse: AccountResponse) {
+    fun signOutUser(accountResponse: AccountResponse?) {
         //throw exception if clients tries to trigger this flow while it is busy
         backgroundThreadPoster.post {
-            accountDao.deleteAccountResponse(accountResponse)
+            //could be null if the user did not login
+            accountResponse?.let {
+                accountDao.deleteAccountResponse(accountResponse)
+            }
             moviesStateManager.clearMovies()
             userStateManager.clearData()
             filterStateStore.updateStoreState(FilterStoreState())

@@ -3,6 +3,7 @@ package com.hadysalhab.movid.networking
 import com.hadysalhab.movid.BuildConfig
 import com.hadysalhab.movid.account.usecases.favorite.FavoriteHttpBodyRequest
 import com.hadysalhab.movid.account.usecases.watchlist.WatchlistHttpBodyRequest
+import com.hadysalhab.movid.common.constants.APPEND_TO_RESPONSE
 import com.hadysalhab.movid.networking.responses.*
 import retrofit2.Call
 import retrofit2.http.*
@@ -84,9 +85,9 @@ interface TmdbApi {
     @GET("/3/movie/{movie_id}")
     fun fetchMovieDetail(
         @Path("movie_id") movieId: Int,
-        @Query("append_to_response") details: String = "recommendations,videos,credits,reviews,images,release_dates,account_states,similar",
+        @Query("append_to_response") details: String,
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
-        @Query("session_id") sessionID: String
+        @Query("session_id") sessionID: String?
     ): Call<MovieDetailSchema>
 
     @GET("/3/movie/{movie_id}/reviews")

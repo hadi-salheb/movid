@@ -31,7 +31,7 @@ class PeopleListItem(layoutInflater: LayoutInflater, parent: ViewGroup?) : BaseV
         peopleRoleTV.text = people.peopleRole
         if (people.profilePath == null) {
             Glide.with(getContext())
-                .load(ContextCompat.getDrawable(getContext(), R.drawable.user_default_profile))
+                .load(ContextCompat.getDrawable(getContext(), R.drawable.people_default_image))
                 .into(peopleIV)
         } else {
             Glide.with(getContext())

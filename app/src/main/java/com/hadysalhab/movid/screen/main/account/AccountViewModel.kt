@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.account.AccountResponse
 import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCase
 import com.hadysalhab.movid.authentication.SignOutUseCase
+import com.hadysalhab.movid.common.SharedPreferencesManager
+import com.hadysalhab.movid.common.constants.GUEST_SESSION_ID
 import javax.inject.Inject
 
 class AccountViewModel
@@ -12,17 +14,29 @@ class AccountViewModel
 constructor(
     private val getAccountDetailsUseCase: GetAccountDetailsUseCase,
     private val accountScreenStateManager: AccountScreenStateManager,
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
+    private val sharedPreferencesManager: SharedPreferencesManager
 ) : ViewModel(), GetAccountDetailsUseCase.Listener {
     val screenState: LiveData<AccountViewState>
     private val dispatch = accountScreenStateManager::dispatch
-    private lateinit var accountDetail: AccountResponse
-    private var isSigninOut = false
+    private var accountDetail: AccountResponse? = null
+    private var isSigningOut = false
+    private val sessionId = sharedPreferencesManager.getStoredSessionId()
+
     init {
         getAccountDetailsUseCase.registerListener(this)
-        screenState =
-            accountScreenStateManager.setInitialStateAndReturn(AccountViewState(loading = true))
-        getAccountDetailsUseCase.getAccountDetailsUseCase()
+        if (sessionId == GUEST_SESSION_ID) {
+            screenState = accountScreenStateManager.setInitialStateAndReturn(
+                AccountViewState(
+                    loading = false,
+                    accountResponse = null
+                )
+            )
+        } else {
+            screenState =
+                accountScreenStateManager.setInitialStateAndReturn(AccountViewState(loading = true))
+            getAccountDetailsUseCase.getAccountDetailsUseCase()
+        }
     }
 
 
@@ -40,8 +54,8 @@ constructor(
 
     fun signOutClick() {
         //prevent double tap bug
-        if (!isSigninOut) {
-            isSigninOut = true
+        if (!isSigningOut) {
+            isSigningOut = true
             signOutUseCase.signOutUser(accountDetail)
         }
     }

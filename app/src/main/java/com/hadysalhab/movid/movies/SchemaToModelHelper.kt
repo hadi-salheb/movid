@@ -168,9 +168,13 @@ class SchemaToModelHelper {
         Backdrops(IMAGES_BASE_URL + BACKDROP_SIZE_780 + el.filePath)
     }
 
-    private fun getAccountState(accountStatesSchema: AccountStatesSchema) =
-        with(accountStatesSchema) {
-            AccountStates(id, favorite, watchlist)
+    private fun getAccountState(accountStatesSchema: AccountStatesSchema?) =
+        if (accountStatesSchema == null) {
+            null
+        } else {
+            with(accountStatesSchema) {
+                AccountStates(id, favorite, watchlist)
+            }
         }
 
 

@@ -92,6 +92,10 @@ class FavoriteMoviesFragment : BaseFragment(), ListWithToolbarTitle.Listener {
 
     override fun onBackArrowClick() {
     }
+
+    override fun onLoginRequiredBtnClicked() {
+        favoriteMoviesViewModel.onLoginRequiredBtnClicked()
+    }
     //----------------------------------------------------------------------------------------------
 
     private val listWithToolbarTitleStateObserver =

@@ -8,7 +8,9 @@ data class ListWithToolbarTitleState(
     val movieListScreenState: MovieListScreenState,
     val title: String = "",
     @DrawableRes val menuIcon: Int? = null,
-    val showBackArrow: Boolean = false
+    val showBackArrow: Boolean = false,
+    val showLoginRequired: Boolean = false,
+    val loginRequiredText: String? = null
 )
 
 abstract class ListWithToolbarTitle : BaseObservableViewMvc<ListWithToolbarTitle.Listener>() {
@@ -19,6 +21,7 @@ abstract class ListWithToolbarTitle : BaseObservableViewMvc<ListWithToolbarTitle
         fun onPaginationErrorClicked()
         fun onMenuIconClicked()
         fun onBackArrowClick()
+        fun onLoginRequiredBtnClicked()
     }
 
     abstract fun handleScreenState(screenState: ListWithToolbarTitleState)

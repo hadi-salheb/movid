@@ -12,6 +12,7 @@ sealed class ListWithToolbarTitleActions {
     data class Error(val msg: String) : ListWithToolbarTitleActions()
     object PaginationError : ListWithToolbarTitleActions()
     object Pagination : ListWithToolbarTitleActions()
+    data class LoginRequired(val message: String) : ListWithToolbarTitleActions()
 }
 
 
@@ -88,5 +89,9 @@ class ListWithToolbarTitleStateManager {
                     )
                 )
             }
+            is ListWithToolbarTitleActions.LoginRequired -> state.copy(
+                showLoginRequired = true,
+                loginRequiredText = listWithToolbarTitleActions.message
+            )
         }
 }

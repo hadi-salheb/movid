@@ -3,6 +3,9 @@ package com.hadysalhab.movid.screen.main.favorites
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.authentication.SignOutUseCase
+import com.hadysalhab.movid.common.SharedPreferencesManager
+import com.hadysalhab.movid.common.constants.GUEST_SESSION_ID
 import com.hadysalhab.movid.common.constants.MAX_NUMBER_OF_DATA_PER_PAGE
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
@@ -24,10 +27,13 @@ import kotlin.math.max
 class FavoriteMoviesViewModel @Inject constructor(
     private val fetchFavoriteMoviesUseCase: FetchFavoriteMoviesUseCase,
     private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
-    private val schemaToModelHelper: SchemaToModelHelper
+    private val schemaToModelHelper: SchemaToModelHelper,
+    private val sharedPreferencesManager: SharedPreferencesManager,
+    private val signOutUseCase: SignOutUseCase
 ) : ViewModel(), FetchFavoriteMoviesUseCase.Listener {
 
     private lateinit var favoriteMovies: MoviesResponse
+    private val sessionID= sharedPreferencesManager.getStoredSessionId()
     private var moviesList = setOf<Movie>()
     val state: LiveData<ListWithToolbarTitleState> =
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
@@ -94,9 +100,13 @@ class FavoriteMoviesViewModel @Inject constructor(
     fun onStart() {
         if (isFirstRender) {
             isFirstRender = false
-            dispatch(ListWithToolbarTitleActions.Request)
-            fetchApi(1)
-        } else if (this::favoriteMovies.isInitialized) {
+            if(sessionID == GUEST_SESSION_ID){
+                dispatch(ListWithToolbarTitleActions.LoginRequired("Please login to access your favorite movies"))
+            }else {
+                dispatch(ListWithToolbarTitleActions.Request)
+                fetchApi(1)
+            }
+        } else if (sessionID != GUEST_SESSION_ID && this::favoriteMovies.isInitialized) {
             val numberOfDisplayedMovies = moviesList.size
             if (favoriteMovies.page + 1 <= favoriteMovies.total_pages && (numberOfDisplayedMovies < (MAX_NUMBER_OF_DATA_PER_PAGE * (favoriteMovies.page + 1)))) {
                 dispatch(ListWithToolbarTitleActions.Request)
@@ -131,6 +141,10 @@ class FavoriteMoviesViewModel @Inject constructor(
         } else {
             fetchApi(1)
         }
+    }
+
+    fun onLoginRequiredBtnClicked() {
+        signOutUseCase.signOutUser(null)
     }
     //----------------------------------------------------------------------------------------------
 

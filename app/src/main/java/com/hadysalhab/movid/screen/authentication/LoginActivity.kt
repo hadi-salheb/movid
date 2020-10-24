@@ -3,9 +3,12 @@ package com.hadysalhab.movid.screen.authentication
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.hadysalhab.movid.account.UserState
+import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.authentication.AuthManager
 import com.hadysalhab.movid.authentication.LoginUseCase
 import com.hadysalhab.movid.common.SharedPreferencesManager
+import com.hadysalhab.movid.common.constants.GUEST_SESSION_ID
 import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
@@ -61,6 +64,9 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
 
     @Inject
     lateinit var dialogManager: DialogManager
+
+    @Inject
+    lateinit var userStateManager: UserStateManager
 
     private val nightModeObserver = Observer<Int> { nightMode ->
         nightMode?.let { delegate.localNightMode = it }
@@ -118,15 +124,23 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
 
 
     override fun onLoginClicked(username: String, password: String) {
-        loginUseCase.loginAndNotify(username, password)
         setNewState(ScreenState.LOGIN_IN_PROGRESS)
+        loginUseCase.loginAndNotify(username, password)
     }
 
     override fun onSignUpClicked() {
         setNewState(ScreenState.DIALOG_INFO)
     }
 
+    override fun onBrowseClicked() {
+        setNewState(ScreenState.LOGIN_IN_PROGRESS)
+        sharedPreferencesManager.setStoredSessionId(GUEST_SESSION_ID)
+        userStateManager.updateSessionId(GUEST_SESSION_ID)
+        setNewState(ScreenState.LOGIN_SUCCESS)
+    }
+
     override fun onLoggedIn() {
+        firebaseAnalyticsClient.logLogin()
         setNewState(ScreenState.LOGIN_SUCCESS)
     }
 
@@ -156,8 +170,6 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
                 Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
             }
             ScreenState.LOGIN_SUCCESS -> {
-                firebaseAnalyticsClient.logLogin()
-                view.hideProgressState()
                 authNavigator.toMainScreen()
                 finish()
             }

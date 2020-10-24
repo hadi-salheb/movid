@@ -16,3 +16,6 @@ const val IMAGES_BASE_URL = "https://image.tmdb.org/t/p/"
 const val TAG = "com.hadysalhab.movid"
 const val YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
 const val MAX_NUMBER_OF_DATA_PER_PAGE = 20
+const val GUEST_SESSION_ID = "com.hadysalhab.movid.guest_session.id"
+const val APPEND_TO_RESPONSE = "recommendations,videos,credits,reviews,images,release_dates,similar"
+const val APPEND_TO_RESPONSE_WITH_ACCOUNT = "$APPEND_TO_RESPONSE,account_states"

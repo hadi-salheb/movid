@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.screen.common.ViewFactory
+import com.hadysalhab.movid.screen.common.loginrequired.LoginRequiredView
 import com.hadysalhab.movid.screen.common.movielist.MovieListScreen
 import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
 import com.hadysalhab.movid.screen.common.toolbar.MenuToolbarLayout
@@ -15,12 +16,14 @@ class ListWithToolbarTitleImpl(
     parent: ViewGroup?,
     viewFactory: ViewFactory
 ) :
-    ListWithToolbarTitle(), MovieListScreen.Listener, MenuToolbarLayout.Listener {
+    ListWithToolbarTitle(), MovieListScreen.Listener, MenuToolbarLayout.Listener,
+    LoginRequiredView.Listener {
 
     private val favoritesPlaceHolder: FrameLayout
     private val toolbar: Toolbar
     private val menuToolbarLayout: MenuToolbarLayout
     private val movieListScreen: MovieListScreen
+    private val loginRequiredView : LoginRequiredView
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_list_title_toolbar, parent, false))
@@ -32,14 +35,21 @@ class ListWithToolbarTitleImpl(
         movieListScreen = viewFactory.getMovieScreen(favoritesPlaceHolder)
         movieListScreen.registerListener(this)
         favoritesPlaceHolder.addView(movieListScreen.getRootView())
-
+        loginRequiredView = viewFactory.getLoginRequiredView(favoritesPlaceHolder)
     }
 
 
     override fun handleScreenState(screenState: ListWithToolbarTitleState) {
-        movieListScreenHandleState(
-            screenState.movieListScreenState
-        )
+        if (screenState.showLoginRequired) {
+            favoritesPlaceHolder.removeAllViews()
+            this.loginRequiredView.registerListener(this)
+            this.loginRequiredView.setText(screenState.loginRequiredText!!)
+            favoritesPlaceHolder.addView(this.loginRequiredView.getRootView())
+        } else {
+            movieListScreenHandleState(
+                screenState.movieListScreenState
+            )
+        }
         with(menuToolbarLayout) {
             setToolbarTitle(
                 screenState.title
@@ -92,6 +102,12 @@ class ListWithToolbarTitleImpl(
     override fun onBackArrowClicked() {
         listeners.forEach {
             it.onBackArrowClick()
+        }
+    }
+
+    override fun onLoginRequiredBtnClicked() {
+        listeners.forEach {
+            it.onLoginRequiredBtnClicked()
         }
     }
 }

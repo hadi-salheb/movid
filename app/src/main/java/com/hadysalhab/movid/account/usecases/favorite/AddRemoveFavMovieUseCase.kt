@@ -69,7 +69,7 @@ class AddRemoveFavMovieUseCase(
                     throw  RuntimeException("$oldMovieDetail should be part of the store when changing fav state")
                 }
                 val newMovieDetail =
-                    oldMovieDetail.copy(accountStates = oldMovieDetail.accountStates.copy(favorite = !oldMovieDetail.accountStates.favorite))
+                    oldMovieDetail.copy(accountStates = oldMovieDetail.accountStates!!.copy(favorite = !oldMovieDetail.accountStates.favorite))
                 newMovieDetail.timeStamp = oldMovieDetail.timeStamp
                 moviesStateManager.upsertMovieDetailToList(newMovieDetail)
                 notifySuccess(newMovieDetail)
@@ -82,7 +82,7 @@ class AddRemoveFavMovieUseCase(
 
     private fun notifySuccess(movieDetail: MovieDetail) {
         uiThreadPoster.post {
-            if (movieDetail.accountStates.favorite) {
+            if (movieDetail.accountStates!!.favorite) {
                 EventBus.getDefault().post(MovieDetailEvents.AddMovieToFav(movieDetail))
             } else {
                 EventBus.getDefault().post(MovieDetailEvents.RemoveMovieFromFav(movieDetail))

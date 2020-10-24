@@ -7,7 +7,7 @@ data class MovieDetail(
     val credits: Credits,
     val reviewResponse: ReviewResponse,
     val images: Images,
-    val accountStates: AccountStates,
+    val accountStates: AccountStates?,
     val similar: MoviesResponse,
     val recommendations: MoviesResponse,
     val videosResponse: VideosResponse,

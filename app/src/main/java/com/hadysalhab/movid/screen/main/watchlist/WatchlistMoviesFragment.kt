@@ -96,6 +96,11 @@ class WatchlistMoviesFragment : BaseFragment(), MovieListScreen.Listener,
 
     }
 
+    override fun onLoginRequiredBtnClicked() {
+        watchlistMoviesViewModel.onLoginRequiredBtnClicked()
+
+    }
+
     //----------------------------------------------------------------------------------------------
 
     private val listWithToolbarTitleStateObserver =

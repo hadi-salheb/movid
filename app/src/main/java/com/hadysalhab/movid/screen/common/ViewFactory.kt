@@ -12,6 +12,7 @@ import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
 import com.hadysalhab.movid.screen.common.listheader.ListHeader
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleImpl
 import com.hadysalhab.movid.screen.common.loading.LoadingView
+import com.hadysalhab.movid.screen.common.loginrequired.LoginRequiredView
 import com.hadysalhab.movid.screen.common.movielist.MovieListScreenImpl
 import com.hadysalhab.movid.screen.common.movies.MovieCardImpl
 import com.hadysalhab.movid.screen.common.movies.MovieListItemImpl
@@ -126,4 +127,5 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
 
     fun getPeopleListItem(parent: ViewGroup?) = PeopleListItem(layoutInflater, parent)
     fun getInfoDialogView(parent: ViewGroup?): InfoDialogView = InfoDialogView(layoutInflater, null)
+    fun getLoginRequiredView(parent:ViewGroup?) = LoginRequiredView(layoutInflater,parent)
 }

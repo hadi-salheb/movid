@@ -6,6 +6,7 @@ abstract class LoginView : BaseObservableViewMvc<LoginView.Listener>() {
     interface Listener {
         fun onLoginClicked(username: String, password: String)
         fun onSignUpClicked()
+        fun onBrowseClicked()
     }
 
     abstract fun showProgressState()

@@ -242,7 +242,9 @@ class MovieDetailScreenImpl(
             displayTitle(movieDetail.details.title)
             displayTagLine(movieDetail.details.tagLine)
             displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
-            displayAccountState(movieDetail.accountStates)
+            if (movieDetail.accountStates != null) {
+                displayAccountState(movieDetail.accountStates)
+            }
             displayOverview(movieDetail.details.overview)
             displayFacts(movieDetail.details)
             displayCasts(movieDetail.credits.cast)
@@ -271,8 +273,10 @@ class MovieDetailScreenImpl(
             if (this.movieDetail.details.voteAvg != movieDetail.details.voteAvg || this.movieDetail.details.voteCount != movieDetail.details.voteCount) {
                 displayRating(movieDetail.details.voteAvg, movieDetail.details.voteCount)
             }
-            if (this.movieDetail.accountStates != movieDetail.accountStates) {
-                displayAccountState(movieDetail.accountStates)
+            if (movieDetail.accountStates != null) {
+                if (this.movieDetail.accountStates != movieDetail.accountStates) {
+                    displayAccountState(movieDetail.accountStates)
+                }
             }
             if (this.movieDetail.details.overview != movieDetail.details.overview) {
                 displayOverview(movieDetail.details.overview)

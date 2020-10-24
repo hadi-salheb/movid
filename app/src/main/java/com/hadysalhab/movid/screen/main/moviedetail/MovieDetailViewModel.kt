@@ -81,34 +81,42 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     fun onAddRemoveWatchlistClicked() {
-        // user clicked add/remove watchlist while pulling to refresh
-        if (fetchMovieDetailUseCase.isBusy) {
-            return
-        }
-        if (areAddRemoveWatchListOrFavoriteUseCaseBusy()) {
-            emitter.emit(ShowUserToastMessage("Please Wait"))
-        } else {
-            movieDetailScreenStateManager.dispatch(MovieDetailActions.Request)
-            addRemoveWatchlistMovieUseCase.addRemoveWatchlistUseCase(
-                state.value!!.data!!.details.id,
-                !state.value!!.data!!.accountStates.watchlist
-            )
+        if(state.value!!.data!!.accountStates == null){
+            emitter.emit(ShowUserToastMessage("Please login to save to watchlist"))
+        }else {
+            // user clicked add/remove watchlist while pulling to refresh
+            if (fetchMovieDetailUseCase.isBusy) {
+                return
+            }
+            if (areAddRemoveWatchListOrFavoriteUseCaseBusy()) {
+                emitter.emit(ShowUserToastMessage("Please Wait"))
+            } else {
+                movieDetailScreenStateManager.dispatch(MovieDetailActions.Request)
+                addRemoveWatchlistMovieUseCase.addRemoveWatchlistUseCase(
+                    state.value!!.data!!.details.id,
+                    !state.value!!.data!!.accountStates!!.watchlist
+                )
+            }
         }
     }
 
     fun onAddRemoveFavoritesClicked() {
-        // user clicked add/remove favorites while pulling to refresh
-        if (fetchMovieDetailUseCase.isBusy) {
-            return
-        }
-        if (areAddRemoveWatchListOrFavoriteUseCaseBusy()) {
-            emitter.emit(ShowUserToastMessage("Please Wait"))
-        } else {
-            movieDetailScreenStateManager.dispatch(MovieDetailActions.Request)
-            addRemoveFavMovieUseCase.addRemoveFavUseCase(
-                state.value!!.data!!.details.id,
-                !state.value!!.data!!.accountStates.favorite
-            )
+        if(state.value!!.data!!.accountStates == null){
+            emitter.emit(ShowUserToastMessage("Please login to save to favorites"))
+        }else {
+            // user clicked add/remove favorites while pulling to refresh
+            if (fetchMovieDetailUseCase.isBusy) {
+                return
+            }
+            if (areAddRemoveWatchListOrFavoriteUseCaseBusy()) {
+                emitter.emit(ShowUserToastMessage("Please Wait"))
+            } else {
+                movieDetailScreenStateManager.dispatch(MovieDetailActions.Request)
+                addRemoveFavMovieUseCase.addRemoveFavUseCase(
+                    state.value!!.data!!.details.id,
+                    !state.value!!.data!!.accountStates!!.favorite
+                )
+            }
         }
     }
     //-------------------------------------------------------------------------------------------

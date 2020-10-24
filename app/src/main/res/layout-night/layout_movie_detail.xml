@@ -129,6 +129,7 @@
                     android:layout_marginEnd="8dp"
                     android:backgroundTint="@color/red_600"
                     android:text="Play Trailer"
+                    android:textColor="@color/white_milky"
                     app:icon="@drawable/ic_play_2"
                     app:iconGravity="textStart"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -155,7 +156,7 @@
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
                         android:text="Favorites"
-                        android:textColor="@color/grey_800" />
+                         />
 
                     <Button
                         android:id="@+id/button_watchlist"
@@ -166,7 +167,7 @@
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
                         android:text="Watchlist"
-                        android:textColor="@color/grey_800" />
+                       />
                 </LinearLayout>
 
                 <com.google.android.material.card.MaterialCardView

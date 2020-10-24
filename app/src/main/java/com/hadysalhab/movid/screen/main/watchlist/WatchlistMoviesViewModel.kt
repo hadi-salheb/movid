@@ -3,6 +3,9 @@ package com.hadysalhab.movid.screen.main.watchlist
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.R
+import com.hadysalhab.movid.authentication.SignOutUseCase
+import com.hadysalhab.movid.common.SharedPreferencesManager
+import com.hadysalhab.movid.common.constants.GUEST_SESSION_ID
 import com.hadysalhab.movid.common.constants.MAX_NUMBER_OF_DATA_PER_PAGE
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
@@ -23,11 +26,14 @@ import kotlin.math.max
 
 class WatchlistMoviesViewModel @Inject constructor(
     private val fetchWatchlistMoviesUseCase: FetchWatchlistMoviesUseCase,
+    private val signOutUseCase: SignOutUseCase,
     private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
-    private val schemaToModelHelper: SchemaToModelHelper
+    private val schemaToModelHelper: SchemaToModelHelper,
+    private val sharedPreferencesManager: SharedPreferencesManager
 ) : ViewModel(), FetchWatchlistMoviesUseCase.Listener {
 
     private lateinit var watchlistMovies: MoviesResponse
+    private val sessionID= sharedPreferencesManager.getStoredSessionId()
     private var moviesList = setOf<Movie>()
     val state: LiveData<ListWithToolbarTitleState> =
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
@@ -96,9 +102,13 @@ class WatchlistMoviesViewModel @Inject constructor(
     fun onStart() {
         if (isFirstRender) {
             isFirstRender = false
-            dispatch(ListWithToolbarTitleActions.Request)
-            fetchApi(1)
-        } else if (this::watchlistMovies.isInitialized) {
+            if(sessionID == GUEST_SESSION_ID){
+                dispatch(ListWithToolbarTitleActions.LoginRequired("Please login to access your watchlist movies"))
+            }else {
+                dispatch(ListWithToolbarTitleActions.Request)
+                fetchApi(1)
+            }
+        } else if (sessionID != GUEST_SESSION_ID && this::watchlistMovies.isInitialized) {
             val numberOfDisplayedMovies = moviesList.size
             if (watchlistMovies.page + 1 <= watchlistMovies.total_pages && (numberOfDisplayedMovies < (MAX_NUMBER_OF_DATA_PER_PAGE * (watchlistMovies.page + 1)))) {
                 dispatch(ListWithToolbarTitleActions.Request)
@@ -133,6 +143,10 @@ class WatchlistMoviesViewModel @Inject constructor(
         } else {
             fetchApi(1)
         }
+    }
+
+    fun onLoginRequiredBtnClicked() {
+        signOutUseCase.signOutUser(null)
     }
     //----------------------------------------------------------------------------------------------
 

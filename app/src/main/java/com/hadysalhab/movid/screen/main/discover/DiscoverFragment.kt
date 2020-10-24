@@ -109,6 +109,10 @@ class DiscoverFragment : BaseFragment(), ListWithToolbarTitle.Listener {
     override fun onBackArrowClick() {
         mainNavigator.popFragment()
     }
+
+    override fun onLoginRequiredBtnClicked() {
+
+    }
     //----------------------------------------------------------------------------------------------
 
 

@@ -69,7 +69,7 @@ class AddRemoveWatchlistMovieUseCase(
                     throw  RuntimeException("$oldMovieDetail should be part of the store when changing watchlist state")
                 }
                 val newMovieDetail =
-                    oldMovieDetail.copy(accountStates = oldMovieDetail.accountStates.copy(watchlist = !oldMovieDetail.accountStates.watchlist))
+                    oldMovieDetail.copy(accountStates = oldMovieDetail.accountStates!!.copy(watchlist = !oldMovieDetail.accountStates.watchlist))
                 newMovieDetail.timeStamp = oldMovieDetail.timeStamp
                 moviesStateManager.upsertMovieDetailToList(newMovieDetail)
                 notifySuccess(newMovieDetail)
@@ -82,7 +82,7 @@ class AddRemoveWatchlistMovieUseCase(
 
     private fun notifySuccess(movieDetail: MovieDetail) {
         uiThreadPoster.post {
-            if (movieDetail.accountStates.watchlist) {
+            if (movieDetail.accountStates!!.watchlist) {
                 EventBus.getDefault().post(MovieDetailEvents.AddToWatchlist(movieDetail))
             } else {
                 EventBus.getDefault().post(MovieDetailEvents.RemoveFromWatchlist(movieDetail))

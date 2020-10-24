@@ -1,6 +1,9 @@
 package com.hadysalhab.movid.movies.usecases.detail
 
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
+import com.hadysalhab.movid.common.constants.APPEND_TO_RESPONSE
+import com.hadysalhab.movid.common.constants.APPEND_TO_RESPONSE_WITH_ACCOUNT
+import com.hadysalhab.movid.common.constants.GUEST_SESSION_ID
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
@@ -45,6 +48,17 @@ class FetchMovieDetailUseCase(
         }
     }
 
+    private fun fetchMovieDetail(movieId: Int) = try {
+        val response = tmdbApi.fetchMovieDetail(
+            movieId = movieId,
+            sessionID = if(sessionId == GUEST_SESSION_ID) null else sessionId,
+            details = if(sessionId == GUEST_SESSION_ID) APPEND_TO_RESPONSE else APPEND_TO_RESPONSE_WITH_ACCOUNT
+        ).execute()
+        ApiResponse.create(response)
+    } catch (err: Throwable) {
+        ApiResponse.create<MovieDetailSchema>(err)
+    }
+
     private fun handleResponse(response: ApiResponse<MovieDetailSchema>) {
         when (response) {
             is ApiSuccessResponse -> {
@@ -64,6 +78,13 @@ class FetchMovieDetailUseCase(
         }
     }
 
+    private fun fetchCollection(collectionID: Int) = try {
+        val response = tmdbApi.getCollection(collectionID).execute()
+        ApiResponse.create(response)
+    } catch (err: Throwable) {
+        ApiResponse.create<CollectionSchema>(err)
+    }
+
     private fun handleCollectionResponse(
         response: ApiResponse<CollectionSchema>,
         movieDetailSchema: MovieDetailSchema
@@ -80,23 +101,6 @@ class FetchMovieDetailUseCase(
                 notifyFailure(errorMessageHandler.getErrorMessageFromApiResponse(response))
             }
         }
-    }
-
-    private fun fetchMovieDetail(movieId: Int) = try {
-        val response = tmdbApi.fetchMovieDetail(
-            movieId = movieId,
-            sessionID = sessionId
-        ).execute()
-        ApiResponse.create(response)
-    } catch (err: Throwable) {
-        ApiResponse.create<MovieDetailSchema>(err)
-    }
-
-    private fun fetchCollection(collectionID: Int) = try {
-        val response = tmdbApi.getCollection(collectionID).execute()
-        ApiResponse.create(response)
-    } catch (err: Throwable) {
-        ApiResponse.create<CollectionSchema>(err)
     }
 
     private fun notifyFailure(msg: String) {

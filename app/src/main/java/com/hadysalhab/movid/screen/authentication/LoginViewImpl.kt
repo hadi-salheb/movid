@@ -15,6 +15,7 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
     private val passwordInputLayout: TextInputLayout
     private val loginBtn: Button
     private val signUpBtn: TextView
+    private val browseBtn: Button
 
     init {
         setRootView(inflater.inflate(R.layout.layout_authentication, parent, false))
@@ -24,6 +25,7 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
         passwordInputLayout = findViewById(R.id.password_input_layout)
         loginBtn = findViewById(R.id.login_btn)
         signUpBtn = findViewById(R.id.signUp_btn)
+        browseBtn = findViewById(R.id.browse_btn)
         setupListeners()
     }
 
@@ -42,6 +44,11 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
         signUpBtn.setOnClickListener {
             listeners.forEach { listener ->
                 listener.onSignUpClicked()
+            }
+        }
+        browseBtn.setOnClickListener {
+            listeners.forEach { listener ->
+                listener.onBrowseClicked()
             }
         }
     }
@@ -68,6 +75,7 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
         signUpBtn.isEnabled = false
         usernameInputLayout.isEnabled = false
         passwordInputLayout.isEnabled = false
+        browseBtn.isEnabled = false
     }
 
     override fun hideProgressState() {
@@ -77,6 +85,7 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
     override fun showIdleScreen() {
         loginBtn.isEnabled = true
         signUpBtn.isEnabled = true
+        browseBtn.isEnabled = true
         usernameInputLayout.isEnabled = true
         passwordInputLayout.isEnabled = true
     }

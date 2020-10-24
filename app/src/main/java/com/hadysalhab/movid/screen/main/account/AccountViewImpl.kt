@@ -89,7 +89,7 @@ class AccountViewImpl(
     }
 
     override fun handleState(state: AccountViewState) {
-        state.accountResponse?.let { accountResponse ->
+        if (state.accountResponse != null) {
             val typedValue = TypedValue()
 
             val a: TypedArray =
@@ -100,15 +100,19 @@ class AccountViewImpl(
             val color: Int = a.getColor(0, 0)
 
             a.recycle()
-
             val drawable = TextDrawable.builder().buildRound(
-                accountResponse.username[0].toString(),
+                state.accountResponse.username[0].toString(),
                 color
             )
             profileImageView.setImageDrawable(drawable)
-
-            usernameTextView.text = accountResponse.username
+            usernameTextView.text = state.accountResponse.username
+            signOutButton.text = "Sign out"
+        } else {
+            profileImageView.setImageResource(R.drawable.user_default_profile)
+            usernameTextView.text = ""
+            signOutButton.text = "LOGIN"
         }
+
     }
 
     override fun toggleDarkModeSwitch(darkTheme: Boolean) {
