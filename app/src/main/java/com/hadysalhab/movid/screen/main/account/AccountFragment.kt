@@ -125,6 +125,13 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
     }
 
     override fun onDarkModeCheckedChanged(checked: Boolean) {
+        firebaseAnalyticsClient.logThemeMode(
+            if (checked) {
+                "DARK"
+            } else {
+                "WHITE"
+            }
+        )
         sharedPreferencesManager.isDarkTheme = checked
     }
 

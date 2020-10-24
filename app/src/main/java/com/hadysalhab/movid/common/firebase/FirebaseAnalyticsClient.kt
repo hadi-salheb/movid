@@ -35,6 +35,10 @@ class FirebaseAnalyticsClient(
         firebaseAnalytics.logEvent("FlagChange", flagBundle)
     }
 
+    fun logBrowsing() {
+        firebaseAnalytics.logEvent("Browsing", null)
+    }
+
     fun logLogin() {
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, null)
     }
@@ -104,5 +108,12 @@ class FirebaseAnalyticsClient(
             it.putString("ErrorMessage", message)
         }
         firebaseAnalytics.logEvent("UseCaseFailure", useCaseErrorBundle)
+    }
+
+    fun logThemeMode(themeMode: String) {
+        val themeModeBundle = Bundle().also {
+            it.putString("Mode", themeMode)
+        }
+        firebaseAnalytics.logEvent("Theme", themeModeBundle)
     }
 }

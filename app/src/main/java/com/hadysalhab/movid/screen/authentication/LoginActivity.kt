@@ -3,7 +3,6 @@ package com.hadysalhab.movid.screen.authentication
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import com.hadysalhab.movid.account.UserState
 import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.authentication.AuthManager
 import com.hadysalhab.movid.authentication.LoginUseCase
@@ -133,6 +132,7 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
     }
 
     override fun onBrowseClicked() {
+        firebaseAnalyticsClient.logBrowsing()
         setNewState(ScreenState.LOGIN_IN_PROGRESS)
         sharedPreferencesManager.setStoredSessionId(GUEST_SESSION_ID)
         userStateManager.updateSessionId(GUEST_SESSION_ID)
