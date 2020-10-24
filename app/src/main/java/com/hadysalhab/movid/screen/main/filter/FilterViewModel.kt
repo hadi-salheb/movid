@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
+import com.hadysalhab.movid.movies.FilterStoreState
 import com.hadysalhab.movid.screen.common.viewmodels.SavedStateViewModel
 import com.zhuinden.eventemitter.EventEmitter
 import com.zhuinden.eventemitter.EventSource
+import java.util.*
 import javax.inject.Inject
 
 private const val FILTER_SCREEN_STATE_KEY = "com.hadysalhab.movid.screen.main.filter.key"
@@ -19,8 +21,8 @@ class FilterViewModel @Inject constructor(
 ) : SavedStateViewModel() {
     private lateinit var savedStateHandle: SavedStateHandle
     private val dispatch = filterScreenStateManager::dispatch
-    private lateinit var currentStoreState: FilterState
-    lateinit var currentScreenState: LiveData<FilterState>
+    private lateinit var currentStoreState: FilterStoreState
+    lateinit var currentScreenViewState: LiveData<FilterViewState>
 
     private val emitter: EventEmitter<FilterScreenEvents> = EventEmitter()
     val screenEvents: EventSource<FilterScreenEvents> get() = emitter
@@ -29,10 +31,6 @@ class FilterViewModel @Inject constructor(
         this.savedStateHandle = savedStateHandle
         checkCurrentScreenState()
         checkCurrentStoreState()
-    }
-
-    fun onSortByChanged(sortBy: String) {
-        dispatch(FilterActions.UpdateSortBy(sortBy))
     }
 
     fun onIncludeAdultChanged(includeAdult: Boolean) {
@@ -79,21 +77,21 @@ class FilterViewModel @Inject constructor(
     //Process Death checks
     private fun checkCurrentScreenState() {
         if (savedStateHandle.contains(FILTER_SCREEN_STATE_KEY)) {
-            this.currentScreenState = filterScreenStateManager.setInitialStateAndReturn(
-                savedStateHandle.get<FilterState>(
+            this.currentScreenViewState = filterScreenStateManager.setInitialStateAndReturn(
+                savedStateHandle.get<FilterViewState>(
                     FILTER_SCREEN_STATE_KEY
                 )!!
             )
         } else {
-            this.currentScreenState =
-                filterScreenStateManager.setInitialStateAndReturn(filterStateStore.currentFilterState)
+            this.currentScreenViewState =
+                filterScreenStateManager.setInitialStateAndReturn(getScreenStateFromStoreState())
         }
     }
 
     //Process Death checks
     private fun checkCurrentStoreState() {
         if (savedStateHandle.contains(FILTER_STATE_STORE)) {
-            val savedStoreState = savedStateHandle.get<FilterState>(FILTER_STATE_STORE)
+            val savedStoreState = savedStateHandle.get<FilterStoreState>(FILTER_STATE_STORE)
             filterStateStore.updateStoreState(savedStoreState!!)
             this.currentStoreState = savedStoreState
         } else {
@@ -101,13 +99,65 @@ class FilterViewModel @Inject constructor(
         }
     }
 
+    private fun getScreenStateFromStoreState(): FilterViewState {
+        val sortOption = SortOption.values().find { sortOption ->
+            sortOption.sortOptionValue.split(" ").joinToString("_")
+                .toLowerCase(Locale.ROOT) == filterStateStore.currentFilterState.sortBy.split(".")[0]
+        }
+        val sortOrder = SortOrder.values().find { sortOrder ->
+            sortOrder.sortOrderValue.toLowerCase(Locale.ROOT) == filterStateStore.currentFilterState.sortBy.split(
+                "."
+            )[1]
+        }
+
+        return FilterViewState(
+            sortOption!!,
+            sortOrder!!,
+            filterStateStore.currentFilterState.includeAdult,
+            filterStateStore.currentFilterState.primaryReleaseYearGte,
+            filterStateStore.currentFilterState.primaryReleaseYearLte,
+            filterStateStore.currentFilterState.voteCountGte,
+            filterStateStore.currentFilterState.voteCountLte,
+            filterStateStore.currentFilterState.voteAverageGte,
+            filterStateStore.currentFilterState.voteAverageLte,
+            filterStateStore.currentFilterState.withRuntimeGte,
+            filterStateStore.currentFilterState.withRuntimeLte
+        )
+    }
+
+    private fun getStoreStateFromScreenState(): FilterStoreState {
+        val screenState = currentScreenViewState.value!!
+        val sortBy =
+            screenState.sortByOption.sortOptionValue.split(" ").joinToString("_").toLowerCase(
+                Locale.ROOT
+            ) + "." + screenState.sortByOrder.sortOrderValue.toLowerCase(
+                Locale.ROOT
+            )
+
+        return FilterStoreState(
+            sortBy,
+            screenState.includeAdult,
+            screenState.primaryReleaseYearGte,
+            screenState.primaryReleaseYearLte,
+            screenState.voteCountGte,
+            screenState.voteCountLte,
+            screenState.voteAverageGte,
+            screenState.voteAverageLte,
+            screenState.withRuntimeGte,
+            screenState.withRuntimeLte
+
+
+        )
+    }
+
+
     fun onSavedInstanceState() {
-        savedStateHandle.set(FILTER_SCREEN_STATE_KEY, this.currentScreenState.value)
+        savedStateHandle.set(FILTER_SCREEN_STATE_KEY, this.currentScreenViewState.value)
         savedStateHandle.set(FILTER_STATE_STORE, this.currentStoreState)
     }
 
     fun onFilterSubmit() {
-        val stateValue = currentScreenState.value!!
+        val stateValue = currentScreenViewState.value!!
         if (stateValue.voteCountGte != null && stateValue.voteCountLte != null && stateValue.voteCountGte > stateValue.voteCountLte) {
             emitter.emit(FilterScreenEvents.ShowToast("Please check your vote count inputs"))
             firebaseAnalyticsClient.logFilterFailure("VoteCount")
@@ -115,10 +165,18 @@ class FilterViewModel @Inject constructor(
             emitter.emit(FilterScreenEvents.ShowToast("Please check your runtime inputs"))
             firebaseAnalyticsClient.logFilterFailure("Runtime")
         } else {
-            filterStateStore.updateStoreState(stateValue)
+            filterStateStore.updateStoreState(getStoreStateFromScreenState())
             firebaseAnalyticsClient.logFilterSuccess()
             emitter.emit(FilterScreenEvents.PopFragment)
         }
+    }
+
+    fun onSortByOrderChanged(sort: SortOrder) {
+        dispatch(FilterActions.UpdateSortByOrder(sort))
+    }
+
+    fun onSortByOptionChanged(sortByOption: SortOption) {
+        dispatch(FilterActions.UpdateSortByOption(sortByOption))
     }
 }
 

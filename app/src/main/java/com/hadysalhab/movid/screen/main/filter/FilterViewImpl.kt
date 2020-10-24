@@ -26,23 +26,13 @@ class FilterViewImpl(
     private val resetButton: Button
 
     //SortBy
-    private val sortBySpinner: Spinner
-    private var sortByPosition = 0
-    private val sortBySpinnerAdapter: ArrayAdapter<String>
-    private val sortByMap = mapOf<String, String>(
-        "Popularity Descending" to "popularity.desc",
-        "Popularity Ascending" to "popularity.asc",
-        "Release Date Ascending" to "release_date.asc",
-        "Release Date Descending" to "release_date.desc",
-        "Revenue Ascending" to "revenue.asc",
-        "Revenue Descending" to "revenue.desc",
-        "Original Title Ascending" to "original_title.asc",
-        "Original Title Descending" to "original_title.desc",
-        "Vote Average Ascending" to "vote_average.asc",
-        "Vote Average Descending" to "vote_average.desc",
-        "Vote Count Ascending" to "vote_count.asc",
-        "Vote Count Descending" to "vote_count.desc"
-    )
+    private val sortByOptionsSpinner: Spinner
+    private val sortByOrderSpinner: Spinner
+    private var sortByOptionsPosition = 0
+    private var sortByOrderPosition = 0
+    private val sortByOptionsSpinnerAdapter: ArrayAdapter<String>
+    private val sortByOrderSpinnerAdapter: ArrayAdapter<String>
+
 
     //includeAdult
     private val includeAdultSwitch: Switch
@@ -99,14 +89,22 @@ class FilterViewImpl(
         }
 
         //SortBy
-        sortBySpinner = findViewById(R.id.sortBy_spinner)
-        sortBySpinnerAdapter = ArrayAdapter(
+        sortByOrderSpinner = findViewById(R.id.sortBy_order_spinner)
+        sortByOptionsSpinner = findViewById(R.id.sortBy_spinner)
+        sortByOptionsSpinnerAdapter = ArrayAdapter(
             getContext(), android.R.layout.simple_spinner_item,
-            sortByMap.keys.toList()
+            SortOption.values().map { it.sortOptionValue }
         )
-        sortBySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        sortBySpinner.adapter = sortBySpinnerAdapter
-        sortBySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        sortByOrderSpinnerAdapter = ArrayAdapter(
+            getContext(),
+            android.R.layout.simple_spinner_item,
+            SortOrder.values().map { it.sortOrderValue }
+        )
+        sortByOptionsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sortByOrderSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sortByOptionsSpinner.adapter = sortByOptionsSpinnerAdapter
+        sortByOrderSpinner.adapter = sortByOrderSpinnerAdapter
+        sortByOptionsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -114,8 +112,25 @@ class FilterViewImpl(
                 id: Long
             ) {
                 listeners.forEach {
-                    sortByPosition = position
-                    it.onSortByChanged(sortByMap.getValue(sortBySpinnerAdapter.getItem(position)!!))
+                    sortByOptionsPosition = position
+                    it.onSortByOptionChanged(SortOption.values()[sortByOptionsPosition])
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+        }
+        sortByOrderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                listeners.forEach {
+                    sortByOrderPosition = position
+                    it.onSortByOrderChanged(SortOrder.values()[sortByOrderPosition])
                 }
             }
 
@@ -359,10 +374,11 @@ class FilterViewImpl(
         })
     }
 
-    override fun handleState(filterState: FilterState) {
-        with(filterState) {
+    override fun handleState(filterViewState: FilterViewState) {
+        with(filterViewState) {
             handleIncludeAdultState(includeAdult)
-            handleSortByState(sortBy)
+            handleSortByOptionState(sortByOption)
+            handleSortByOrderState(sortByOrder)
             handleReleaseYearFrom(primaryReleaseYearGte)
             handleReleaseYearTo(primaryReleaseYearLte)
             handleVoteAverageFrom(voteAverageGte)
@@ -380,11 +396,23 @@ class FilterViewImpl(
         }
     }
 
-    private fun handleSortByState(sortByValue: String) {
-        val currentSortByKey = sortBySpinnerAdapter.getItem(sortByPosition)
-        if (sortByMap.getValue(currentSortByKey!!) != sortByValue) {
-            val positionToBe = sortByMap.values.indexOf(sortByValue)
-            sortBySpinner.setSelection(positionToBe)
+    private fun handleSortByOptionState(sortOption: SortOption) {
+        val currentSortOptionValue = sortByOptionsSpinnerAdapter.getItem(sortByOptionsPosition)
+        val currentSortOption =
+            SortOption.values().find { it.sortOptionValue == currentSortOptionValue }
+        if (currentSortOption != sortOption) {
+            val positionToBe = SortOption.values().indexOf(sortOption)
+            sortByOptionsSpinner.setSelection(positionToBe)
+        }
+    }
+
+    private fun handleSortByOrderState(sortOrder: SortOrder) {
+        val currentSortOrderValue = sortByOrderSpinnerAdapter.getItem(sortByOrderPosition)
+        val currentSortOrder =
+            SortOrder.values().find { it.sortOrderValue == currentSortOrderValue }
+        if (currentSortOrder != sortOrder) {
+            val positionToBe = SortOrder.values().indexOf(sortOrder)
+            sortByOrderSpinner.setSelection(positionToBe)
         }
     }
 

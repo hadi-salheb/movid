@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 sealed class FilterActions {
-    data class UpdateSortBy(val sortBy: String) : FilterActions()
     data class UpdateIncludeAdult(val includeAdult: Boolean) : FilterActions()
     data class UpdateReleasedYearFrom(val releasedYearFrom: String?) : FilterActions()
     data class UpdateReleasedYearTo(val releasedYearTo: String?) : FilterActions()
@@ -14,17 +13,19 @@ sealed class FilterActions {
     data class UpdateVoteCountLte(val voteCountLte: Int?) : FilterActions()
     data class UpdateRuntimeGte(val runtimeGte: Int?) : FilterActions()
     data class UpdateRuntimeLte(val runtimeLte: Int?) : FilterActions()
+    data class UpdateSortByOrder(val sortOrder: SortOrder) : FilterActions()
+    data class UpdateSortByOption(val sortOption: SortOption) : FilterActions()
     object ResetState : FilterActions()
 }
 
 class FilterScreenStateManager {
-    private val stateLiveData = MutableLiveData<FilterState>()
-    fun setInitialStateAndReturn(initialState: FilterState): LiveData<FilterState> {
-        stateLiveData.value = initialState
+    private val stateLiveData = MutableLiveData<FilterViewState>()
+    fun setInitialStateAndReturn(initialViewState: FilterViewState): LiveData<FilterViewState> {
+        stateLiveData.value = initialViewState
         return stateLiveData
     }
 
-    private var state: FilterState
+    private var viewState: FilterViewState
         get() {
             return stateLiveData.value!!
         }
@@ -33,21 +34,22 @@ class FilterScreenStateManager {
         }
 
     fun dispatch(filterActions: FilterActions) {
-        state = filterStateReducer(filterActions)
+        viewState = filterStateReducer(filterActions)
     }
 
-    private fun filterStateReducer(filterActions: FilterActions): FilterState =
+    private fun filterStateReducer(filterActions: FilterActions): FilterViewState =
         when (filterActions) {
-            is FilterActions.UpdateSortBy -> state.copy(sortBy = filterActions.sortBy)
-            is FilterActions.UpdateIncludeAdult -> state.copy(includeAdult = filterActions.includeAdult)
-            is FilterActions.UpdateReleasedYearFrom -> state.copy(primaryReleaseYearGte = filterActions.releasedYearFrom)
-            is FilterActions.UpdateReleasedYearTo -> state.copy(primaryReleaseYearLte = filterActions.releasedYearTo)
-            is FilterActions.UpdateVoteAverageGte -> state.copy(voteAverageGte = filterActions.voteAverageGte)
-            is FilterActions.UpdateVoteAverageLte -> state.copy(voteAverageLte = filterActions.voteAverageLte)
-            is FilterActions.UpdateVoteCountGte -> state.copy(voteCountGte = filterActions.voteCountGte)
-            is FilterActions.UpdateVoteCountLte -> state.copy(voteCountLte = filterActions.voteCountLte)
-            is FilterActions.UpdateRuntimeGte -> state.copy(withRuntimeGte = filterActions.runtimeGte)
-            is FilterActions.UpdateRuntimeLte -> state.copy(withRuntimeLte = filterActions.runtimeLte)
-            FilterActions.ResetState -> FilterState()
+            is FilterActions.UpdateIncludeAdult -> viewState.copy(includeAdult = filterActions.includeAdult)
+            is FilterActions.UpdateReleasedYearFrom -> viewState.copy(primaryReleaseYearGte = filterActions.releasedYearFrom)
+            is FilterActions.UpdateReleasedYearTo -> viewState.copy(primaryReleaseYearLte = filterActions.releasedYearTo)
+            is FilterActions.UpdateVoteAverageGte -> viewState.copy(voteAverageGte = filterActions.voteAverageGte)
+            is FilterActions.UpdateVoteAverageLte -> viewState.copy(voteAverageLte = filterActions.voteAverageLte)
+            is FilterActions.UpdateVoteCountGte -> viewState.copy(voteCountGte = filterActions.voteCountGte)
+            is FilterActions.UpdateVoteCountLte -> viewState.copy(voteCountLte = filterActions.voteCountLte)
+            is FilterActions.UpdateRuntimeGte -> viewState.copy(withRuntimeGte = filterActions.runtimeGte)
+            is FilterActions.UpdateRuntimeLte -> viewState.copy(withRuntimeLte = filterActions.runtimeLte)
+            is FilterActions.UpdateSortByOrder -> viewState.copy(sortByOrder = filterActions.sortOrder)
+            is FilterActions.UpdateSortByOption -> viewState.copy(sortByOption = filterActions.sortOption)
+            FilterActions.ResetState -> FilterViewState()
         }
 }

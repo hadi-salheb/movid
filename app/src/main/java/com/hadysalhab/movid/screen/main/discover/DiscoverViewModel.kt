@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
+import com.hadysalhab.movid.movies.FilterStoreState
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.movies.MoviesResponse
 import com.hadysalhab.movid.movies.usecases.discover.DiscoverMoviesUseCase
@@ -13,7 +14,6 @@ import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleS
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
 import com.hadysalhab.movid.screen.common.movielist.MovieListScreenState
 import com.hadysalhab.movid.screen.common.viewmodels.SavedStateViewModel
-import com.hadysalhab.movid.screen.main.filter.FilterState
 import com.hadysalhab.movid.screen.main.search.Genre
 import javax.inject.Inject
 
@@ -32,7 +32,7 @@ class DiscoverViewModel @Inject constructor(
     private val dispatch = listWithToolbarTitleStateManager::dispatch
 
     private lateinit var savedStateHandle: SavedStateHandle
-    private lateinit var currentStoreFilterState: FilterState
+    private lateinit var currentStoreFilterState: FilterStoreState
 
     val state: LiveData<ListWithToolbarTitleState> =
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
@@ -56,7 +56,7 @@ class DiscoverViewModel @Inject constructor(
     //Process Death Check
     private fun checkStoreFilterState() {
         this.currentStoreFilterState = if (savedStateHandle.contains(STORE_FILTER_STATE)) {
-            val savedStoreState = savedStateHandle.get<FilterState>(STORE_FILTER_STATE)!!
+            val savedStoreState = savedStateHandle.get<FilterStoreState>(STORE_FILTER_STATE)!!
             discoverMoviesFilterStateStore.updateStoreState(savedStoreState)
             savedStoreState
         } else {

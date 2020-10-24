@@ -5,8 +5,9 @@ import com.hadysalhab.movid.screen.common.views.BaseObservableViewMvc
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class FilterState(
-    val sortBy: String = "popularity.desc",
+data class FilterViewState(
+    val sortByOption: SortOption = SortOption.POPULARITY,
+    val sortByOrder: SortOrder = SortOrder.DESC,
     val includeAdult: Boolean = false,
     val primaryReleaseYearGte: String? = null,
     val primaryReleaseYearLte: String? = null,
@@ -18,9 +19,23 @@ data class FilterState(
     val withRuntimeLte: Int? = null
 ) : Parcelable
 
+enum class SortOption(val sortOptionValue: String) {
+    POPULARITY("Popularity"),
+    RELEASE_DATE("Release Date"),
+    ORIGINAL_TITLE("Original Title"),
+    VOTE_AVERAGE("Vote Average"),
+    VOTE_COUNT("Vote Count")
+}
+
+enum class SortOrder(val sortOrderValue: String) {
+    ASC("Asc"),
+    DESC("Desc")
+}
+
 abstract class FilterView : BaseObservableViewMvc<FilterView.Listener>() {
     interface Listener {
-        fun onSortByChanged(sortBy: String)
+        fun onSortByOptionChanged(sortByOption: SortOption)
+        fun onSortByOrderChanged(sort: SortOrder)
         fun onIncludeAdultChanged(includeAdult: Boolean)
         fun onPrimaryReleaseYearGteChanged(primaryReleaseYearGte: String?)
         fun onPrimaryReleaseYearLteChanged(primaryReleaseYearLte: String?)
@@ -35,6 +50,6 @@ abstract class FilterView : BaseObservableViewMvc<FilterView.Listener>() {
         fun onBackArrowClicked()
     }
 
-    abstract fun handleState(filterState: FilterState)
+    abstract fun handleState(filterViewState: FilterViewState)
 
 }

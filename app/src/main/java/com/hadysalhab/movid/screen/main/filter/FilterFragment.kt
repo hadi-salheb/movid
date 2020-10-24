@@ -73,13 +73,13 @@ class FilterFragment : BaseFragment(), FilterView.Listener {
         filterViewModel.onSavedInstanceState()
     }
 
-    private val filterScreenStateObserver = Observer<FilterState> {
+    private val filterScreenStateObserver = Observer<FilterViewState> {
         filterView.handleState(it)
     }
 
     private fun registerObservers() {
         filterView.registerListener(this)
-        filterViewModel.currentScreenState.observeForever(filterScreenStateObserver)
+        filterViewModel.currentScreenViewState.observeForever(filterScreenStateObserver)
         subscription = filterViewModel.screenEvents.startListening { event ->
             handleEvents(event)
         }
@@ -96,14 +96,19 @@ class FilterFragment : BaseFragment(), FilterView.Listener {
         filterView.unregisterListener(this)
         subscription?.stopListening()
         subscription = null
-        filterViewModel.currentScreenState.removeObserver(filterScreenStateObserver)
+        filterViewModel.currentScreenViewState.removeObserver(filterScreenStateObserver)
+    }
+
+    override fun onSortByOptionChanged(sortByOption: SortOption) {
+        filterViewModel.onSortByOptionChanged(sortByOption)
+    }
+
+    override fun onSortByOrderChanged(sort: SortOrder) {
+        filterViewModel.onSortByOrderChanged(sort)
     }
 
     //User Interactions-----------------------------------------------------------------------------
 
-    override fun onSortByChanged(sortBy: String) {
-        filterViewModel.onSortByChanged(sortBy)
-    }
 
     override fun onIncludeAdultChanged(includeAdult: Boolean) {
         filterViewModel.onIncludeAdultChanged(includeAdult)

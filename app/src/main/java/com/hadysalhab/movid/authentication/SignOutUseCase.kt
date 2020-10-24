@@ -4,9 +4,9 @@ import com.hadysalhab.movid.account.AccountResponse
 import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
+import com.hadysalhab.movid.movies.FilterStoreState
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.persistence.AccountDao
-import com.hadysalhab.movid.screen.main.filter.FilterState
 import com.techyourchance.threadposter.BackgroundThreadPoster
 
 
@@ -24,7 +24,7 @@ class SignOutUseCase(
             accountDao.deleteAccountResponse(accountResponse)
             moviesStateManager.clearMovies()
             userStateManager.clearData()
-            filterStateStore.updateStoreState(FilterState())
+            filterStateStore.updateStoreState(FilterStoreState())
             sharedPreferencesManager.setStoredSessionId("")
         }
     }
