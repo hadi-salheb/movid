@@ -13,6 +13,7 @@ import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.movies.SchemaToModelHelper
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.backpress.BackPressDispatcher
+import com.hadysalhab.movid.screen.common.dialogs.DialogManager
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
@@ -45,6 +46,10 @@ class ActivityModule(private val activity: FragmentActivity) {
     @Provides
     fun getFragmentManager(activity: FragmentActivity): FragmentManager =
         activity.supportFragmentManager
+
+    @Provides
+    fun getDialogManager(context: Context, fragmentManager: FragmentManager) =
+        DialogManager(context, fragmentManager)
 
     @Provides
     fun getFragmentFrameHost(activity: FragmentActivity): FragmentFrameHost =

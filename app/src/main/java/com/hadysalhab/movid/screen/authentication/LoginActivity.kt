@@ -9,8 +9,13 @@ import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseActivity
+import com.hadysalhab.movid.screen.common.dialogs.DialogManager
+import com.hadysalhab.movid.screen.common.dialogs.infodialog.InfoDialogEvent
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 /**
@@ -18,12 +23,13 @@ import javax.inject.Inject
  */
 
 const val SCREEN_STATE = "SCREEN_STATE"
+const val SIGN_UP_INFO_DIALOG = "SIGN_UP_INFO_DIALOG"
 
 
 class AuthActivity : BaseActivity(), LoginView.Listener,
     LoginUseCase.Listener {
     private enum class ScreenState {
-        IDLE, LOGIN_IN_PROGRESS, LOGIN_ERROR, LOGIN_SUCCESS
+        IDLE, LOGIN_IN_PROGRESS, LOGIN_ERROR, LOGIN_SUCCESS, DIALOG_INFO
     }
 
     private var screenState = ScreenState.IDLE
@@ -53,6 +59,9 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
 
+    @Inject
+    lateinit var dialogManager: DialogManager
+
     private val nightModeObserver = Observer<Int> { nightMode ->
         nightMode?.let { delegate.localNightMode = it }
     }
@@ -71,6 +80,7 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
         super.onStart()
         view.registerListener(this)
         loginUseCase.registerListener(this)
+        EventBus.getDefault().register(this)
         when (screenState) {
             // user navigated away before receiving the result
             ScreenState.LOGIN_IN_PROGRESS -> {
@@ -85,6 +95,9 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
                     }
                 }
             }
+            ScreenState.DIALOG_INFO -> {
+                //do nothing
+            }
             else -> setNewState(ScreenState.IDLE)
         }
         sharedPreferencesManager.nightModeLiveData.observeForever(nightModeObserver)
@@ -94,6 +107,7 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
         super.onStop()
         view.unregisterListener(this)
         loginUseCase.unregisterListener(this)
+        EventBus.getDefault().unregister(this)
         sharedPreferencesManager.nightModeLiveData.removeObserver(nightModeObserver)
     }
 
@@ -109,7 +123,7 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
     }
 
     override fun onSignUpClicked() {
-        intentHandler.handleSignUpIntent()
+        setNewState(ScreenState.DIALOG_INFO)
     }
 
     override fun onLoggedIn() {
@@ -119,6 +133,13 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
     override fun onLoginFailed(msg: String) {
         errorMessage = msg
         setNewState(ScreenState.LOGIN_ERROR)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    fun onInfoDialogEvent(event: InfoDialogEvent) {
+        when (event) {
+            is InfoDialogEvent.Positive -> intentHandler.handleSignUpIntent()
+        }
     }
 
     private fun setNewState(newState: ScreenState) {
@@ -139,6 +160,9 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
                 view.hideProgressState()
                 authNavigator.toMainScreen()
                 finish()
+            }
+            ScreenState.DIALOG_INFO -> {
+                dialogManager.showSignUpInfoDialog(SIGN_UP_INFO_DIALOG)
             }
         }
     }

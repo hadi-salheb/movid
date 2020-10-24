@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.hadysalhab.movid.screen.authentication.LoginViewImpl
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.hadysalhab.movid.screen.common.cardgroup.PeopleGroupView
+import com.hadysalhab.movid.screen.common.dialogs.infodialog.InfoDialogView
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResults
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreenImpl
 import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
@@ -124,4 +125,5 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     )
 
     fun getPeopleListItem(parent: ViewGroup?) = PeopleListItem(layoutInflater, parent)
+    fun getInfoDialogView(parent: ViewGroup?): InfoDialogView = InfoDialogView(layoutInflater, null)
 }
