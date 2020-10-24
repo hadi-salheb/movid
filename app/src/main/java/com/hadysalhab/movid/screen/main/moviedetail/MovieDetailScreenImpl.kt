@@ -342,12 +342,22 @@ class MovieDetailScreenImpl(
     @SuppressLint("SimpleDateFormat")
     private fun displayFacts(movieInfo: MovieInfo) {
         factsLL.removeAllViews()
+        movieInfo.budget.let {
+            if (it != 0L) {
+                val factView = viewFactory.getFactView(factsLL)
+                factView.displayFact(
+                    getContext().getDrawable(R.drawable.ic_money)!!,
+                    "%,d".format(it) + " (Budget)"
+                )
+                factsLL.addView(factView.getRootView())
+            }
+        }
         movieInfo.revenue.let {
             if (it != 0L) {
                 val factView = viewFactory.getFactView(factsLL)
                 factView.displayFact(
                     getContext().getDrawable(R.drawable.ic_money)!!,
-                    "%,d".format(it)
+                    "%,d".format(it) + " (Revenue)"
                 )
                 factsLL.addView(factView.getRootView())
             }

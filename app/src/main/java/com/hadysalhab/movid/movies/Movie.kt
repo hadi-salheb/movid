@@ -15,7 +15,7 @@ data class Movie(
 data class MovieInfo(
     val adult: Boolean,
     val backdropPath: String?,
-    val budget: Int,
+    val budget: Long,
     val genres: List<Genres>,
     val homepage: String?,
     val id: Int,

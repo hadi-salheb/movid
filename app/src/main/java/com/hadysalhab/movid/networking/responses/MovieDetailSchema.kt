@@ -6,7 +6,7 @@ data class MovieDetailSchema(
     val adult: Boolean,
     @SerializedName("backdrop_path")
     val backdropPath: String?,
-    val budget: Int,
+    val budget: Long,
     val genres: List<GenresSchema>,
     val homepage: String?,
     val id: Int,
