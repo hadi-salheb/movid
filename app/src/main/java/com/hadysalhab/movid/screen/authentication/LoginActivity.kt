@@ -79,6 +79,7 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
         }
         view = viewFactory.getLoginView(null)
         setContentView(view.getRootView())
+        sharedPreferencesManager.nightModeLiveData.observe(this, nightModeObserver)
     }
 
     override fun onStart() {
@@ -105,7 +106,6 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
             }
             else -> setNewState(ScreenState.IDLE)
         }
-        sharedPreferencesManager.nightModeLiveData.observeForever(nightModeObserver)
     }
 
     override fun onStop() {
@@ -113,7 +113,6 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
         view.unregisterListener(this)
         loginUseCase.unregisterListener(this)
         EventBus.getDefault().unregister(this)
-        sharedPreferencesManager.nightModeLiveData.removeObserver(nightModeObserver)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

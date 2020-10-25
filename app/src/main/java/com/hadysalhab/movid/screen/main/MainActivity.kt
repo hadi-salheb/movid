@@ -62,20 +62,19 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
         view = viewFactory.getMainView(null)
         mainNavigator.init(savedInstanceState, this)
         setContentView(view.getRootView())
+        sharedPreferencesManager.nightModeLiveData.observe(this, nightModeObserver)
     }
 
     override fun onStart() {
         super.onStart()
         view.registerListener(this)
         sharedPreferencesManager.sessionId.observeForever(sessionIdObserver)
-        sharedPreferencesManager.nightModeLiveData.observeForever(nightModeObserver)
     }
 
     override fun onStop() {
         super.onStop()
         view.unregisterListener(this)
         sharedPreferencesManager.sessionId.removeObserver(sessionIdObserver)
-        sharedPreferencesManager.nightModeLiveData.removeObserver(nightModeObserver)
     }
 
     override fun onBottomNavigationItemClicked(item: BottomNavigationItems) {
