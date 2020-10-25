@@ -5,7 +5,6 @@ import com.hadysalhab.movid.account.usecases.details.UpdateAccountDetailsUseCase
 import com.hadysalhab.movid.authentication.createsession.CreateSessionUseCaseSync
 import com.hadysalhab.movid.authentication.createtoken.CreateRequestTokenUseCaseSync
 import com.hadysalhab.movid.authentication.signtoken.SignTokenUseCaseSync
-import com.hadysalhab.movid.common.firebase.FirebaseCrashlyticsClient
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.SchemaToModelHelper
@@ -25,8 +24,7 @@ class LoginUseCase(
     private val schemaToModelHelper: SchemaToModelHelper,
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
-    private val errorMessageHandler: ErrorMessageHandler,
-    private val firebaseCrashlyticsClient: FirebaseCrashlyticsClient
+    private val errorMessageHandler: ErrorMessageHandler
 ) :
     BaseBusyObservable<LoginUseCase.Listener>() {
     interface Listener {
@@ -95,7 +93,6 @@ class LoginUseCase(
                     sessionId,
                     schemaToModelHelper.getAccountResponse(response.body)
                 )
-                firebaseCrashlyticsClient.setUserId(response.body.username)
                 notifySuccess()
             }
             is ApiErrorResponse, is ApiEmptyResponse -> notifyFailure(

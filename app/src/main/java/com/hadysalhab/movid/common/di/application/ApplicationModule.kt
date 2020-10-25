@@ -11,7 +11,6 @@ import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.common.datavalidator.DataValidator
 import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
-import com.hadysalhab.movid.common.firebase.FirebaseCrashlyticsClient
 import com.hadysalhab.movid.common.processdeath.ProcessDeathFlagIndicator
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.movies.DiscoverMoviesFilterStateStore
@@ -129,9 +128,4 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun getFirebase(context: Application, firebaseAnalytics: FirebaseAnalytics) =
         FirebaseAnalyticsClient(context, firebaseAnalytics)
-
-    @Provides
-    @Singleton
-    fun getFirebaseCrashlyticsClient(firebaseCrashlytics: FirebaseCrashlytics) =
-        FirebaseCrashlyticsClient(firebaseCrashlytics)
 }

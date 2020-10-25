@@ -16,7 +16,6 @@ import com.hadysalhab.movid.authentication.createtoken.CreateRequestTokenUseCase
 import com.hadysalhab.movid.authentication.signtoken.SignTokenUseCaseSync
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.datavalidator.DataValidator
-import com.hadysalhab.movid.common.firebase.FirebaseCrashlyticsClient
 import com.hadysalhab.movid.common.time.TimeProvider
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.usecases.factory.BaseFeaturedMoviesUseCaseFactory
@@ -244,8 +243,7 @@ class UseCaseModule {
         fetchAccountDetailsUseCaseSync: FetchAccountDetailsUseCaseSync,
         errorMessageHandler: ErrorMessageHandler,
         updateAccountDetailsUseCaseSync: UpdateAccountDetailsUseCaseSync,
-        schemaToModelHelper: SchemaToModelHelper,
-        firebaseCrashlyticsClient: FirebaseCrashlyticsClient
+        schemaToModelHelper: SchemaToModelHelper
     ): LoginUseCase =
         LoginUseCase(
             createRequestTokenUseCaseSync,
@@ -254,7 +252,7 @@ class UseCaseModule {
             fetchAccountDetailsUseCaseSync,
             updateAccountDetailsUseCaseSync,
             schemaToModelHelper,
-            backgroundThreadPoster, uiThreadPoster, errorMessageHandler, firebaseCrashlyticsClient
+            backgroundThreadPoster, uiThreadPoster, errorMessageHandler
         )
 
     @Provides
