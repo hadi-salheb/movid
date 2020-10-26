@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.common.constants.POSTER_SIZE_500
-import com.hadysalhab.movid.common.utils.convertDpToPixel
 import com.hadysalhab.movid.common.utils.getYoutubeTrailerFromResponse
 import com.hadysalhab.movid.movies.*
 import com.hadysalhab.movid.movies.Collection
@@ -182,7 +181,7 @@ class MovieDetailScreenImpl(
 
     override fun hideTrailerIndicator() {
         trailerBtn.visibility = View.GONE
-        btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
+//        btnWrapperLL.setPadding(0, convertDpToPixel(8, getContext()), 0, 0)
     }
 
     override fun handleScreenState(movieDetailScreenState: MovieDetailScreenState) {

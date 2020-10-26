@@ -136,6 +136,16 @@
                     app:layout_constraintStart_toStartOf="@+id/iv_poster"
                     app:layout_constraintTop_toBottomOf="@id/barrier" />
 
+                <Button
+                    android:id="@+id/button_rate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Rate This Movie"
+                    app:layout_constraintEnd_toEndOf="@+id/button_wrapper"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/button_trailer" />
+
+
                 <LinearLayout
                     android:id="@+id/button_wrapper"
                     android:layout_width="0dp"
@@ -143,7 +153,7 @@
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/iv_poster"
-                    app:layout_constraintTop_toBottomOf="@id/button_trailer">
+                    app:layout_constraintTop_toBottomOf="@id/button_rate">
 
 
                     <Button
