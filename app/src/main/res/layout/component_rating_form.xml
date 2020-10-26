@@ -59,7 +59,7 @@
         android:id="@+id/btn_positive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_message"
+        android:layout_below="@+id/rating_ll"
         android:layout_marginTop="16dp"
         android:minWidth="0dp"
         android:minHeight="0dp"
