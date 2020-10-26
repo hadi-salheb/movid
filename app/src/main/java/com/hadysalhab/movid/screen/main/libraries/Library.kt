@@ -13,5 +13,6 @@ enum class Library(val libraryName: String, val libraryUrl: String) {
     EVENT_EMITTER("Event Emitter", "https://github.com/Zhuinden/event-emitter"),
     RETROFIT("Retrofit", "https://square.github.io/retrofit/"),
     GLIDE("Glide", "http://bumptech.github.io/glide/doc/download-setup.html"),
-    EVENT_BUS("GreenRobot EventBus", "https://greenrobot.org/eventbus/")
+    EVENT_BUS("GreenRobot EventBus", "https://greenrobot.org/eventbus/"),
+    HTML_TEXTVIEW("HtmlTextView", "https://github.com/SufficientlySecure/html-textview")
 }
