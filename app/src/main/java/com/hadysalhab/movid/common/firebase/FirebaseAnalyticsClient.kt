@@ -116,4 +116,10 @@ class FirebaseAnalyticsClient(
         }
         firebaseAnalytics.logEvent("Theme", themeModeBundle)
     }
+
+    fun logRateMovie(movieName: String) {
+        val rateBundle = Bundle()
+        rateBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, movieName)
+        firebaseAnalytics.logEvent("RateMovie", rateBundle)
+    }
 }

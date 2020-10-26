@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hadysalhab.movid.account.usecases.rate.RateMovieUseCase
+import com.hadysalhab.movid.common.firebase.FirebaseAnalyticsClient
 import com.hadysalhab.movid.movies.usecases.detail.FetchMovieDetailUseCase
 import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import com.zhuinden.eventemitter.EventEmitter
@@ -20,7 +21,8 @@ sealed class RateDialogEvent {
 class RateDialogViewModel
 @Inject constructor(
     private val rateMovieUseCase: RateMovieUseCase,
-    private val fetchMovieDetailUseCase: FetchMovieDetailUseCase
+    private val fetchMovieDetailUseCase: FetchMovieDetailUseCase,
+    private val firebaseAnalyticsClient: FirebaseAnalyticsClient
 ) : ViewModel(), RateMovieUseCase.Listener, FetchMovieDetailUseCase.Listener {
     init {
         rateMovieUseCase.registerListener(this)
@@ -34,6 +36,7 @@ class RateDialogViewModel
     val rateDialogViewState: LiveData<RateViewState>
         get() = _rateDialogViewState
     private var movieId: Int = 0
+    private lateinit var movieName: String
 
     private val emitter: EventEmitter<RateDialogEvent> = EventEmitter()
     val screenEvents: EventSource<RateDialogEvent> get() = emitter
@@ -42,6 +45,7 @@ class RateDialogViewModel
         if (isFirstRender) {
             isFirstRender = false
             this.movieId = movieId
+            this.movieName = movieName
             _rateDialogViewState.value =
                 _rateDialogViewState.value!!.copy(
                     title = "Rating: $movieName",
@@ -68,7 +72,10 @@ class RateDialogViewModel
         when (event) {
             is MovieDetailEvents.RatingUpdate -> {
                 if (event.movieDetail.details.id == this.movieId) {
-                    fetchMovieDetailUseCase.fetchMovieDetailAndNotify(this.movieId)
+                    firebaseAnalyticsClient.logRateMovie(this.movieName)
+                    android.os.Handler().postDelayed({
+                        fetchMovieDetailUseCase.fetchMovieDetailAndNotify(this.movieId)
+                    }, 1000)
                 }
             }
             is MovieDetailEvents.MovieDetailFetched -> {
