@@ -30,6 +30,7 @@ class AccountViewImpl(
     private val librariesLL: LinearLayout
     private val shareLL: LinearLayout
     private val rateLL: LinearLayout
+    private val privacyPolicyLL: LinearLayout
     private val darkModeSwitch: SwitchMaterial
 
     init {
@@ -84,6 +85,12 @@ class AccountViewImpl(
         darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             listeners.forEach {
                 it.onDarkModeCheckedChanged(isChecked)
+            }
+        }
+        privacyPolicyLL = findViewById(R.id.privacy_policy_ll)
+        privacyPolicyLL.setOnClickListener {
+            listeners.forEach {
+                it.onPrivacyPolicyClicked()
             }
         }
     }
