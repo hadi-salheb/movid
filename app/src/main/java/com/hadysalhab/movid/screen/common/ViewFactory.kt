@@ -42,6 +42,7 @@ import com.hadysalhab.movid.screen.main.libraries.LibraryListItem
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreen
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailScreenImpl
+import com.hadysalhab.movid.screen.main.privacypolicy.PrivacyPolicyView
 import com.hadysalhab.movid.screen.main.reviews.ReviewListView
 import com.hadysalhab.movid.screen.main.reviews.ReviewListViewImpl
 import com.hadysalhab.movid.screen.main.search.*
@@ -135,4 +136,6 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getRateFormView(parent: ViewGroup?): RateFormView = RateFormViewImpl(layoutInflater, parent)
     fun getRateDialogScreen(parent: ViewGroup?) = RateDialogScreenImpl(layoutInflater, parent, this)
     fun getLoading2View(parent: ViewGroup?): LoadingView2 = LoadingView2(layoutInflater, parent)
+    fun getPrivacyPolicyView(container: ViewGroup?): PrivacyPolicyView =
+        PrivacyPolicyView(layoutInflater, container, this)
 }

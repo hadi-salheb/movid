@@ -125,6 +125,12 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
         firebaseAnalyticsClient.logShareMovid()
     }
 
+    override fun onPrivacyPolicyClicked() {
+        mainNavigator.toPrivacyPolicyFragment()
+
+    }
+
+
     override fun onDarkModeCheckedChanged(checked: Boolean) {
         firebaseAnalyticsClient.logThemeMode(
             if (checked) {
@@ -135,5 +141,6 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
         )
         sharedPreferencesManager.setStoredThemeMode(if (checked) ThemeMode.DARK else ThemeMode.LIGHT)
     }
+
 
 }

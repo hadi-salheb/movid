@@ -20,6 +20,7 @@ import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListFragment
 import com.hadysalhab.movid.screen.main.filter.FilterFragment
 import com.hadysalhab.movid.screen.main.libraries.LibrariesFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
+import com.hadysalhab.movid.screen.main.privacypolicy.PrivacyPolicyFragment
 import com.hadysalhab.movid.screen.main.recommendedsimilar.RecommendedSimilarFragment
 import com.hadysalhab.movid.screen.main.reviews.ReviewsFragment
 import com.hadysalhab.movid.screen.main.search.Genre
@@ -148,6 +149,12 @@ class MainNavigator(
     fun toLibrariesFragment() {
         fragNavController.pushFragment(
             LibrariesFragment.newInstance()
+        )
+    }
+
+    fun toPrivacyPolicyFragment() {
+        fragNavController.pushFragment(
+            PrivacyPolicyFragment.newInstance()
         )
     }
 

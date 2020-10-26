@@ -87,4 +87,12 @@ class IntentHandler(private val activityContext: Context) {
             activityContext.startActivity(Intent.createChooser(shareIntent, "Share Movid"))
         }
     }
+
+    fun handlePrivacyPolicyTags(href: String?) {
+        val browserIntent =
+            Intent(Intent.ACTION_VIEW, Uri.parse(href))
+        if (isActivityAvailable(browserIntent)) {
+            activityContext.startActivity(browserIntent)
+        }
+    }
 }

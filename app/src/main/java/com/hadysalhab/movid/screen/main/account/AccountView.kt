@@ -20,5 +20,6 @@ abstract class AccountView : BaseObservableViewMvc<AccountView.Listener>() {
         fun onRateClicked()
         fun onShareClicked()
         fun onDarkModeCheckedChanged(checked: Boolean)
+        fun onPrivacyPolicyClicked()
     }
 }
