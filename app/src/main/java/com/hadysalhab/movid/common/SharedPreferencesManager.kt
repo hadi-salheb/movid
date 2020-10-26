@@ -1,7 +1,7 @@
 package com.hadysalhab.movid.common
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,45 +9,43 @@ import com.hadysalhab.movid.screen.main.featuredgroups.ToolbarCountryItems
 
 private const val PREF_SESSION_ID = "SESSION_ID"
 private const val PREF_FEATURED_POWER_MENU_ITEM = "FEATURED_POWER_MENU_ITEM"
+private const val PREFERENCE_THEME_MODE = "PREFERENCE_THEME_MODE"
 
-private const val PREFERENCE_NIGHT_MODE = "preference_night_mode"
-private const val PREFERENCE_NIGHT_MODE_DEFAULT_VALUE = AppCompatDelegate.MODE_NIGHT_NO
+enum class ThemeMode(val code: Int) {
+    LIGHT(AppCompatDelegate.MODE_NIGHT_NO),
+    DARK(AppCompatDelegate.MODE_NIGHT_YES)
+}
 
 /**
  * Class that controls access to/from shared preferences
  */
 class SharedPreferencesManager(val context: Context) {
-
-
-    private val nightMode: Int
-        get() = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
-            .getInt(PREFERENCE_NIGHT_MODE, PREFERENCE_NIGHT_MODE_DEFAULT_VALUE)
-    var isDarkTheme: Boolean = false
-        get() = nightMode == AppCompatDelegate.MODE_NIGHT_YES
-        set(value) {
-            androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
-                .edit().putInt(
-                    PREFERENCE_NIGHT_MODE, if (value) {
-                        AppCompatDelegate.MODE_NIGHT_YES
-                    } else {
-                        AppCompatDelegate.MODE_NIGHT_NO
-                    }
-                ).apply()
-            field = value
-        }
-
-    private val _isDarkThemeLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val isDarkThemeLiveData: LiveData<Boolean>
-        get() = _isDarkThemeLiveData
-
-    private val _nightModeLiveData: MutableLiveData<Int> = MutableLiveData()
-    val nightModeLiveData: LiveData<Int>
-        get() = _nightModeLiveData
-
-
     private val _sessionId = MutableLiveData(getStoredSessionId())
     val sessionId: LiveData<String>
         get() = _sessionId
+
+    private val _isDarkMode = MutableLiveData<Boolean>(getStoredThemeMode() == ThemeMode.DARK)
+    val isDarkMode: LiveData<Boolean>
+        get() = _isDarkMode
+
+    private val _themeMode = MutableLiveData<Int>(getStoredThemeMode().code)
+    val themeMode: LiveData<Int>
+        get() = _themeMode
+
+    fun setStoredThemeMode(themeMode: ThemeMode) {
+        androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
+            .edit()
+            .putInt(PREFERENCE_THEME_MODE, themeMode.code)
+            .apply()
+        _isDarkMode.value = themeMode == ThemeMode.DARK
+        _themeMode.value = themeMode.code
+    }
+
+    fun getStoredThemeMode(): ThemeMode {
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
+        val themeModeCode = prefs.getInt(PREFERENCE_THEME_MODE, getSystemMode())
+        return if (themeModeCode == AppCompatDelegate.MODE_NIGHT_NO) ThemeMode.LIGHT else ThemeMode.DARK
+    }
 
     fun getStoredSessionId(): String {
         val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
@@ -75,20 +73,11 @@ class SharedPreferencesManager(val context: Context) {
             .apply()
     }
 
-    private val preferenceChangedListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            when (key) {
-                PREFERENCE_NIGHT_MODE -> {
-                    _nightModeLiveData.value = nightMode
-                    _isDarkThemeLiveData.value = isDarkTheme
-                }
-            }
+    private fun getSystemMode(): Int =
+        when ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> AppCompatDelegate.MODE_NIGHT_YES
+            Configuration.UI_MODE_NIGHT_NO -> AppCompatDelegate.MODE_NIGHT_NO
+            else -> AppCompatDelegate.MODE_NIGHT_NO
         }
-
-    init {
-        _isDarkThemeLiveData.value = isDarkTheme
-        androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
-            .registerOnSharedPreferenceChangeListener(preferenceChangedListener)
-    }
 
 }
