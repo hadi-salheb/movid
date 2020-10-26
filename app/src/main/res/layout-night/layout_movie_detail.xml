@@ -141,6 +141,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Rate This Movie"
+                    style="?attr/materialButtonOutlinedStyle"
                     app:layout_constraintEnd_toEndOf="@+id/button_wrapper"
                     app:layout_constraintStart_toStartOf="@+id/iv_poster"
                     app:layout_constraintTop_toBottomOf="@id/button_trailer" />
