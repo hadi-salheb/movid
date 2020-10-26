@@ -424,18 +424,27 @@ class MovieDetailScreenImpl(
 
     private fun displayAccountState(accountStates: AccountStates) {
         if (accountStates.favorite) {
-            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
+            favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white_milky))
             favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
         } else {
             favoriteBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_800))
             favoriteBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
         }
         if (accountStates.watchlist) {
-            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white))
+            watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white_milky))
             watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
         } else {
             watchlistBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_800))
             watchlistBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
+        }
+        if (accountStates.rated == null) {
+            rateBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_800))
+            rateBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
+            rateBtn.text = "Rate This Movie"
+        } else {
+            rateBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white_milky))
+            rateBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
+            rateBtn.text = "Your Movie Rating: ${accountStates.rated}/10"
         }
     }
 
