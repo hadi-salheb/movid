@@ -2,7 +2,6 @@ package com.hadysalhab.movid.screen.authentication
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.authentication.AuthManager
 import com.hadysalhab.movid.authentication.LoginUseCase
@@ -67,9 +66,6 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
     @Inject
     lateinit var userStateManager: UserStateManager
 
-    private val nightModeObserver = Observer<Int> { nightMode ->
-        nightMode?.let { delegate.localNightMode = it }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +75,6 @@ class AuthActivity : BaseActivity(), LoginView.Listener,
         }
         view = viewFactory.getLoginView(null)
         setContentView(view.getRootView())
-        sharedPreferencesManager.nightModeLiveData.observe(this, nightModeObserver)
     }
 
     override fun onStart() {

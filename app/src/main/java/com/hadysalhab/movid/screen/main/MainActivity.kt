@@ -45,11 +45,6 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
             this.finish()
         }
     }
-
-    private val nightModeObserver = Observer<Int> { nightMode ->
-        nightMode?.let { delegate.localNightMode = it }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         injector.inject(this)
         if (processDeathFlagIndicator.isKilled) {
@@ -62,7 +57,6 @@ class MainActivity : BaseActivity(), MainView.Listener, FragmentFrameHost, BackP
         view = viewFactory.getMainView(null)
         mainNavigator.init(savedInstanceState, this)
         setContentView(view.getRootView())
-        sharedPreferencesManager.nightModeLiveData.observe(this, nightModeObserver)
     }
 
     override fun onStart() {
