@@ -1,6 +1,5 @@
-package com.hadysalhab.movid.account.usecases.favorite
+package com.hadysalhab.movid.account.usecases.rate
 
-import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.common.usecases.ErrorMessageHandler
 import com.hadysalhab.movid.common.utils.BaseBusyObservable
@@ -14,45 +13,47 @@ import com.techyourchance.threadposter.UiThreadPoster
 import org.greenrobot.eventbus.EventBus
 
 
-class AddRemoveFavMovieUseCase(
+class RateMovieUseCase(
     private val backgroundThreadPoster: BackgroundThreadPoster,
     private val uiThreadPoster: UiThreadPoster,
     private val getSessionIdUseCaseSync: GetSessionIdUseCaseSync,
-    private val getAccountDetailsUseCaseSync: GetAccountDetailsUseCaseSync,
     private val errorMessageHandler: ErrorMessageHandler,
     private val tmdbApi: TmdbApi,
     private val moviesStateManager: MoviesStateManager
-) : BaseBusyObservable<AddRemoveFavMovieUseCase.Listener>() {
+) : BaseBusyObservable<RateMovieUseCase.Listener>() {
     interface Listener {
-        fun onAddRemoveFavoritesFailure(err: String)
+        fun onRatingMovieFailure(err: String)
     }
 
     private var movieID: Int? = null
-    fun addRemoveFavUseCase(movieId: Int, favorite: Boolean) {
+    private var rate: Double = 0.0
+
+    fun rateMovieUseCase(movieId: Int, rate: Double) {
+
         this.movieID = movieId
+        this.rate = rate
+
         assertNotBusyAndBecomeBusy()
+
         backgroundThreadPoster.post {
-            val accountResponse = getAccountDetailsUseCaseSync.getAccountDetailsUseCaseSync()
             val sessionId = getSessionIdUseCaseSync.getSessionIdUseCaseSync()
-            val res = addRemoveFav(
-                accountID = accountResponse.id,
-                mediaID = movieId,
+            val res = rateMovie(
+                movieId = movieId,
                 sessionId = sessionId,
-                favorite = favorite
+                rate = rate
             )
             handleResponse(res)
         }
     }
 
-    private fun addRemoveFav(
-        accountID: Int,
-        mediaID: Int,
+    private fun rateMovie(
+        movieId: Int,
         sessionId: String,
-        favorite: Boolean
+        rate: Double
     ): ApiResponse<AccountStateUpdateResponse> = try {
-        val httpBodyRequest = FavoriteHttpBodyRequest(mediaId = mediaID, favorite = favorite)
-        val res = tmdbApi.markAsFavorite(
-            accountID = accountID,
+        val httpBodyRequest = RateMovieHttpBodyRequest(rate = rate)
+        val res = tmdbApi.rateMovie(
+            movieId = movieId,
             sessionID = sessionId,
             httpBodyRequest = httpBodyRequest
         ).execute()
@@ -66,10 +67,10 @@ class AddRemoveFavMovieUseCase(
             is ApiSuccessResponse -> {
                 val oldMovieDetail = moviesStateManager.getMovieDetailById(movieId = this.movieID!!)
                 if (oldMovieDetail == null) {
-                    throw  RuntimeException("$oldMovieDetail should be part of the store when changing fav state")
+                    throw  RuntimeException("$oldMovieDetail should be part of the store when changing rate state")
                 }
                 val newMovieDetail =
-                    oldMovieDetail.copy(accountStates = oldMovieDetail.accountStates!!.copy(favorite = !oldMovieDetail.accountStates.favorite))
+                    oldMovieDetail.copy(accountStates = oldMovieDetail.accountStates!!.copy(rated = this.rate))
                 newMovieDetail.timeStamp = oldMovieDetail.timeStamp
                 moviesStateManager.upsertMovieDetailToList(newMovieDetail)
                 notifySuccess(newMovieDetail)
@@ -82,11 +83,7 @@ class AddRemoveFavMovieUseCase(
 
     private fun notifySuccess(movieDetail: MovieDetail) {
         uiThreadPoster.post {
-            if (movieDetail.accountStates!!.favorite) {
-                EventBus.getDefault().post(MovieDetailEvents.AddMovieToFav(movieDetail))
-            } else {
-                EventBus.getDefault().post(MovieDetailEvents.RemoveMovieFromFav(movieDetail))
-            }
+            EventBus.getDefault().post(MovieDetailEvents.RatingUpdate(movieDetail))
             becomeNotBusy()
         }
     }
@@ -94,7 +91,7 @@ class AddRemoveFavMovieUseCase(
     private fun notifyFailure(err: String) {
         uiThreadPoster.post {
             listeners.forEach {
-                it.onAddRemoveFavoritesFailure(err)
+                it.onRatingMovieFailure(err)
             }
             becomeNotBusy()
         }

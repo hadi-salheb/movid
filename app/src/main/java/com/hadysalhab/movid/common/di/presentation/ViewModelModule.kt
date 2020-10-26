@@ -1,6 +1,7 @@
 package com.hadysalhab.movid.common.di.presentation
 
 import androidx.lifecycle.ViewModel
+import com.hadysalhab.movid.screen.common.dialogs.ratedialog.RateDialogViewModel
 import com.hadysalhab.movid.screen.main.account.AccountViewModel
 import com.hadysalhab.movid.screen.main.castlist.PeopleListViewModel
 import com.hadysalhab.movid.screen.main.discover.DiscoverViewModel
@@ -80,4 +81,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PeopleListViewModel::class)
     abstract fun castListViewModel(myViewModel: PeopleListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RateDialogViewModel::class)
+    abstract fun rateDialogViewModel(myViewModel: RateDialogViewModel): ViewModel
 }

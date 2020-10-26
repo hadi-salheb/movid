@@ -22,3 +22,12 @@ fun getVoteAverageNumbers(): List<String> {
     }
     return numbers
 }
+
+
+fun getRatingOptions(): List<Double> {
+    val options = mutableListOf<Double>()
+    for (i in 1..20) {
+        options.add((i / 2.0))
+    }
+    return options
+}

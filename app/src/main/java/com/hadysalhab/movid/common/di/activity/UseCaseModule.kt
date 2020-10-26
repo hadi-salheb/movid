@@ -7,6 +7,7 @@ import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCase
 import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.details.UpdateAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.favorite.AddRemoveFavMovieUseCase
+import com.hadysalhab.movid.account.usecases.rate.RateMovieUseCase
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.account.usecases.watchlist.AddRemoveWatchlistMovieUseCase
 import com.hadysalhab.movid.authentication.LoginUseCase
@@ -426,6 +427,23 @@ class UseCaseModule {
         tmdbApi,
         schemaToModelHelper,
         errorMessageHandler
+    )
+
+    @Provides
+    fun getRateMovieUseCase(
+        backgroundThreadPoster: BackgroundThreadPoster,
+        uiThreadPoster: UiThreadPoster,
+        sessionIdUseCaseSync: GetSessionIdUseCaseSync,
+        errorMessageHandler: ErrorMessageHandler,
+        tmdbApi: TmdbApi,
+        moviesStateManager: MoviesStateManager
+    ) = RateMovieUseCase(
+        backgroundThreadPoster,
+        uiThreadPoster,
+        sessionIdUseCaseSync,
+        errorMessageHandler,
+        tmdbApi,
+        moviesStateManager
     )
 
 

@@ -11,6 +11,7 @@ import com.hadysalhab.movid.movies.GroupType
 import com.hadysalhab.movid.movies.VideosResponse
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
+import com.hadysalhab.movid.screen.common.dialogs.DialogManager
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
 import com.hadysalhab.movid.screen.common.people.PeopleType
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
@@ -19,6 +20,7 @@ import com.hadysalhab.movid.screen.common.viewmodels.ViewModelFactory
 import com.zhuinden.eventemitter.EventSource
 import javax.inject.Inject
 
+private const val RATE_DIALOG = "RATE_DIALOG"
 private const val MOVIE_ID = "MOVIE_ID"
 
 
@@ -48,6 +50,9 @@ class MovieDetailFragment : BaseFragment(),
 
     @Inject
     lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClient
+
+    @Inject
+    lateinit var dialogManager: DialogManager
 
     companion object {
         @JvmStatic
@@ -153,9 +158,15 @@ class MovieDetailFragment : BaseFragment(),
 
     //----------------------------------------------------------------------------------------------
 
-    private fun handleFeaturedEvents(event: MovieDetailScreenEvents) {
+    private fun handleMovieDetailEvents(event: MovieDetailScreenEvents) {
         when (event) {
             is ShowUserToastMessage -> toastHelper.displayMessage(event.toastMessage)
+            is ShowRateMovieDialog -> dialogManager.showRateDialog(
+                RATE_DIALOG,
+                event.movieName,
+                event.currentRating,
+                event.movieId
+            )
         }
     }
 
@@ -168,7 +179,7 @@ class MovieDetailFragment : BaseFragment(),
     private fun registerObservers() {
         movieDetailScreen.registerListener(this)
         subscription = movieDetailViewModel.screenEvents.startListening { event ->
-            handleFeaturedEvents(event)
+            handleMovieDetailEvents(event)
         }
         movieDetailViewModel.state.observeForever(movieDetailScreenStateObserver)
 

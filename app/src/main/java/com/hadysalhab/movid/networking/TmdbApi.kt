@@ -2,8 +2,8 @@ package com.hadysalhab.movid.networking
 
 import com.hadysalhab.movid.BuildConfig
 import com.hadysalhab.movid.account.usecases.favorite.FavoriteHttpBodyRequest
+import com.hadysalhab.movid.account.usecases.rate.RateMovieHttpBodyRequest
 import com.hadysalhab.movid.account.usecases.watchlist.WatchlistHttpBodyRequest
-import com.hadysalhab.movid.common.constants.APPEND_TO_RESPONSE
 import com.hadysalhab.movid.networking.responses.*
 import retrofit2.Call
 import retrofit2.http.*
@@ -103,7 +103,7 @@ interface TmdbApi {
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("session_id") sessionID: String,
         @Body httpBodyRequest: FavoriteHttpBodyRequest
-    ): Call<WatchlistFavoriteResponse>
+    ): Call<AccountStateUpdateResponse>
 
     @POST("/3/account/{account_id}/watchlist")
     fun addToWatchlist(
@@ -111,7 +111,16 @@ interface TmdbApi {
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
         @Query("session_id") sessionID: String,
         @Body httpBodyRequest: WatchlistHttpBodyRequest
-    ): Call<WatchlistFavoriteResponse>
+    ): Call<AccountStateUpdateResponse>
+
+    @POST("/3/movie/{movie_id}/rating")
+    fun rateMovie(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
+        @Query("session_id") sessionID: String,
+        @Body httpBodyRequest: RateMovieHttpBodyRequest
+    ): Call<AccountStateUpdateResponse>
+
 
     @GET("/3/account/{account_id}/favorite/movies")
     fun getFavoriteMovies(

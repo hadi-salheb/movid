@@ -33,7 +33,7 @@ class WatchlistMoviesViewModel @Inject constructor(
 ) : ViewModel(), FetchWatchlistMoviesUseCase.Listener {
 
     private lateinit var watchlistMovies: MoviesResponse
-    private val sessionID= sharedPreferencesManager.getStoredSessionId()
+    private val sessionID = sharedPreferencesManager.getStoredSessionId()
     private var moviesList = setOf<Movie>()
     val state: LiveData<ListWithToolbarTitleState> =
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
@@ -78,18 +78,34 @@ class WatchlistMoviesViewModel @Inject constructor(
                 )
             }
             is MovieDetailEvents.RemoveFromWatchlist -> {
-                watchlistMovies =
-                    watchlistMovies.copy(totalResults = watchlistMovies.totalResults - 1)
-                moviesList = moviesList.filter { it.id != event.movieDetail.details.id }.toSet()
-                updateWatchlistMovies()
-                dispatch(
-                    ListWithToolbarTitleActions.Success(
-                        moviesList.toList()
-                    )
-                )
+                removeFromWatchList(event.movie.details.id)
+            }
+            is MovieDetailEvents.MovieDetailFetched -> {
+                //this flow can happen, because tmdb by default remove rated movies from watchlist
+                //if user rate a movie,then pull to refresh, the newly updated data will not be part of watchlist
+                if (event.movie.accountStates != null) {
+                    val isInUserWatchlist = event.movie.accountStates.watchlist
+                    val isInCurrentDisplayedWatchlist =
+                        this.moviesList.any { it.id == event.movie.details.id }
+                    if (isInCurrentDisplayedWatchlist && !isInUserWatchlist) {
+                        removeFromWatchList(event.movie.details.id)
+                    }
+                }
             }
         }
 
+    }
+
+    private fun removeFromWatchList(movieId: Int) {
+        watchlistMovies =
+            watchlistMovies.copy(totalResults = watchlistMovies.totalResults - 1)
+        moviesList = moviesList.filter { it.id != movieId }.toSet()
+        updateWatchlistMovies()
+        dispatch(
+            ListWithToolbarTitleActions.Success(
+                moviesList.toList()
+            )
+        )
     }
 
     private fun updateWatchlistMovies() {
@@ -102,9 +118,9 @@ class WatchlistMoviesViewModel @Inject constructor(
     fun onStart() {
         if (isFirstRender) {
             isFirstRender = false
-            if(sessionID == GUEST_SESSION_ID){
+            if (sessionID == GUEST_SESSION_ID) {
                 dispatch(ListWithToolbarTitleActions.LoginRequired("Please login to access your watchlist movies"))
-            }else {
+            } else {
                 dispatch(ListWithToolbarTitleActions.Request)
                 fetchApi(1)
             }

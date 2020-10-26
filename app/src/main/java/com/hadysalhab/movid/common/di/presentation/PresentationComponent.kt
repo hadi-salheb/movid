@@ -4,6 +4,7 @@ import com.android.roam.wheelycool.dependencyinjection.presentation.Presentation
 import com.android.roam.wheelycool.dependencyinjection.presentation.PresentationScope
 import com.hadysalhab.movid.screen.authentication.AuthActivity
 import com.hadysalhab.movid.screen.common.dialogs.infodialog.InfoDialogFragment
+import com.hadysalhab.movid.screen.common.dialogs.ratedialog.RateDialogFragment
 import com.hadysalhab.movid.screen.main.MainActivity
 import com.hadysalhab.movid.screen.main.about.AboutFragment
 import com.hadysalhab.movid.screen.main.account.AccountFragment
@@ -46,4 +47,5 @@ interface PresentationComponent {
     fun inject(peopleListFragment: PeopleListFragment)
     fun inject(librariesFragment: LibrariesFragment)
     fun inject(infoDialog: InfoDialogFragment)
+    fun inject(rateDialogFragment: RateDialogFragment)
 }

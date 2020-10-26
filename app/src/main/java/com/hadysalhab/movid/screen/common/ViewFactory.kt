@@ -6,12 +6,16 @@ import com.hadysalhab.movid.screen.authentication.LoginViewImpl
 import com.hadysalhab.movid.screen.common.cardgroup.MoviesView
 import com.hadysalhab.movid.screen.common.cardgroup.PeopleGroupView
 import com.hadysalhab.movid.screen.common.dialogs.infodialog.InfoDialogView
+import com.hadysalhab.movid.screen.common.dialogs.ratedialog.RateDialogScreenImpl
+import com.hadysalhab.movid.screen.common.dialogs.ratedialog.RateFormView
+import com.hadysalhab.movid.screen.common.dialogs.ratedialog.RateFormViewImpl
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResults
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreenImpl
 import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
 import com.hadysalhab.movid.screen.common.listheader.ListHeader
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleImpl
 import com.hadysalhab.movid.screen.common.loading.LoadingView
+import com.hadysalhab.movid.screen.common.loading.LoadingView2
 import com.hadysalhab.movid.screen.common.loginrequired.LoginRequiredView
 import com.hadysalhab.movid.screen.common.movielist.MovieListScreenImpl
 import com.hadysalhab.movid.screen.common.movies.MovieCardImpl
@@ -127,5 +131,8 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
 
     fun getPeopleListItem(parent: ViewGroup?) = PeopleListItem(layoutInflater, parent)
     fun getInfoDialogView(parent: ViewGroup?): InfoDialogView = InfoDialogView(layoutInflater, null)
-    fun getLoginRequiredView(parent:ViewGroup?) = LoginRequiredView(layoutInflater,parent)
+    fun getLoginRequiredView(parent: ViewGroup?) = LoginRequiredView(layoutInflater, parent)
+    fun getRateFormView(parent: ViewGroup?): RateFormView = RateFormViewImpl(layoutInflater, parent)
+    fun getRateDialogScreen(parent: ViewGroup?) = RateDialogScreenImpl(layoutInflater, parent, this)
+    fun getLoading2View(parent: ViewGroup?): LoadingView2 = LoadingView2(layoutInflater, parent)
 }

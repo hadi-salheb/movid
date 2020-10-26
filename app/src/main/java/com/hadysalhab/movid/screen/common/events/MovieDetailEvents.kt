@@ -8,4 +8,5 @@ sealed class MovieDetailEvents(val movieDetail: MovieDetail) {
     data class AddMovieToFav(val movie: MovieDetail) : MovieDetailEvents(movie)
     data class RemoveMovieFromFav(val movie: MovieDetail) : MovieDetailEvents(movie)
     data class MovieDetailFetched(val movie: MovieDetail) : MovieDetailEvents(movie)
+    data class RatingUpdate(val movie: MovieDetail) : MovieDetailEvents(movie)
 }

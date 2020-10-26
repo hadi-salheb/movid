@@ -81,9 +81,9 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     fun onAddRemoveWatchlistClicked() {
-        if(state.value!!.data!!.accountStates == null){
+        if (state.value!!.data!!.accountStates == null) {
             emitter.emit(ShowUserToastMessage("Please login to save to watchlist"))
-        }else {
+        } else {
             // user clicked add/remove watchlist while pulling to refresh
             if (fetchMovieDetailUseCase.isBusy) {
                 return
@@ -101,9 +101,9 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     fun onAddRemoveFavoritesClicked() {
-        if(state.value!!.data!!.accountStates == null){
+        if (state.value!!.data!!.accountStates == null) {
             emitter.emit(ShowUserToastMessage("Please login to save to favorites"))
-        }else {
+        } else {
             // user clicked add/remove favorites while pulling to refresh
             if (fetchMovieDetailUseCase.isBusy) {
                 return
@@ -121,10 +121,20 @@ class MovieDetailViewModel @Inject constructor(
     }
 
     fun onRateBtnClick() {
+        // user clicked add/remove watchlist while pulling to refresh
+        if (fetchMovieDetailUseCase.isBusy) {
+            return
+        }
         if (state.value!!.data!!.accountStates == null) {
             emitter.emit(ShowUserToastMessage("Please login to rate this movie"))
         } else {
-
+            emitter.emit(
+                ShowRateMovieDialog(
+                    movieName = this.state.value!!.data!!.details.title,
+                    currentRating = this.state.value!!.data!!.accountStates!!.rated,
+                    movieId = this.state.value!!.data!!.details.id
+                )
+            )
         }
     }
     //-------------------------------------------------------------------------------------------

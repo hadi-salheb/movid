@@ -7,7 +7,7 @@ import com.hadysalhab.movid.common.utils.BaseBusyObservable
 import com.hadysalhab.movid.movies.MovieDetail
 import com.hadysalhab.movid.movies.MoviesStateManager
 import com.hadysalhab.movid.networking.*
-import com.hadysalhab.movid.networking.responses.WatchlistFavoriteResponse
+import com.hadysalhab.movid.networking.responses.AccountStateUpdateResponse
 import com.hadysalhab.movid.screen.common.events.MovieDetailEvents
 import com.techyourchance.threadposter.BackgroundThreadPoster
 import com.techyourchance.threadposter.UiThreadPoster
@@ -49,19 +49,19 @@ class AddRemoveWatchlistMovieUseCase(
         mediaID: Int,
         sessionId: String,
         watchlist: Boolean
-    ): ApiResponse<WatchlistFavoriteResponse> = try {
+    ): ApiResponse<AccountStateUpdateResponse> = try {
         val httpBodyRequest = WatchlistHttpBodyRequest(mediaId = mediaID, watchlist = watchlist)
         val res = tmdbApi.addToWatchlist(
             accountID = accountID,
             sessionID = sessionId,
             httpBodyRequest = httpBodyRequest
         ).execute()
-        ApiResponse.create<WatchlistFavoriteResponse>(res)
+        ApiResponse.create<AccountStateUpdateResponse>(res)
     } catch (err: Throwable) {
         ApiResponse.create(err)
     }
 
-    private fun handleResponse(res: ApiResponse<WatchlistFavoriteResponse>) {
+    private fun handleResponse(res: ApiResponse<AccountStateUpdateResponse>) {
         when (res) {
             is ApiSuccessResponse -> {
                 val oldMovieDetail = moviesStateManager.getMovieDetailById(movieId = this.movieID!!)
@@ -69,7 +69,11 @@ class AddRemoveWatchlistMovieUseCase(
                     throw  RuntimeException("$oldMovieDetail should be part of the store when changing watchlist state")
                 }
                 val newMovieDetail =
-                    oldMovieDetail.copy(accountStates = oldMovieDetail.accountStates!!.copy(watchlist = !oldMovieDetail.accountStates.watchlist))
+                    oldMovieDetail.copy(
+                        accountStates = oldMovieDetail.accountStates!!.copy(
+                            watchlist = !oldMovieDetail.accountStates.watchlist
+                        )
+                    )
                 newMovieDetail.timeStamp = oldMovieDetail.timeStamp
                 moviesStateManager.upsertMovieDetailToList(newMovieDetail)
                 notifySuccess(newMovieDetail)
