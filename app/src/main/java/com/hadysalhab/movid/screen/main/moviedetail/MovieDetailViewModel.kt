@@ -119,6 +119,14 @@ class MovieDetailViewModel @Inject constructor(
             }
         }
     }
+
+    fun onRateBtnClick() {
+        if (state.value!!.data!!.accountStates == null) {
+            emitter.emit(ShowUserToastMessage("Please login to rate this movie"))
+        } else {
+
+        }
+    }
     //-------------------------------------------------------------------------------------------
 
     private fun isAddRemoveFavMovieUseCaseBusy() = addRemoveFavMovieUseCase.isBusy

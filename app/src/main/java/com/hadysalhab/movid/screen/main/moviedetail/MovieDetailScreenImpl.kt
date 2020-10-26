@@ -58,6 +58,7 @@ class MovieDetailScreenImpl(
     private val btnWrapperLL: LinearLayout
     private val favoriteBtn: Button
     private val watchlistBtn: Button
+    private val rateBtn: Button
 
     private val movieOverviewLL: LinearLayout
     private val movieOverviewTextView: TextView
@@ -125,6 +126,7 @@ class MovieDetailScreenImpl(
         btnWrapperLL = findViewById(R.id.button_wrapper)
         favoriteBtn = findViewById(R.id.button_favorite)
         watchlistBtn = findViewById(R.id.button_watchlist)
+        rateBtn = findViewById(R.id.button_rate)
 
         trailerBtn.setOnClickListener {
             listeners.forEach {
@@ -133,16 +135,18 @@ class MovieDetailScreenImpl(
         }
         favoriteBtn.setOnClickListener {
             listeners.forEach { listener ->
-                this.movieDetail.let {
-                    listener.onFavBtnClick()
-                }
+                listener.onFavBtnClick()
             }
         }
         watchlistBtn.setOnClickListener {
             listeners.forEach { listener ->
-                this.movieDetail.let {
-                    listener.onWatchlistBtnClick()
-                }
+                listener.onWatchlistBtnClick()
+            }
+        }
+        rateBtn.setOnClickListener {
+            listeners.forEach { listener ->
+                listener.onRateBtnClick()
+
             }
         }
     }

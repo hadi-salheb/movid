@@ -147,6 +147,10 @@ class MovieDetailFragment : BaseFragment(),
         firebaseAnalyticsClient.logCastClick()
     }
 
+    override fun onRateBtnClick() {
+        movieDetailViewModel.onRateBtnClick()
+    }
+
     //----------------------------------------------------------------------------------------------
 
     private fun handleFeaturedEvents(event: MovieDetailScreenEvents) {

@@ -31,6 +31,7 @@ abstract class MovieDetailScreen : BaseObservableViewMvc<MovieDetailScreen.Liste
         fun onRetry()
         fun onBackArrowClicked()
         fun onPeopleCardClicked(peopleID: Int, peopleType: PeopleType)
+        fun onRateBtnClick()
     }
 
     protected abstract fun showLoadingIndicator()
