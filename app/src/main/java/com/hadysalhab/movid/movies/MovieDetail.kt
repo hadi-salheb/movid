@@ -89,5 +89,6 @@ data class Backdrops(
 data class AccountStates(
     val id: Int,
     val favorite: Boolean,
-    val watchlist: Boolean
+    val watchlist: Boolean,
+    val rated: Double?
 )

@@ -1,5 +1,6 @@
 package com.hadysalhab.movid.movies
 
+import com.google.gson.internal.LinkedTreeMap
 import com.hadysalhab.movid.account.AccountResponse
 import com.hadysalhab.movid.account.Avatar
 import com.hadysalhab.movid.account.Gravatar
@@ -7,6 +8,7 @@ import com.hadysalhab.movid.common.constants.BACKDROP_SIZE_780
 import com.hadysalhab.movid.common.constants.IMAGES_BASE_URL
 import com.hadysalhab.movid.networking.responses.*
 
+@Suppress("UNCHECKED_CAST")
 class SchemaToModelHelper {
     fun getMoviesResponseFromSchema(
         groupType: GroupType,
@@ -173,9 +175,15 @@ class SchemaToModelHelper {
             null
         } else {
             with(accountStatesSchema) {
-                AccountStates(id, favorite, watchlist)
+                AccountStates(id, favorite, watchlist, getRate(rated))
             }
         }
+
+    private fun getRate(rate: Any): Double? = if (rate is Boolean) {
+        null
+    } else {
+        (rate as LinkedTreeMap<String, Double>)["value"]
+    }
 
 
     fun getAccountResponse(accountSchema: AccountSchema): AccountResponse = with(accountSchema) {

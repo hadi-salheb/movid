@@ -123,5 +123,6 @@ data class BackdropsSchema(
 data class AccountStatesSchema(
     val id: Int,
     val favorite: Boolean,
-    val watchlist: Boolean
+    val watchlist: Boolean,
+    val rated: Any
 )
