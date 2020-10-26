@@ -8,8 +8,8 @@
     </style>
 
     <style name="Base.Theme.MyApp" parent="Base.Theme.MaterialThemeBuilder">
-        <item name="colorPrimary">@color/purple_black_dark</item>
-        <item name="colorPrimaryVariant">@color/purple_black_dark</item>
+        <item name="colorPrimary">@color/purple_black</item>
+        <item name="colorPrimaryVariant">@color/purple_black</item>
         <item name="colorSecondary">@color/teal_600</item>
         <item name="colorSecondaryVariant">@color/teal_900</item>
         <!--colorBackground appears behind scrollable content and is used for the default window-->
