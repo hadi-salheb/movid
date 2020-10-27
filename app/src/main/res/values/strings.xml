@@ -60,4 +60,5 @@
     <string name="no_reviews">No Reviews Available</string>
     <string name="no_rating">(Rating Not Available)</string>
     <string name="vote_summary"> %1$.1f (%2$d) </string>
+    <string name="icons_used">Icons Used</string>
 </resources>

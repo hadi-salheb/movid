@@ -130,6 +130,9 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
 
     }
 
+    override fun onIconsClicked() {
+
+    }
 
     override fun onDarkModeCheckedChanged(checked: Boolean) {
         firebaseAnalyticsClient.logThemeMode(

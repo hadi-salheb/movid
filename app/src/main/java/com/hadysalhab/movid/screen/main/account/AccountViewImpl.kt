@@ -32,6 +32,7 @@ class AccountViewImpl(
     private val rateLL: LinearLayout
     private val privacyPolicyLL: LinearLayout
     private val darkModeSwitch: SwitchMaterial
+    private val iconsLL: LinearLayout
 
     init {
         setRootView(layoutInflater.inflate(R.layout.layout_account, parent, false))
@@ -91,6 +92,12 @@ class AccountViewImpl(
         privacyPolicyLL.setOnClickListener {
             listeners.forEach {
                 it.onPrivacyPolicyClicked()
+            }
+        }
+        iconsLL = findViewById(R.id.icons_ll)
+        iconsLL.setOnClickListener {
+            listeners.forEach {
+                it.onIconsClicked()
             }
         }
     }
