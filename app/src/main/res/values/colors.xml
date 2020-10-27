@@ -1,9 +1,7 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
     <color name="purple_200">#bb86fc</color> <!--Color primary (dark)-->
-    <color name="purple_500">#6200ee</color> <!--Color primary (light)-->
     <color name="purple_600">#4b01d0</color> <!--Color primary variant (dark)-->
-    <color name="purple_700">#3700b3</color> <!--Color primary variant (light)-->
     <color name="teal_600">#319795</color>
     <color name="teal_300">#81e6d9</color>
     <color name="teal_900">#234e52</color>
@@ -15,13 +13,8 @@
     <color name="red_600">#b00020</color>
     <color name="gray_100">#f7fafc</color>
     <color name="gray_300">#E2E8F0</color>
-    <color name="gray_600">#718096</color>
-    <color name="gray_700">#4a5568</color>
-    <color name="gray_800">#2D3748</color>
-    <color name="gray_900">#1a202c</color>
     <color name="purple_black">#401540</color>
     <color name="purple_black_dark">#131213</color>
-    <color name="gray_500">#a0aec0</color>
     <color name="transparent">#00000000</color>
     <color name="white_alpha">#99FFFFFF</color>
 </resources>
