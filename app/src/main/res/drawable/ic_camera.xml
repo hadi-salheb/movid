@@ -1,7 +1,7 @@
 <!--Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="512dp"
-    android:height="512dp"
+    android:width="200dp"
+    android:height="200dp"
     android:viewportWidth="511.938"
     android:viewportHeight="511.938">
     <path
