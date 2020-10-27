@@ -32,8 +32,8 @@ class LoginUseCase(
         fun onLoginFailed(msg: String)
     }
 
-    var userName: String = ""
-    var password: String = ""
+    private var userName: String = ""
+    private var password: String = ""
 
 
     fun loginAndNotify(username: String, password: String) {

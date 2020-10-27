@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.google.gson.Gson
 import com.hadysalhab.movid.account.usecases.session.GetSessionIdUseCaseSync
 import com.hadysalhab.movid.authentication.AuthManager

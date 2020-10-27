@@ -17,9 +17,9 @@ class ReviewListAdapter(
         fun onPaginationErrorClicked()
     }
 
-    val LOADING = 0
-    val REVIEW = 1
-    val ERROR = 2
+    private val LOADING = 0
+    private val REVIEW = 1
+    private val ERROR = 2
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Review>() {

@@ -27,7 +27,7 @@ class PrivacyPolicyFragment : BaseFragment(), PrivacyPolicyView.Listener {
     @Inject
     lateinit var viewFactory: ViewFactory
 
-    lateinit var privatePolicyView: PrivacyPolicyView
+    private lateinit var privatePolicyView: PrivacyPolicyView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector.inject(this)

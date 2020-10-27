@@ -1,4 +1,4 @@
-package com.android.roam.wheelycool.dependencyinjection.presentation
+package com.hadysalhab.movid.common.di.presentation
 
 import androidx.savedstate.SavedStateRegistryOwner
 import dagger.Module

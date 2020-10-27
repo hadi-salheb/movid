@@ -129,7 +129,9 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     )
 
     fun getPeopleListItem(parent: ViewGroup?) = PeopleListItem(layoutInflater, parent)
-    fun getInfoDialogView(parent: ViewGroup?): InfoDialogView = InfoDialogView(layoutInflater, null)
+    fun getInfoDialogView(parent: ViewGroup?): InfoDialogView =
+        InfoDialogView(layoutInflater, parent)
+
     fun getLoginRequiredView(parent: ViewGroup?) = LoginRequiredView(layoutInflater, parent)
     fun getRateFormView(parent: ViewGroup?): RateFormView = RateFormViewImpl(layoutInflater, parent)
     fun getRateDialogScreen(parent: ViewGroup?) = RateDialogScreenImpl(layoutInflater, parent, this)

@@ -60,7 +60,7 @@ class FavoriteMoviesViewModel @Inject constructor(
         }
         when (event) {
             is MovieDetailEvents.AddMovieToFav -> {
-                favoriteMovies = favoriteMovies.copy(favoriteMovies.totalResults + 1)
+                favoriteMovies = favoriteMovies.copy(totalResults = favoriteMovies.totalResults + 1)
                 val oldMovieSet = this.moviesList
                 val newMovieSet = mutableSetOf(
                     schemaToModelHelper.getMovieFromMovieDetail(

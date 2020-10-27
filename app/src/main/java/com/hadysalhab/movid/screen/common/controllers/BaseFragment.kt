@@ -1,7 +1,7 @@
 package com.hadysalhab.movid.screen.common.controllers
 
 import androidx.fragment.app.Fragment
-import com.android.roam.wheelycool.dependencyinjection.presentation.PresentationModule
+import com.hadysalhab.movid.common.di.presentation.PresentationModule
 
 abstract class BaseFragment : Fragment() {
     private val presentationComponent by lazy {

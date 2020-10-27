@@ -1,7 +1,5 @@
 package com.hadysalhab.movid.common.di.presentation
 
-import com.android.roam.wheelycool.dependencyinjection.presentation.PresentationModule
-import com.android.roam.wheelycool.dependencyinjection.presentation.PresentationScope
 import com.hadysalhab.movid.screen.authentication.AuthActivity
 import com.hadysalhab.movid.screen.common.dialogs.infodialog.InfoDialogFragment
 import com.hadysalhab.movid.screen.common.dialogs.ratedialog.RateDialogFragment

@@ -24,11 +24,11 @@ class SharedPreferencesManager(val context: Context) {
     val sessionId: LiveData<String>
         get() = _sessionId
 
-    private val _isDarkMode = MutableLiveData<Boolean>(getStoredThemeMode() == ThemeMode.DARK)
+    private val _isDarkMode = MutableLiveData(getStoredThemeMode() == ThemeMode.DARK)
     val isDarkMode: LiveData<Boolean>
         get() = _isDarkMode
 
-    private val _themeMode = MutableLiveData<Int>(getStoredThemeMode().code)
+    private val _themeMode = MutableLiveData(getStoredThemeMode().code)
     val themeMode: LiveData<Int>
         get() = _themeMode
 

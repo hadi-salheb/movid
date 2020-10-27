@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 
 class SearchFragment : BaseFragment(), SearchView.Listener, BackPressListener {
-    lateinit var searchView: SearchView
+    private lateinit var searchView: SearchView
 
     @Inject
     lateinit var firebaseAnalyticsClient: FirebaseAnalyticsClient

@@ -23,7 +23,7 @@ class AboutFragment : BaseFragment(), AboutView.Listener {
     @Inject
     lateinit var viewFactory: ViewFactory
 
-    lateinit var aboutView: AboutView
+    private lateinit var aboutView: AboutView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector.inject(this)

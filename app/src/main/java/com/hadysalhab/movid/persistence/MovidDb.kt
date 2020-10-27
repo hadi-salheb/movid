@@ -13,6 +13,6 @@ abstract class MovidDB : RoomDatabase() {
     abstract fun getAccountDao(): AccountDao
 
     companion object {
-        val DATABASE_NAME: String = "movid_db"
+        const val DATABASE_NAME: String = "movid_db"
     }
 }

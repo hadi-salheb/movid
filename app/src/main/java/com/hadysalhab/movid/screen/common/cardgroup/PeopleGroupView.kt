@@ -15,7 +15,7 @@ class PeopleGroupView(
     private val viewFactory: ViewFactory
 ) : CardGroupViewImpl<DataGroup<People>, PeopleGroupView.Listener>(layoutInflater, parent),
     PeopleCard.Listener, SeeAll.Listener {
-    lateinit var peopleType: PeopleType
+    private lateinit var peopleType: PeopleType
 
     interface Listener {
         fun onPeopleCardClicked(peopleID: Int, peopleType: PeopleType)

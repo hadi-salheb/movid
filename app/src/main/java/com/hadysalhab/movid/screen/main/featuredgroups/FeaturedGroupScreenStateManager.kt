@@ -17,7 +17,7 @@ sealed class FeaturedActions {
 }
 
 class FeaturedScreenStateManager {
-    val stateLiveData = MutableLiveData<FeaturedScreenState>(FeaturedScreenState())
+    val stateLiveData = MutableLiveData(FeaturedScreenState())
     private var state: FeaturedScreenState
         get() {
             return stateLiveData.value!!

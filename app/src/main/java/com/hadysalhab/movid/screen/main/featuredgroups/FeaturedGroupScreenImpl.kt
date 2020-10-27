@@ -61,7 +61,7 @@ class FeaturedGroupScreenImpl(
 
     private fun getPowerMenu() = PowerMenu.Builder(getContext())
         .addItemList(
-            ToolbarCountryItems.values().toMutableList().mapIndexed { index, toolbarCountryItem ->
+            ToolbarCountryItems.values().toMutableList().mapIndexed { _, toolbarCountryItem ->
                 PowerMenuItem(
                     toolbarCountryItem.countryName,
                     toolbarCountryItem.countryIcon
@@ -79,7 +79,7 @@ class FeaturedGroupScreenImpl(
         }
         .setAutoDismiss(false)
         .setFocusable(true)
-        .setOnMenuItemClickListener { position, item ->
+        .setOnMenuItemClickListener { position, _ ->
             if (powerMenu.selectedPosition == position) {
                 return@setOnMenuItemClickListener
             }
@@ -123,9 +123,9 @@ class FeaturedGroupScreenImpl(
         powerMenu.dismiss()
     }
 
-    override fun setPowerMenuItem(powerMenuItem: ToolbarCountryItems) {
-        powerMenu.selectedPosition = powerMenuItem.ordinal
-        menuToolbarLayout.setOverflowMenuIcon(powerMenuItem.countryIcon)
+    override fun setPowerMenuItem(toolbarCountryItem: ToolbarCountryItems) {
+        powerMenu.selectedPosition = toolbarCountryItem.ordinal
+        menuToolbarLayout.setOverflowMenuIcon(toolbarCountryItem.countryIcon)
     }
 
     override fun disablePullRefresh() {
@@ -136,8 +136,8 @@ class FeaturedGroupScreenImpl(
         pullToRefresh.isEnabled = true
     }
 
-    override fun showErrorScreen(errorMessage: String) {
-        errorScreen.displayErrorMessage(errorMessage)
+    override fun showErrorScreen(error: String) {
+        errorScreen.displayErrorMessage(error)
         errorScreenPlaceHolder.visibility = View.VISIBLE
     }
 

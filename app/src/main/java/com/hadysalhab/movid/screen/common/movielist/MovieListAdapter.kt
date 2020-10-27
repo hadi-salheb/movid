@@ -17,7 +17,7 @@ class MovieListAdapter(private val listener: Listener, private val viewFactory: 
     }
 
     val LOADING = 0
-    val MOVIE = 1
+    private val MOVIE = 1
     val ERROR = 2
 
     companion object {

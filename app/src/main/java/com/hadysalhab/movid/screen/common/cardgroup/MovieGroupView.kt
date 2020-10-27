@@ -20,8 +20,8 @@ class MoviesView(
         fun onMovieSeeAllClicked(groupType: GroupType)
     }
 
-    override fun displayCardGroup(data: DataGroup<Movie>, maxNum: Int?) {
-        createMovieCardAndAppend(data.data, maxNum)
+    override fun displayCardGroup(data: DataGroup<Movie>, maxNumb: Int?) {
+        createMovieCardAndAppend(data.data, maxNumb)
     }
 
 

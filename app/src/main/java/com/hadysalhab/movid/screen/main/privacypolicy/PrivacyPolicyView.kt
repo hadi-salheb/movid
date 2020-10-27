@@ -38,7 +38,7 @@ class PrivacyPolicyView(
         privacyPolicyTextView = findViewById(R.id.html_text)
         privacyPolicyTextView.setHtml(getPrivacyPolicyHtml())
         privacyPolicyTextView.movementMethod = LinkMovementMethod.getInstance()
-        privacyPolicyTextView.setOnClickATagListener { widget, spannedText, href ->
+        privacyPolicyTextView.setOnClickATagListener { _, _, href ->
             listeners.forEach {
                 it.onTagClicked(href)
             }

@@ -32,7 +32,7 @@ class RateDialogViewModel
 
     private var isFirstRender = true
     private val initialState = RateViewState(isLoading = false, rate = null, title = "")
-    private val _rateDialogViewState = MutableLiveData<RateViewState>(initialState)
+    private val _rateDialogViewState = MutableLiveData(initialState)
     val rateDialogViewState: LiveData<RateViewState>
         get() = _rateDialogViewState
     private var movieId: Int = 0

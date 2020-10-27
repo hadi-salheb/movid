@@ -32,7 +32,7 @@ class PeopleListFragment : BaseFragment(), PeopleListView.Listener {
     private lateinit var peopleListViewModel: PeopleListViewModel
 
     private var movieID: Int? = null
-    lateinit var peopleType: PeopleType
+    private lateinit var peopleType: PeopleType
     lateinit var movieName: String
 
     companion object {
@@ -57,7 +57,7 @@ class PeopleListFragment : BaseFragment(), PeopleListView.Listener {
             }
             movieName = it.getString(MOVIE_NAME)
                 ?: throw java.lang.RuntimeException("Cannot Start CastListFragment without a movie name")
-            peopleType = it.getParcelable<PeopleType>(PEOPLE_TYPE)
+            peopleType = it.getParcelable(PEOPLE_TYPE)
                 ?: throw  java.lang.RuntimeException("People type must be defined in PeopleListFragment")
         }
         peopleListViewModel =

@@ -16,7 +16,7 @@ sealed class MovieDetailActions {
 
 class MovieDetailScreenStateManager {
 
-    val stateLiveData = MutableLiveData<MovieDetailScreenState>(MovieDetailScreenState())
+    val stateLiveData = MutableLiveData(MovieDetailScreenState())
     private var state: MovieDetailScreenState
         get() {
             return stateLiveData.value!!

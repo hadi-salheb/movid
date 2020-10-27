@@ -26,9 +26,7 @@ class FeaturedListFragment : BaseFragment(), ListWithToolbarTitle.Listener {
         fun newInstance(groupType: GroupType, region: String) =
             FeaturedListFragment().apply {
                 arguments = Bundle().apply {
-                    region.let {
-                        putString(ARG_REGION, it)
-                    }
+                    putString(ARG_REGION, region)
                     putParcelable(ARG_GROUP_KEY, groupType)
                 }
             }

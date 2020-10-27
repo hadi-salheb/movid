@@ -50,7 +50,7 @@ class MainViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : MainView() {
             BottomNavigationItems.ACCOUNT
         }
         else -> {
-            throw RuntimeException("BottomNavigationItem id ${id} not supported")
+            throw RuntimeException("BottomNavigationItem id $id not supported")
         }
     }
 }

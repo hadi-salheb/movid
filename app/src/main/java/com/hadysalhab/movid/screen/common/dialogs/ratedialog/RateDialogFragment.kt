@@ -41,7 +41,7 @@ class RateDialogFragment : BaseDialog(), RateDialogScreen.Listener {
     @Inject
     lateinit var myViewModelFactory: ViewModelFactory
 
-    lateinit var rateDialogViewModel: RateDialogViewModel
+    private lateinit var rateDialogViewModel: RateDialogViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

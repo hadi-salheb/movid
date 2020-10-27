@@ -27,7 +27,7 @@ class LibrariesFragment : BaseFragment(), LibrariesView.Listener {
     @Inject
     lateinit var intentHandler: IntentHandler
 
-    lateinit var librariesView: LibrariesView
+    private lateinit var librariesView: LibrariesView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector.inject(this)

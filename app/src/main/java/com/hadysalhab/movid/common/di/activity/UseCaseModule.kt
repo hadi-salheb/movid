@@ -1,6 +1,5 @@
 package com.hadysalhab.movid.common.di.activity
 
-import com.android.roam.wheelycool.dependencyinjection.presentation.ActivityScope
 import com.hadysalhab.movid.account.UserStateManager
 import com.hadysalhab.movid.account.usecases.details.FetchAccountDetailsUseCaseSync
 import com.hadysalhab.movid.account.usecases.details.GetAccountDetailsUseCase
