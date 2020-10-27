@@ -397,7 +397,7 @@ class MovieDetailScreenImpl(
                 val languageName = codeLocale.getDisplayLanguage(englishLocale)
                 val factView = viewFactory.getFactView(factsLL)
                 factView.displayFact(
-                    getContext().getDrawable(R.drawable.globe)!!,
+                    getContext().getDrawable(R.drawable.ic_language)!!,
                     languageName
                 )
                 factsLL.addView(factView.getRootView())
