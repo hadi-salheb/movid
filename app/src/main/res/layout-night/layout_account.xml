@@ -30,6 +30,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/user_profile"
                 tools:src="@drawable/user_default_profile" />
 
             <TextView
@@ -108,7 +109,8 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
             <LinearLayout
@@ -142,7 +144,8 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
             <LinearLayout
@@ -178,7 +181,8 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
             <LinearLayout
@@ -213,7 +217,8 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
             <LinearLayout
@@ -249,7 +254,8 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
             <LinearLayout
@@ -282,7 +288,8 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
             <Button

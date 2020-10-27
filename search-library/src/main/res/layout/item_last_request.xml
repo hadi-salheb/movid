@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/requestItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:gravity="center_vertical"
+    android:focusable="true"
     android:orientation="horizontal">
 
     <ImageView
@@ -14,7 +16,8 @@
         android:layout_height="50dp"
         android:padding="13dp"
         android:src="@drawable/ic_history_black_48dp"
-        android:tint="@color/material_grey_600" />
+        android:tint="@color/material_grey_600"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/text"
@@ -32,5 +35,6 @@
         android:background="?attr/selectableItemBackground"
         android:padding="13dp"
         android:src="@drawable/ic_close_black_48dp"
-        android:tint="@color/material_grey_600" />
+        android:tint="@color/material_grey_600"
+        tools:ignore="ContentDescription" />
 </LinearLayout>

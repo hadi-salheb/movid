@@ -22,6 +22,7 @@
             app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/logo"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

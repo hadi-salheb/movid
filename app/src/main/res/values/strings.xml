@@ -15,4 +15,11 @@
     <string name="privacy_policy">
 
     </string>
+    <string name="back_arrow">Back Arrow</string>
+    <string name="toolbar_menu">toolbar menu</string>
+    <string name="movie_poster">movie poster</string>
+    <string name="reload">reload</string>
+    <string name="profile">profile</string>
+    <string name="logo">Logo</string>
+    <string name="user_profile">User Profile</string>
 </resources>

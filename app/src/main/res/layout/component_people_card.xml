@@ -27,6 +27,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             app:backgroundTint="@color/material_on_surface_emphasis_medium"
+            android:contentDescription="@string/profile"
             app:backgroundTintMode="add" />
     </androidx.cardview.widget.CardView>
 

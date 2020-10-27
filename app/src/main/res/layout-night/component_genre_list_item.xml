@@ -18,6 +18,7 @@
         android:layout_height="25dp"
         android:layout_marginEnd="16dp"
         android:tint="@color/white"
+        tools:ignore="ContentDescription"
         tools:src="@drawable/ic_adventure" />
 
     <TextView
@@ -36,6 +37,7 @@
         android:layout_height="20dp"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
-        android:src="@drawable/ic_baseline_keyboard_arrow_right_24" />
+        android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+        tools:ignore="ContentDescription" />
 
 </LinearLayout>

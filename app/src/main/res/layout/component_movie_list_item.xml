@@ -31,6 +31,7 @@
             android:scaleType="centerCrop"
             app:backgroundTint="@color/material_on_surface_emphasis_medium"
             app:backgroundTintMode="add"
+            android:contentDescription="@string/movie_poster"
             tools:src="@drawable/movie_poster_185" />
     </androidx.cardview.widget.CardView>
 

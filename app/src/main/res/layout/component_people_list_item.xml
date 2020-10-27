@@ -30,6 +30,7 @@
             android:background="@android:color/transparent"
             android:scaleType="centerCrop"
             app:backgroundTint="@color/material_on_surface_emphasis_medium"
+            android:contentDescription="@string/profile"
             app:backgroundTintMode="add" />
     </androidx.cardview.widget.CardView>
 

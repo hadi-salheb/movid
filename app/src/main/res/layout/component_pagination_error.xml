@@ -12,6 +12,7 @@
         android:layout_gravity="center"
         android:background="@drawable/circle_shape"
         android:src="@drawable/ic_refresh"
+        android:contentDescription="@string/reload"
         android:tint="@color/grey_800" />
 </FrameLayout>
 
