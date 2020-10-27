@@ -15,7 +15,7 @@ constructor(
     private val getAccountDetailsUseCase: GetAccountDetailsUseCase,
     private val accountScreenStateManager: AccountScreenStateManager,
     private val signOutUseCase: SignOutUseCase,
-    private val sharedPreferencesManager: SharedPreferencesManager
+    sharedPreferencesManager: SharedPreferencesManager
 ) : ViewModel(), GetAccountDetailsUseCase.Listener {
     val screenState: LiveData<AccountViewState>
     private val dispatch = accountScreenStateManager::dispatch

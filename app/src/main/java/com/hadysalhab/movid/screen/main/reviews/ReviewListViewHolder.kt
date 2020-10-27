@@ -7,7 +7,7 @@ import com.hadysalhab.movid.screen.common.loading.LoadingView
 import com.hadysalhab.movid.screen.common.paginationerror.PaginationError
 import com.hadysalhab.movid.screen.common.reviews.ReviewListItem
 
-sealed class ReviewListViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+sealed class ReviewListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     open fun bind(review: Review) {
 
     }

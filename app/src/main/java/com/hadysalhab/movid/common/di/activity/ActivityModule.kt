@@ -17,7 +17,6 @@ import com.hadysalhab.movid.screen.common.dialogs.DialogManager
 import com.hadysalhab.movid.screen.common.fragmentframehost.FragmentFrameHost
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleStateManager
-import com.hadysalhab.movid.screen.common.screensnavigator.AppNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.AuthNavigator
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import com.hadysalhab.movid.screen.common.toasthelper.ToastHelper
@@ -48,8 +47,8 @@ class ActivityModule(private val activity: FragmentActivity) {
         activity.supportFragmentManager
 
     @Provides
-    fun getDialogManager(context: Context, fragmentManager: FragmentManager) =
-        DialogManager(context, fragmentManager)
+    fun getDialogManager(fragmentManager: FragmentManager) =
+        DialogManager(fragmentManager)
 
     @Provides
     fun getFragmentFrameHost(activity: FragmentActivity): FragmentFrameHost =
@@ -70,12 +69,6 @@ class ActivityModule(private val activity: FragmentActivity) {
         activityContext: Context
     ): MainNavigator =
         MainNavigator(fragmentManager, fragmentFrameHost, activityContext)
-
-    @Provides
-    @ActivityScope
-    fun getAppNavigator(
-        activityContext: Context
-    ): AppNavigator = AppNavigator(activityContext)
 
     @Provides
     fun getViewFactory(

@@ -29,7 +29,7 @@ class WatchlistMoviesViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
     private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
     private val schemaToModelHelper: SchemaToModelHelper,
-    private val sharedPreferencesManager: SharedPreferencesManager
+    sharedPreferencesManager: SharedPreferencesManager
 ) : ViewModel(), FetchWatchlistMoviesUseCase.Listener {
 
     private lateinit var watchlistMovies: MoviesResponse

@@ -1,13 +1,11 @@
 package com.hadysalhab.movid.common.firebase
 
-import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.hadysalhab.movid.screen.main.BottomNavigationItems
 import com.hadysalhab.movid.screen.main.featuredgroups.ToolbarCountryItems
 
 class FirebaseAnalyticsClient(
-    private val context: Context,
     private val firebaseAnalytics: FirebaseAnalytics
 ) {
     fun logTabTransaction(bottomNavigationItems: BottomNavigationItems) {

@@ -6,7 +6,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.hadysalhab.movid.account.UserStateManager
-import com.hadysalhab.movid.common.DeviceConfigManager
 import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.common.constants.TMDB_BASE_URL
 import com.hadysalhab.movid.common.datavalidator.DataValidator
@@ -37,9 +36,6 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     fun getApplication(): Application = application
-
-    @Provides
-    fun getDeviceConfigManager(application: Application) = DeviceConfigManager(application)
 
     @Singleton
     @Provides
@@ -126,6 +122,6 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun getFirebase(context: Application, firebaseAnalytics: FirebaseAnalytics) =
-        FirebaseAnalyticsClient(context, firebaseAnalytics)
+    fun getFirebase(firebaseAnalytics: FirebaseAnalytics) =
+        FirebaseAnalyticsClient(firebaseAnalytics)
 }

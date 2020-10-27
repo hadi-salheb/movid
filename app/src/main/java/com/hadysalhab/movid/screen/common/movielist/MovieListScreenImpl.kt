@@ -8,7 +8,6 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hadysalhab.movid.R
-import com.hadysalhab.movid.common.utils.convertDpToPixel
 import com.hadysalhab.movid.movies.Movie
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResults
@@ -187,12 +186,12 @@ class MovieListScreenImpl(
         progressBar.visibility = View.GONE
     }
 
-    private fun animateRecyclerViewScroll() {
-        recyclerView.suppressLayout(false)
-        recyclerView.post {
-            recyclerView.smoothScrollBy(0, convertDpToPixel(70, getContext()))
-        }
-    }
+//    private fun animateRecyclerViewScroll() {
+//        recyclerView.suppressLayout(false)
+//        recyclerView.post {
+//            recyclerView.smoothScrollBy(0, convertDpToPixel(70, getContext()))
+//        }
+//    }
 
 
     //Callbacks-------------------------------------------------------------------------------------

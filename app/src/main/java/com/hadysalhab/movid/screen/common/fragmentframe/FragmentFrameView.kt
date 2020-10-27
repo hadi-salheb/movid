@@ -13,7 +13,4 @@ class FragmentFrameView(inflater: LayoutInflater, parent: ViewGroup?) : BaseView
         setRootView(inflater.inflate(R.layout.layout_fragment_frame, parent, false))
         fragmentFrame = findViewById(R.id.fragment_frame)
     }
-
-    fun getFragmentFrame() = fragmentFrame
-
 }

@@ -19,10 +19,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
-/**
- * The AuthActivity serves as fragments host for the authentication screens. {@see [LauncherFragment] }
- */
-
 const val SCREEN_STATE = "SCREEN_STATE"
 const val SIGN_UP_INFO_DIALOG = "SIGN_UP_INFO_DIALOG"
 

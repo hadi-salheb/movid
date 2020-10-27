@@ -54,7 +54,7 @@ class LoginViewImpl(inflater: LayoutInflater, parent: ViewGroup?) : LoginView() 
     }
 
     private fun handleValidation(username: String, password: String): Boolean {
-        var result: Boolean = true
+        var result = true
         if (username.isEmpty()) {
             usernameInputLayout.error = "Please add a username"
             result = false

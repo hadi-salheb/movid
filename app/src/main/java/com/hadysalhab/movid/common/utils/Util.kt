@@ -15,8 +15,7 @@ fun getYoutubeTrailerFromResponse(videoResponse: VideosResponse) =
     }
 
 fun getVoteAverageNumbers(): List<String> {
-    var number: Float = 0.0f
-    val numbers: MutableList<String> = mutableListOf()
+    val numbers = mutableListOf<String>()
     for (i in 0..20) {
         numbers.add((i / 2.0).toString())
     }

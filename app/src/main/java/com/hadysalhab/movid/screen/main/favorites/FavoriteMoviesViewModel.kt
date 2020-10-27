@@ -28,12 +28,12 @@ class FavoriteMoviesViewModel @Inject constructor(
     private val fetchFavoriteMoviesUseCase: FetchFavoriteMoviesUseCase,
     private val listWithToolbarTitleStateManager: ListWithToolbarTitleStateManager,
     private val schemaToModelHelper: SchemaToModelHelper,
-    private val sharedPreferencesManager: SharedPreferencesManager,
+    sharedPreferencesManager: SharedPreferencesManager,
     private val signOutUseCase: SignOutUseCase
 ) : ViewModel(), FetchFavoriteMoviesUseCase.Listener {
 
     private lateinit var favoriteMovies: MoviesResponse
-    private val sessionID= sharedPreferencesManager.getStoredSessionId()
+    private val sessionID = sharedPreferencesManager.getStoredSessionId()
     private var moviesList = setOf<Movie>()
     val state: LiveData<ListWithToolbarTitleState> =
         listWithToolbarTitleStateManager.setInitialStateAndReturn(
@@ -100,9 +100,9 @@ class FavoriteMoviesViewModel @Inject constructor(
     fun onStart() {
         if (isFirstRender) {
             isFirstRender = false
-            if(sessionID == GUEST_SESSION_ID){
+            if (sessionID == GUEST_SESSION_ID) {
                 dispatch(ListWithToolbarTitleActions.LoginRequired("Please login to access your favorite movies"))
-            }else {
+            } else {
                 dispatch(ListWithToolbarTitleActions.Request)
                 fetchApi(1)
             }

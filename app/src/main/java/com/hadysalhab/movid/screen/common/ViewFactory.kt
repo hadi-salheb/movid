@@ -11,7 +11,6 @@ import com.hadysalhab.movid.screen.common.dialogs.ratedialog.RateFormView
 import com.hadysalhab.movid.screen.common.dialogs.ratedialog.RateFormViewImpl
 import com.hadysalhab.movid.screen.common.emptyresults.EmptyResults
 import com.hadysalhab.movid.screen.common.errorscreen.ErrorScreenImpl
-import com.hadysalhab.movid.screen.common.fragmentframe.FragmentFrameView
 import com.hadysalhab.movid.screen.common.listheader.ListHeader
 import com.hadysalhab.movid.screen.common.listtitletoolbar.ListWithToolbarTitleImpl
 import com.hadysalhab.movid.screen.common.loading.LoadingView
@@ -48,7 +47,6 @@ import com.hadysalhab.movid.screen.main.reviews.ReviewListViewImpl
 import com.hadysalhab.movid.screen.main.search.*
 
 class ViewFactory(private val layoutInflater: LayoutInflater) {
-    fun getFragmentFrameView(parent: ViewGroup?) = FragmentFrameView(layoutInflater, parent)
     fun getLoginView(parent: ViewGroup?) = LoginViewImpl(layoutInflater, parent)
     fun getMainView(parent: ViewGroup?) = MainViewImpl(layoutInflater, parent)
 

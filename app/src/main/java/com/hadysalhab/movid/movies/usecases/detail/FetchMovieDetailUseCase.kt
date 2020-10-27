@@ -27,7 +27,7 @@ class FetchMovieDetailUseCase(
     private val tmdbApi: TmdbApi,
     private val schemaToModelHelper: SchemaToModelHelper,
     private val errorMessageHandler: ErrorMessageHandler,
-    private val getSessionIdUseCaseSync: GetSessionIdUseCaseSync,
+    getSessionIdUseCaseSync: GetSessionIdUseCaseSync,
     private val timeProvider: TimeProvider,
     private val moviesStateManager: MoviesStateManager,
     private val backgroundThreadPoster: BackgroundThreadPoster,

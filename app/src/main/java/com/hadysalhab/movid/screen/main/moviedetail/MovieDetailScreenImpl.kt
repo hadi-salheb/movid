@@ -160,9 +160,9 @@ class MovieDetailScreenImpl(
         loadingViewFrame.visibility = View.GONE
     }
 
-    override fun showErrorScreen(errorMessage: String) {
+    override fun showErrorScreen(error: String) {
         errorScreenFrame.visibility = View.VISIBLE
-        errorScreen.displayErrorMessage(errorMessage)
+        errorScreen.displayErrorMessage(error)
     }
 
     override fun hideErrorScreen() {
@@ -448,7 +448,7 @@ class MovieDetailScreenImpl(
         }
     }
 
-    private fun displayCasts(people: List<com.hadysalhab.movid.movies.Cast>) {
+    private fun displayCasts(people: List<Cast>) {
         castsFL.removeAllViews()
         if (people.isNotEmpty()) {
             val peopleGroupView = viewFactory.getPeopleGroupView(castsFL)

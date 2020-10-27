@@ -22,6 +22,11 @@ enum class Icon(val author: String, authorUrl: String, @DrawableRes val drawable
         "https://www.flaticon.com/authors/photo3idea-studio",
         R.drawable.romance
     ),
+    LOGO(
+        "photo3idea_studio",
+        "https://www.flaticon.com/authors/photo3idea-studio",
+        R.drawable.popcorn
+    ),
     SCIENCE_FICTION(
         "Freepik",
         "https://www.flaticon.com/authors/freepik",

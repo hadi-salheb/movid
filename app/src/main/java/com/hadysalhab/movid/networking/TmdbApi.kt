@@ -62,11 +62,11 @@ interface TmdbApi {
         @Query("region") region: String
     ): Call<MoviesResponseSchema>
 
-    @GET("/3/movie/latest")
-    fun fetchLatestMovies(
-        @Query("page") page: Int = 1,
-        @Query("api_key") apiKey: String = BuildConfig.API_KEY
-    ): Call<MoviesResponseSchema>
+//    @GET("/3/movie/latest")
+//    fun fetchLatestMovies(
+//        @Query("page") page: Int = 1,
+//        @Query("api_key") apiKey: String = BuildConfig.API_KEY
+//    ): Call<MoviesResponseSchema>
 
     @GET("/3/movie/{movie_id}/similar")
     fun fetchSimilarMovies(

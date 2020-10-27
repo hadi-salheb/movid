@@ -1,11 +1,10 @@
 package com.hadysalhab.movid.screen.common.dialogs
 
-import android.content.Context
 import androidx.fragment.app.FragmentManager
 import com.hadysalhab.movid.screen.common.dialogs.infodialog.InfoDialogFragment
 import com.hadysalhab.movid.screen.common.dialogs.ratedialog.RateDialogFragment
 
-class DialogManager(private val context: Context, private val fragmentManager: FragmentManager) {
+class DialogManager(private val fragmentManager: FragmentManager) {
 
     fun showSignUpInfoDialog(tag: String?) {
         val dialogFragment = InfoDialogFragment.newInstance(
