@@ -19,7 +19,7 @@
         android:layout_marginEnd="16dp"
         android:tint="@color/white"
         tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_adventure" />
+        />
 
     <TextView
         android:id="@+id/genre_text"
