@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@color/purple_black_dark"
     android:gravity="center"
-    android:minHeight="54dp">
+    android:minHeight="54dp"
+    tools:ignore="Overdraw">
 
     <ImageView
         android:id="@+id/back_arrow"

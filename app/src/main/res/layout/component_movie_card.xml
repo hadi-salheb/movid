@@ -10,7 +10,8 @@
     android:focusable="true"
     android:background="?attr/selectableItemBackground"
     android:orientation="vertical"
-    app:cardElevation="2.5dp">
+    app:cardElevation="2.5dp"
+    tools:ignore="Overdraw">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_movie_image"
