@@ -113,11 +113,11 @@ class AccountViewImpl(
             )
             profileImageView.setImageDrawable(drawable)
             usernameTextView.text = state.accountResponse.username
-            signOutButton.text = "Sign out"
+            signOutButton.text = getContext().getString(R.string.sign_out)
         } else {
             profileImageView.setImageResource(R.drawable.user_default_profile)
             usernameTextView.text = ""
-            signOutButton.text = "LOGIN"
+            signOutButton.text = getContext().getString(R.string.login)
         }
 
     }

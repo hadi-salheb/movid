@@ -21,13 +21,13 @@ class Rating(layoutInflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc()
     fun displayRating(voteAvg: Double, voteCount: Int) {
         if (voteCount == 0) {
             movieRating.visibility = View.GONE
-            movieRatingText.text = "(Rating Not Available)"
+            movieRatingText.text = getContext().getString(R.string.no_rating)
         } else {
             val number3digits: Double = String.format("%.3f", voteAvg / 2).toDouble()
             val number2digits: Double = String.format("%.2f", number3digits).toDouble()
             val result: Double = String.format("%.1f", number2digits).toDouble()
             movieRating.rating = result.toFloat()
-            movieRatingText.text = "$voteAvg (${voteCount})"
+            movieRatingText.text = getContext().getString(R.string.vote_summary, voteAvg, voteCount)
         }
     }
 }

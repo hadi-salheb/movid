@@ -440,11 +440,11 @@ class MovieDetailScreenImpl(
         if (accountStates.rated == null) {
             rateBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_800))
             rateBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white))
-            rateBtn.text = "Rate This Movie"
+            rateBtn.text = getContext().getString(R.string.rate_movie)
         } else {
             rateBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.white_milky))
             rateBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.teal_600))
-            rateBtn.text = "Your Movie Rating: ${accountStates.rated}/10"
+            rateBtn.text = getContext().getString(R.string.user_rating, accountStates.rated)
         }
     }
 
@@ -502,7 +502,7 @@ class MovieDetailScreenImpl(
                 }
             }
         } else {
-            movieReviewReviewTV.text = "No Reviews Available"
+            movieReviewReviewTV.text = getContext().getString(R.string.no_reviews)
             reviewsBtn.visibility = View.GONE
         }
     }

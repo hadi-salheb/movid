@@ -10,7 +10,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="username"
+        android:hint="@string/username"
         app:errorEnabled="true"
         app:startIconContentDescription="Custom search icon"
         app:startIconDrawable="@drawable/ic_account_circle">
@@ -27,7 +27,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="password"
+        android:hint="@string/password"
         app:errorEnabled="true"
         app:startIconContentDescription="Custom search icon"
         app:startIconDrawable="@drawable/ic_lock">

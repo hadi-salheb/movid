@@ -129,7 +129,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:backgroundTint="@color/red_600"
-                    android:text="Play Trailer"
+                    android:text="@string/play_trailer"
                     android:textColor="@color/white_milky"
                     app:icon="@drawable/ic_play_2"
                     app:iconGravity="textStart"
@@ -142,7 +142,7 @@
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Rate This Movie"
+                    android:text="@string/rate_movie"
                     app:layout_constraintEnd_toEndOf="@+id/button_wrapper"
                     app:layout_constraintStart_toStartOf="@+id/iv_poster"
                     app:layout_constraintTop_toBottomOf="@id/button_trailer" />
@@ -167,7 +167,7 @@
                         android:layout_weight="1"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:text="Favorites" />
+                        android:text="@string/favorites" />
 
                     <Button
                         android:id="@+id/button_watchlist"
@@ -177,7 +177,7 @@
                         android:layout_weight="1"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:text="Watchlist" />
+                        android:text="@string/watchlist" />
                 </LinearLayout>
 
                 <com.google.android.material.card.MaterialCardView
@@ -207,7 +207,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="Overview"
+                            android:text="@string/overview"
                             android:textAppearance="?attr/textAppearanceHeadline6"
                             android:textSize="18sp" />
 
@@ -242,7 +242,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="Facts"
+                            android:text="@string/facts"
                             android:textAppearance="?attr/textAppearanceHeadline6"
                             android:textSize="18sp" />
 
@@ -301,7 +301,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="Reviews"
+                            android:text="@string/reviews"
                             android:textAppearance="?attr/textAppearanceHeadline6"
                             android:textSize="18sp" />
 
@@ -335,7 +335,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:text="Check Reviews"
+                            android:text="@string/check_reviews"
                             android:textColor="@color/teal_600" />
 
                     </LinearLayout>
