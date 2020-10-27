@@ -15,7 +15,8 @@
         android:src="@drawable/ic_baseline_arrow_back"
         android:tint="@color/gray_100"
         android:contentDescription="@string/back_arrow"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:ignore="RtlSymmetry" />
 
 
     <TextView
