@@ -3,7 +3,12 @@ package com.hadysalhab.movid.screen.main.icons
 import androidx.annotation.DrawableRes
 import com.hadysalhab.movid.R
 
-enum class Icon(val author: String, authorUrl: String, @DrawableRes val drawable: Int) {
+enum class Icon(
+    val author: String,
+    val authorUrl: String,
+    @DrawableRes val drawable: Int,
+    val isColored: Boolean = false
+) {
     ACTION("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.action),
     ADVENTURE("DdARA", "https://www.flaticon.com/authors/ddara", R.drawable.adventure),
     ANIMATION("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.animation),
@@ -25,7 +30,7 @@ enum class Icon(val author: String, authorUrl: String, @DrawableRes val drawable
     LOGO(
         "photo3idea_studio",
         "https://www.flaticon.com/authors/photo3idea-studio",
-        R.drawable.popcorn
+        R.drawable.popcorn, true
     ),
     SCIENCE_FICTION(
         "Freepik",
@@ -34,10 +39,10 @@ enum class Icon(val author: String, authorUrl: String, @DrawableRes val drawable
     ),
     THRILLER("Kiranshastry", "https://www.flaticon.com/authors/kiranshastry", R.drawable.thriller),
     WAR("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.war),
-    AUSTRALIA("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_australia),
-    USA("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_united_states),
-    FRANCE("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_france),
-    INDIA("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_india),
-    UK("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_united_kingdom),
+    AUSTRALIA("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_australia, true),
+    USA("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_united_states, true),
+    FRANCE("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_france, true),
+    INDIA("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_india, true),
+    UK("Freepik", "https://www.flaticon.com/authors/freepik", R.drawable.ic_united_kingdom, true),
 
 }

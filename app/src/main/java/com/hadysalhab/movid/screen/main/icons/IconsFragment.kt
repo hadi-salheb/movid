@@ -1,16 +1,17 @@
-package com.hadysalhab.movid.screen.main.libraries
+package com.hadysalhab.movid.screen.main.icons
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.hadysalhab.movid.common.SharedPreferencesManager
 import com.hadysalhab.movid.screen.common.ViewFactory
 import com.hadysalhab.movid.screen.common.controllers.BaseFragment
 import com.hadysalhab.movid.screen.common.intenthandler.IntentHandler
 import com.hadysalhab.movid.screen.common.screensnavigator.MainNavigator
 import javax.inject.Inject
 
-class LibrariesFragment : BaseFragment(), LibrariesView.Listener {
+class IconsFragment : BaseFragment(), IconList.Listener {
 
     @Inject
     lateinit var mainNavigator: MainNavigator
@@ -18,7 +19,7 @@ class LibrariesFragment : BaseFragment(), LibrariesView.Listener {
     companion object {
         @JvmStatic
         fun newInstance() =
-            LibrariesFragment()
+            IconsFragment()
     }
 
     @Inject
@@ -27,7 +28,11 @@ class LibrariesFragment : BaseFragment(), LibrariesView.Listener {
     @Inject
     lateinit var intentHandler: IntentHandler
 
-    private lateinit var librariesView: LibrariesView
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
+
+
+    private lateinit var iconListView: IconList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injector.inject(this)
@@ -38,25 +43,32 @@ class LibrariesFragment : BaseFragment(), LibrariesView.Listener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::librariesView.isInitialized) {
-            librariesView = viewFactory.getLibrariesView(container)
+        if (!this::iconListView.isInitialized) {
+            iconListView = viewFactory.getIconList(container)
         }
-        return librariesView.getRootView()
+        return iconListView.getRootView()
     }
 
     override fun onStart() {
         super.onStart()
-        librariesView.registerListener(this)
+        iconListView.registerListener(this)
+        val isDarkMode = sharedPreferencesManager.isDarkMode.value!!
+        if (isDarkMode) {
+            iconListView.displayIconsWithDarkMode()
+        } else {
+            iconListView.displayIconsWithLightMode()
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        librariesView.unregisterListener(this)
+        iconListView.unregisterListener(this)
     }
 
-    override fun onLibraryListItemClicked(library: Library) {
-        intentHandler.handleWebLinkIntent(library.libraryUrl)
+    override fun onIconTagClicked(href: String) {
+        intentHandler.handleWebLinkIntent(href)
     }
+
 
     override fun onBackArrowClicked() {
         mainNavigator.popFragment()

@@ -18,6 +18,7 @@ import com.hadysalhab.movid.screen.main.favorites.FavoriteMoviesFragment
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupFragment
 import com.hadysalhab.movid.screen.main.featuredlist.FeaturedListFragment
 import com.hadysalhab.movid.screen.main.filter.FilterFragment
+import com.hadysalhab.movid.screen.main.icons.IconsFragment
 import com.hadysalhab.movid.screen.main.libraries.LibrariesFragment
 import com.hadysalhab.movid.screen.main.moviedetail.MovieDetailFragment
 import com.hadysalhab.movid.screen.main.privacypolicy.PrivacyPolicyFragment
@@ -155,6 +156,12 @@ class MainNavigator(
     fun toPrivacyPolicyFragment() {
         fragNavController.pushFragment(
             PrivacyPolicyFragment.newInstance()
+        )
+    }
+
+    fun toIconsFragment() {
+        fragNavController.pushFragment(
+            IconsFragment.newInstance()
         )
     }
 

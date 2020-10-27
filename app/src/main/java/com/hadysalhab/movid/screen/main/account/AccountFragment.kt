@@ -131,7 +131,7 @@ class AccountFragment : BaseFragment(), AccountView.Listener {
     }
 
     override fun onIconsClicked() {
-
+        mainNavigator.toIconsFragment()
     }
 
     override fun onDarkModeCheckedChanged(checked: Boolean) {

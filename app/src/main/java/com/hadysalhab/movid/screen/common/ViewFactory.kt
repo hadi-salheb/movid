@@ -36,6 +36,8 @@ import com.hadysalhab.movid.screen.main.castlist.PeopleListViewImpl
 import com.hadysalhab.movid.screen.main.featuredgroups.FeaturedGroupScreenImpl
 import com.hadysalhab.movid.screen.main.filter.FilterView
 import com.hadysalhab.movid.screen.main.filter.FilterViewImpl
+import com.hadysalhab.movid.screen.main.icons.IconList
+import com.hadysalhab.movid.screen.main.icons.IconListItem
 import com.hadysalhab.movid.screen.main.libraries.LibrariesView
 import com.hadysalhab.movid.screen.main.libraries.LibraryListItem
 import com.hadysalhab.movid.screen.main.moviedetail.FactView
@@ -138,4 +140,7 @@ class ViewFactory(private val layoutInflater: LayoutInflater) {
     fun getLoading2View(parent: ViewGroup?): LoadingView2 = LoadingView2(layoutInflater, parent)
     fun getPrivacyPolicyView(container: ViewGroup?): PrivacyPolicyView =
         PrivacyPolicyView(layoutInflater, container, this)
+
+    fun getIconListItem(parent: ViewGroup): IconListItem = IconListItem(layoutInflater, parent)
+    fun getIconList(parent: ViewGroup?): IconList = IconList(layoutInflater, parent, this)
 }
