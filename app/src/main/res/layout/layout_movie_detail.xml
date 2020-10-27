@@ -138,6 +138,7 @@
 
                 <Button
                     android:id="@+id/button_rate"
+                    android:textColor="@color/grey_800"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/rate_movie"
