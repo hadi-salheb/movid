@@ -23,10 +23,7 @@ class Rating(layoutInflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc()
             movieRating.visibility = View.GONE
             movieRatingText.text = getContext().getString(R.string.no_rating)
         } else {
-            val number3digits: Double = String.format("%.3f", voteAvg / 2).toDouble()
-            val number2digits: Double = String.format("%.2f", number3digits).toDouble()
-            val result: Double = String.format("%.1f", number2digits).toDouble()
-            movieRating.rating = result.toFloat()
+            movieRating.rating = (voteAvg / 2).toFloat()
             movieRatingText.text = getContext().getString(R.string.vote_summary, voteAvg, voteCount)
         }
     }
