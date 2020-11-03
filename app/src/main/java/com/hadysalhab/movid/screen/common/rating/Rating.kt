@@ -7,6 +7,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import com.hadysalhab.movid.R
 import com.hadysalhab.movid.screen.common.views.BaseViewMvc
+import kotlin.math.round
 
 class Rating(layoutInflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc() {
     private val movieRating: RatingBar
@@ -23,7 +24,7 @@ class Rating(layoutInflater: LayoutInflater, parent: ViewGroup?) : BaseViewMvc()
             movieRating.visibility = View.GONE
             movieRatingText.text = getContext().getString(R.string.no_rating)
         } else {
-            movieRating.rating = (voteAvg / 2).toFloat()
+            movieRating.rating = round((voteAvg / (2 * .5)).toFloat()) * .5f
             movieRatingText.text = getContext().getString(R.string.vote_summary, voteAvg, voteCount)
         }
     }
